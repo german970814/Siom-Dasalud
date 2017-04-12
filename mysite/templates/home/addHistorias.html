@@ -1,0 +1,839 @@
+{% extends 'home/base.html' %}
+
+{% block title %} Historia Clinica{% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h3 class="page-header">Paciente: {{getorden.paciente}}</h3>
+	</div>
+</div>
+<div class="row">
+    <div class="col-lg-6">
+        <p><strong>Escolaridad:</strong> {{getorden.paciente.get_escolaridad_display}}</p>
+        <p><strong>Cargo al que aspira:</strong> {{getorden.cargo}}</p>
+        <p><strong>Empresa que lo remite:</strong> {{getorden.empresa}}</p>
+        <p><strong>Examen:</strong> {{getorden.get_examen_display}}</p>
+    </div>
+    <div class="col-lg-6">
+        <p><strong>Profesión:</strong> {{getorden.paciente.profesion}}</p>
+        <p><strong>Sección o area a la que aspira:</strong> {{getorden.seccion}}</p>
+        <p><strong>Empresa Cliente:</strong> {{getorden.empresa_cliente}}</p>
+        <p><strong>Examen Adicional:</strong> {{getorden.get_examen_adicional_display}}</p>
+    </div>    
+
+</div>
+
+<br>
+<div class="row">
+    <div class="col-lg-12">
+        {% if form1.errors %}
+        <div class="alert alert-danger">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>!Existen campos obligatorios que usted no ha diligenciado!:</strong> {{ form1.errors }}
+        </div>
+        {% endif %}
+        {% if exito %}
+        <div class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>La historia ha sido Guardada Satisfactoriamente!</strong> <p>Pueden continuar editando la historia pues aun se encuentra abierta. Recuerde que si la historia se cierra No sera posible realizar mas cambios.</p>
+        </div>
+        {% endif %}
+        {% if exito_cerrada %}
+        <div class="alert alert-success">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>La historia ha sido CERRADA Satisfactoriamente!</strong> <p>No sera posible realizar mas cambios.</p>
+        </div>
+        {% endif %}        
+        {% if error %}
+        <div class="alert alert-danger">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>No es posible cerrar la historia!</strong> Compruebe que la historia ha sido guardada y que se haya emitido un concepto. Tambien verifique que todos los campos hayan sido diligenciados correctamente.
+        </div>
+        {% endif %}
+        {% if info %}
+        <div class="alert alert-warning">
+            <a href="#" class="close" data-dismiss="alert">&times;</a>
+            <strong>Si va a editar esta historia tenga en cuenta que: </strong> Los campos Diagnostico, Diagnostico1, Diagnostico2 y Diagnostico3 pertenencientes al RIPS van a ser sobreescritos de acuerdo a esta nueva edición. Verifique bien estos campos antes de hacer click en el botón "Guardar".
+        </div>
+        {% endif %}
+    </div>
+</div>
+ 
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#tabhistoria" data-toggle="tab">Antecedentes</a>
+    </li>
+    <li><a href="#tabexamen" data-toggle="tab">Examen Físico</a>
+    </li>
+    <li><a href="#tabdiagnosticos" data-toggle="tab">Exámenes de Diagnosticos</a>
+    </li>
+    {% if altura == True %}
+        <li><a href="#tabaltura" data-toggle="tab">Examen de Altura</a>
+        </li>
+    {% endif %}     
+    <li><a href="#tabconcepto" data-toggle="tab">Concepto</a>
+    </li>       
+    <li><a href="#tabhistorial" data-toggle="tab">Historial</a>
+    </li>
+</ul>
+
+<!-- Tab panes -->
+<form action="." method="POST">
+{% csrf_token %}
+<div class="tab-content">
+    <div class="tab-pane fade in active" id="tabhistoria">
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_hijos">Hijos:</label> {{form1.hijos}}</p></div>
+            <div class="col-lg-3"><p><label for="id_num_hijos">Nº Hijos:</label> {{form1.num_hijos}}</p></div>
+            <div class="col-lg-3"><p><label for="id_turno">Turno:</label> {{form1.turno}}</p></div>
+            <div class="col-lg-3"><p><label for="id_actividad">Actividad:</label> {{form1.actividad}}</p></div>
+        </div>        
+        <div class="row">
+            <div class="col-lg-4">{{ form1.eps.errors }}<p><label for="id_cargo">EPS:</label> {{form1.eps}}</p></div>
+            <div class="col-lg-4">{{ form1.afp.errors }}<p><label for="id_afp">AFP:</label> {{form1.afp}}</p></div>
+            <div class="col-lg-4">{{ form1.arl.errors }}<p><label for="id_arl">ARL</label> {{form1.arl}}</p></div>
+        </div>
+        <!-- Antecedentes de Trabajos u oficios -->
+        <h4 class="page-header">Antecedentes de Trabajos u oficios</h4>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_a_empresa1">Nombre Empresa:</label> {{form1.a_empresa1}}</p></div>
+            <div class="col-lg-4"><p><label for="id_a_ocupacion1">Ocupacion:</label> {{form1.a_ocupacion1}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_tiempo1">Tiempo:</label> {{form1.a_tiempo1}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_prot1">Proteccion Usada:</label> {{form1.a_prot1}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2"><p><label for="id_a_biolog1">R. Biologico:</label> {{form1.a_biolog1}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_mec1">R. Mecanico:</label> {{form1.a_mec1}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_fis1">R. Fisico:</label> {{form1.a_fis1}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_erg1">R. Ergonomico:</label> {{form1.a_erg1}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_psi1">R. Psicologico:</label> {{form1.a_psi1}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_qui1">R. Quimico:</label> {{form1.a_qui1}}</p></div>
+        </div>
+        <br>
+        <br>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_a_empresa2">Nombre Empresa:</label> {{form1.a_empresa2}}</p></div>
+            <div class="col-lg-4"><p><label for="id_a_ocupacion2">Ocupacion:</label> {{form1.a_ocupacion2}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_tiempo2">Tiempo:</label> {{form1.a_tiempo2}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_prot2">Proteccion Usada:</label> {{form1.a_prot2}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2"><p><label for="id_a_biolog2">R. Biologico:</label> {{form1.a_biolog2}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_mec2">R. Mecanico:</label> {{form1.a_mec2}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_fis2">R. Fisico:</label> {{form1.a_fis2}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_erg2">R. Ergonomico:</label> {{form1.a_erg2}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_psi2">R. Psicologico:</label> {{form1.a_psi2}}</p></div>
+            <div class="col-lg-2"><p><label for="id_a_qui2">R. Quimico:</label> {{form1.a_qui2}}</p></div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_accidente">Accidente de Trabajo:</label> {{form1.accidente}}</p></div>
+            <div class="col-lg-4"><p><label for="id_enfermedad_profesional">Enfermedad Profesional:</label> {{form1.enfermedad_profesional}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12"><p><label for="id_detalle">Observaciones:</label> {{form1.detalle}}</p></div>
+        </div>
+        <!-- Antecedentes Patologicos Personales -->
+        <h4 class="page-header">Antecedentes Patologicos Personales</h4>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_quirurgicos">Cirugia:</label> {{form1.quirurgicos}}</p></div>
+            <div class="col-lg-3"><p><label for="id_hospitalizacion">Hospitalizacion:</label> {{form1.hospitalizacion}}</p></div>
+            <div class="col-lg-3"><p><label for="id_accidente_p">Accidentes:</label> {{form1.accidente_p}}</p></div>
+            <div class="col-lg-3"><p><label for="id_fracturas">Fracturas:</label> {{form1.fracturas}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_tabaquismo">Tabaquismo:</label> {{form1.tabaquismo}}</p></div>
+            <div class="col-lg-3"><p><label for="id_intoxicaciones">Intoxicaciones:</label> {{form1.intoxicaciones}}</p></div>
+            <div class="col-lg-3"><p><label for="id_alcoholismo">Alcoholismo:</label> {{form1.alcoholismo}}</p></div>
+            <div class="col-lg-3"><p><label for="id_mentales">Mentales:</label> {{form1.mentales}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_asma">Asma:</label> {{form1.asma}}</p></div>
+            <div class="col-lg-3"><p><label for="id_tbc">T.B.C:</label> {{form1.tbc}}</p></div>
+            <div class="col-lg-3"><p><label for="id_alergias">Alergias:</label> {{form1.alergias}}</p></div>
+            <div class="col-lg-3"><p><label for="id_gripas">Gripas Frecuentes:</label> {{form1.gripas}}</p></div>
+        </div> 
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_enf_piel">Enf de la piel:</label> {{form1.enf_piel}}</p></div>
+            <div class="col-lg-3"><p><label for="id_otologicos">Otologicos:</label> {{form1.otologicos}}</p></div>
+            <div class="col-lg-3"><p><label for="id_diabetes">Diabetes:</label> {{form1.diabetes}}</p></div>
+            <div class="col-lg-3"><p><label for="id_hematologicos">Hematologicos:</label> {{form1.hematologicos}}</p></div>
+        </div> 
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_epilepsia">Epilepsia:</label> {{form1.epilepsia}}</p></div>
+            <div class="col-lg-3"><p><label for="id_cancer">Cancer:</label> {{form1.cancer}}</p></div>
+            <div class="col-lg-3"><p><label for="id_hipertension">Hipertension:</label> {{form1.hipertension}}</p></div>
+            <div class="col-lg-3"><p><label for="id_otros">Otros:</label> {{form1.otros}}</p></div>
+        </div>        
+        <h4 class="page-header">Antecedentes Patologicos Famiiares</h4>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_f_quirurgicos">Cirugia:</label> {{form1.f_quirurgicos}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_hospitalizacion">Hospitalizacion:</label> {{form1.f_hospitalizacion}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_accidente_p">Accidentes:</label> {{form1.f_accidente_p}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_fracturas">Fracturas:</label> {{form1.f_fracturas}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_f_tabaquismo">Tabaquismo:</label> {{form1.f_tabaquismo}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_intoxicaciones">Intoxicaciones:</label> {{form1.f_intoxicaciones}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_alcoholismo">Alcoholismo:</label> {{form1.f_alcoholismo}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_mentales">Mentales:</label> {{form1.f_mentales}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_f_asma">Asma:</label> {{form1.f_asma}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_tbc">T.B.C:</label> {{form1.f_tbc}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_alergias">Alergias:</label> {{form1.f_alergias}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_gripas">Gripas Frecuentes:</label> {{form1.f_gripas}}</p></div>
+        </div> 
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_f_enf_piel">Enf de la piel:</label> {{form1.f_enf_piel}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_otologicos">Otologicos:</label> {{form1.f_otologicos}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_diabetes">Diabetes:</label> {{form1.f_diabetes}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_hematologicos">Hematologicos:</label> {{form1.f_hematologicos}}</p></div>
+        </div> 
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_f_epilepsia">Epilepsia:</label> {{form1.f_epilepsia}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_cancer">Cancer:</label> {{form1.f_cancer}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_hipertension">Hipertension:</label> {{form1.f_hipertension}}</p></div>
+            <div class="col-lg-3"><p><label for="id_f_otros">Otros:</label> {{form1.f_otros}}</p></div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-12"><p><label for="id_descripcion_antecedente">Descripcion de los Antecedentes Patologicos Familiares y Personales (Si aplica):</label> {{form1.descripcion_antecedente}}</p></div>
+        </div>
+        <h4 class="page-header">Hábitos</h4>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_alcohol">Alcohol:</label> {{form1.alcohol}}</p></div>
+            <div class="col-lg-3"><p><label for="id_deportes">Deportes:</label> {{form1.deportes}}</p></div>
+            <div class="col-lg-3"><p><label for="id_frecuencia">Frecuencia:</label> {{form1.frecuencia}}</p></div>
+        </div>
+        {% if getorden.paciente.genero == 'F' %}
+            <div>
+        {% else %}
+            <div style="display:none">
+        {% endif %}
+                <h4 class="page-header">Antecedentes Gineco-Obstetricos</h4>
+                <div class="row">
+                    <div class="col-lg-3"><p><label for="id_hijos_vivos">Hijos Vivos:</label> {{form1.hijos_vivos}}</p></div>
+                </div>                
+                <div class="row">
+                    <div class="col-lg-3"><p><label for="id_menarquia">Menarquia:</label> {{form1.menarquia}}</p></div>
+                    <div class="col-lg-3"><p><label for="id_ciclos">Ciclos:</label> {{form1.ciclos}}</p></div>
+                    <div class="col-lg-3"><p><label for="id_gravida">Gravida:</label> {{form1.gravida}}</p></div>
+                    <div class="col-lg-3"><p><label for="id_partos">Partos:</label> {{form1.partos}}</p></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3"><p><label for="id_abortos">Abortos:</label> {{form1.abortos}}</p></div>
+                    <div class="col-lg-3"><p><label for="id_cesareas">Cesareas:</label> {{form1.cesareas}}</p></div>
+                    <div class="col-lg-3"><p><label for="id_fum">F.U.M:</label> {{form1.fum}}</p></div>
+                    <div class="col-lg-3"><p><label for="id_fup">F.U.P:</label> {{form1.fup}}</p></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3"><p><label for="id_dismenorrea">Dismenorrea:</label> {{form1.dismenorrea}}</p></div>
+                    <div class="col-lg-3"><p><label for="id_metrorragias">Metrorragias:</label> {{form1.metrorragias}}</p></div>
+                    <div class="col-lg-3"><p><label for="id_trastorno_ciclo">Trastornos del ciclo:</label> {{form1.trastorno_ciclo}}</p></div>
+                    <div class="col-lg-3"><p><label for="id_citologias">Citologias:</label> {{form1.citologias}}</p></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6"><p><label for="id_transtorno_otros">Otros Transtornos:</label> {{form1.transtorno_otros}}</p></div>
+                    <div class="col-lg-6"><p><label for="id_planificacion">Metodo de Planificacion Familiar:</label> {{form1.planificacion}}</p></div>
+                </div>                 
+            </div>                     
+    </div>
+    <!-- EXAMEN FISICO-->
+    <div class="tab-pane fade" id="tabexamen">
+        <h4 class="page-header">Revision de Sintomas por Sistemas</h4>
+        <div class="row">
+            <div class="col-lg-12">{{ form1.sintomas.errors }}<p>{{form1.sintomas}}</p></div>
+        </div>
+        <h4 class="page-header">Signos Vitales</h4>
+        <div class="row">
+            <div class="col-lg-2">{{ form1.talla.errors }}<p><label for="id_talla">Talla (Cm):</label>{{form1.talla}}</p></div>
+            <div class="col-lg-2">{{ form1.peso.errors }}<p><label for="id_peso">Peso (Kg):</label>{{form1.peso}}</p></div>
+            <div class="col-lg-2">{{ form1.pulso.errors }}<p><label for="id_pulso">Pulso (min):</label>{{form1.pulso}}</p></div>
+            <div class="col-lg-2">{{ form1.temperatura.errors }}<p><label for="id_temperatura">Temperatura (ºC):</label>{{form1.temperatura}}</p></div>
+            <div class="col-lg-2">{{ form1.presion_arterial.errors }}<p><label for="id_presion_arterial">TA (mmHg):</label>{{form1.presion_arterial}}</p></div>
+            <div class="col-lg-2">{{ form1.masa_corporal.errors }}<p><label for="id_masa_corporal">IMC (Kg/mt2):</label>{{form1.masa_corporal}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12"><p><label id = "texto_imc"></label></p></div>
+        </div>
+        <h4 class="page-header">Estado General</h4>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_estado">Estado de la persona:</label>{{form1.estado}}</p></div>
+            <div class="col-lg-3"><p><label for="id_escribe">Escribe:</label>{{form1.escribe}}</p></div>
+        </div>
+        <h4 class="page-header">Exploracion Osteomuscular</h4>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_cabeza">Cabeza:</label>{{form1.cabeza}}</p></div>
+            <div class="col-lg-3"><p><label for="id_cuello">Cuello:</label>{{form1.cuello}}</p></div>
+            <div class="col-lg-3"><p><label for="id_torax">Torax:</label>{{form1.torax}}</p></div>
+            <div class="col-lg-3"><p><label for="id_abdomen">Abdomen:</label>{{form1.abdomen}}</p></div>
+        </div>       
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_columna_cervical">Columna Cervical:</label>{{form1.columna_cervical}}</p></div>
+            <div class="col-lg-3"><p><label for="id_columna_dorsal">Columna Dorsal:</label>{{form1.columna_dorsal}}</p></div>
+            <div class="col-lg-3"><p><label for="id_columna_lumbo">Columna Lumbo Sacra:</label>{{form1.columna_lumbo}}</p></div>
+        </div>        
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_m_superiores">Miembros Superiores:</label>{{form1.m_superiores}}</p></div>
+            <div class="col-lg-4"><p><label for="id_m_inferiores">Miembros Inferiores:</label>{{form1.m_inferiores}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12"><p><label for="id_descripcion_osteomuscular">Observaciones:</label> {{form1.descripcion_osteomuscular}}</p></div>
+        </div>        
+        <h4 class="page-header">Dinámica (Movimientos Articulares)</h4>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_d_cuello">Cuello:</label>{{form1.d_cuello}}</p></div>
+            <div class="col-lg-9"><p><label for="id_d_cuello_o">Observaciones:</label>{{form1.d_cuello_o}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_d_hombros">Hombros:</label>{{form1.d_hombros}}</p></div>
+            <div class="col-lg-9"><p><label for="id_d_hombros_o">Observaciones:</label>{{form1.d_hombros_o}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_d_codo">Codo:</label>{{form1.d_codo}}</p></div>
+            <div class="col-lg-9"><p><label for="id_d_codo_o">Observaciones:</label>{{form1.d_codo_o}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_d_muneca">Muñeca:</label>{{form1.d_muneca}}</p></div>
+            <div class="col-lg-9"><p><label for="id_d_muneca_o">Observaciones:</label>{{form1.d_muneca_o}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_d_cadera">Cadera:</label>{{form1.d_cadera}}</p></div>
+            <div class="col-lg-9"><p><label for="id_d_cadera_o">Observaciones:</label>{{form1.d_cadera_o}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_d_rodilla">Rodilla:</label>{{form1.d_rodilla}}</p></div>
+            <div class="col-lg-9"><p><label for="id_d_rodilla_o">Observaciones:</label>{{form1.d_rodilla_o}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_d_tobillo">Tobillo:</label>{{form1.d_tobillo}}</p></div>
+            <div class="col-lg-9"><p><label for="id_d_tobillo_o">Observaciones:</label>{{form1.d_tobillo_o}}</p></div>
+        </div> 
+        <h4 class="page-header">Organos o sistemas</h4>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_cicatrices">Cicatrices-Tatuajes:</label>{{form1.cicatrices}}</p></div>
+            <div class="col-lg-4"><p><label for="id_piel">Piel y Faneras:</label>{{form1.piel}}</p></div>
+            <div class="col-lg-4"><p><label for="id_craneo">Craneo:</label>{{form1.craneo}}</p></div>
+        </div>
+        <h4 class="page-header">Ojos</h4>
+        <div class="row">
+            <div class="col-lg-2"><p><label for="id_conjuntivas">Conjuntivas:</label>{{form1.conjuntivas}}</p></div>
+            <div class="col-lg-3"><p><label for="id_pupilas">Pupilas-Cornea:</label>{{form1.pupilas}}</p></div>
+            <div class="col-lg-2"><p><label for="id_anexos">Anexos:</label>{{form1.anexos}}</p></div>
+            <div class="col-lg-2"><p><label for="id_reflejos">Reflejos:</label>{{form1.reflejos}}</p></div>
+            <div class="col-lg-3"><p><label for="id_fondo">Fondo de Ojos:</label>{{form1.fondo}}</p></div>
+        </div>
+        <h4 class="page-header">Oidos, Nariz y Boca</h4>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_pabellones">Pabellones:</label>{{form1.pabellones}}</p></div>
+            <div class="col-lg-4"><p><label for="id_ostocopia">Ostocopia:</label>{{form1.ostocopia}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_tabique">Tabique:</label>{{form1.tabique}}</p></div>
+            <div class="col-lg-4"><p><label for="id_cornetes">Cornetes:</label>{{form1.cornetes}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_labios">Labios - Lengua:</label>{{form1.labios}}</p></div>
+            <div class="col-lg-4"><p><label for="id_faringe">Faringeamigdalas:</label>{{form1.faringe}}</p></div>
+        </div>
+        <h4 class="page-header">Torax</h4>
+        <div class="row">
+            <div class="col-lg-3"><p><label for="id_tiroides">Cuello-Tiroides:</label>{{form1.tiroides}}</p></div>
+            <div class="col-lg-3"><p><label for="id_o_torax">Torax:</label>{{form1.o_torax}}</p></div>
+            <div class="col-lg-3"><p><label for="id_pulmones">Pulmones:</label>{{form1.pulmones}}</p></div>
+            <div class="col-lg-3"><p><label for="id_corazon">Corazon:</label>{{form1.corazon}}</p></div>
+        </div>
+        <h4 class="page-header">Abdomen</h4>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_pared">Pared:</label>{{form1.pared}}</p></div>
+            <div class="col-lg-4"><p><label for="id_viseras">Viseras (Megalias):</label>{{form1.viseras}}</p></div>
+            <div class="col-lg-4"><p><label for="id_hernias">Hernias:</label>{{form1.hernias}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_genitales">Genitales Externos:</label>{{form1.genitales}}</p></div>
+        </div>
+        <h4 class="page-header">Sistema Nervioso</h4>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_o_reflejos">Reflejos:</label>{{form1.o_reflejos}}</p></div>
+            <div class="col-lg-4"><p><label for="id_marcha">Marcha:</label>{{form1.marcha}}</p></div>
+            <div class="col-lg-4"><p><label for="id_coordinacion">Coordinacion:</label>{{form1.coordinacion}}</p></div>
+        </div>
+        <h4 class="page-header">Sistema Circulatorio</h4>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_ruidos">Ruidos Cardiacos:</label>{{form1.ruidos}}</p></div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_extrasistoles">Extrasistoles:</label>{{form1.extrasistoles}}</p></div>
+            <div class="col-lg-4"><p><label for="id_fibrilacion">Fibrilacion:</label>{{form1.fibrilacion}}</p></div>
+            <div class="col-lg-4"><p><label for="id_soplos">Soplos:</label>{{form1.soplos}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4"><p><label for="id_sistolicos">Sistolicos:</label>{{form1.sistolicos}}</p></div>
+            <div class="col-lg-4"><p><label for="id_diastolicos">Diastolicos:</label>{{form1.diastolicos}}</p></div>
+            <div class="col-lg-4"><p><label for="id_presistolicos">Presistolicos:</label>{{form1.presistolicos}}</p></div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-5"><p><label for="id_vasos">Vasos Perifericos (Radial, Dorsal, Pie, Tibia, Posterior):</label>{{form1.vasos}}</p></div>
+            <div class="col-lg-4"><p><label for="id_varices">Varices (Grados):</label>{{form1.varices}}</p></div>
+            <div class="col-lg-3"><p><label for="id_vascular">Vascular Periferico:</label>{{form1.vascular}}</p></div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-12"><p><label for="id_observaciones">Observaciones:</label>{{form1.observaciones}}</p></div>
+        </div>
+        <h4 class="page-header">Signos Clinicos del Tunel Carpiano</h4>
+        <div class="row">
+            <div class="col-lg-12"><p>{{form1.tunel}}</p></div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-6"><p><label for="id_phannel">Phannel:</label>{{form1.phannel}}</p></div>
+            <div class="col-lg-6"><p><label for="id_tinnel">Tinnel:</label>{{form1.tinnel}}</p></div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-6"><p><label for="id_pre_concepto">Pre-Concepto:</label>{{form1.pre_concepto}}</p></div>
+        </div>                          
+    </div>
+    <div class="tab-pane fade" id="tabdiagnosticos">
+        <br>
+        <div class="row">
+            <div class="col-lg-2"><p><label for="id_f_imagen">Imagenologia (Rx):</label>{{form1.f_imagen}}</p></div>
+            <div class="col-lg-10"><p><label for="id_r_imagen">Resultados:</label>{{form1.r_imagen}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2"><p><label for="id_f_audiometria">Audiometria:</label>{{form1.f_audiometria}}</p></div>
+            <div class="col-lg-10"><p><label for="id_r_audiometria">Resultados:</label>{{form1.r_audiometria}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2"><p><label for="id_f_visiometria">Visiometria:</label>{{form1.f_visiometria}}</p></div>
+            <div class="col-lg-10"><p><label for="id_r_visiometria">Resultados:</label>{{form1.r_visiometria}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2"><p><label for="id_f_espirometria">Espirometria:</label>{{form1.f_espirometria}}</p></div>
+            <div class="col-lg-10"><p><label for="id_r_espirometria">Resultados:</label>{{form1.r_espirometria}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-2"><p><label for="id_f_laboratorio">Laboratorio:</label>{{form1.f_laboratorio}}</p></div>
+            <div class="col-lg-10"><p><label for="id_r_laboratorio">Resultados:</label>{{form1.r_laboratorio}}</p></div>
+        </div>
+    </div>
+    {% if altura == True %}
+        <div class="tab-pane fade" id="tabaltura">
+            <br>
+            <div class="row">
+                <div class="col-lg-6"><h4>¿Ha tenido alguna de las siguientes condiciones medicas?</h4></div>
+                <div class="col-lg-6"><h4>¿Ha tenido alguno de los siguientes problemas con el corazón?</h4></div>                
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_convulsiones_p">Convulsiones:</label>{{form3.convulsiones_p}}</p></div>
+                <div class="col-lg-6"><p><label for="id_a_cardiaco">Ataque Cardiaco:</label>{{form3.a_cardiaco}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_diabetes">Diabetes:</label>{{form3.diabetes}}</p></div>
+                <div class="col-lg-6"><p><label for="id_a_cerebro_v">Accidente Cerebro Vascular:</label>{{form3.a_cerebro_v}}</p></div>           
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_reacciones">Reacciones alérgicas que no lo dejan respirar:</label>{{form3.reacciones}}</p></div>
+                <div class="col-lg-6"><p><label for="id_angina_pecho">Angina de Pecho:</label>{{form3.angina_pecho}}</p></div>            
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_claustrofobia">Claustrofobia:</label>{{form3.claustrofobia}}</p></div>
+                <div class="col-lg-6"><p><label for="id_insuficiencia_cardiaca">Insuficiencia Cardiaca:</label>{{form3.insuficiencia_cardiaca}}</p></div>            
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_acrofobia">Acrofobia:</label>{{form3.acrofobia}}</p></div>
+                <div class="col-lg-6"><p><label for="id_hinchazon_pies">Hinchazon en las piernas o pies (No por caminar):</label>{{form3.hinchazon_pies}}</p></div>            
+            </div> 
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_vertigos">Vertigos o Mareos:</label>{{form3.vertigos}}</p></div>
+                <div class="col-lg-6"><p><label for="id_latidos">Latidos Irregulares del Corazón:</label>{{form3.latidos}}</p></div>            
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_epilepsia">Epilepsia:</label>{{form3.epilepsia}}</p></div>
+                <div class="col-lg-6"><p><label for="id_presion">Presion Alta:</label>{{form3.presion}}</p></div>            
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_enfermedad_mental">Algún tipo de Enfermedad Mental:</label>{{form3.enfermedad_mental}}</p></div>
+                <div class="col-lg-6"><p><label for="id_otro">Algún otro problema con el corazón:</label>{{form3.otro}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><h4>¿Ha tenido algunos de los siguientes síntomas cardíacos?</h4></div>
+                <div class="col-lg-6"><h4>¿Actualmente tiene alguno de los siguientes problemas con su vista?</h4></div>                
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_dolor_pecho1">Dolor de pecho frecuente o pecho apretado:</label>{{form3.dolor_pecho1}}</p></div>
+                <div class="col-lg-6"><p><label for="id_lentes_contacto">Usa lentes contacto:</label>{{form3.lentes_contacto}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_dolor_pecho2">Dolor o pecho apretado durante actividad física:</label>{{form3.dolor_pecho2}}</p></div>
+                <div class="col-lg-6"><p><label for="id_lentes">Usa lentes:</label>{{form3.lentes}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_dolor_pecho3">Dolor o pecho apretado que no lo deja levantar normalmente:</label>{{form3.dolor_pecho3}}</p></div>
+                <div class="col-lg-6"><p><label for="id_daltonismo">Daltonismo (Dificultad para distinguir colores):</label>{{form3.daltonismo}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_late_irregularmente">¿Late irregularmente su corazón en los últimos 2 años?:</label>{{form3.late_irregularmente}}</p></div>
+                <div class="col-lg-6"><p><label for="id_problema_ojos">Algún problema con los ojos o la vista:</label>{{form3.problema_ojos}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_dolor_pecho_indigestion">Dolor en el pecho o indigestión que no es relacionado con comida:</label>{{form3.dolor_pecho_indigestion}}</p></div>
+                <div class="col-lg-6"><p><label for="id_ob_problema">¿Cual?:</label>{{form3.ob_problema}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_otros_sintomas">Algunos otros síntomas que cree que son causados por problemas de corazon o circulación:</label>{{form3.otros_sintomas}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><h4>¿Está tomando medicinas por alguno de los siguientes problemas?</h4></div>
+                <div class="col-lg-6"><h4>¿Tiene alguno de los siguientes problemas óseos o musculares?</h4></div>                
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_prob_pulmonares">Problemas Pulmonares:</label>{{form3.prob_pulmonares}}</p></div>
+                <div class="col-lg-6"><p><label for="id_debilidad_brazos">Debilidad en los brazos, manos, piernas o pie:</label>{{form3.debilidad_brazos}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_prob_circulacion">Problemas de circulacion:</label>{{form3.prob_circulacion}}</p></div>
+                <div class="col-lg-6"><p><label for="id_dolor_espalda">Dolor de espalda:</label>{{form3.dolor_espalda}}</p></div>
+            </div>   
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_presion_alta">Presion Alta:</label>{{form3.presion_alta}}</p></div>
+                <div class="col-lg-6"><p><label for="id_dificultad_extremidades">Dificultad para mover brazos y piernas completamente:</label>{{form3.dificultad_extremidades}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_convulsiones">Convulsiones:</label>{{form3.convulsiones}}</p></div>
+                <div class="col-lg-6"><p><label for="id_dolor_rigidez">Dolor o rigidez cuando se inclina para adelante o atrás:</label>{{form3.dolor_rigidez}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_enf_mental">Enfermedad mental:</label>{{form3.enf_mental}}</p></div>
+                <div class="col-lg-6"><p><label for="id_dif_cabeza_arriba">Dificultad para mover la cabeza para arriba/abajo completamente:</label>{{form3.dif_cabeza_arriba}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_perdida_vista">¿Ha perdido la vista en cualquiera de sus ojos? (temporal o permanentemente):</label>{{form3.perdida_vista}}</p></div>
+                <div class="col-lg-6"><p><label for="id_dif_cabeza_lado">Dificultad para mover la cabeza de lado a lado:</label>{{form3.dif_cabeza_lado}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_dano_oidos">¿Se ha hecho alguna vez daño en los oídos, como romperse el tímpano?:</label>{{form3.dano_oidos}}</p></div>
+                <div class="col-lg-6"><p><label for="id_dif_agacharse">Dificultad para agacharse doblando las rodillas:</label>{{form3.dif_agacharse}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><h4>¿Tiene actualmente alguno de los siguientes problemas para oír?</h4></div>
+                <div class="col-lg-6"><p><label for="id_dif_agacharse_piso">Dificultad para agacharse hasta tocar el piso:</label>{{form3.dif_agacharse_piso}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_dificultad_oir">Dificultad para oir:</label>{{form3.dificultad_oir}}</p></div>
+                <div class="col-lg-6"><p><label for="id_dif_escalera">Dificultad para subir escaleras cargando más de 25 libras:</label>{{form3.dif_escalera}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_aparato_oir">Usa aparato par oir:</label>{{form3.aparato_oir}}</p></div>
+                <div class="col-lg-6"><p><label for="id_lesion_espalda">¿Se ha lesionado alguna vez la espalda?:</label>{{form3.lesion_espalda}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_prob_audicion">¿Tiene algún otro problema con los oidos o de audición?:</label>{{form3.prob_audicion}}</p></div>
+                <div class="col-lg-6"><p><label for="id_d_lesion">Describa la lesión:</label>{{form3.d_lesion}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6"><p><label for="id_d_prob_audicion">¿Cual?:</label>{{form3.d_prob_audicion}}</p></div>
+            </div>
+            <div class="row">
+                <h4 class="page-header">Pruebas de Equilibrio Estático</h4>            
+            </div>
+            <div class="row">
+                <div class="col-lg-3"><p><label for="id_romberg">Romberg:</label>{{form3.romberg}}</p></div>
+                <div class="col-lg-9"><p><label for="id_ob_romberg">Observaciones:</label>{{form3.ob_romberg}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3"><p><label for="id_baranay">Baranay:</label>{{form3.baranay}}</p></div>
+                <div class="col-lg-9"><p><label for="id_ob_baranay">Observaciones:</label>{{form3.ob_baranay}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3"><p><label for="id_hallpike">M. Dix-Hallpike:</label>{{form3.hallpike}}</p></div>
+                <div class="col-lg-9"><p><label for="id_ob_hallpike">Observaciones:</label>{{form3.ob_hallpike}}</p></div>
+            </div>
+            <div class="row">
+                <h4 class="page-header">Pruebas de Equilibrio Dinámico</h4>             
+            </div>
+            <div class="row">
+                <h5>Babinsky-Weil o Marcha a Ciegas</h5>
+                <div class="col-lg-3"><p><label for="id_babinski_m_d">Marcha Derecha:</label>{{form3.babinski_m_d}}</p></div>
+                <div class="col-lg-6"><p><label for="id_ob_babinski_m_d">Observaciones:</label>{{form3.ob_babinski_m_d}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3"><p><label for="id_babinski_m_i">Marcha Izquierda:</label>{{form3.babinski_m_i}}</p></div>
+                <div class="col-lg-6"><p><label for="id_ob_babinski_m_i">Observaciones:</label>{{form3.ob_babinski_m_i}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3"><p><label for="id_babinski_m_n">Marcha Normal:</label>{{form3.babinski_m_n}}</p></div>
+                <div class="col-lg-6"><p><label for="id_ob_babinski_m_n">Observaciones:</label>{{form3.ob_babinski_m_n}}</p></div>
+            </div>
+            <div class="row">
+                <h5>Unterberger o Pisoteo a Ciegas</h5>
+                <div class="col-lg-3"><p><label for="id_unterberger_m_d">Derecha:</label>{{form3.unterberger_m_d}}</p></div>
+                <div class="col-lg-6"><p><label for="id_ob_unterberger_m_d">Observaciones:</label>{{form3.ob_unterberger_m_d}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3"><p><label for="id_unterberger_m_c">Centrado:</label>{{form3.unterberger_m_c}}</p></div>
+                <div class="col-lg-6"><p><label for="id_ob_unterberger_m_c">Observaciones:</label>{{form3.ob_unterberger_m_c}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3"><p><label for="id_unterberger_m_i">Izquierda:</label>{{form3.unterberger_m_i}}</p></div>
+                <div class="col-lg-6"><p><label for="id_ob_unterberger_m_i">Observaciones:</label>{{form3.ob_unterberger_m_i}}</p></div>
+            </div>
+            <div class="row">
+                <h5>Impresión Diagnóstica</h5>
+                <div class="col-lg-3"><p><label for="id_neg_vert_per">Negativo Vertico Perisferico:</label>{{form3.neg_vert_per}}</p></div>
+                <div class="col-lg-6"><p><label for="id_ob_neg_vert_per">Observaciones:</label>{{form3.ob_neg_vert_per}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3"><p><label for="id_pos_vert_per">Positivo Vertigo Perisferico:</label>{{form3.pos_vert_per}}</p></div>
+                <div class="col-lg-6"><p><label for="id_ob_pos_vert_per">Observaciones:</label>{{form3.ob_pos_vert_per}}</p></div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3"><p><label for="id_post_vert_cent">Positivo Vertigo Central:</label>{{form3.post_vert_cent}}</p></div>
+                <div class="col-lg-6"><p><label for="id_ob_post_vert_cent">Observaciones:</label>{{form3.ob_post_vert_cent}}</p></div>
+            </div>                                   
+        </div>  
+    {% endif %}     
+    <div class="tab-pane fade" id="tabconcepto">
+        <br>
+        <div class="row">
+            <div class="col-lg-6">{{ form1.concepto.errors }}<p><label for="id_concepto">Concepto Médico:</label>{{form1.concepto}}</p></div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-6"><p><label for="id_valoracion">Recomendaciones:</label>{{form1.recomendacion}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6"><p><label for="id_remitir">Remitir A:</label>{{form1.remitir}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6"><p><label for="id_valoracion">Valoración por:</label>{{form1.valoracion}}</p></div>
+        </div>
+        {% if user.is_staff or perms.home.es_doctor or perms.home.es_administrador %}
+        <br><br>
+        <button type="submit" name="btntabhistoria" class="btn btn-primary btn-sm"> Guardar Historia</button>
+        <button type="submit" name="btntabhistoria_cerrar" class="btn btn-primary btn-sm"> Cerrar Historia</button>
+        {% endif %}
+        {% if exito %}
+            <a class="btn btn-primary btn-sm" href="/imprimir/historia/{{ getorden.id }}"><i class="glyphicon glyphicon-print"></i> HC</a>
+            <a class="btn btn-primary btn-sm" href="/imprimir/concepto/{{ getorden.id }}"><i class="glyphicon glyphicon-print"></i> CM</a>
+        <!--    
+            <a class="btn btn-primary btn-sm" href="/imprimir/laboratorios/{{ getorden.id }}"><i class="glyphicon glyphicon-print"></i> LABS</a>
+            <a class="btn btn-primary btn-sm" href="/imprimir/remision/{{ getorden.id }}"><i class="glyphicon glyphicon-print"></i> REMS</a>
+        -->
+        {% endif %}          
+    </div>               
+    <div class="tab-pane fade" id="tabhistorial">
+        <br>
+        <h4>Historial de Consultas</h4>
+        {% if historial %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Evento</th>
+                      <th>Medico</th>
+                      <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in historial %}
+                    <tr>  
+                      <td>{{p.orden.fecha|date:"d/m/y"}} {{p.orden.fecha|time:"H:i"}}</td>
+                      <td>Historia</td>
+                      <td>{{p.orden.medico}}</td>
+                      <td><a name={{p.id}} class="btn btn-primary btn-xs muestra_historia" data-toggle="modal" data-target="#preliminar"><i class="glyphicon glyphicon-eye-open"></i></a></td>     
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <h5>El paciente no tiene registros de historia y evoluciones</h5>
+        {% endif %}
+
+        <br>
+        <h4>Historial de Procedimientos</h4>
+        {% if lista_proc %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Evento</th>
+                      <th>Medico</th>
+                      <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for p in lista_proc %}
+                    <tr>  
+                      <td>{{p.orden.fecha|date:"d/m/y"}} {{p.orden.fecha|time:"H:i"}}</td>
+                      {% if p.orden.consulta == None %}
+                        <td>{{p.orden.procedimiento}}</td>
+                      {% else %}
+                        <td>{{p.orden.consulta}}</td>
+                      {% endif %}
+                      <td>{{p.orden.medico}}</td>
+                      <td><a name={{p.id}} class="btn btn-primary btn-xs muestra_procedimiento" data-toggle="modal" data-target="#preliminar"><i class="glyphicon glyphicon-eye-open"></i></a></td>     
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <h5>El paciente no tiene registros de procedimientos</h5>
+        {% endif %}
+    </div>      
+</div> 
+</form>
+<br>                    
+<a href="/agenda/"> << Regresar a la Agenda </a>
+<br>
+<br>
+
+
+<div id="preliminar" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Historial</h4>
+      </div>
+      <div class="modal-body">
+        <div id="vista_historia">
+            <div class="row">
+                <div class="col-lg-6">
+                    <label>Motivo</label>
+                    <input id="c_concepto" class="form-control">
+                </div>
+            </div>
+            <h4 class="page-header">Examen Fisico: Signos Vitales</h4>
+            <div class="row">
+                <div class="col-lg-4">
+                    <label>TA (mmHg):</label>
+                    <input id="c_presion_arterial" class="form-control">
+                    <br>
+                    <label>Temperatura(ºC):</label>
+                    <input id="c_temperatura" class="form-control">
+                </div>
+                <div class="col-lg-4">
+                    <label>Pulso:</label>
+                    <input id="c_pulso" class="form-control">
+                    <br>
+                    <label>Talla (Cm):</label>
+                    <input id="c_talla" class="form-control">
+                </div>
+                <div class="col-lg-4">
+                    <label>IMC (Kg/mt2):</label>
+                    <input id="c_masa_corporal" class="form-control">
+                    <br>
+                    <label>Peso(Kg):</label>
+                    <input id="c_peso" class="form-control">
+                </div>
+            </div>      
+        </div>
+        <div id="vista_procedimiento">
+            <div class="row">
+                <div class="col-lg-12">
+                    <label>Hallazgos</label>
+                    <textarea id="c_hallazgos" class="form-control" rows="3"></textarea>
+                    <br>
+                    <label>Impresion</label>
+                    <textarea id="c_impresion" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+        </div>    
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $("#id_f_imagen, #id_f_audiometria, #id_f_visiometria, #id_f_espirometria, #id_f_laboratorio, #id_fum, #id_fup").datepicker({
+        dateFormat: 'dd/mm/yy', 
+        changeYear: true,
+        changeMonth: true,
+        yearRange: 'c-50:c'
+    });
+
+    $(document).ready(function(){
+        $("#id_diagnostico,#id_diagnostico1,#id_diagnostico2,#id_diagnostico3").select2({
+        ajax: {
+          url: "/consulta_cie/",
+          dataType: 'json',
+          quietMillis: 250,
+          data: function (term) {
+            return {
+              term: term, // search term
+            };
+          },
+          results: function (data, page) { 
+            return { results: data };
+          }
+        },
+        minimumInputLength: 1
+        });
+
+        $('.presion').keypress(function(tecla) {
+            if(tecla.charCode == 0){
+                return true;
+            }else if(tecla.charCode == 47){
+              return true;      
+            }else if(tecla.charCode < 48 || tecla.charCode > 57){
+              return false;  
+            }
+        });
+
+        $("#id_masa_corporal").prop('readonly', true); //Inactiva el campo valor
+        $('#id_masa_corporal').on('change keyup paste',calcula_imc);
+        $('#id_peso').on('change keyup paste',calcula_imc);
+        $('#id_descripcion').on('change keyup paste',calcula_imc);
+        //$('.eliminar').on('click',rutina_eliminar);
+        function calcula_imc(){
+            var temp_peso = parseFloat($("#id_peso").val());
+            var temp_talla = parseFloat($("#id_talla").val());
+            temp_talla = temp_talla/100;
+            var temp = temp_talla*temp_talla;
+            var temp_imc = temp_peso / temp;
+            temp_imc= parseFloat(temp_imc).toFixed(1);
+            $('#id_masa_corporal').val(temp_imc);
+            var valor = $("#id_masa_corporal").val();
+            if (valor < 16){
+                $('#texto_imc').text("El paciente presenta: Deficiencia Nutricional en 3er Grado");
+            }else if(valor >= 16 && valor < 17){
+                $('#texto_imc').text("El paciente presenta: Deficiencia Nutricional en 2do Grado");
+            }else if(valor >= 17 && valor < 18.5){
+                $('#texto_imc').text("El paciente presenta: Deficiencia Nutricional en 1er Grado"); 
+            }else if(valor >= 18.5 && valor < 20){
+                $('#texto_imc').text("El paciente presenta: Bajo Peso");
+            }else if(valor >= 20 && valor < 25){
+                $('#texto_imc').text("El paciente presenta: Peso Normal");
+            }else if(valor >= 25 && valor < 30){
+                $('#texto_imc').text("El paciente presenta: Sobrepeso");
+            }else if(valor >= 30 && valor < 35){
+                $('#texto_imc').text("El paciente presenta: Obesidad en 1er Grado");
+            }else if(valor >= 35 && valor < 40){
+                $('#texto_imc').text("El paciente presenta: Obesidad en 2do Grado");
+            }else if(valor > 40){
+                $('#texto_imc').text("El paciente presenta: Obesidad en 3er Grado");                                     
+            }else{
+                $('#texto_imc').text("");
+            } 
+        }
+    });
+</script>
+{% endblock %}    

@@ -1,0 +1,113 @@
+{% extends 'home/base.html' %}
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+      $("#id_fechai").datepicker({	
+                  dateFormat: 'yy-mm-dd', 
+                  changeYear: true,
+                  changeMonth: true,
+                  yearRange: 'c-50:c'
+                });
+      //$("#id_fechai").datepicker("setDate", new Date()); //Con esto se colocaba una fecha inicial
+  });
+</script>
+{% endblock %}
+
+{% block title %} Agenda{% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h4 class="page-header">Agenda por Doctor</h4>
+	</div>
+</div>
+
+{% if error %}
+<div class="alert alert-danger alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    Debe digitar una fecha y seleccionar un doctor.
+</div>
+{% endif %}
+
+<div class="row">
+	<div class="col-lg-12">
+    	<div class="row">
+    		<form action="." method="POST">
+			{% csrf_token %}
+	            <div class="col-lg-3">
+            		<p><label for="id_fechai">Fecha:</label> {{form.fechai}}</p>
+	            </div>
+				<div class="col-lg-4">
+				    <label for="idMedico">Doctor:</label>
+				    <select class="form-control" id="idMedico" name="medico">
+				        <option value="-1" {% if not lista_medicos %} selected="selected" {% endif %}>Selecciona un Doctor</option>
+				        {% for p in lista_medicos %}
+				            <option value="{{ p.id }}" {% if p.nombre == 'Fabian' %} selected="selected" {% endif %}>{{ p.nombre|capfirst}} {{p.papellido|capfirst }}</option>
+				        {% endfor %}
+				    </select>
+				</div>    
+	            <div class="col-lg-3">
+	            	<label>Realizar consulta</label>
+            		<button type="submit" class="btn btn-primary btn-block">Buscar</button>
+	            </div>
+            </form>
+        </div>        
+        <br>
+        <br>
+        {% if lista %}
+	        <div class="table-responsive">
+	            <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+		    	<thead>
+			        <tr>
+			          <th>Id</th>
+			          <th>Cedula</th>
+			          <th>Nombre</th>
+			          <th>Realizar</th>
+			          <th>Hora</th>
+			          <th></th>
+			          <th></th>
+			        </tr>
+		        </thead>
+		        <tbody>
+		    	{% for p in lista %}
+			    	{% if p.orden.status == 'P' %}
+			     		<tr id="tr{{p.orden.id}}" class="danger">
+							<td><a class="btn btn-xs" href="/redirecciona/{{p.orden.id}}/">{{ p.orden.id }}</td>
+			     			<td><a class="btn btn-xs" href="/redirecciona/{{p.orden.id}}/">{{ p.orden.paciente.cedula }}</td>
+							<td><a class="btn btn-xs" href="/redirecciona/{{p.orden.id}}/">{{ p.orden.paciente.papellido }} {{ p.orden.paciente.sapellido }} {{ p.orden.paciente.pnombre  }} {{ p.orden.paciente.snombre  }}</td>
+							<td>{{ p.servicios }}</td>
+							<td><a class="btn btn-xs" href="/redirecciona/{{p.orden.id}}/">{{ p.orden.fecha|time:"H:i" }}</td>
+							<td></td>
+							{% if perms.home.es_administrador or perms.home.es_doctor or user.is_staff %}
+								<td><a class="btn btn-primary btn-xs" href="/redirecciona/{{p.orden.id}}/"><i class="glyphicon glyphicon-pencil"></i></a></td>
+							{% else %}
+								<td></td>
+							{% endif %}			
+						</tr>    	
+			    	{% else %}
+			     		<tr id="tr{{p.orden.id}}" class="success">
+							<td><a class="btn btn-xs" href="/show/historias/{{p.orden.id}}/">{{ p.orden.id }}</td>
+							<td><a class="btn btn-xs" href="/show/historias/{{p.orden.id}}/">{{ p.orden.paciente.cedula }}</td>
+							<td><a class="btn btn-xs" href="/show/historias/{{p.orden.id}}/">{{ p.orden.paciente.papellido }} {{ p.orden.paciente.sapellido }} {{ p.orden.paciente.pnombre  }} {{ p.orden.paciente.snombre  }}</td>
+							<td>{{ p.servicios }}</td>
+							<td><a class="btn btn-xs" href="/show/historias/{{p.orden.id}}/">{{ p.orden.fecha|time:"H:i" }}</td>
+							<td><a class="btn btn-primary btn-xs" href="/show/historias/{{p.orden.id}}/"><i class="glyphicon glyphicon-eye-open"></i></a></td>
+							<td>
+								 {% if user.is_staff or perms.home.es_administrador %}
+								 	<a class="btn btn-primary btn-xs" href="/edit/historias/{{p.orden.id}}/"><i class="glyphicon glyphicon-pencil"></i></a>
+								 {% endif %}
+							</td>	
+						</tr>    	
+			    	{% endif %}	
+				{% endfor %}
+				</tbody>
+	    		</table>
+	    	</div>
+	    {% else %}
+			<h2>No existen Ordenes de Servicio Activas para la fecha seleccionada</h2>
+		{% endif %}	  		
+	</div>
+</div>	
+
+{% endblock %}

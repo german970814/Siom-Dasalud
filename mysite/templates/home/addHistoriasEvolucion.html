@@ -1,0 +1,604 @@
+{% extends 'home/base.html' %}
+
+{% block title %} Historia Clinica{% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h3 class="page-header">Paciente: {{getorden.paciente}}</h3>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-primary">
+            <div class="panel-heading">
+                Historia Clinica de Evolución, {{getorden.consulta}}
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">               
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% if form1.errors %}
+                        <div class="alert alert-danger">
+                            <a href="#" class="close" data-dismiss="alert">&times;</a>
+                            <strong>Corregir los siguientes errores!</strong> {{ form1.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                 
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tabhistoria" data-toggle="tab">Historia</a>
+                    </li>
+                    <li><a href="#tabhistorial" data-toggle="tab">Historial del Paciente</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <form action="." method="POST">
+                {% csrf_token %}
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="tabhistoria">
+                        <br>
+                        <div class="row">
+                            <div class="panel-group" id="accordion">
+                                <div class="col-lg-6">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Motivo Consulta</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse1" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                {{ form1.motivo.errors }}
+                                                <p><label for="id_motivo"></label> {{form1.motivo}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Enfermedad Actual</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse2" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                {{ form1.enfermedad_actual.errors }}
+                                                <p><label for="id_enfermedad_actual"></label> {{form1.enfermedad_actual}}</p> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Revisión por Sistemas</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse3" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <p><label for="id_sentidos">Organos de los Sentidos:</label> {{form1.sentidos}}</p>
+                                                        <p><label for="id_piel">Piel y Faneras:</label> {{form1.piel}}</p>
+                                                        <p><label for="id_respiratorio">Sistema Respiratorio:</label> {{form1.respiratorio}}</p>
+                                                        <p><label for="id_cardio">Sistema Cardio Vascular:</label> {{form1.cardio}}</p>
+                                                        <p><label for="id_digestivo">Sistema Digestivo:</label> {{form1.digestivo}}</p>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <p><label for="id_genitourinario">Sistema Genitourinario:</label> {{form1.genitourinario}}</p>
+                                                        <p><label for="id_nervioso">Sistema Nervioso Central:</label> {{form1.nervioso}}</p>
+                                                        <p><label for="id_locomotor">Sist. Locomotor y Muscular:</label> {{form1.locomotor}}</p>
+                                                        <p><label for="id_reproductivo">Sistema Reproductivo:</label> {{form1.reproductivo}}</p>
+                                                        <p><label for="id_otros">Otros:</label> {{form1.otros}}</p>
+                                                    </div>
+                                                </div>          
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">Antecedentes</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse4" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <p><label for="id_medicos">Medicos:</label> {{form1.medicos}}</p>
+                                                        <p><label for="id_transfusiones">Transfusiones:</label> {{form1.transfusiones}}</p>
+                                                        <p><label for="id_alergicos">Alérgicos:</label> {{form1.alergicos}}</p>
+                                                        <p><label for="id_gineco">Gineco-Obstetras:</label> {{form1.gineco}}</p>
+                                                        <p><label for="id_familiares">Familiares:</label> {{form1.familiares}}</p>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <p><label for="id_quirurgicos">Quirúrgicos:</label> {{form1.quirurgicos}}</p>
+                                                        <p><label for="id_traumaticos">Traumáticos:</label> {{form1.traumaticos}}</p>
+                                                        <p><label for="id_toxicos">Tóxicos:</label> {{form1.toxicos}}</p>
+                                                        <p><label for="id_ets">Ets:</label> {{form1.ets}}</p>
+                                                        <p><label for="id_famacologicos">Famacologicos:</label> {{form1.famacologicos}}</p>
+                                                    </div>
+                                                </div>  
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">Examen Fisico</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse5" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <h4 class="page-header">Signos Vitales</h4>
+                                                <div class="row">
+                                                    <div class="col-lg-4">
+                                                        {{ form1.presion_arterial.errors }}
+                                                        <p><label for="id_presion_arterial">P. Arterial (mmHg):</label> {{form1.presion_arterial}}</p>
+                                                        {{ form1.temperatura.errors }}
+                                                        <p><label for="id_temperatura">Temperatura(ºC):</label> {{form1.temperatura}}</p>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        {{ form1.frecuencia_cardiaca.errors }}
+                                                        <p><label for="id_frecuencia_cardiacal">Frec Card (min):</label> {{form1.frecuencia_cardiaca}}</p>
+                                                        {{ form1.talla.errors }}
+                                                        <p><label for="id_talla">Talla (Cm):</label> {{form1.talla}}</p>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        {{ form1.frecuencia_respiratoria.errors }}
+                                                        <p><label for="id_frecuencia_respiratoria">Frec Resp (min):</label> {{form1.frecuencia_respiratoria}}</p>
+                                                        {{ form1.peso.errors }}
+                                                        <p><label for="id_peso">Peso(Kg):</label> {{form1.peso}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-8">
+                                                        <p><label for="id_descripcion">Descripcion:</label> {{form1.descripcion}}</p>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        {{ form1.masa_corporal.errors }}
+                                                        <p><label for="id_masa_corporal">Indice Masa Corp(Kg/mt2):</label> {{form1.masa_corporal}}</p>
+                                                        <p><label id = "texto_imc"></label></p>
+                                                    </div>
+                                                </div>        
+                                                <h4 class="page-header">Examen Detallado</h4>
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <ul class="nav nav-pills">
+                                                            <li><a href="#cabeza-pills" data-toggle="tab">Cabeza</a>
+                                                            </li>
+                                                            <li><a href="#orl-pills" data-toggle="tab">ORL</a>
+                                                            </li>
+                                                            <li><a href="#respira-pills" data-toggle="tab">SR</a>
+                                                            </li>
+                                                            <li><a href="#cardio-pills" data-toggle="tab">SC</a>
+                                                            </li>
+                                                            <li class="active"><a href="#digestivo-pills" data-toggle="tab">SD</a>
+                                                            </li>
+                                                            <li><a href="#genito-pills" data-toggle="tab">SG</a>
+                                                            </li>
+                                                        </ul>
+                                                        <!-- Tab panes -->
+                                                        <div class="tab-content">
+                                                            <div class="tab-pane fade" id="cabeza-pills">
+                                                                <h4>Cabeza, Cara y Cuello</h4>
+                                                                <p>{{form1.cabeza}}</p>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="orl-pills">
+                                                                <h4>ORL</h4>
+                                                                <p>{{form1.orl}}</p>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="respira-pills">
+                                                                <h4>Sistema Respiratorio</h4>
+                                                                <p>{{form1.sist_respiratorio}}</p>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="cardio-pills">
+                                                                <h4>Sistema Cardiovascular</h4>
+                                                                <p>{{form1.sist_cardiovascular}}</p>
+                                                            </div>
+                                                            <div class="tab-pane fade in active" id="digestivo-pills">
+                                                                <h4>Sistema Digestivo</h4>
+                                                                <p>{{form1.sist_digestivo}}</p>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="genito-pills">
+                                                                <h4>Sistema Genitourinario</h4>
+                                                                <p>{{form1.sist_genitourinario}}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse6">Impresión Diagnóstica</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse6" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="panel-body">
+                                                    {{ form1.impresion.errors }}
+                                                    <p><label for="id_impresion"></label> {{form1.impresion}}</p> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse7">Análisis</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse7" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="panel-body">
+                                                    {{ form1.analisis.errors }}
+                                                    <p><label for="id_analisis"></label>{{form1.analisis}}</p> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                    <br>
+                                    <button type="submit" name="btntabhistoria" class="btn btn-primary btn-lg">Guardar</button>
+                                    <button type="submit" name="btnImprimir" class="btn btn-primary btn-lg">Imprimir</button>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse8">Plan Diagnóstico</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse8" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="panel-body">
+                                                    {{ form1.plan.errors }}
+                                                    <p><label for="id_plan"></label>{{form1.plan}}</p> 
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse9">Plan Terapeutico</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse9" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="panel-body">
+                                                    <p><label for="id_plan_terapeutico"></label>{{form1.plan_terapeutico}}</p> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse10">Conducta</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse10" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <ul class="nav nav-pills">
+                                                            <li class="active"><a href="#formulacion-pills" data-toggle="tab">Formulación</a>
+                                                            </li>
+                                                            <li><a href="#remision-pills" data-toggle="tab">Procedimientos</a>
+                                                            </li>
+                                                            <li><a href="#remisionlab-pills" data-toggle="tab">Laboratorio</a>
+                                                            </li>
+                                                        </ul>
+                                                        <!-- Tab panes -->
+                                                        <div class="tab-content">
+                                                            <div class="tab-pane fade in active" id="formulacion-pills">
+                                                                <div class="row">
+                                                                    <div class="col-lg-12">
+                                                                        <br>
+                                                                        {{form2.as_p}}
+                                                                        <!-- <a href="/edit/producto/{{p.id}}/"" class="btn btn-primary">Agregar Posologia</a><br>
+                                                                        <br> -->
+                                                                        <button type="submit" name="btnposologia" class="btn btn-primary">Agregar Posologia</button>
+                                                                        <br><br>
+                                                                        {% if posologia %}
+                                                                        <div class="table-responsive">
+                                                                            <table class="table table-striped table-bordered table-hover" id="tabla_productos">
+                                                                                <thead>
+                                                                                        <tr>
+                                                                                          <th>Medicamento</th>
+                                                                                          <th>Uso</th>
+                                                                                          <th>Acciones</th>
+                                                                                        </tr>
+                                                                                </thead>
+                                                                            {% for p in posologia %}
+                                                                                <tbody>
+                                                                                    <tr id="tr{{p.id}}">
+                                                                                        <td>{{ p.medicamento }}</td>
+                                                                                        <td>{{ p.uso }}</td>
+                                                                                        {% if user.is_staff %}
+                                                                                            <td><a href="#" class="btn btn-danger btn-sm">Eliminar</a></td>
+                                                                                        {% endif %}             
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            {% endfor %}
+                                                                            </table>
+                                                                        </div> <!--Posologias -->    
+                                                                        {% else %}
+                                                                            <h4>No existen Posologias recetadas para esta historia</h4>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>                
+                                                            </div>
+                                                            <div class="tab-pane fade" id="remision-pills">
+                                                                <h4>Ingrese aqui: Consultas, Procedimientos, RX u Otros</h4>
+                                                                <div class="row">
+                                                                    <div class="col-lg-12">
+                                                                        <br>
+                                                                        {{form3.as_p}}
+                                                                        <!-- <a href="/edit/producto/{{p.id}}/"" class="btn btn-primary">Agregar Posologia</a><br>
+                                                                        <br> -->
+                                                                        <button type="submit" name="btnremision" class="btn btn-primary">Agregar Orden</button>
+                                                                        <br><br>
+                                                                        {% if remisiones %}
+                                                                        <div class="table-responsive">
+                                                                            <table class="table table-striped table-bordered table-hover" id="tabla_remision">
+                                                                                <thead>
+                                                                                        <tr>
+                                                                                          <th>Item</th>
+                                                                                          <th>Descripcion</th>
+                                                                                          <th>Entidad</th>
+                                                                                          <th>Acciones</th>
+                                                                                        </tr>
+                                                                                </thead>
+                                                                            {% for pr in remisiones %}
+                                                                                <tbody>
+                                                                                    <tr id="tr{{pr.id}}">
+                                                                                        <td>{{ pr.orden }}</td>
+                                                                                        <td>{{ pr.descripcion_orden }}</td>
+                                                                                        <td>{{ pr.entidad }}</td>
+                                                                                        {% if user.is_staff %}
+                                                                                            <td><a href="#" class="btn btn-danger btn-sm">Eliminar</a></td>
+                                                                                        {% endif %}             
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            {% endfor %}
+                                                                            </table>
+                                                                        </div>    
+                                                                        {% else %}
+                                                                            <h4>No existen Items para esta historia</h4>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>                
+                                                            </div>
+                                                            <div class="tab-pane fade" id="remisionlab-pills">
+                                                                <div class="row">
+                                                                    <div class="col-lg-12">
+                                                                        <br>
+                                                                        {{form4.as_p}}
+                                                                        <button type="submit" name="btnremisionlab" class="btn btn-primary">Agregar Laboratorio</button>
+                                                                        <br><br>
+                                                                        {% if remisioneslab %}
+                                                                        <div class="table-responsive">
+                                                                            <table class="table table-striped table-bordered table-hover" id="tabla_remision">
+                                                                                <thead>
+                                                                                        <tr>
+                                                                                          <th>Laboratorio</th>
+                                                                                          <th>Descripcion</th>
+                                                                                          <th>Acciones</th>
+                                                                                        </tr>
+                                                                                </thead>
+                                                                            {% for prl in remisioneslab %}
+                                                                                <tbody>
+                                                                                    <tr id="tr{{pr.id}}">
+                                                                                        <td>{{ prl.laboratorio }}</td>
+                                                                                        <td>{{ prl.descripcion_lab }}</td>
+                                                                                        {% if user.is_staff %}
+                                                                                            <td><a href="#" class="btn btn-danger btn-sm">Eliminar</a></td>
+                                                                                        {% endif %}             
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            {% endfor %}
+                                                                            </table>
+                                                                        </div>    
+                                                                        {% else %}
+                                                                            <h4>No existen Laboratorios para esta historia</h4>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div> 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse11">Remisiones</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse11" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="panel-body">
+                                                    {{ form1.remisiones.errors }}
+                                                    <p><label for="id_remisiones"></label>{{form1.remisiones}}</p> 
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse12">Remisión Interna</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse12" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="panel-body">
+                                                    {{ form1.remision_interna.errors }}
+                                                    <p><label for="id_remision_interna"></label>{{form1.remision_interna}}</p> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse13">Generar Rips</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse13" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <br>  
+                                                        <div class="row">
+                                                            <div class="col-lg-8">{{ form1.causa_externa.errors }}<p><label for="id_causa_externa">Causa Externa:</label> {{form1.causa_externa}}</p></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-8">{{ form1.tipo_diagnostico.errors }}<p><label for="id_tipo_diagnostico">Tipo Diagnostico:</label> {{form1.tipo_diagnostico}}</p></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-8">{{ form1.finalidad.errors }}<p><label for="id_finalidad">Finalidad:</label> {{form1.finalidad}}</p></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12">{{ form1.diagnostico.errors }}<p><label for="id_diagnostico">Diagnostico:</label> {{form1.diagnostico}}</p></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-7">{{ form1.origen_enfermedad.errors }}<p><label for="id_origen_enfermedad">Origen Enfermedad:</label> {{form1.origen_enfermedad}}</p></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12">{{ form1.diagnostico1.errors }}<p><label for="id_diagnostico1">Diagnostico 1:</label> {{form1.diagnostico1}}</p></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12">{{ form1.diagnostico2.errors }}<p><label for="id_diagnostico2">Diagnostico 2:</label> {{form1.diagnostico2}}</p></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12">{{ form1.diagnostico3.errors }}<p><label for="id_diagnostico3">Diagnostico 3:</label> {{form1.diagnostico3}}</p></div>
+                                                        </div>                                   
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-info">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse14">Impresion de Documentos</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse14" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="panel-body">
+                                                    <p>"Debe guardar toda la información para poder imprimir"</p> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                                 
+                                </div>
+                            </div>     
+                        </div>         
+                    </div>
+                    <div class="tab-pane fade" id="tabhistorial">
+                        <br>
+                        {% if historial %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                      <th>Fecha</th>
+                                      <th>Evento</th>
+                                      <th>Medico</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for p in historial %}
+                                    <tr>  
+                                      <td>{{p.fecha|date:"d/m/y"}}</td>
+                                      {% if p.consulta == None %}
+                                        <td>{{p.procedimiento}}</td>
+                                      {% else %}
+                                        <td>{{p.consulta}}</td>
+                                      {% endif %}
+                                      <td>{{p.medico}}</td>                 
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <h5>El paciente no tiene registros</h5>
+                        {% endif %}
+                    </div> 
+                </div> 
+                </form>                
+            </div>
+            <!-- /.panel-body -->
+        </div>
+	</div>
+</div>	
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#id_fecha").datepicker({ 
+            dateFormat: 'dd/mm/yy',
+            //changeYear: true,
+            //changeMonth: true,
+            yearRange: 'c-50:c'
+        });
+        $("#id_fecha_atencion").datepicker({ 
+            dateFormat: 'dd/mm/yy',
+            //changeYear: true,
+            //changeMonth: true,
+            yearRange: 'c-50:c'
+        });
+        $("#id_masa_corporal").prop('readonly', true); //Inactiva el campo valor
+        $('#id_masa_corporal').on('change keyup paste',calcula_imc);
+        $('#id_peso').on('change keyup paste',calcula_imc);
+        $('#id_descripcion').on('change keyup paste',calcula_imc);
+        function calcula_imc(){
+            var temp_peso = parseInt($("#id_peso").val());
+            var temp_talla = parseInt($("#id_talla").val());
+
+            temp_talla = temp_talla/100;
+            var temp = temp_talla*temp_talla;
+            var temp_imc = temp_peso / temp;
+            temp_imc= parseFloat(temp_imc).toFixed(1);
+            $('#id_masa_corporal').val(temp_imc);
+            console.log(temp_imc);
+            var valor = $("#id_masa_corporal").val();
+            if (valor < 16){
+                $('#texto_imc').text("Deficiencia Nutricional en 3er Grado");
+            }else if(valor >= 16 && valor < 17){
+                $('#texto_imc').text("Deficiencia Nutricional en 2do Grado");
+            }else if(valor >= 17 && valor < 18.5){
+                $('#texto_imc').text("Deficiencia Nutricional en 1er Grado"); 
+            }else if(valor >= 18.5 && valor < 20){
+                $('#texto_imc').text("Bajo Peso");
+            }else if(valor >= 20 && valor < 25){
+                $('#texto_imc').text("Normal");
+            }else if(valor >= 25 && valor < 30){
+                $('#texto_imc').text("Sobrepeso");
+            }else if(valor >= 30 && valor < 35){
+                $('#texto_imc').text("Obesidad en 1er Grado");
+            }else if(valor >= 35 && valor < 40){
+                $('#texto_imc').text("Obesidad en 2do Grado");
+            }else if(valor > 40){
+                $('#texto_imc').text("Obesidad en 3er Grado");                                     
+            }else{
+                $('#texto_imc').text("");
+            } 
+        }        
+    });   
+</script>
+{% endblock %}

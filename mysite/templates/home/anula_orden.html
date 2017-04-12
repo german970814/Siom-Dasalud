@@ -1,0 +1,47 @@
+{% extends 'home/base.html' %}
+
+{% block title %} Unigastro {% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h1 class="page-header">Anular Orden</h1>
+	</div>
+</div>
+
+{% if form.errors %}
+<div class="alert alert-danger alert-dismissable">
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <strong>Corregir los siguientes errores!</strong> {{ form.errors }}
+</div>
+{% endif %}
+
+<div class="alert alert-warning">
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <strong>Importante: </strong> Debe indicar una causa de Anulación. Esta orden no saldrá en los listados de Agenda, pero si saldrá en los listados de ordenes. Las ordenes anuladas se resaltan en color amarillo para cada listado.
+</div>
+{% if exito %}
+	<div class="alert alert-success">
+	    <a href="#" class="close" data-dismiss="alert">&times;</a>
+	    <strong>La Orden ha sido Editada Satisfactoriamente!</strong> <p>Haz click en "Regresar al listado de Ordenes". </p>
+	</div>
+{% endif %}
+<br>
+<form action="." method="POST">
+{% csrf_token %}
+	<div class="row">
+		<div class="col-lg-6"><p><label for="id_autorizacion">Anular Orden:</label> {{form.anulada}}</p></div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6"><p><label for="id_pendiente_autoriza">Causal de Anulación:</label> {{form.razon_anulacion}}</p></div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-2">
+			<button type="submit" class="btn btn-primary btn-lg btn-block">Editar</button>
+		</div>	
+	</div>  	     
+</form>
+<br>
+<a href="/ordenes/"> << Regresar al listado de Ordenes  </a> 
+{% endblock %}

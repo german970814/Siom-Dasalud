@@ -1,0 +1,139 @@
+{% extends 'home/base.html' %}
+
+{% block js %}
+<script src="/static/js/moment.min.js"></script>
+<script src="/static/js/fullcalendar.min.js"></script>
+<script src='/static/js/es.js'></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+		//Cuando se cierra el modalform se limpian los inputs reseteando el formulario
+		//Es muy importante hacer esto ya que de esta manera se evita que el token se pierda
+		$('body').on('hidden.bs.modal', '.modal', function () { //Detecta que el modal fue cerrado
+		  $('body').find('form')[0].reset(); //Resetea el formulario
+		});
+
+      	$('#idMedico').on('change',cambia_vista);
+      	function cambia_vista(){
+        	$('#calendar').fullCalendar('refetchEvents');  
+        }
+
+		$('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek,agendaDay'
+			},
+			eventClick: function(calEvent, jsEvent, view) {
+				/*if (calEvent.title != 'Reservado'){
+					return false
+				}*/
+				var id = calEvent.id;
+				$.ajax({
+	                async : false,
+					data : {'id':id},
+					url : '/obtiene/citas/consultas/',
+					type : 'get',
+					success : function(data){
+				        $('#id_start').val(calEvent.start.format('YYYY-MM-DD HH:mm'));
+						$('#id_end').val(calEvent.end.format('YYYY-MM-DD HH:mm'));
+						$('#id_crear').val(id);
+						$('#preliminar').modal(); //Abre el modalform	
+					}
+				});
+		        // change the border color just for fun //$(this).css('border-color', 'red');
+		    },
+			dayClick: function(date, jsEvent, view) {
+		        if(view.name=="month"){
+		        	$('#calendar').fullCalendar('changeView','agendaWeek'); //Pasa a la vista de semana
+		        }else{
+		        	//Obtiene una fecha tipo moment apartir del momento que se digito
+		        	var local = $.fullCalendar.moment(date.format());
+		        	eventData = { //Ensambla el evento a guardar
+						start: date,
+						end: local.add(15,'minutes'),
+						editable: true,
+						overlap: false,
+					};
+					$('#id_start').val(eventData.start.format('YYYY-MM-DD HH:mm'));
+					$('#id_end').val(eventData.end.format('YYYY-MM-DD HH:mm'));
+					$('#preliminar').modal(); //Abre el modalform
+		        }	
+		    },
+
+		    eventDrop: function(event, delta, revertFunc) {
+		    	alert("No es posible mover citas en esta vista");
+		    	revertFunc();
+		    },
+
+			//defaultDate: '2014-11-12',
+			slotDuration: '00:15:00',
+			slotEventOverlap: false,
+			editable: true,
+			eventLimit: true, // allow "more" link when too many events
+			events: { //events:'calendario/',
+				//editable: false, //overlap: false, //color: '#ff9f89',  //D3D3D3
+		        url: '/calendario/disponibilidad/consultas',
+		        data: function() { // a function that returns an object
+		            return {
+		                doctor: $('#idMedico').val()
+		            };
+		        }
+		    }
+		});
+  });
+</script>
+{% endblock %}
+
+{% block title %} Citas{% endblock %}
+{%block content %}
+<form action="." method="POST">
+{% csrf_token %}
+	<div class="row">
+		<br>
+	    <label for="idMedico">Doctor:</label>
+	    <select class="form-control" id="idMedico" name="medico">
+	        <option value="-1" {% if not lista_medicos %} selected="selected" {% endif %}>Selecciona un Doctor</option>
+	        {% for p in lista_medicos %}
+	            <option value="{{ p.id }}" {% if p.nombre == 'Fabian' %} selected="selected" {% endif %}>{{ p.nombre|capfirst}} {{p.papellido|capfirst }}</option>
+	        {% endfor %}
+	    </select>
+
+		<div id="preliminar" class="modal fade">
+		  <div class="modal-dialog modal-lg">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title">Reservacion de Consulta</h4>
+		      </div>
+		      <div class="modal-body">
+		      	<div class="row">
+	                <div class="col-lg-4">
+	                    {{ form.start.errors }}
+	                    <p><label for="id_start">Desde:</label> {{form.start}}</p>
+	                </div>
+	                <div class="col-lg-4">
+	                    {{ form.end.errors }}
+	                    <p><label for="id_end">Hasta:</label> {{form.end}}</p>
+	                </div>
+	            </div>
+	            <div class="row">
+	            	<input type="hidden" id="id_crear" name="crear">
+	            </div>	
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+		        <button type="submit" class="btn btn-default" name="btnGuardar">Guardar</button>
+		        <button type="submit" class="btn btn-danger" name="btnEliminar">Eliminar</button>
+		      </div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	</div>
+</form>  	
+<br>
+<!-- FullCalendar Container-->
+<div class="row">
+	<div id='calendar'></div>
+</div>	
+
+{% endblock %}

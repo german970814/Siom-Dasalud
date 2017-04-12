@@ -1,0 +1,43 @@
+{% extends 'home/base.html' %}
+
+{% block title %} Crear Procedimiento{% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h1 class="page-header">Crear Procedimiento</h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-primary">
+            <div class="panel-heading">
+                Formulario para creacion de procedimiento
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <!-- Nav tabs -->
+                <form action="." method="POST">
+                {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-2"><p><label for="id_codigo">Codigo:</label> {{form.codigo}}</p></div>
+                        <div class="col-lg-6"><p><label for="id_descripcion">Descripcion:</label> {{form.descripcion}}</p></div>
+                        <div class="col-lg-2"><p><label for="id_cups">Cups:</label> {{form.cups}}</p> </div>
+                        <div class="col-lg-2"><p><label for="id_cuenta_contable">Cuenta Contable:</label> {{form.cuenta_contable}}</p></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><p><label for="id_equipo">Equipo:</label> {{form.equipo}}</p></div>
+                        <div class="col-lg-2"><p><label for="id_tarifa">Tarifa:</label> {{form.tarifa}}</p></div>
+                        <div class="col-lg-4"><p><label for="id_items">Items:</label> {{form.items}}</p></div>
+                        <div class="col-lg-2"><p><label for="id_uvr">UVR:</label> {{form.uvr}}</p></div>
+                    </div>  
+                    <button type="submit" class="btn btn-primary">Crear</button>    
+                </form>      
+            </div>
+            <!-- /.panel-body -->
+        </div>
+	</div>
+</div>	
+
+{% endblock %}

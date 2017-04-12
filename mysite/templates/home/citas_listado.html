@@ -1,0 +1,89 @@
+{% extends 'home/base.html' %}
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+      $("#id_fechai").datepicker({	
+                  dateFormat: 'yy-mm-dd', 
+                  changeYear: true,
+                  changeMonth: true,
+                  yearRange: 'c-50:c'
+                });
+      //$("#id_fechai").datepicker("setDate", new Date()); //Con esto se colocaba una fecha inicial
+  });
+</script>
+{% endblock %}
+
+{% block title %} Citas Consulta{% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h4 class="page-header">Buscar Citas por Doctor y día</h4>
+	</div>
+</div>
+
+{% if error %}
+<div class="alert alert-danger alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    Debe indicar una fecha y seleccionar un Doctor.
+</div>
+{% endif %}
+
+<div class="row">
+	<div class="col-lg-12">
+        <form action="." method="POST">
+        {% csrf_token %}
+            <div class="row">
+				<div class="col-lg-3">
+					<label for="idTipo">Listado de:</label>
+					<select class="form-control" id="idTipo" name="tipo">
+						<option value="C" selected="selected">Consultas</option>
+						<option value="P">Procedimientos</option>
+					</select>	
+				</div>
+                <div class="col-lg-3"><p><label for="id_fechai">Dia:</label> {{form.fechai}}</p></div>
+                <div class="col-lg-4"><p><label for="id_medico">Doctor:</label> {{form2.medico}}</p></div>
+	            <div class="col-lg-2">
+	            	<label>Realizar consulta</label>
+            		<button type="submit" class="btn btn-primary btn-block">Buscar</button>
+	            </div>                
+            </div>   
+        </form>      
+	</div>
+</div>	
+
+<div class="row">
+	<div class="col-lg-12">
+        <br>
+        <br>
+	        <div class="table-responsive">
+	            <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+		    	<thead>
+			        <tr>
+			        	<th>Fecha y Horario</th>	
+						<th>Cedula</th>
+						<th>Nombre</th>
+			          	<th>Consuta o Procedimiento</th>
+			        </tr>
+		        </thead>
+		        <tbody>
+		    	{% for p in listado %}
+		     		<tr id="tr{{p.id}}">
+		     			<td>{{ p.agenda.start|date:"d/m/Y" }} {{ p.agenda.start|time:"H:i" }} - {{ p.agenda.end|time:"H:i" }}</td>
+						<td>{{ p.cedula }}</td>
+						<td>{{ p.papellido }} {{ p.sapellido }} {{ p.pnombre  }} {{ p.snombre }}</td>
+						{% if consulta %}
+							<td>{{ p.consulta }}</td>
+						{% else %}
+							<td>{{ p.procedimiento|truncatewords:40 }}</td>
+						{% endif %}		
+					</tr>    	
+				{% endfor %}
+				</tbody>
+	    		</table>
+	    	</div>
+	</div>
+</div>	
+			
+{% endblock %}

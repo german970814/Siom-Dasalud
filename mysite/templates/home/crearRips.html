@@ -1,0 +1,131 @@
+{% extends 'home/base.html' %}
+
+{% block title %} Crear Rips{% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h1 class="page-header">Crear Rips</h1>
+	</div>
+</div>
+
+{% if error %}
+<div class="alert alert-danger alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+    Debe digitar fechas válidas, indicar un consecutivo de archivos y escoger empresa e institucion para poder generar el rips.
+</div>
+{% endif %}
+
+{% if pendiente %}
+<div class="alert alert-warning">
+	Existen Ordenes con numero de autorizacion pendiente por definir. No es posible crear los rips, todas las ordenes deben tener un numero de autorizacion. <a href="#" class="alert-link">Ver Ordenes</a>.
+</div>
+{% endif %}
+
+<form action="." method="POST">
+{% csrf_token %}
+	<div class="row">
+		<div class="col-lg-3">
+			<p><label for="id_fechai">Fecha Inicial:</label> {{form.fechai}}</p> 
+		</div>	
+		<div class="col-lg-3">
+			<p><label for="id_fechaf">Fecha Final:</label> {{form.fechaf}}</p> 
+		</div>
+		<div class="col-lg-3">
+		    <label for="idUsuario">Tipo de Usuario:</label>
+		    <select class="form-control" id="idUsuario" name="tipo">
+		        <option value="1" selected="selected">Contributivo</option>
+		        <option value="2">Subsidiado</option>
+		        <option value="3">Vinculado</option>
+		        <option value="4">Particular</option>
+		        <option value="5">Otro</option>
+		    </select>	
+		</div>
+		<div class="col-lg-3">
+			<label>Consecutivo Archivos</label>
+			<input class="form-control numerico_sin_punto" name="consecutivo">
+		</div>                                  
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-4">
+		    <label for="idInstitucion">Institucion:</label>
+		    <select class="form-control" id="idInstitucion" name="institucion">
+		        <option value="-1" selected="selected">Selecciona una Institucion</option>
+		        {% for p in lista_instituciones %}
+		            <option value="{{ p.id }}">{{ p.razon|capfirst }} {{p.numero}}</option>
+		        {% endfor %}
+		    </select>			
+		</div>
+		<div class="col-lg-4">
+		    <label for="idEmpresa">Empresa:</label>
+		    <select class="form-control" id="idEmpresa" name="empresa">
+		        <option value="-1" selected="selected">Selecciona una Empresa</option>
+		    </select>			
+		</div>
+		<div class="col-lg-4">
+		    <label for="idarchivo">Generación de:</label>
+		    <select class="form-control" id="idarchivo" name="archivo">
+		        <option value="1" selected="selected">Archivo de Consultas</option>
+		        <option value="2">Archivo de Procedimientos</option>
+		        <option value="3">Archivo de Facturacion</option>
+		        <option value="4">Archivo de Usuario</option>
+		        <option value="5">Archivo de Control</option>
+		    </select>	
+		</div>		
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-4">
+			<p><label for="id_fecha_r">Fecha de Remision de estos documentos:</label> {{form.fecha_r}}</p> 
+		</div>
+	</div>	
+	<br>
+	<br>
+	<div class="row">
+		<div class="col-lg-2">
+			<button type="submit" class="btn btn-primary btn-lg btn-block">Crear Rips</button>
+		</div>	
+	</div>    
+</form> 
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#id_fechai,#id_fechaf,#id_fecha_r").datepicker({ 
+            dateFormat: 'yy-mm-dd', 
+            //changeYear: true,
+            //changeMonth: true,
+            yearRange: 'c-50:c'
+        });
+
+        $('#idInstitucion').on('change',agrega_empresas);
+        function agrega_empresas(){
+        	var v_institucion = $(this).val()
+        	if (v_institucion != '-1'){
+                $.ajax({
+                    async : false,
+                    data : {'id':v_institucion},
+                    url : '/empresas/institucion/',
+                    type : 'get',
+                    success : function(data){
+                    	var tam = data.length
+     					var i=0;
+     					//Se limpia el select para llenarlo con los datos consultados
+                    	$('#idEmpresa').html('');
+                    	$('#idEmpresa').append('<option value="-1" selected="selected">Selecciona una Empresa</option>');
+                    	for(i;i<=(tam-1);i++){
+                    		$('#idEmpresa').append('<option value="' + data[i].id + '">' + data[i].razon + '</option>');
+                        }      					
+                    }
+                });
+        	}else{
+        		$('#idEmpresa').html('');
+                $('#idEmpresa').append('<option value="-1" selected="selected">Selecciona una Empresa</option>');
+        	}	
+        }
+    });
+</script>
+{% endblock %}

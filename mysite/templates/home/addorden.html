@@ -1,0 +1,392 @@
+{% extends 'home/base.html' %}
+
+{% block title %} Crear Orden{% endblock %}
+{% block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h3 class="page-header">Crear Orden de Servicio al Paciente: {{ temp.pnombre }} {{ temp.papellido }}</h3>
+	</div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+      {% if form.errors %}
+      <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert">&times;</a>
+          <strong>Corregir los siguientes errores!</strong> {{ form.errors }}
+      </div>
+      {% endif %}
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+		<div class="panel panel-primary">
+		    <div class="panel-heading">
+		        Formulario para creación de Orden de Servicio
+		    </div>
+		    <!-- /.panel-heading -->
+		    <div class="panel-body">
+		    	<form action="." method="POST">
+					{% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-4"><p><label for="id_autorizacion">No. Autorizacion:</label> {{form.autorizacion}}</p></div>
+                        <div class="col-lg-4"><p><label for="id_pendiente_autoriza">Pendiente Autorizacion:</label> {{form.pendiente_autoriza}}</p> </div>  
+                    </div>    
+					<div class="row">
+						<div class="col-lg-4"><p><label for="id_institucion">Institucion que prestará el servicio:</label> {{form.institucion}}</p></div>
+						<div class="col-lg-4"><p><label for="id_medico">Medico:</label> {{form.medico}}</p></div>
+						<div class="col-lg-4"><p><label for="id_fecha">Fecha Orden:</label> {{form.fecha}}</p></div>
+		            </div>
+					<div class="row">
+						<div class="col-lg-4"><p><label for="id_empresa">Empresa:</label> {{form.empresa}}</p></div>
+						<div class="col-lg-4"><p><label for="id_fecha_atencion">Fecha Atencion:</label> {{form.fecha_atencion}}</p></div>
+						<div class="col-lg-4"><p><label for="id_observacion">Observacion:</label> {{form.observacion}}</p></div>
+		            </div>
+		            <div class="row">
+		            	<div class="col-lg-4"><p><label for="id_afiliado">Afiliación:</label> {{form.afiliado}}</p> </div>
+                        <div class="col-lg-4"><p><label for="id_tipo_usuario">Tipo de Usuario:</label> {{form.tipo_usuario}}</p> </div>
+						<div class="col-lg-4"><p><label for="id_tipo">Consulta / Procedimiento:</label> {{form.tipo}}</p></div>
+		            </div>
+                    <div class="row">
+                        <div class="col-lg-4" style="display:none" id="v_escogeSedacion"><p><label for="id_sedacion">Sedacion:</label> {{form.sedacion}}</p> </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4" style="display:none" id="v_sedacion"><p><label for="id_valor_sedacion">Valor Sedacion:</label> {{form.valor_sedacion}}</p> </div>
+                        <div class="col-lg-4" style="display:none" id="v_anestesiologo"><p><label for="id_anestesiologo ">Anestesiologo :</label> {{form.anestesiologo}}</p> </div>
+                    </div>
+                    <h3 class="page-header">Informacion de la Orden</h3> 
+		            <div class="row">
+						<div class="col-lg-6" id="consulta"><p><label for="id_consulta">Tipo Consulta:</label> {{form.consulta}}</p></div>
+						<div class="col-lg-6" id="procedimiento" style="display:none"><p><label for="id_procedimiento">Procedimiento:</label> {{form.procedimiento}}</p></div>
+						<div class="col-lg-3"><p><label for="id_rango">Rango:</label> {{form.rango}}</p> </div>
+		            </div> 
+		            <div class="row">
+		            	<div class="col-lg-3"><p><label for="id_valor">Valor:</label> {{form.valor}}</p> </div>
+						<div class="col-lg-3" id="moderadora"><p><label for="id_couta">Cuota Moderadora:</label> {{form.couta}}</p></div>
+						<div class="col-lg-3" style="display:none" id="copago"><p><label for="id_copago">Copago:</label> {{form.copago}}</p></div>
+						<div class="col-lg-3"><p><label for="id_total">Total:</label> {{form.total}}</p></div>
+		            </div>          
+	                <br> 
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-primary btn-block">Guardar</button>    
+                        </div>
+                    </div>                  
+				</form>
+                <div class="row">
+                    <div class="col-lg-3"><p><label for="recalculo"></label></p><button ref='#' type="input" class="btn btn-default btn-block" id="recalculo">Recalcular</button></div>
+                </div>   
+		    </div>
+		</div>    		
+	</div>
+</div>	
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#id_fecha").datepicker({ 
+                                    dateFormat: 'dd/mm/yy',
+                                    //changeYear: true,
+                                    //changeMonth: true,
+                                    yearRange: 'c-50:c'
+                                });
+        $("#id_fecha_atencion").datepicker({ 
+                                    dateFormat: 'dd/mm/yy',
+                                    yearRange: 'c-50:c'
+                                });
+        $("#id_valor").prop('readonly', true); //Inactiva el campo valor
+        $("#id_copago").prop('readonly', true); //Inactiva el campo copago
+        $("#id_couta").prop('readonly', true); //Inactiva el campo cuota
+        $("#id_total").prop('readonly', true); //Inactiva el campo total
+        $('#id_tipo').on('change',inicio);
+        $('#id_afiliado').on('change',inicio2);
+        $('#id_procedimiento').on('change',consulta);
+        $('#id_rango').on('change',consulta2);
+        $('#id_valor').on('change keyup paste',suma_valor);
+        $('#id_copago').on('change keyup paste',suma_copago);
+        $('#id_consulta').on('change',coloca_consulta);
+        $('#recalculo').on('click',suma_recalculo);
+        $('#id_sedacion').on('change',rutina_sedacion);
+        $('#id_institucion').on('change',agrega_empresas);
+        function inicio(){
+			var valor = $(this).val(); //Consulta o Procedimiento
+            var valor_afiliado = $("#id_afiliado").val(); //Tipo de Afiliado
+            $('#id_copago').val(0);
+            $('#id_total').val(0);
+            $('#id_valor').val(0);
+            $('#id_couta').val(0);
+			if (valor== 'C'){
+                if (valor_afiliado=='N'){
+                    $('#consulta').css("display","block"); //Muestra el campo Consulta
+                    $('#procedimiento').css("display","none"); //Oculta el campo procedimiento
+                    $('#moderadora').css("display","none"); //Oculta  el campo cuota moderadora
+                    $('#copago').css("display","none"); //Oculta el campo copago
+                }else{
+    				$('#consulta').css("display","block"); //Muestra el campo Consulta
+    				$('#procedimiento').css("display","none"); //Oculta el campo procedimiento
+    				$('#moderadora').css("display","block"); //Muestra el campo cuota moderadora
+    				$('#copago').css("display","none"); //Oculta el campo copago
+                }
+                $('#v_escogeSedacion').css("display","none"); //Oculta el div
+                $("#id_sedacion").prop("checked", ""); //Quita el chulito en sedacion
+                $("#id_sedacion").change(); //Genera evento de cambio en el check
+                $("#id_valor_sedacion").val(0); //Limpia valor sedacion
+			}else{
+				$('#consulta').css("display","none");
+				$('#procedimiento').css("display","block");
+				$('#moderadora').css("display","none");
+                $('#v_escogeSedacion').css("display","block"); //Muestra el div  
+				var valor1 = $('#id_afiliado').val();
+				if (valor1=='B' || valor1=='A'){
+					$('#copago').css("display","block");
+				}
+			}
+        }
+        function inicio2(){
+        	var tipo_orden = $("#id_tipo").val();  //Si es Consulta o Procedimiento
+        	var tipo_afiliado = $(this).val(); //Tipo de Afiliado
+
+            $('#id_copago').val(0);
+            $('#id_total').val(0);
+            $('#id_valor').val(0);
+            $('#id_couta').val(0);
+            $('#id_procedimiento').val(""); //Reinicia el select de procedimiento
+            $('#id_procedimiento').change(); //Coloca el select de procedimiento en cero
+            $('#id_consulta').val(""); //Reinicia el select de procedimiento
+            $('#id_consulta').change(); //Coloca el select de procedimiento en cero
+
+            if (tipo_afiliado == 'C' || tipo_afiliado == 'B'){
+                $('#id_tipo_usuario').val('1');
+            }else if(tipo_afiliado == 'A'){
+                $('#id_tipo_usuario').val('2'); 
+            }else if(tipo_afiliado == 'P'){
+                $('#id_tipo_usuario').val('4'); 
+            }else if(tipo_afiliado == 'V'){
+                $('#id_tipo_usuario').val('3');
+            }else if(tipo_afiliado == 'O' || tipo_afiliado == 'N'){
+                $('#id_tipo_usuario').val('5');      
+            }
+            $('#id_tipo_usuario').change();
+
+        	if (tipo_orden== 'C'){ //Si es una consulta oculta el copago
+                if (tipo_afiliado=='N' || tipo_afiliado == 'P' || tipo_afiliado == 'V' || tipo_afiliado == 'O'){
+                    $('#copago').css("display","none"); //Oculta el copago
+                    $('#moderadora').css("display","none"); //Oculta la cuota moderadora
+                    $("#id_valor").prop('readonly', false); //Activa el campo valor
+                    $("#id_total").prop('readonly', false); //Activa el campo total
+                }else{
+                    $('#copago').css("display","none"); //Oculta el copago
+                    $('#moderadora').css("display","block"); //Muestra la cuota moderadora
+                    $("#id_valor").prop('readonly', true); //Inactiva el campo valor
+                    $("#id_total").prop('readonly', true); //Inactiva el campo total
+                }
+        	}else{ //Si es un procedimiento muestra u oculta el copago dependiendo del tipo de afiliacion
+                if (tipo_afiliado=='N' || tipo_afiliado == 'P' || tipo_afiliado == 'V' || tipo_afiliado == 'O'){
+                    $("#id_valor").prop('readonly', false); //Activa el campo valor
+                    $("#id_total").prop('readonly', false); //Activa el campo total
+                    $('#copago').css("display","none"); //Oculta el copago
+                }else{
+                    $("#id_valor").prop('readonly', true); //Inactiva el campo valor
+                    $("#id_total").prop('readonly', true); //Inactiva el campo total    
+            		if (tipo_afiliado=='B' || tipo_afiliado=='A'){
+    					$('#copago').css("display","block"); //Muestra el copago
+    				}else{
+    					$('#copago').css("display","none");	//Oculta el copago
+    				}
+                }    
+        	}	
+        }
+        function consulta(){
+        	var id = $(this).val();
+            var valor = $("#id_empresa").val();
+            if (id != ""){
+                if (valor == ""){
+                    alert("Debe escoger una empresa para que sea posible calcular el valor del procedimiento");
+                }else{
+                    $.ajax({
+                        async : false,
+                        data : {'id':id,'empresa':valor},
+                        url : '/consulta_procedimiento/',
+                        type : 'get',
+                        success : function(data){
+                            $('#id_valor').val(data[0].tarifa);
+                        }
+                    });
+                }    
+            }
+        }	
+        function consulta2(){
+        	var valor = $('#id_rango option:selected').html();
+        	var temp = $("#id_valor").val(); 
+            var tipo_orden = $("#id_tipo").val(); //Si es consulta o es procedimiento
+            var tipo_afiliado = $("#id_afiliado").val(); // si es cotizante, beneficiario, etc
+        	if (tipo_orden == 'P'){ //Procedimiento
+                if (tipo_afiliado == 'C' || tipo_afiliado == 'N' || tipo_afiliado == 'P' || tipo_afiliado == 'V' || tipo_afiliado == 'O'){ //Si es cotizante o no aplica
+                    var temp_valor = parseFloat($("#id_valor").val());
+                    $('#id_total').val(temp_valor);       
+                }else if(tipo_afiliado == 'B'){
+                    if (valor != "No aplica"){
+                        $.ajax({
+                            async : false,
+                            data : {'id':valor},
+                            url : '/rango_procedimiento/',
+                            type : 'get',
+                            success : function(data){
+                                var t_copago = temp*data[0].fields.porcentaje
+                                t_copago = t_copago.toFixed(2);
+                                $('#id_copago').val(t_copago);
+                            }
+                        });
+                    }   
+                    var temp_copago = parseFloat($("#id_copago").val());
+                    var temp_valor = parseFloat($("#id_valor").val());
+                    $('#id_total').val(temp_valor-temp_copago);
+                }else if(tipo_afiliado == 'A'){
+                    $('#id_copago').val(0);
+                    $('#id_total').val(0);    
+                }     
+            }else{
+                if (tipo_afiliado == 'N' || tipo_afiliado == 'P' || tipo_afiliado == 'V' || tipo_afiliado == 'O'){ //Si el valor es No aplica
+                    var temp_valor = parseFloat($("#id_valor").val());
+                    $('#id_total').val(temp_valor); 
+                }else if(tipo_afiliado == 'C' || tipo_afiliado == 'B'){
+                    if (valor != "No aplica"){
+                        $.ajax({
+                            async : false,
+                            data : {'id':valor},
+                            url : '/rango_consulta/',
+                            type : 'get',
+                            success : function(data){
+                                $('#id_couta').val(data[0].fields.cuota);
+                            }
+                        });
+                    }          
+                    var temp_cuota = parseFloat($("#id_couta").val());
+                    var temp_valor = parseFloat($("#id_valor").val());
+                    $('#id_total').val(temp_valor-temp_cuota);
+                }else if(tipo_afiliado == 'A'){
+                    $('#id_copago').val(0);
+                    $('#id_total').val(0);
+                }     
+            }   	
+        }
+        function suma_valor(){
+        	var temp_valor = parseFloat($("#id_valor").val());
+        	var valor2 = $("#id_tipo").val();
+
+            if (valor2 == 'P'){
+                var temp_copago = parseFloat($("#id_copago").val());
+                $('#id_total').val(temp_valor-temp_copago);
+            }else{
+                var temp_cuota = parseFloat($("#id_couta").val());
+                $('#id_total').val(temp_valor-temp_cuota);
+            }    
+        }
+        function suma_copago(){
+        	var temp_copago = parseFloat($("#id_copago").val());
+        	var temp_valor = parseFloat($("#id_valor").val());
+        	//A esto le falta
+        	
+        	$('#id_total').val(temp_valor-temp_copago);
+        }
+        function coloca_consulta(){
+            var id = $(this).val();
+            $.ajax({
+                async : false,
+                data : {'id':id},
+                url : '/consulta_consulta/',
+                type : 'get',
+                success : function(data){
+                    $('#id_valor').val(data[0].fields.tarifa);
+                }
+            });
+            var valor = $("#id_empresa").val();
+            $.ajax({
+                async : false,
+                data : {'valor':valor},
+                url : '/consulta_plan/',
+                type : 'get',
+                success : function(data){
+                    var incremento = parseFloat(data[0].fields.porcentaje);
+                    var temp_valor = parseFloat($("#id_valor").val());
+                    $('#id_valor').val(temp_valor+(temp_valor*incremento));
+                }
+            });
+        }
+        function suma_recalculo(){
+            var temp_afiliacion = $("#id_afiliado").val();
+            var temp_tipo = $("#id_tipo").val();
+            var temp_rango = $("#id_rango").val();
+            if (temp_afiliacion == '' || temp_tipo == '' || temp_rango == ''){
+                alert("Debe escoger una opción para Afiliacion, Tipo de Orden o Rango");
+            }else{ //Se verifica si se ha escogido una consulta o procedimiento para poder recalcular
+                if (temp_tipo == 'C'){
+                    var temp_consulta = $("#id_consulta").val();
+                    if (temp_consulta == ''){
+                        alert("Debe escoger un tipo de Consulta");    
+                    }else{
+                        $('#id_rango').change();
+                    }
+                }else{
+                    var temp_procedimiento = $("#id_procedimiento").val();
+                    if (temp_procedimiento == ''){
+                        alert("Debe escoger un tipo de Procedimiento");    
+                    }else{
+                        $('#id_rango').change();
+                    }
+                }
+
+            }
+        }
+        function rutina_sedacion(){
+            if($(this).is(":checked")){
+                v_empresa = $("#id_empresa").val();
+                if (v_empresa != ""){ //Validacion: Funciona si se escogio empresa
+                    $.ajax({ //Consulta si la empresa tiene sedacion
+                        async : false,
+                        data : {'id_empresa':v_empresa},
+                        url : '/consulta_empresa/',
+                        type : 'get',
+                        success : function(data){
+                            $('#id_valor_sedacion').val(data[0].fields.valor_sedacion);
+                        }
+                    });
+                }
+                $('#v_sedacion').css("display","block"); //Muestra el div v_sedacion
+                $('#v_anestesiologo').css("display","block"); //Muestra el div v_anestesiologo
+            }else{
+                $('#v_sedacion').css("display","none"); //Oculta el div v_sedacion
+                $('#v_anestesiologo').css("display","none"); //Oculta el div v_anestesiologo
+            }
+        }
+        function agrega_empresas(){
+            var v_institucion = $(this).val()
+            if (v_institucion != ''){
+                $.ajax({
+                    async : false,
+                    data : {'id':v_institucion},
+                    url : '/empresas/institucion/',
+                    type : 'get',
+                    success : function(data){
+                        var tam = data.length
+                        var i=0;
+                        //Se limpia el select para llenarlo con los datos consultados
+                        $('#id_empresa').html('');
+                        $('#id_empresa').append('<option value="-1" selected="selected">Selecciona una Empresa</option>');
+                        for(i;i<=(tam-1);i++){
+                            $('#id_empresa').append('<option value="' + data[i].id + '">' + data[i].razon + '</option>');
+                        }                       
+                    }
+                });
+            }else{
+                $('#id_empresa').html('');
+                $('#id_empresa').append('<option value="-1" selected="selected">Selecciona una Empresa</option>');
+            }
+        }                                             
+    });
+</script>
+{% endblock %}

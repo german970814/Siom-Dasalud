@@ -1,0 +1,100 @@
+{% extends 'home/base.html' %}
+
+{% block title %} Crear Orden{% endblock %}
+{% block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h3 class="page-header">Agregar Servicio a la orden del Paciente: {{ temp.pnombre }} {{ temp.papellido }}</h3>
+	</div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+      {% if form.errors %}
+      <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert">&times;</a>
+          <strong>Corregir los siguientes errores!</strong> {{ form.errors }}
+      </div>
+      {% endif %}
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+		<div class="panel panel-primary">
+		    <div class="panel-heading">
+		        Formulario para Agregar Servicios y Laboratorios
+		    </div>
+		    <!-- /.panel-heading -->
+		    <div class="panel-body">
+		    	<form action="." method="POST">
+					{% csrf_token %}   
+					<div class="row">
+						<div class="col-lg-6">
+                            <p><label for="id_empresa">Servicio / Laboratorio:</label> {{form.servicio}}</p>
+                        </div>
+                        <div class="col-lg-3">
+                            <label>Añadir a la Orden</label>
+                            <button type="submit" class="btn btn-primary btn-block">Agregar</button>    
+                        </div>
+		            </div> 
+                    <div class="row">
+                        
+                    </div>                  
+				</form>
+
+                <br>
+                <div class="row">
+                  <div class="col-lg-12">
+                    {% if lista %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover" id="dataTables-example2">
+                            <thead>
+                                <tr>        
+                                  <th>Servicio / Laboratorio</th>
+                                  <th>Costo</th>
+                                  <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for p in lista %}
+                            <tr id="tr{{p.id}}">
+                                <td>{{ p.servicio.nombre}}</td>
+                                <td>{{ p.servicio.costo}}</td>
+                                <td><a href="/borrar/servicio/{{getorden.id}}/{{p.id}}/" id="{{p.id}}" class="btn btn-danger btn-xs eliminar"><i class="glyphicon glyphicon-trash"></i> Eliminar</a></td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <h2>No existen Productos para esta Orden</h2>
+                    {% endif %}
+                    </div>
+                </div>  
+		    </div>
+		</div>    		
+	</div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4">
+        <a href="/finalizar/{{getorden.id}}/" class="btn btn-primary btn-block"> Finalizar Orden </a>
+    </div>
+</div>          	
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#id_fecha").datepicker({ 
+                                    dateFormat: 'dd/mm/yy',
+                                    //changeYear: true,
+                                    //changeMonth: true,
+                                    yearRange: 'c-50:c'
+                                });                                            
+    });
+</script>
+{% endblock %}

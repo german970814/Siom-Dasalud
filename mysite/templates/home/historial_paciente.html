@@ -1,0 +1,168 @@
+{% extends 'home/base.html' %}
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+		$('#dataTables-example2').dataTable( {
+		    "iDisplayLength": 25,
+		    "bSort": false,
+		    "dom": 'T<"clear">lfrtip',
+		    "tableTools": {
+		        "sSwfPath": "/static/js/plugins/dataTables/swf/copy_csv_xls_pdf.swf"
+		    },
+		    "language": {
+		        "sProcessing":    "Procesando...",
+		        "sLengthMenu":    "Mostrar _MENU_ registros",
+		        "sZeroRecords":   "No se encontraron resultados",
+		        "sEmptyTable":    "Ningún dato disponible en esta tabla",
+		        "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+		        "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+		        "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+		        "sInfoPostFix":   "",
+		        "sSearch":        "Buscar:",
+		        "sUrl":           "",
+		        "sInfoThousands":  ",",
+		        "sLoadingRecords": "Cargando...",
+		        "oPaginate": {
+		            "sFirst":    "Primero",
+		            "sLast":    "Último",
+		            "sNext":    "Siguiente",
+		            "sPrevious": "Anterior"
+		        },
+		        "oAria": {
+		            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+		            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+		        }
+		    }
+
+		} );
+  });
+</script>
+{% endblock %}
+
+{% block title %} Historial Paciente{% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h3 class="page-header">Historial del Paciente: {{getpaciente}}</h3>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+        <br>
+        <h4>HISTORIAS CLINICAS</h4>
+        {% if lista_historias %}
+	        <div class="table-responsive">
+	            <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+		    	<thead>
+			        <tr>
+			          <th>#</th>		
+			          <th>Fecha</th>
+			          <th>Evento</th>
+			          <th>Medico</th>
+			          <th></th>
+			        </tr>
+		        </thead>
+		        <tbody>
+		    	{% for p in lista_historias %}
+			    	{% if p.status == 'P' %}
+			     		<tr id="tr{{p.orden.id}}" class="danger">
+							<td>{{ p.id }}</td>
+							<td>{{p.orden.fecha|date:"d/m/y"}} {{p.orden.fecha|time:"H:i"}}</td>
+                            <td>Historia</td>
+							<td>{{p.orden.medico}}</td>
+							<td></td>		
+						</tr>    	
+			    	{% else %}
+			     		<tr id="tr{{p.orden.id}}" class="success">
+							<td>{{ p.id }}</td>
+							<td>{{p.orden.fecha|date:"d/m/y"}} {{p.orden.fecha|time:"H:i"}}</td>
+							<td>Historia</td>
+							<td>{{p.orden.medico}}</td>
+							<td>
+								<a class="btn btn-primary btn-xs" href="/show/historias/{{p.orden.id}}/"><i class="glyphicon glyphicon-eye-open"></i></a>
+								 {% if user.is_staff or perms.home.es_administrador %}
+								 	<a class="btn btn-primary btn-xs" href="/edit/historias/{{p.orden.id}}/"><i class="glyphicon glyphicon-pencil"></i></a>
+								 {% endif %}
+							</td>	
+						</tr>    	
+			    	{% endif %}	
+				{% endfor %}
+				</tbody>
+	    		</table>
+	    	</div>
+	    {% else %}
+			<h2>No existen Historias Activas</h2>
+		{% endif %}	  		
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+        <br>
+        <h4>PROCEDIMIENTOS</h4>
+        {% if lista_procedimientos %}
+	        <div class="table-responsive">
+	            <table class="table table-striped table-bordered table-hover" id="dataTables-example2">
+		    	<thead>
+			        <tr>
+			          <th>#</th>		
+			          <th>Fecha</th>
+			          <th>Evento</th>
+			          <th>Medico</th>
+			          <th></th>
+			        </tr>
+		        </thead>
+		        <tbody>
+		    	{% for p in lista_procedimientos %}
+			    	{% if p.status == 'P' %}
+			     		<tr id="tr{{p.orden.id}}" class="danger">
+							<td>{{ p.id }}</td>
+							<td>{{p.orden.fecha|date:"d/m/y"}} {{p.orden.fecha|time:"H:i"}}</td>
+							{% if p.orden.consulta == None %}
+                            	<td>{{p.orden.procedimiento}}</td>
+                            {% else %}
+                            	<td>{{p.orden.consulta}}</td>
+                            {% endif %}
+							<td>{{p.orden.medico}}</td>
+							<td></td>		
+						</tr>    	
+			    	{% else %}
+			     		<tr id="tr{{p.orden.id}}" class="success">
+							<td>{{ p.id }}</td>
+							<td>{{p.orden.fecha|date:"d/m/y"}} {{p.orden.fecha|time:"H:i"}}</td>
+							{% if p.orden.consulta == None %}
+                            	<td>{{p.orden.procedimiento}}</td>
+                            {% else %}
+                            	<td>{{p.orden.consulta}}</td>
+                            {% endif %}
+							<td>{{p.orden.medico}}</td>
+							<td>
+								{% if p.orden.tipo == 'C' %}
+								<a class="btn btn-primary btn-xs" href="/show/historias/{{p.orden.id}}/"><i class="glyphicon glyphicon-eye-open"></i></a>
+								{% else %}
+								<a class="btn btn-primary btn-xs" href="/show/procedimiento/orden/{{p.orden.id}}/"><i class="glyphicon glyphicon-eye-open"></i></a>
+								{% endif %}
+								 {% if user.is_staff or perms.home.es_administrador %}
+								 	{% if p.orden.tipo == 'C' %}
+								 	<a class="btn btn-primary btn-xs" href="/edit/historias/{{p.orden.id}}/">
+								 	{% else %}
+								 	<a class="btn btn-primary btn-xs" href="/edit/procedimiento/orden/{{p.orden.id}}/">
+								 	{% endif %}<i class="glyphicon glyphicon-pencil"></i></a>
+								 {% endif %}
+							</td>	
+						</tr>    	
+			    	{% endif %}	
+				{% endfor %}
+				</tbody>
+	    		</table>
+	    	</div>
+	    {% else %}
+			<h2>No existen Procedimientos para este paciente</h2>
+		{% endif %}	  		
+	</div>
+</div>		
+
+{% endblock %}

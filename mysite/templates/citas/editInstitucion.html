@@ -1,0 +1,58 @@
+{% extends 'home/base.html' %}
+
+{% block title %} Editar Institución{% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h1 class="page-header">Editar Institucion</h1>
+	</div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+      {% if form.errors %}
+      <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert">&times;</a>
+          <strong>Corregir los siguientes errores!</strong> {{ form.errors }}
+      </div>
+      {% endif %}
+  </div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-primary">
+            <div class="panel-heading">
+                Formulario para edicion de Institución
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <!-- Nav tabs -->
+                <form action="." method="POST">
+                {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-2"><p><label for="id_documento">Documento:</label> {{form.documento}}</p></div>
+                        <div class="col-lg-3"><p><label for="id_numero">Número:</label> {{form.numero}}</p></div>
+                        <div class="col-lg-4"><p><label for="id_razon">Razón Social:</label> {{form.razon}}</p></div>
+                        <div class="col-lg-3"><p><label for="id_codigo">Codigo:</label> {{form.codigo}}</p></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4"><p><label for="id_direccion">Dirección:</label> {{form.direccion}}</p></div>
+                        <div class="col-lg-2"><p><label for="id_telefono">Teléfono:</label> {{form.telefono}}</p></div>
+                        <div class="col-lg-2"><p><label for="id_fax">Fax:</label> {{form.fax}}</p></div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-lg-5"><p><label for="id_empresas">Empresas:</label> {{form.empresas}}</p></div>
+                        <div class="col-lg-3"><p><label for="id_letra_factura">Letra Factura:</label> {{form.letra_factura}}</p></div>
+                    </div>
+                    <br>  
+                    <button type="submit" class="btn btn-primary">Editar</button>   
+                </form>      
+            </div>
+            <!-- /.panel-body -->
+        </div>
+	</div>
+</div>	
+
+{% endblock %}

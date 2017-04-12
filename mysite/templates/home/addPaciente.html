@@ -1,0 +1,152 @@
+{% extends 'home/base.html' %}
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(function(){
+
+      $("#formulario").submit(function() {
+          var x = $("#id_foto").val();
+          var y = $("#id_firma").val();
+          var ex = false;
+          var ey = false;
+
+          if ( (x.indexOf('ñ') != -1) || (x.indexOf('Ñ') != -1) ) {
+            ex = true;
+          }
+
+          if ( (y.indexOf('ñ') != -1) || (y.indexOf('Ñ') != -1) ) {
+            ey = true;
+          }
+
+          if (ex == true || ey == true) {
+              alert("Los archivos de foto y firma no deben contener la letra 'ñ' o 'Ñ' en sus nombres, por favor modifique el nombre de los archivos que contengan la letra 'ñ' o 'Ñ'.");       
+              return false;
+          }else{
+              return true;    
+          }               
+      });
+
+      $("#id_fecha_nacimiento").datepicker({
+                  dateFormat: 'dd/mm/yy', 
+                  changeYear: true,
+                  changeMonth: true,
+                  yearRange: 'c-50:c'
+                });
+      $("#id_visita").datepicker({
+                  dateFormat: 'dd/mm/yy', 
+                  changeYear: true,
+                  changeMonth: true,
+                  yearRange: 'c-50:c'
+                });
+
+      $("#id_fecha_nacimiento").on('change',calcular_edad);
+
+        function calcular_edad(){
+          var today = new Date();
+          var birthDate = new Date($("#id_fecha_nacimiento").datepicker("getDate"));
+          var age = today.getFullYear() - birthDate.getFullYear();
+          var m = today.getMonth() - birthDate.getMonth();
+          if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+          }
+          $("#id_edad").val(age);
+        }                                      
+  });
+</script>
+{% endblock %}
+
+{% block title %} Crear Paciente{% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h1 class="page-header">Crear Paciente Nuevo</h1>
+	</div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+      {% if form.errors %}
+      <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert">&times;</a>
+          <strong>Corregir los siguientes errores!</strong> {{ form.errors }}
+      </div>
+      {% endif %}
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <form id= "formulario" action="." method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+  		<div class="panel panel-primary">
+		    <div class="panel-heading">
+		    	<i class="fa fa-user"></i> 
+		        Datos del Paciente
+		    </div>
+		    <!-- /.panel-heading -->
+		    <div class="panel-body">
+            <div class="row">
+              <div class="col-lg-3"><p><label for="id_pnombre">Primer Nombre:</label> {{form.pnombre}}</p></div>
+              <div class="col-lg-3"><p><label for="id_snombre">Segundo Nombre:</label> {{form.snombre}}</p></div>
+              <div class="col-lg-3"><p><label for="id_papellido">Primer Apellido:</label> {{form.papellido}}</p> </div>
+              <div class="col-lg-3"><p><label for="id_sapellido">Segundo Apellido:</label> {{form.sapellido}}</p></div>
+            </div>    
+            <div class="row">
+              <div class="col-lg-3"><p><label for="id_documento">Documento:</label> {{form.documento}}</p></div>
+              <div class="col-lg-2"><p><label for="id_cedula">Numero:</label> {{form.cedula}}</p></div>
+              <div class="col-lg-2"><p><label for="id_genero">Genero:</label> {{form.genero}}</p></div>
+              <div class="col-lg-3"><p><label for="id_nacioen">Nacio en:</label> {{form.nacioen}}</p></div>
+              <div class="col-lg-2"><p><label for="id_estadoCivil">Estado Civil:</label> {{form.estadoCivil}}</p></div>
+            </div>
+            <div class="row">
+              <div class="col-lg-2"><p><label for="id_fecha_nacimiento">F. Nacimiento:</label> {{form.fecha_nacimiento}}</p></div>
+              <div class="col-lg-2"><p><label for="id_edad">Edad:</label> {{form.edad}}</p></div>
+              <div class="col-lg-2"><p><label for="id_unidad">Unidad Edad:</label> {{form.unidad}}</p></div>
+              <div class="col-lg-2"><p><label for="id_tipo">Tipo:</label> {{form.tipo}}</p></div>
+              <div class="col-lg-2"><p><label for="id_afiliado">Afiliado:</label> {{form.afiliado}}</p></div>
+              <div class="col-lg-2"><p><label for="id_zona">Zona:</label> {{form.zona}}</p></div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3"><p><label for="id_ciudad">Ciudad:</label> {{form.ciudad}}</p></div>
+              <div class="col-lg-6"><p><label for="id_profesion">Profesión:</label> {{form.profesion}}</p></div>
+              <div class="col-lg-3"><p><label for="id_escolaridad">Escolaridad:</label> {{form.escolaridad}}</p></div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6"><p><label for="id_direccion">Direccion:</label> {{form.direccion}}</p></div>
+              <div class="col-lg-4"><p><label for="id_barrio">Barrio:</label> {{form.barrio}}</p></div>
+              <div class="col-lg-2"><p><label for="id_Estrato">Estrato:</label> {{form.Estrato}}</p></div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3"><p><label for="id_telefono">Telefono:</label> {{form.telefono}}</p></div>
+              <div class="col-lg-3"><p><label for="id_celular">Celular:</label> {{form.celular}}</p></div>
+              <div class="col-lg-4"><p><label for="id_email">Email:</label> {{form.email}}</p></div>
+            </div>
+            <div class="row">
+              <div class="col-lg-2"><p><label for="id_status">Activo:</label> {{form.status}}</p></div>
+            </div>
+        </div>  
+      </div>
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <i class="fa fa-user"></i> 
+            Datos para Facturación
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-lg-5"><p><label for="id_procede">Empresa:</label> {{form.procede}}</p></div>
+            <div class="col-lg-2"><p><label for="id_visita">Ultima Visita:</label> {{form.visita}}</p></div>
+          </div>
+          <div class="row">
+            <div class="col-lg-5"><p><label for="id_foto">Foto:</label> {{form.foto}}</p></div>
+            <div class="col-lg-5"><p><label for="id_firma">Firma:</label> {{form.firma}}</p></div>
+          </div>          
+        </div>  
+      </div>
+      <button type="submit" class="btn btn-default">Guardar</button> 
+		</form>      		
+	</div>
+</div>	
+
+{% endblock %}
+

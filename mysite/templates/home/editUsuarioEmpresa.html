@@ -1,0 +1,71 @@
+{% extends 'home/base.html' %}
+
+{% block title %} IPS SIOM{% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h1 class="page-header">Datos Usuario del sistema</h1>
+	</div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+      {% if add %}
+      <div class="alert alert-warning">
+          <a href="#" class="close" data-dismiss="alert">&times;</a>
+          <strong>Los usuarios creados por primera vez son creado con la clave: 123456 por defecto!</strong> Esta clave puede ser modificada posteriormente por un administrador o por el usuario.
+      </div>
+      {% endif %}
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+      {% if form.errors %}
+      <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert">&times;</a>
+          <strong>Corregir los siguientes errores!</strong> {{ form.errors }}
+      </div>
+      {% endif %}
+  </div>
+</div>
+
+<div class="row">
+	<form id="formulario" action="." method="POST">
+	{% csrf_token %}
+		<div class="row">
+			<div class="col-lg-8"><p><label for="id_empresa">Nombre de la Empresa:</label> {{form.empresa}}</p></div>
+		</div>
+		<div class="row">
+			<div class="col-lg-4"><p><label for="id_nombre">Nombre:</label> {{form.nombre}}</p></div>
+			<div class="col-lg-6"><p><label for="id_usuario">Usuario (Debe concordar con el nit de la empresa):</label> {{form.usuario}}</p></div>
+		</div>
+		<div class="row"> 
+			<div class="col-lg-2">
+				<p><label> </label><button type="submit" class="btn btn-primary btn-block">Editar</button></p> 
+			</div>
+		</div>
+	</form>		
+</div>	
+<br>
+
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#formulario").submit(function() {
+            var username = $('#id_username').val();
+			var institucion = $('#id_institucion').val();
+            if (username == '' || institucion ==''){
+                alert("Debe colocar un nombre de usuario y escoger la institución a la que pertenece"); 
+                return false;
+            }else{
+                return true;
+            }                  
+        });
+    });
+</script>        
+{% endblock %}

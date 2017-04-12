@@ -1,0 +1,434 @@
+{% extends 'home/base.html' %}
+
+{% block title %} Procedimiento{% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h3 class="page-header">Paciente: {{getorden.paciente}}</h3>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-primary">
+            <div class="panel-heading">
+                {{getorden.procedimiento}}
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">               
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% if info %}
+                        <div class="alert alert-warning">
+                            <a href="#" class="close" data-dismiss="alert">&times;</a>
+                            <strong>Si va a editar este Procedimiento tenga en cuenta que: </strong> Los campos Diagnostico, Diagnostico1 y Complicacion pertenencientes al RIPS van a ser sobreescritos de acuerdo a esta nueva edición. Verifique bien estos campos antes de hacer click en el botón "Guardar".
+                        </div>
+                        {% endif %}
+                        {% if form1.errors %}
+                        <div class="alert alert-danger">
+                            <a href="#" class="close" data-dismiss="alert">&times;</a>
+                            <strong>Corregir los siguientes errores!</strong> {{ form1.errors }}
+                        </div>
+                        {% endif %}
+                        {% if exito %}
+                        <div class="alert alert-success">
+                            <a href="#" class="close" data-dismiss="alert">&times;</a>
+                            <strong>La historia ha sido Guardada Satisfactoriamente!</strong> {{ form1.errors }}
+                        </div>
+                        {% endif %}                        
+                    </div>
+                </div>
+                 
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tabhistoria" data-toggle="tab">Historia</a>
+                    </li>
+                    <li><a href="#tabhistorial" data-toggle="tab">Historial del Paciente</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <form action="." method="POST">
+                {% csrf_token %}
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="tabhistoria">
+                        <br>
+                        <div class="row">
+                            <div class="panel-group" id="accordion">
+                                <div class="col-lg-12">
+                                    <div class="panel panel-info"> <!-- /.Hallazgos -->
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Hallazgos</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse1" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                {{ form1.hallazgos.errors }}
+                                                <p><label for="id_motivo"></label> {{form1.hallazgos}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-info"> <!-- /.Impresion Diagnostica -->
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse6">Impresión Diagnóstica</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse6" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="panel-body">
+                                                    {{ form1.impresion.errors }}
+                                                    <p><label for="id_impresion"></label> {{form1.impresion}}</p> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                                   
+                                    <div class="panel panel-info"> <!-- /.Remision Interna -->
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse12">Remisión Interna</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse12" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="panel-body">
+                                                    {{ form1.remision_interna.errors }}
+                                                    <p><label for="id_remision"></label>{{form1.remision}}</p> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </form>
+                                    <div class="panel panel-info"> <!-- /.Generar Rips -->
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse13">Generar Rips</a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse13" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <br>
+                                                        <div class="row">
+                                                            <div class="col-lg-4">{{ form1.ambito.errors }}<p><label for="id_ambito">Ambito de realización del procedimiento:</label> {{form1.ambito}}</p></div>
+                                                            <div class="col-lg-4">{{ form1.finalidad.errors }}<p><label for="id_finalidad">Finalidad del procedimiento:</label> {{form1.finalidad}}</p></div>
+                                                            <div class="col-lg-4">{{ form1.personal.errors }}<p><label for="id_personal">Personal que Atiende:</label> {{form1.personal}}</p></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12"><p><label for="id_diagnostico">Diagnostico:</label><input type="text" class="form-control" id="id_diagnostico" name="diagnostico"/></p></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12"><p><label for="id_diagnostico1">Diagnostico Relacionado 1:</label><input type="text" class="form-control" id="id_diagnostico1" name="diagnostico1"/></p></div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-lg-12"><p><label for="id_complicacion">Complicacion:</label><input type="text" class="form-control" id="id_complicacion" name="complicacion"/></p></div>
+                                                        </div>      
+                                                        <div class="row">
+                                                            <div class="col-lg-9">{{ form1.forma.errors }}<p><label for="id_forma">Forma:</label> {{form1.forma}}</p></div>
+                                                        </div>                                
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <button type="submit" name="btntabhistoria" class="btn btn-primary btn-lg">Guardar</button>
+                                    <a class="btn btn-primary btn-lg" href="/imprimir/procedimiento/{{ getorden.id }}"><i class="glyphicon glyphicon-print"></i></a> 
+                                </div>
+                            </div>     
+                        </div>         
+                    </div>
+                    <div class="tab-pane fade" id="tabhistorial">
+                        <br>
+                        <h4>Historial de Consultas</h4>
+                        {% if historial %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                      <th>Fecha</th>
+                                      <th>Evento</th>
+                                      <th>Medico</th>
+                                      <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for p in historial %}
+                                    <tr>  
+                                      <td>{{p.orden.fecha|date:"d/m/y"}} {{p.orden.fecha|time:"H:i"}}</td>
+                                      {% if p.orden.consulta == None %}
+                                        <td>{{p.orden.procedimiento}}</td>
+                                      {% else %}
+                                        <td>{{p.orden.consulta}}</td>
+                                      {% endif %}
+                                      <td>{{p.orden.medico}}</td>
+                                      <td><a name={{p.id}} class="btn btn-primary btn-xs muestra_historia" data-toggle="modal" data-target="#preliminar"><i class="glyphicon glyphicon-eye-open"></i></a></td>     
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <h5>El paciente no tiene registros de historia y evoluciones</h5>
+                        {% endif %}
+
+                        <br>
+                        <h4>Historial de Procedimientos</h4>
+                        {% if lista_proc %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                      <th>Fecha</th>
+                                      <th>Evento</th>
+                                      <th>Medico</th>
+                                      <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for p in lista_proc %}
+                                    <tr>  
+                                      <td>{{p.orden.fecha|date:"d/m/y"}} {{p.orden.fecha|time:"H:i"}}</td>
+                                      {% if p.orden.consulta == None %}
+                                        <td>{{p.orden.procedimiento}}</td>
+                                      {% else %}
+                                        <td>{{p.orden.consulta}}</td>
+                                      {% endif %}
+                                      <td>{{p.orden.medico}}</td>
+                                      <td><a name={{p.id}} class="btn btn-primary btn-xs muestra_procedimiento" data-toggle="modal" data-target="#preliminar"><i class="glyphicon glyphicon-eye-open"></i></a></td>     
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <h5>El paciente no tiene registros de procedimientos</h5>
+                        {% endif %}
+                    </div> 
+                </div>                
+            </div>
+            <!-- /.panel-body -->
+        </div>
+	</div>
+</div>	
+
+<div id="preliminar" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Historial</h4>
+      </div>
+      <div class="modal-body">
+        <div id="vista_historia">
+            <div class="row">
+                <div class="col-lg-6">
+                    <label>Motivo</label>
+                    <textarea id="c_motivo" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="col-lg-6">
+                    <label>Enfermedad Actual</label>
+                    <textarea id="c_enfermedad_actual" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <h4 class="page-header">Examen Fisico: Signos Vitales</h4>
+            <div class="row">
+                <div class="col-lg-4">
+                    <label>P. Arterial (mmHg):</label>
+                    <input id="c_presion_arterial" class="form-control">
+                    <br>
+                    <label>Temperatura(ºC):</label>
+                    <input id="c_temperatura" class="form-control">
+                </div>
+                <div class="col-lg-4">
+                    <label>Frec Card (min):</label>
+                    <input id="c_frecuencia_cardiaca" class="form-control">
+                    <br>
+                    <label>Talla (Cm):</label>
+                    <input id="c_talla" class="form-control">
+                </div>
+                <div class="col-lg-4">
+                    <label>Frec Resp (min):</label>
+                    <input id="c_frecuencia_respiratoria" class="form-control">
+                    <br>
+                    <label>Peso(Kg):</label>
+                    <input id="c_peso" class="form-control">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8">
+                    <br>
+                    <label>Descripcion:</label>
+                    <textarea id="c_descripcion" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="col-lg-4">
+                    <br>
+                    <label>Indice Masa Corp(Kg/mt2):</label>
+                    <input id="c_masa_corporal" class="form-control">
+                </div>
+            </div>        
+            <h4 class="page-header">Examen Detallado</h4>
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="nav nav-pills">
+                        <li><a href="#cabeza-pill" data-toggle="tab">Cabeza</a>
+                        </li>
+                        <li><a href="#orl-pill" data-toggle="tab">ORL</a>
+                        </li>
+                        <li><a href="#respira-pill" data-toggle="tab">SR</a>
+                        </li>
+                        <li><a href="#cardio-pill" data-toggle="tab">SC</a>
+                        </li>
+                        <li class="active"><a href="#digestivo-pill" data-toggle="tab">SD</a>
+                        </li>
+                        <li><a href="#genito-pill" data-toggle="tab">SG</a>
+                        </li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="cabeza-pill">
+                            <label>Cabeza, Cara y Cuello</label>
+                            <textarea id="c_cabeza" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="tab-pane fade" id="orl-pill">
+                            <label>ORL</label>
+                            <textarea id="c_orl" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="tab-pane fade" id="respira-pill">
+                            <label>Sistema Respiratorio</label>
+                            <textarea id="c_sist_respiratorio" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="tab-pane fade" id="cardio-pill">
+                            <label>Sistema Cardiovascular</label>
+                            <textarea id="c_sist_cardiovascular" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="tab-pane fade in active" id="digestivo-pill">
+                            <label>Sistema Digestivo</label>
+                            <textarea id="c_sist_digestivo" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="tab-pane fade" id="genito-pill">
+                            <label>Sistema Genitourinario</label>
+                            <textarea id="c_sist_genitourinario" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <br>
+                    <label>Plan Diagnostico</label>
+                    <textarea id="c_plan" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="col-lg-6">
+                    <br>
+                    <label>Plan Terapeutico</label>
+                    <textarea id="c_plan_terapeutico" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+        <div id="vista_procedimiento">
+            <div class="row">
+                <div class="col-lg-12">
+                    <label>Hallazgos</label>
+                    <textarea id="c_hallazgos" class="form-control" rows="3"></textarea>
+                    <br>
+                    <label>Impresion</label>
+                    <textarea id="c_impresion" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+        </div>    
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#id_diagnostico,#id_diagnostico1,#id_complicacion").select2({
+            ajax: {
+              url: "/consulta_cie/",
+              dataType: 'json',
+              quietMillis: 250,
+              data: function (term) {
+                return {
+                  term: term, // search term
+                };
+              },
+              results: function (data, page) { 
+                return { results: data };
+              }
+            },
+            minimumInputLength: 1
+        });
+
+
+        $('.muestra_historia').on('click',muestra_historia);
+        $('.muestra_procedimiento').on('click',muestra_procedimiento);
+
+        function muestra_historia(){
+            var id_historia = $(this).attr('name');
+            $('#vista_historia').css("display","block"); //Muestra el div de las historias
+            $('#vista_procedimiento').css("display","none"); //Oculta el div de procedimiento
+            $.ajax({
+                async : false,
+                data : {'id_historia':id_historia},
+                url : '/muestra_historia/',
+                type : 'get',
+                success : function(data){
+                    $('#c_motivo').val(data[0].fields.motivo);
+                    $('#c_enfermedad_actual').val(data[0].fields.enfermedad_actual);
+                    $('#c_presion_arterial').val(data[0].fields.presion_arterial);
+                    $('#c_temperatura').val(data[0].fields.temperatura);
+                    $('#c_frecuencia_cardiaca').val(data[0].fields.frecuencia_cardiaca);
+                    $('#c_talla').val(data[0].fields.talla);
+                    $('#c_frecuencia_respiratoria').val(data[0].fields.frecuencia_respiratoria);
+                    $('#c_peso').val(data[0].fields.peso);
+                    $('#c_masa_corporal').val(data[0].fields.masa_corporal);
+                    $('#c_descripcion').val(data[0].fields.descripcion);
+
+                    $('#c_cabeza').val(data[0].fields.cabeza);
+                    $('#c_orl').val(data[0].fields.orl);
+                    $('#c_sist_respiratorio').val(data[0].fields.sist_respiratorio);
+                    $('#c_sist_cardiovascular').val(data[0].fields.sist_cardiovascular);
+                    $('#c_sist_digestivo').val(data[0].fields.sist_digestivo);
+                    $('#c_sist_genitourinario').val(data[0].fields.sist_genitourinario);
+                    $('#c_plan').val(data[0].fields.plan);
+                    $('#c_plan_terapeutico').val(data[0].fields.plan_terapeutico);
+                }
+            });
+        }
+        function muestra_procedimiento(){
+            var id_historia = $(this).attr('name');
+            $('#vista_historia').css("display","none"); //Oculta el div de las historias
+            $('#vista_procedimiento').css("display","block"); //Muestra el div de procedimiento 
+            $.ajax({
+                async : false,
+                data : {'id_historia':id_historia},
+                url : '/muestra_procedimiento/',
+                type : 'get',
+                success : function(data){
+                    $('#c_hallazgos').val(data[0].fields.hallazgos);
+                    $('#c_impresion').val(data[0].fields.impresion);
+                }
+            });
+        }    
+    });
+</script>
+<!--
+<script type="text/javascript" src="/static/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+tinymce.init({
+    selector: "textarea"
+ });
+</script>
+-->
+{% endblock %}

@@ -1,0 +1,22 @@
+from django.conf.urls import patterns, include, url
+from django.conf import settings
+from django.contrib import admin
+admin.autodiscover()
+
+if settings.DEBUG:
+    import debug_toolbar
+
+urlpatterns = patterns('',
+    # Examples:
+    # url(r'^$', 'mysite.views.home', name='home'),
+    # url(r'^blog/', include('blog.urls')),
+
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^',include('mysite.apps.citas.urls')),
+    url(r'^',include('mysite.apps.home.urls')),
+    url(r'^',include('mysite.apps.historias.urls')),
+    url(r'^',include('mysite.apps.datos.urls')),
+    url(r'^',include('mysite.apps.organizaciones.urls')),
+    url(r'^',include('mysite.apps.parametros.urls')),
+    url(r'^__debug__/', include(debug_toolbar.urls)),
+)

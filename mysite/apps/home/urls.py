@@ -1,0 +1,21 @@
+from django.conf.urls import patterns,url
+
+urlpatterns = patterns('mysite.apps.home.views',
+	url(r'^$','index_view',name='vista_principal'),
+	url(r'^login/$','login_view',name='vista_login'),
+	url(r'^registro/$','register_view',name='vista_registro'),
+	url(r'^logout/$','logout_view',name='vista_logout'),
+	url(r'^rips/consulta/$','rips_consulta_view',name= "vista_rips_consulta_view"),
+	url(r'^rips/procedimiento/$','rips_procedimiento_view',name= "vista_rips_procedimiento_view"),
+	url(r'^portal_empresas/$','portal_empresas_view',name='vista_portal_empresas'),
+	url(r'^buscar_orden/$','buscar_orden_view',name='vista_buscar_orden'),
+	url(r'^cambiarPassword/$','cambiarPassword_view',name='vista_cambiarPassword'),
+	url(r'^usuarios/$','usuarios_view',name='vista_usuarios'),
+	url(r'^add/usuario/$','add_usuario_view',name= "vista_agregar_usuario"),
+	url(r'^edit/usuario/(?P<id_prod>.*)/$','edit_usuario_view',name= "vista_edit_usuario"),
+	url(r'^cambiarClave/usuario/(?P<id_prod>.*)/$','cambiarClave_view',name= "vista_cambiarClave"),
+	url(r'^usuariosEmpresa/$','usuariosEmpresa_view',name='vista_usuariosEmpresa'),
+	url(r'^edit/usuarioEmpresa/(?P<id_prod>.*)/$','edit_usuarioEmpresa_view',name= "vista_edit_usuarioEmpresa"),
+	url(r'^add/usuarioEmpresa/$','add_usuarioEmpresa_view',name= "vista_agregar_usuarioEmpresa"),
+	url(r'^cambiarClave/usuarioEmpresa/(?P<id_prod>.*)/$','cambiarClaveEmpresa_view',name= "vista_cambiarClaveEmpresa"),
+)

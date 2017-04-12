@@ -1,0 +1,20 @@
+from django.conf.urls import patterns,url
+
+urlpatterns = patterns('mysite.apps.citas.views',
+	url(r'^agenda/$','agenda_view',name='vista_agenda'),
+	url(r'^agenda/doctor/$','agenda_doctor_view',name='vista_agenda_doctor'),
+	url(r'^redirecciona/(?P<id_prod>.*)/$','redirecciona_view',name='vista_redirecciona'),
+	url(r'^busca/paciente/$','busca_paciente_view',name='vista_busca_paciente'),
+	url(r'^calendario/$','calendario_view',name='vista_calendario'),
+	url(r'^calendario/procedimientos/$','calendario_procedimientos_view',name='vista_calendario_procedimientos'),
+	url(r'^calendario/disponibilidad/consultas/$','calendario_disponibilidad_consultas_view',name='vista_calendario_disponibilidad_consultas'),
+	url(r'^calendario/disponibilidad/procedimientos/$','calendario_disponibilidad_procedimientos_view',name='vista_calendario_disponibilidad_procedimientos'),
+	url(r'^citas/consultas/$','citas_consultas_view',name='vista_citas_consultas'),
+	url(r'^citas/listado/$','citas_listado_view',name='vista_citas_listado'),
+	url(r'^obtiene/citas/consultas/$','obtiene_citas_consultas_view',name='vista_obtiene_citas_consultas'),
+	url(r'^citas/procedimientos/$','citas_procedimientos_view',name='vista_citas_procedimientos'),
+	url(r'^obtiene/citas/procedimientos/$','obtiene_citas_procedimientos_view',name='vista_obtiene_citas_procedimientos'),
+	url(r'^citas/reservaciones/$','citas_reservaciones_view',name='vista_citas_reservaciones'),
+	url(r'^citas/disponibilidad/consultas/$','citas_disponibilidad_consultas_view',name='vista_citas_disponibilidad_consultas'),
+	url(r'^citas/disponibilidad/procedimientos/$','citas_disponibilidad_procedimientos_view',name='vista_citas_disponibilidad_procedimientos'),
+)

@@ -1,0 +1,57 @@
+from django.conf.urls import patterns,url
+
+
+urlpatterns = patterns('mysite.apps.historias.views',
+	url(r'^historias/page/(?P<pagina>.*)/$','historias_view',name='vista_historias'),
+	url(r'^add/historias/orden/(?P<id_prod>.*)/$','add_historias_view',name= "vista_add_historias"),
+	url(r'^edit/historias/(?P<id_prod>.*)/$','edit_historias_view',name= "vista_editar_historias"),
+	url(r'^show/historias/(?P<id_prod>.*)/$','show_historias_view',name= "vista_show_historias"),
+	url(r'^add/evolucion/orden/(?P<id_prod>.*)/$','add_evolucion_view',name= "vista_add_evolucion"),
+	url(r'^add/procedimiento/orden/(?P<id_prod>.*)/$','add_procedimientoOrden_view',name= "vista_add_procedimientoOrden"),
+	url(r'^edit/procedimiento/orden/(?P<id_prod>.*)/$','edit_procedimientoOrden_view',name= "vista_edit_procedimientoOrden"),
+	url(r'^show/procedimiento/orden/(?P<id_prod>.*)/$','show_procedimientoOrden_view',name= "vista_show_procedimientoOrden"),
+	url(r'^ordenes/$','ordenes_view',name='vista_ordenes'),
+	url(r'^ordenesReporte/$','ordenesReporte_view',name='vista_ordenesReporte'),
+	url(r'^add/orden/(?P<id_prod>.*)/$','add_orden_view',name= "vista_add_orden"),
+	url(r'^finalizar/(?P<id_orden>.*)/$','finalizar_view',name= "vista_finalizar"),
+	url(r'^add/servicios/(?P<id_prod>.*)/(?P<id_orden>.*)/$','add_servicios_view',name= "vista_add_servicios"),
+	url(r'^borrar/servicio/(?P<id_orden>.*)/(?P<id_servicio>.*)/$','borrar_servicio_view',name= "vista_borrar_servicio"),
+	url(r'^edit/orden/(?P<id_prod>.*)/$','edit_orden_view',name= "vista_edit_orden"),
+	url(r'^anula/orden/(?P<id_prod>.*)/$','anula_orden_view',name= "vista_anula_orden"),		
+	url(r'^consulta_especialidad/$','consulta_especialidad_view',name='vista_consulta_especialidad'),
+	url(r'^consulta_procedimiento/$','consulta_procedimiento_view',name='vista_consulta_procedimiento'),
+	url(r'^consulta_consulta/$','consulta_consulta_view',name='vista_consulta_consulta'),
+	url(r'^consulta_plan/$','consulta_plan_view',name='vista_consulta_plan'),
+	url(r'^consulta_empresa/$','consulta_empresa_view',name='vista_consulta_empresa'),
+	url(r'^rango_procedimiento/$','rango_procedimiento_view',name='vista_rango_procedimiento'),
+	url(r'^rango_consulta/$','rango_consulta_view',name='vista_rango_consulta'),
+	#Consultas ajax que se hacen en las historias
+	url(r'^borrar_posologia/$','borrar_posologia_view',name='vista_borrar_posologia'),
+	url(r'^agregar_posologia/$','agregar_posologia_view',name='vista_agregar_posologia'),
+	url(r'^agregar_remision/$','agregar_remision_view',name='vista_agregar_remision'),
+	url(r'^borrar_remision/$','borrar_remision_view',name='vista_borrar_remision'),
+	url(r'^agregar_laboratorio/$','agregar_laboratorio_view',name='vista_agregar_laboratorio'),
+	url(r'^borrar_laboratorio/$','borrar_laboratorio_view',name='vista_borrar_laboratorio'),
+	url(r'^consulta_cie/$','consulta_cie_view',name='vista_consulta_cie'),
+	#Consultas ajax que se hacen para conocer los historiales de los pacientes
+	url(r'^muestra_historia/$','muestra_historia_view',name='vista_muestra_historia'),
+	url(r'^muestra_procedimiento/$','muestra_procedimiento_view',name='vista_muestra_procedimiento'),
+	#Impresion de Documentos
+	url(r'^imprimir/recibo/(?P<id_prod>.*)/$','imprimir_recibo_view',name='vista_imprimir_recibo'),
+	url(r'^imprimir/historia/(?P<id_prod>.*)/$','imprimir_historia_view',name='vista_imprimir_historia'),
+	url(r'^imprimir/concepto/(?P<id_prod>.*)/$','imprimir_concepto_view',name='vista_imprimir_concepto'),
+	url(r'^imprimir/medicamentos/(?P<id_prod>.*)/$','imprimir_medicamentos_view',name='vista_imprimir_medicamentos'),
+	url(r'^imprimir/ordenamientos/(?P<id_prod>.*)/$','imprimir_ordenamientos_view',name='vista_imprimir_ordenamientos'),
+	url(r'^imprimir/laboratorios/(?P<id_prod>.*)/$','imprimir_laboratorios_view',name='vista_imprimir_laboratorios'),
+	url(r'^imprimir/remision/(?P<id_prod>.*)/$','imprimir_remision_view',name='vista_imprimir_remision'),
+	url(r'^imprimir/procedimiento/(?P<id_prod>.*)/$','imprimir_procedimiento_view',name='vista_imprimir_procedimiento'),
+	#Creacion de Rips
+	url(r'^crear/rips/$','crear_rips_view',name='vista_crear_rips'),
+	url(r'^empresas/institucion/$','empresas_institucion_view',name='vista_empresas_institucion'),
+)
+
+
+	#url(r'^about/$','about_view',name='vista_about'),
+	#url(r'^productos/page/(?P<pagina>.*)/$','productos_view',name='vista_productos'),
+	#url(r'^producto/(?P<id_prod>.*)/$','singleProduct_view',name='vista_single_producto'),
+	#url(r'^contacto/$','contacto_view',name='vista_contacto'),

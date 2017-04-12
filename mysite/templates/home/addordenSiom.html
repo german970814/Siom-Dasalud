@@ -1,0 +1,97 @@
+{% extends 'home/base.html' %}
+
+{% block title %} Crear Orden{% endblock %}
+{% block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h3 class="page-header">Crear Orden de Servicio al Paciente: {{ temp.pnombre }} {{ temp.papellido }}</h3>
+	</div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+      {% if form.errors %}
+      <div class="alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert">&times;</a>
+          <strong>Corregir los siguientes errores!</strong> {{ form.errors }}
+      </div>
+      {% endif %}
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+		<div class="panel panel-primary">
+		    <div class="panel-heading">
+		        Formulario para creación de Orden de Servicio
+		    </div>
+		    <!-- /.panel-heading -->
+		    <div class="panel-body">
+		    	<form action="." method="POST">
+					{% csrf_token %}   
+					<div class="row">
+						<div class="col-lg-4"><p><label for="id_institucion">Institucion que prestará el servicio:</label> {{form.institucion}}</p></div>
+						<div class="col-lg-4"><p><label for="id_fecha">Fecha Orden:</label> {{form.fecha}}</p></div>
+                        <div class="col-lg-4"><p><label for="id_fecha_atencion">Fecha Atencion:</label> {{form.fecha_atencion}}</p></div>
+		            </div>
+					<div class="row">
+						<div class="col-lg-4"><p><label for="id_empresa">Empresa:</label> {{form.empresa}}</p></div>
+                        <div class="col-lg-4"><p><label for="id_medico">Medico:</label> {{form.medico}}</p></div>
+                        <div class="col-lg-4"><p><label for="id_examen">Tipo de Examen:</label> {{form.examen}}</p></div>
+		            </div>
+                    <div class="row">
+                        <div class="col-lg-4"><p><label for="id_examen_adicional">Examen Adicional:</label> {{form.examen_adicional}}</p></div>
+                        <div class="col-lg-8"><p><label for="id_empresa_cliente">Empresa Cliente:</label> {{form.empresa_cliente}}</p></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6"><p><label for="id_cargo">Cargo al que Aspira:</label> {{form.cargo}}</p></div>
+                        <div class="col-lg-6"><p><label for="id_seccion">Seccion del cargo:</label> {{form.seccion}}</p></div>
+                    </div>
+	                <br> 
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <button type="submit" class="btn btn-primary btn-block">Guardar</button>    
+                        </div>
+                    </div>                  
+				</form>   
+		    </div>
+		</div>    		
+	</div>
+</div>	
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#id_fecha").prop('readonly', true); //Inactiva el campo fecha para que no sea modificable
+        $("#id_fecha_atencion").prop('readonly', true); //Inactiva el campo fecha para que no sea modificable
+        $('#id_institucion').on('change',agrega_empresas);
+        function agrega_empresas(){
+            var v_institucion = $(this).val()
+            if (v_institucion != ''){
+                $.ajax({
+                    async : false,
+                    data : {'id':v_institucion},
+                    url : '/empresas/institucion/',
+                    type : 'get',
+                    success : function(data){
+                        var tam = data.length
+                        var i=0;
+                        //Se limpia el select para llenarlo con los datos consultados
+                        $('#id_empresa').html('');
+                        $('#id_empresa').append('<option value="-1" selected="selected">Selecciona una Empresa</option>');
+                        for(i;i<=(tam-1);i++){
+                            $('#id_empresa').append('<option value="' + data[i].id + '">' + data[i].razon + '</option>');
+                        }                       
+                    }
+                });
+            }else{
+                $('#id_empresa').html('');
+                $('#id_empresa').append('<option value="-1" selected="selected">Selecciona una Empresa</option>');
+            }
+        }                                             
+    });
+</script>
+{% endblock %}
