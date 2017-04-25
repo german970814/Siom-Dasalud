@@ -1,0 +1,7 @@
+from django.contrib import admin
+from .models import Laboratorio, Equipo, SeccionTrabajo, Tecnica
+
+admin.site.register(Laboratorio)
+admin.site.register(Equipo)
+admin.site.register(SeccionTrabajo)
+admin.site.register(Tecnica)

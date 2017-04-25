@@ -728,9 +728,7 @@ def consulta_procedimiento_view(request):
 		total = honorario + valor_sala + valor_sutura
 		valor = '%.2f' % total
 	else:
-		print "************************************"
-		print "CALCULAR TARIFA DE ACUERDO A ISS2004"
-		print "************************************"	
+		pass	
 
 	from django.core.serializers.json import DjangoJSONEncoder
 	data = []

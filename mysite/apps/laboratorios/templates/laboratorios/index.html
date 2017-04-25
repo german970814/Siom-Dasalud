@@ -1,0 +1,41 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Laboratorios</title>
+        <link rel="stylesheet" href="{% static 'laboratorios/node_modules/vuetify/dist/vuetify.min.css' %}">
+        <link href="{% static 'laboratorios/fonts.css' %}" rel="stylesheet" type="text/css">
+        <style media="screen">
+            .sidebar .material-icons.icon {
+                line-height: inherit !important;
+            }
+        </style>
+    </head>
+
+    <body>
+        {% csrf_token %}
+        <div id="app">
+            <v-app sidebar-under-toolbar>
+                <ig-menu>
+                    <v-container fluid>
+                        <br>
+                        <v-spacer></v-spacer>
+                        <!--Start-->
+                        <router-view></router-view>
+                        <!--End-->
+                    </v-container>
+                </ig-menu>
+                <v-snackbar :timeout="4000" :top="false" :bottom="true" v-model="snackbar">
+                    {[ snackbarText ]}
+                    <v-btn flat class="pink--text" @click.native="snackbar = false">Cerrar</v-btn>
+                </v-snackbar>
+            </v-app>
+        </div>
+        <script type="text/javascript" src="{% static 'laboratorios/build.js' %}"></script>
+        <script type="text/javascript">
+
+        </script>
+    </body>
+</html>

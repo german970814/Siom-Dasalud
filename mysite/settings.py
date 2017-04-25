@@ -24,9 +24,10 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 URL_LOGIN = '/login/'
+LOGIN_URL = '/login/'
 
 # Application definition
 
@@ -44,7 +45,9 @@ INSTALLED_APPS = (
     'mysite.apps.organizaciones',
     'mysite.apps.parametros',
     'mysite.apps.facturacion',
-    'debug_toolbar',
+    'mysite.apps.laboratorios',
+    'rest_framework',
+    # 'debug_toolbar',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -76,12 +79,12 @@ TEMPLATE_DIRS = (
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'siom',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': 'geova6',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'dasalud_postgres',                      # Or path to database file if using sqlite3.
+        'USER': 'german1234',                      # Not used with sqlite3.
+        'PASSWORD': '1234',                  # Not used with sqlite3.
+        'HOST': '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -101,15 +104,14 @@ USE_TZ = False
 
 if DEBUG:
     MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR2,'static','media')
+    MEDIA_ROOT = os.path.join(BASE_DIR2, 'static', 'media')
     STATICFILES_DIRS = (
         os.path.join(BASE_DIR2, 'static', 'static'),
     )
 
-
-def show_toolbar(request):
-    return not request.is_ajax() and request.user
-    
-DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK': 'mysite.settings.show_toolbar',
-}    
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+        # 'rest_framework.permissions.AllowAny'
+    ]
+}

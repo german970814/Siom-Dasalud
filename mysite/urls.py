@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^laboratorios/', include('mysite.apps.laboratorios.urls', namespace='laboratorios')),
     url(r'^',include('mysite.apps.citas.urls')),
     url(r'^',include('mysite.apps.home.urls')),
     url(r'^',include('mysite.apps.historias.urls')),
