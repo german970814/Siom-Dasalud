@@ -8,16 +8,16 @@
         <v-data-table
             v-bind:headers="headers"
             v-model="data"
-            v-bind:search="buscador" select-all
+            v-bind:search="buscador"
             :rows-per-page-items="[10]"
             rowsPerPage="10"
             rows-per-page-text="Filas por Página"
             no-results-text="No se encontraron resultados"
             ref="dataTable">
             <template slot="items" scope="props">
-                <td @click="updateForm(props.item)">
+                <!-- <td @click="updateForm(props.item)">
                     <v-checkbox primary v-model="props.item.selected" ></v-checkbox>
-                </td>
+                </td> -->
                 <template v-for="field of fields">
                     <td class="text-xs-center" @click="updateForm(props.item)">{{ getattr(props.item, field) }}</td>
                 </template>
@@ -55,7 +55,7 @@ export default {
         }
     },
     mounted: function () {
-        this.$refs.dataTable.rowsPerPage = 10;
+        // this.$refs.dataTable.rowsPerPage = 10;
     },
     methods: {
         getattr: function (obj, attr) {

@@ -65,7 +65,7 @@
     <body>
         {% csrf_token %}
         <div id="app">
-            <v-app sidebar-under-toolbar>
+            <v-app>
               <template>
                   <div>
                       <v-toolbar class="cyan darken-1">
@@ -292,14 +292,15 @@
                                   </v-list-group>
                                   <v-divider light></v-divider>
                                   {% endif %}
+                                  <v-subheader>Laboratorio</v-subheader>
                                   <v-list-group>
                                       <v-list-item slot="item">
                                           <v-list-tile ripple>
                                               <v-list-tile-avatar>
-                                                  <v-icon>open_in_browser</v-icon>
+                                                  <v-icon>local_hospital</v-icon>
                                               </v-list-tile-avatar>
                                               <v-list-tile-content>
-                                                  <v-list-tile-title>Laboratorio</v-list-tile-title>
+                                                  <v-list-tile-title>Administración</v-list-tile-title>
                                               </v-list-tile-content>
                                               <v-list-tile-action>
                                                   <v-icon>keyboard_arrow_down</v-icon>
@@ -307,8 +308,38 @@
                                           </v-list-tile>
                                       </v-list-item>
                                       <v-list-item>
-                                          <v-list-tile ripple href="{% url 'laboratorios:index' %}">
-                                              <v-list-tile-title>Lista de Laboratorios</v-list-tile-title>
+                                          <v-list-tile ripple href="{% url 'laboratorios:index' %}#/laboratorios/">
+                                            <v-list-tile-title>Laboratorios</v-list-tile-title>
+                                          </v-list-tile>
+                                      </v-list-item>
+                                      <v-list-item>
+                                          <v-list-tile ripple href="{% url 'laboratorios:index' %}#/equipos/">
+                                              <v-list-tile-title>Equipos</v-list-tile-title>
+                                          </v-list-tile>
+                                      </v-list-item>
+                                      <v-list-item>
+                                          <v-list-tile ripple href="{% url 'laboratorios:index' %}#/tecnicas/">
+                                              <v-list-tile-title>Tecnicas</v-list-tile-title>
+                                          </v-list-tile>
+                                      </v-list-item>
+                                      <v-list-item>
+                                          <v-list-tile ripple href="{% url 'laboratorios:index' %}#/secciones_trabajo/">
+                                              <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>
+                                          </v-list-tile>
+                                      </v-list-item>
+                                      <v-list-item>
+                                          <v-list-tile ripple href="{% url 'laboratorios:index' %}#/reactivos/">
+                                              <v-list-tile-title>Reactivos</v-list-tile-title>
+                                          </v-list-tile>
+                                      </v-list-item>
+                                      <v-list-item>
+                                          <v-list-tile ripple href="{% url 'laboratorios:index' %}#/caracteristicas/">
+                                              <v-list-tile-title>Caracteristicas</v-list-tile-title>
+                                          </v-list-tile>
+                                      </v-list-item>
+                                      <v-list-item>
+                                          <v-list-tile ripple href="{% url 'laboratorios:index' %}#/especificacion_caracteristicas/">
+                                              <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>
                                           </v-list-tile>
                                       </v-list-item>
                                   </v-list-group>

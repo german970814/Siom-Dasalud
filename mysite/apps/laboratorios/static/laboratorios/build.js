@@ -62,32 +62,38 @@
 
 	var _vueResource2 = _interopRequireDefault(_vueResource);
 
-	var _menu = __webpack_require__(6);
+	var _vueRouter = __webpack_require__(6);
+
+	var _vueRouter2 = _interopRequireDefault(_vueRouter);
+
+	var _menu = __webpack_require__(8);
 
 	var _menu2 = _interopRequireDefault(_menu);
 
-	var _table = __webpack_require__(18);
+	var _table = __webpack_require__(20);
 
 	var _table2 = _interopRequireDefault(_table);
 
-	var _form = __webpack_require__(61);
+	var _form = __webpack_require__(63);
 
 	var _form2 = _interopRequireDefault(_form);
 
-	var _igmixin = __webpack_require__(66);
+	var _igmixin = __webpack_require__(68);
 
 	var _igmixin2 = _interopRequireDefault(_igmixin);
 
-	var _urls = __webpack_require__(67);
+	var _routes = __webpack_require__(69);
+
+	var _routes2 = _interopRequireDefault(_routes);
+
+	var _urls = __webpack_require__(74);
 
 	var _urls2 = _interopRequireDefault(_urls);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// Vue.use(VueRouter);
+	_vue2.default.use(_vueRouter2.default);
 	_vue2.default.use(_vueResource2.default);
-	// import router from './routes';
-
 	_vue2.default.use(_vuetify2.default);
 
 	var BASE_URL = _urls2.default.BASE;
@@ -95,66 +101,30 @@
 	var app = new _vue2.default({
 	    el: '#app',
 	    delimiters: ['{[', ']}'],
-	    mixins: [_igmixin2.default],
+	    data: {
+	        snackbar: false,
+	        snackbarText: 'soy el campeon'
+	    },
 	    components: {
 	        igMenu: _menu2.default,
 	        igTable: _table2.default,
 	        igForm: _form2.default
 	    },
-	    props: {},
-	    data: {
-	        urlForm: _urls2.default.laboratorios,
-	        selected: false,
-	        headers: [{
-	            text: 'Código',
-	            left: true,
-	            sortable: false,
-	            value: 'tabla-codigo'
-	        }, {
-	            text: 'Nombre', value: 'tabla-nombre'
-	        }, {
-	            text: 'Código Internacional', value: 'tabla-codigo-internacional'
-	        }, {
-	            text: 'Equipo', value: 'table-equipo'
-	        }, {
-	            text: 'Sección de Trabajo', value: 'tabla-seccion-trabajo'
-	        }],
-	        laboratorios: [],
-	        fields: [{
-	            name: 'codigo',
-	            verbose_name: 'Código',
-	            type: String,
-	            hint: 'Este es el código que identifica a cada laboratorio.'
-	        }, {
-	            name: 'nombre',
-	            verbose_name: 'Nombre',
-	            type: String,
-	            hint: 'Este es el nombre del equipo.'
-	        }, {
-	            name: 'codigo_internacional',
-	            verbose_name: 'Código Internacional',
-	            type: String,
-	            hint: 'Este es el código de representacion internacional del laboratorio.'
-	        }, {
-	            name: 'equipo',
-	            verbose_name: 'Equipo',
-	            type: Array,
-	            url: _urls2.default.equipos,
-	            hint: 'Este es el equipo que sera usado en este laboratorio.',
-	            key: 'nombre'
-	        }, {
-	            name: 'seccion_trabajo',
-	            verbose_name: 'Sección de Trabajo',
-	            type: Array,
-	            url: _urls2.default.secciones_trabajo,
-	            hint: 'Este es el area o sección de trabajo de este laboratorio.',
-	            key: 'codigo'
-	        }]
+	    methods: {
+	        mostrarSnackBar: function mostrarSnackBar(value) {
+	            this.snackbarText = value;
+	            this.snackbar = true;
+	        },
+	        eventoObjetoCreado: function eventoObjetoCreado(value) {
+	            value.selected = false;
+	            this.elements.push(value);
+	            this.selected = value;
+	        },
+	        eventoFormularioActualizado: function eventoFormularioActualizado(value) {
+	            this.selected = value;
+	        }
 	    },
-	    mounted: function mounted() {
-	        this.getElements(_urls2.default.laboratorios);
-	    },
-	    methods: {}
+	    router: _routes2.default
 	}); //.$mount();
 
 /***/ }),
@@ -21053,10 +21023,2607 @@
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	  * vue-router v2.4.0
+	  * (c) 2017 Evan You
+	  * @license MIT
+	  */
+	'use strict';
+
+	/*  */
+
+	function assert (condition, message) {
+	  if (!condition) {
+	    throw new Error(("[vue-router] " + message))
+	  }
+	}
+
+	function warn (condition, message) {
+	  if (process.env.NODE_ENV !== 'production' && !condition) {
+	    typeof console !== 'undefined' && console.warn(("[vue-router] " + message));
+	  }
+	}
+
+	var View = {
+	  name: 'router-view',
+	  functional: true,
+	  props: {
+	    name: {
+	      type: String,
+	      default: 'default'
+	    }
+	  },
+	  render: function render (h, ref) {
+	    var props = ref.props;
+	    var children = ref.children;
+	    var parent = ref.parent;
+	    var data = ref.data;
+
+	    data.routerView = true;
+
+	    var name = props.name;
+	    var route = parent.$route;
+	    var cache = parent._routerViewCache || (parent._routerViewCache = {});
+
+	    // determine current view depth, also check to see if the tree
+	    // has been toggled inactive but kept-alive.
+	    var depth = 0;
+	    var inactive = false;
+	    while (parent) {
+	      if (parent.$vnode && parent.$vnode.data.routerView) {
+	        depth++;
+	      }
+	      if (parent._inactive) {
+	        inactive = true;
+	      }
+	      parent = parent.$parent;
+	    }
+	    data.routerViewDepth = depth;
+
+	    // render previous view if the tree is inactive and kept-alive
+	    if (inactive) {
+	      return h(cache[name], data, children)
+	    }
+
+	    var matched = route.matched[depth];
+	    // render empty node if no matched route
+	    if (!matched) {
+	      cache[name] = null;
+	      return h()
+	    }
+
+	    var component = cache[name] = matched.components[name];
+
+	    // attach instance registration hook
+	    // this will be called in the instance's injected lifecycle hooks
+	    data.registerRouteInstance = function (vm, val) {
+	      // val could be undefined for unregistration
+	      if (matched.instances[name] !== vm) {
+	        matched.instances[name] = val;
+	      }
+	    };
+
+	    // resolve props
+	    data.props = resolveProps(route, matched.props && matched.props[name]);
+
+	    return h(component, data, children)
+	  }
+	};
+
+	function resolveProps (route, config) {
+	  switch (typeof config) {
+	    case 'undefined':
+	      return
+	    case 'object':
+	      return config
+	    case 'function':
+	      return config(route)
+	    case 'boolean':
+	      return config ? route.params : undefined
+	    default:
+	      if (process.env.NODE_ENV !== 'production') {
+	        warn(
+	          false,
+	          "props in \"" + (route.path) + "\" is a " + (typeof config) + ", " +
+	          "expecting an object, function or boolean."
+	        );
+	      }
+	  }
+	}
+
+	/*  */
+
+	var encodeReserveRE = /[!'()*]/g;
+	var encodeReserveReplacer = function (c) { return '%' + c.charCodeAt(0).toString(16); };
+	var commaRE = /%2C/g;
+
+	// fixed encodeURIComponent which is more conformant to RFC3986:
+	// - escapes [!'()*]
+	// - preserve commas
+	var encode = function (str) { return encodeURIComponent(str)
+	  .replace(encodeReserveRE, encodeReserveReplacer)
+	  .replace(commaRE, ','); };
+
+	var decode = decodeURIComponent;
+
+	function resolveQuery (
+	  query,
+	  extraQuery,
+	  _parseQuery
+	) {
+	  if ( extraQuery === void 0 ) extraQuery = {};
+
+	  var parse = _parseQuery || parseQuery;
+	  var parsedQuery;
+	  try {
+	    parsedQuery = parse(query || '');
+	  } catch (e) {
+	    process.env.NODE_ENV !== 'production' && warn(false, e.message);
+	    parsedQuery = {};
+	  }
+	  for (var key in extraQuery) {
+	    var val = extraQuery[key];
+	    parsedQuery[key] = Array.isArray(val) ? val.slice() : val;
+	  }
+	  return parsedQuery
+	}
+
+	function parseQuery (query) {
+	  var res = {};
+
+	  query = query.trim().replace(/^(\?|#|&)/, '');
+
+	  if (!query) {
+	    return res
+	  }
+
+	  query.split('&').forEach(function (param) {
+	    var parts = param.replace(/\+/g, ' ').split('=');
+	    var key = decode(parts.shift());
+	    var val = parts.length > 0
+	      ? decode(parts.join('='))
+	      : null;
+
+	    if (res[key] === undefined) {
+	      res[key] = val;
+	    } else if (Array.isArray(res[key])) {
+	      res[key].push(val);
+	    } else {
+	      res[key] = [res[key], val];
+	    }
+	  });
+
+	  return res
+	}
+
+	function stringifyQuery (obj) {
+	  var res = obj ? Object.keys(obj).map(function (key) {
+	    var val = obj[key];
+
+	    if (val === undefined) {
+	      return ''
+	    }
+
+	    if (val === null) {
+	      return encode(key)
+	    }
+
+	    if (Array.isArray(val)) {
+	      var result = [];
+	      val.slice().forEach(function (val2) {
+	        if (val2 === undefined) {
+	          return
+	        }
+	        if (val2 === null) {
+	          result.push(encode(key));
+	        } else {
+	          result.push(encode(key) + '=' + encode(val2));
+	        }
+	      });
+	      return result.join('&')
+	    }
+
+	    return encode(key) + '=' + encode(val)
+	  }).filter(function (x) { return x.length > 0; }).join('&') : null;
+	  return res ? ("?" + res) : ''
+	}
+
+	/*  */
+
+
+	var trailingSlashRE = /\/?$/;
+
+	function createRoute (
+	  record,
+	  location,
+	  redirectedFrom,
+	  router
+	) {
+	  var stringifyQuery$$1 = router && router.options.stringifyQuery;
+	  var route = {
+	    name: location.name || (record && record.name),
+	    meta: (record && record.meta) || {},
+	    path: location.path || '/',
+	    hash: location.hash || '',
+	    query: location.query || {},
+	    params: location.params || {},
+	    fullPath: getFullPath(location, stringifyQuery$$1),
+	    matched: record ? formatMatch(record) : []
+	  };
+	  if (redirectedFrom) {
+	    route.redirectedFrom = getFullPath(redirectedFrom, stringifyQuery$$1);
+	  }
+	  return Object.freeze(route)
+	}
+
+	// the starting route that represents the initial state
+	var START = createRoute(null, {
+	  path: '/'
+	});
+
+	function formatMatch (record) {
+	  var res = [];
+	  while (record) {
+	    res.unshift(record);
+	    record = record.parent;
+	  }
+	  return res
+	}
+
+	function getFullPath (
+	  ref,
+	  _stringifyQuery
+	) {
+	  var path = ref.path;
+	  var query = ref.query; if ( query === void 0 ) query = {};
+	  var hash = ref.hash; if ( hash === void 0 ) hash = '';
+
+	  var stringify = _stringifyQuery || stringifyQuery;
+	  return (path || '/') + stringify(query) + hash
+	}
+
+	function isSameRoute (a, b) {
+	  if (b === START) {
+	    return a === b
+	  } else if (!b) {
+	    return false
+	  } else if (a.path && b.path) {
+	    return (
+	      a.path.replace(trailingSlashRE, '') === b.path.replace(trailingSlashRE, '') &&
+	      a.hash === b.hash &&
+	      isObjectEqual(a.query, b.query)
+	    )
+	  } else if (a.name && b.name) {
+	    return (
+	      a.name === b.name &&
+	      a.hash === b.hash &&
+	      isObjectEqual(a.query, b.query) &&
+	      isObjectEqual(a.params, b.params)
+	    )
+	  } else {
+	    return false
+	  }
+	}
+
+	function isObjectEqual (a, b) {
+	  if ( a === void 0 ) a = {};
+	  if ( b === void 0 ) b = {};
+
+	  var aKeys = Object.keys(a);
+	  var bKeys = Object.keys(b);
+	  if (aKeys.length !== bKeys.length) {
+	    return false
+	  }
+	  return aKeys.every(function (key) { return String(a[key]) === String(b[key]); })
+	}
+
+	function isIncludedRoute (current, target) {
+	  return (
+	    current.path.replace(trailingSlashRE, '/').indexOf(
+	      target.path.replace(trailingSlashRE, '/')
+	    ) === 0 &&
+	    (!target.hash || current.hash === target.hash) &&
+	    queryIncludes(current.query, target.query)
+	  )
+	}
+
+	function queryIncludes (current, target) {
+	  for (var key in target) {
+	    if (!(key in current)) {
+	      return false
+	    }
+	  }
+	  return true
+	}
+
+	/*  */
+
+	// work around weird flow bug
+	var toTypes = [String, Object];
+	var eventTypes = [String, Array];
+
+	var Link = {
+	  name: 'router-link',
+	  props: {
+	    to: {
+	      type: toTypes,
+	      required: true
+	    },
+	    tag: {
+	      type: String,
+	      default: 'a'
+	    },
+	    exact: Boolean,
+	    append: Boolean,
+	    replace: Boolean,
+	    activeClass: {
+	      type: String,
+	      default: 'router-link-active'
+	    },
+	    event: {
+	      type: eventTypes,
+	      default: 'click'
+	    }
+	  },
+	  render: function render (h) {
+	    var this$1 = this;
+
+	    var router = this.$router;
+	    var current = this.$route;
+	    var ref = router.resolve(this.to, current, this.append);
+	    var location = ref.location;
+	    var route = ref.route;
+	    var href = ref.href;
+
+	    var classes = {};
+	    var globalActiveClass = router.options.linkActiveClass;
+	    var activeClass = globalActiveClass == null
+	      ? this.activeClass
+	      : globalActiveClass;
+	    var compareTarget = location.path
+	      ? createRoute(null, location, null, router)
+	      : route;
+
+	    classes[activeClass] = this.exact
+	      ? isSameRoute(current, compareTarget)
+	      : isIncludedRoute(current, compareTarget);
+
+	    var handler = function (e) {
+	      if (guardEvent(e)) {
+	        if (this$1.replace) {
+	          router.replace(location);
+	        } else {
+	          router.push(location);
+	        }
+	      }
+	    };
+
+	    var on = { click: guardEvent };
+	    if (Array.isArray(this.event)) {
+	      this.event.forEach(function (e) { on[e] = handler; });
+	    } else {
+	      on[this.event] = handler;
+	    }
+
+	    var data = {
+	      class: classes
+	    };
+
+	    if (this.tag === 'a') {
+	      data.on = on;
+	      data.attrs = { href: href };
+	    } else {
+	      // find the first <a> child and apply listener and href
+	      var a = findAnchor(this.$slots.default);
+	      if (a) {
+	        // in case the <a> is a static node
+	        a.isStatic = false;
+	        var extend = _Vue.util.extend;
+	        var aData = a.data = extend({}, a.data);
+	        aData.on = on;
+	        var aAttrs = a.data.attrs = extend({}, a.data.attrs);
+	        aAttrs.href = href;
+	      } else {
+	        // doesn't have <a> child, apply listener to self
+	        data.on = on;
+	      }
+	    }
+
+	    return h(this.tag, data, this.$slots.default)
+	  }
+	};
+
+	function guardEvent (e) {
+	  // don't redirect with control keys
+	  if (e.metaKey || e.ctrlKey || e.shiftKey) { return }
+	  // don't redirect when preventDefault called
+	  if (e.defaultPrevented) { return }
+	  // don't redirect on right click
+	  if (e.button !== undefined && e.button !== 0) { return }
+	  // don't redirect if `target="_blank"`
+	  if (e.currentTarget && e.currentTarget.getAttribute) {
+	    var target = e.currentTarget.getAttribute('target');
+	    if (/\b_blank\b/i.test(target)) { return }
+	  }
+	  // this may be a Weex event which doesn't have this method
+	  if (e.preventDefault) {
+	    e.preventDefault();
+	  }
+	  return true
+	}
+
+	function findAnchor (children) {
+	  if (children) {
+	    var child;
+	    for (var i = 0; i < children.length; i++) {
+	      child = children[i];
+	      if (child.tag === 'a') {
+	        return child
+	      }
+	      if (child.children && (child = findAnchor(child.children))) {
+	        return child
+	      }
+	    }
+	  }
+	}
+
+	var _Vue;
+
+	function install (Vue) {
+	  if (install.installed) { return }
+	  install.installed = true;
+
+	  _Vue = Vue;
+
+	  Object.defineProperty(Vue.prototype, '$router', {
+	    get: function get () { return this.$root._router }
+	  });
+
+	  Object.defineProperty(Vue.prototype, '$route', {
+	    get: function get () { return this.$root._route }
+	  });
+
+	  var isDef = function (v) { return v !== undefined; };
+
+	  var registerInstance = function (vm, callVal) {
+	    var i = vm.$options._parentVnode;
+	    if (isDef(i) && isDef(i = i.data) && isDef(i = i.registerRouteInstance)) {
+	      i(vm, callVal);
+	    }
+	  };
+
+	  Vue.mixin({
+	    beforeCreate: function beforeCreate () {
+	      if (isDef(this.$options.router)) {
+	        this._router = this.$options.router;
+	        this._router.init(this);
+	        Vue.util.defineReactive(this, '_route', this._router.history.current);
+	      }
+	      registerInstance(this, this);
+	    },
+	    destroyed: function destroyed () {
+	      registerInstance(this);
+	    }
+	  });
+
+	  Vue.component('router-view', View);
+	  Vue.component('router-link', Link);
+
+	  var strats = Vue.config.optionMergeStrategies;
+	  // use the same hook merging strategy for route hooks
+	  strats.beforeRouteEnter = strats.beforeRouteLeave = strats.created;
+	}
+
+	/*  */
+
+	var inBrowser = typeof window !== 'undefined';
+
+	/*  */
+
+	function resolvePath (
+	  relative,
+	  base,
+	  append
+	) {
+	  var firstChar = relative.charAt(0);
+	  if (firstChar === '/') {
+	    return relative
+	  }
+
+	  if (firstChar === '?' || firstChar === '#') {
+	    return base + relative
+	  }
+
+	  var stack = base.split('/');
+
+	  // remove trailing segment if:
+	  // - not appending
+	  // - appending to trailing slash (last segment is empty)
+	  if (!append || !stack[stack.length - 1]) {
+	    stack.pop();
+	  }
+
+	  // resolve relative path
+	  var segments = relative.replace(/^\//, '').split('/');
+	  for (var i = 0; i < segments.length; i++) {
+	    var segment = segments[i];
+	    if (segment === '..') {
+	      stack.pop();
+	    } else if (segment !== '.') {
+	      stack.push(segment);
+	    }
+	  }
+
+	  // ensure leading slash
+	  if (stack[0] !== '') {
+	    stack.unshift('');
+	  }
+
+	  return stack.join('/')
+	}
+
+	function parsePath (path) {
+	  var hash = '';
+	  var query = '';
+
+	  var hashIndex = path.indexOf('#');
+	  if (hashIndex >= 0) {
+	    hash = path.slice(hashIndex);
+	    path = path.slice(0, hashIndex);
+	  }
+
+	  var queryIndex = path.indexOf('?');
+	  if (queryIndex >= 0) {
+	    query = path.slice(queryIndex + 1);
+	    path = path.slice(0, queryIndex);
+	  }
+
+	  return {
+	    path: path,
+	    query: query,
+	    hash: hash
+	  }
+	}
+
+	function cleanPath (path) {
+	  return path.replace(/\/\//g, '/')
+	}
+
+	/*  */
+
+	function createRouteMap (
+	  routes,
+	  oldPathMap,
+	  oldNameMap
+	) {
+	  var pathMap = oldPathMap || Object.create(null);
+	  var nameMap = oldNameMap || Object.create(null);
+
+	  routes.forEach(function (route) {
+	    addRouteRecord(pathMap, nameMap, route);
+	  });
+
+	  return {
+	    pathMap: pathMap,
+	    nameMap: nameMap
+	  }
+	}
+
+	function addRouteRecord (
+	  pathMap,
+	  nameMap,
+	  route,
+	  parent,
+	  matchAs
+	) {
+	  var path = route.path;
+	  var name = route.name;
+	  if (process.env.NODE_ENV !== 'production') {
+	    assert(path != null, "\"path\" is required in a route configuration.");
+	    assert(
+	      typeof route.component !== 'string',
+	      "route config \"component\" for path: " + (String(path || name)) + " cannot be a " +
+	      "string id. Use an actual component instead."
+	    );
+	  }
+
+	  var record = {
+	    path: normalizePath(path, parent),
+	    components: route.components || { default: route.component },
+	    instances: {},
+	    name: name,
+	    parent: parent,
+	    matchAs: matchAs,
+	    redirect: route.redirect,
+	    beforeEnter: route.beforeEnter,
+	    meta: route.meta || {},
+	    props: route.props == null
+	      ? {}
+	      : route.components
+	        ? route.props
+	        : { default: route.props }
+	  };
+
+	  if (route.children) {
+	    // Warn if route is named and has a default child route.
+	    // If users navigate to this route by name, the default child will
+	    // not be rendered (GH Issue #629)
+	    if (process.env.NODE_ENV !== 'production') {
+	      if (route.name && route.children.some(function (child) { return /^\/?$/.test(child.path); })) {
+	        warn(
+	          false,
+	          "Named Route '" + (route.name) + "' has a default child route. " +
+	          "When navigating to this named route (:to=\"{name: '" + (route.name) + "'\"), " +
+	          "the default child route will not be rendered. Remove the name from " +
+	          "this route and use the name of the default child route for named " +
+	          "links instead."
+	        );
+	      }
+	    }
+	    route.children.forEach(function (child) {
+	      var childMatchAs = matchAs
+	        ? cleanPath((matchAs + "/" + (child.path)))
+	        : undefined;
+	      addRouteRecord(pathMap, nameMap, child, record, childMatchAs);
+	    });
+	  }
+
+	  if (route.alias !== undefined) {
+	    if (Array.isArray(route.alias)) {
+	      route.alias.forEach(function (alias) {
+	        var aliasRoute = {
+	          path: alias,
+	          children: route.children
+	        };
+	        addRouteRecord(pathMap, nameMap, aliasRoute, parent, record.path);
+	      });
+	    } else {
+	      var aliasRoute = {
+	        path: route.alias,
+	        children: route.children
+	      };
+	      addRouteRecord(pathMap, nameMap, aliasRoute, parent, record.path);
+	    }
+	  }
+
+	  if (!pathMap[record.path]) {
+	    pathMap[record.path] = record;
+	  }
+
+	  if (name) {
+	    if (!nameMap[name]) {
+	      nameMap[name] = record;
+	    } else if (process.env.NODE_ENV !== 'production' && !matchAs) {
+	      warn(
+	        false,
+	        "Duplicate named routes definition: " +
+	        "{ name: \"" + name + "\", path: \"" + (record.path) + "\" }"
+	      );
+	    }
+	  }
+	}
+
+	function normalizePath (path, parent) {
+	  path = path.replace(/\/$/, '');
+	  if (path[0] === '/') { return path }
+	  if (parent == null) { return path }
+	  return cleanPath(((parent.path) + "/" + path))
+	}
+
+	var index$1 = Array.isArray || function (arr) {
+	  return Object.prototype.toString.call(arr) == '[object Array]';
+	};
+
+	var isarray = index$1;
+
+	/**
+	 * Expose `pathToRegexp`.
+	 */
+	var index = pathToRegexp;
+	var parse_1 = parse;
+	var compile_1 = compile;
+	var tokensToFunction_1 = tokensToFunction;
+	var tokensToRegExp_1 = tokensToRegExp;
+
+	/**
+	 * The main path matching regexp utility.
+	 *
+	 * @type {RegExp}
+	 */
+	var PATH_REGEXP = new RegExp([
+	  // Match escaped characters that would otherwise appear in future matches.
+	  // This allows the user to escape special characters that won't transform.
+	  '(\\\\.)',
+	  // Match Express-style parameters and un-named parameters with a prefix
+	  // and optional suffixes. Matches appear as:
+	  //
+	  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?", undefined]
+	  // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
+	  // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
+	  '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?|(\\*))'
+	].join('|'), 'g');
+
+	/**
+	 * Parse a string for the raw tokens.
+	 *
+	 * @param  {string}  str
+	 * @param  {Object=} options
+	 * @return {!Array}
+	 */
+	function parse (str, options) {
+	  var tokens = [];
+	  var key = 0;
+	  var index = 0;
+	  var path = '';
+	  var defaultDelimiter = options && options.delimiter || '/';
+	  var res;
+
+	  while ((res = PATH_REGEXP.exec(str)) != null) {
+	    var m = res[0];
+	    var escaped = res[1];
+	    var offset = res.index;
+	    path += str.slice(index, offset);
+	    index = offset + m.length;
+
+	    // Ignore already escaped sequences.
+	    if (escaped) {
+	      path += escaped[1];
+	      continue
+	    }
+
+	    var next = str[index];
+	    var prefix = res[2];
+	    var name = res[3];
+	    var capture = res[4];
+	    var group = res[5];
+	    var modifier = res[6];
+	    var asterisk = res[7];
+
+	    // Push the current path onto the tokens.
+	    if (path) {
+	      tokens.push(path);
+	      path = '';
+	    }
+
+	    var partial = prefix != null && next != null && next !== prefix;
+	    var repeat = modifier === '+' || modifier === '*';
+	    var optional = modifier === '?' || modifier === '*';
+	    var delimiter = res[2] || defaultDelimiter;
+	    var pattern = capture || group;
+
+	    tokens.push({
+	      name: name || key++,
+	      prefix: prefix || '',
+	      delimiter: delimiter,
+	      optional: optional,
+	      repeat: repeat,
+	      partial: partial,
+	      asterisk: !!asterisk,
+	      pattern: pattern ? escapeGroup(pattern) : (asterisk ? '.*' : '[^' + escapeString(delimiter) + ']+?')
+	    });
+	  }
+
+	  // Match any characters still remaining.
+	  if (index < str.length) {
+	    path += str.substr(index);
+	  }
+
+	  // If the path exists, push it onto the end.
+	  if (path) {
+	    tokens.push(path);
+	  }
+
+	  return tokens
+	}
+
+	/**
+	 * Compile a string to a template function for the path.
+	 *
+	 * @param  {string}             str
+	 * @param  {Object=}            options
+	 * @return {!function(Object=, Object=)}
+	 */
+	function compile (str, options) {
+	  return tokensToFunction(parse(str, options))
+	}
+
+	/**
+	 * Prettier encoding of URI path segments.
+	 *
+	 * @param  {string}
+	 * @return {string}
+	 */
+	function encodeURIComponentPretty (str) {
+	  return encodeURI(str).replace(/[\/?#]/g, function (c) {
+	    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
+	  })
+	}
+
+	/**
+	 * Encode the asterisk parameter. Similar to `pretty`, but allows slashes.
+	 *
+	 * @param  {string}
+	 * @return {string}
+	 */
+	function encodeAsterisk (str) {
+	  return encodeURI(str).replace(/[?#]/g, function (c) {
+	    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
+	  })
+	}
+
+	/**
+	 * Expose a method for transforming tokens into the path function.
+	 */
+	function tokensToFunction (tokens) {
+	  // Compile all the tokens into regexps.
+	  var matches = new Array(tokens.length);
+
+	  // Compile all the patterns before compilation.
+	  for (var i = 0; i < tokens.length; i++) {
+	    if (typeof tokens[i] === 'object') {
+	      matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$');
+	    }
+	  }
+
+	  return function (obj, opts) {
+	    var path = '';
+	    var data = obj || {};
+	    var options = opts || {};
+	    var encode = options.pretty ? encodeURIComponentPretty : encodeURIComponent;
+
+	    for (var i = 0; i < tokens.length; i++) {
+	      var token = tokens[i];
+
+	      if (typeof token === 'string') {
+	        path += token;
+
+	        continue
+	      }
+
+	      var value = data[token.name];
+	      var segment;
+
+	      if (value == null) {
+	        if (token.optional) {
+	          // Prepend partial segment prefixes.
+	          if (token.partial) {
+	            path += token.prefix;
+	          }
+
+	          continue
+	        } else {
+	          throw new TypeError('Expected "' + token.name + '" to be defined')
+	        }
+	      }
+
+	      if (isarray(value)) {
+	        if (!token.repeat) {
+	          throw new TypeError('Expected "' + token.name + '" to not repeat, but received `' + JSON.stringify(value) + '`')
+	        }
+
+	        if (value.length === 0) {
+	          if (token.optional) {
+	            continue
+	          } else {
+	            throw new TypeError('Expected "' + token.name + '" to not be empty')
+	          }
+	        }
+
+	        for (var j = 0; j < value.length; j++) {
+	          segment = encode(value[j]);
+
+	          if (!matches[i].test(segment)) {
+	            throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received `' + JSON.stringify(segment) + '`')
+	          }
+
+	          path += (j === 0 ? token.prefix : token.delimiter) + segment;
+	        }
+
+	        continue
+	      }
+
+	      segment = token.asterisk ? encodeAsterisk(value) : encode(value);
+
+	      if (!matches[i].test(segment)) {
+	        throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
+	      }
+
+	      path += token.prefix + segment;
+	    }
+
+	    return path
+	  }
+	}
+
+	/**
+	 * Escape a regular expression string.
+	 *
+	 * @param  {string} str
+	 * @return {string}
+	 */
+	function escapeString (str) {
+	  return str.replace(/([.+*?=^!:${}()[\]|\/\\])/g, '\\$1')
+	}
+
+	/**
+	 * Escape the capturing group by escaping special characters and meaning.
+	 *
+	 * @param  {string} group
+	 * @return {string}
+	 */
+	function escapeGroup (group) {
+	  return group.replace(/([=!:$\/()])/g, '\\$1')
+	}
+
+	/**
+	 * Attach the keys as a property of the regexp.
+	 *
+	 * @param  {!RegExp} re
+	 * @param  {Array}   keys
+	 * @return {!RegExp}
+	 */
+	function attachKeys (re, keys) {
+	  re.keys = keys;
+	  return re
+	}
+
+	/**
+	 * Get the flags for a regexp from the options.
+	 *
+	 * @param  {Object} options
+	 * @return {string}
+	 */
+	function flags (options) {
+	  return options.sensitive ? '' : 'i'
+	}
+
+	/**
+	 * Pull out keys from a regexp.
+	 *
+	 * @param  {!RegExp} path
+	 * @param  {!Array}  keys
+	 * @return {!RegExp}
+	 */
+	function regexpToRegexp (path, keys) {
+	  // Use a negative lookahead to match only capturing groups.
+	  var groups = path.source.match(/\((?!\?)/g);
+
+	  if (groups) {
+	    for (var i = 0; i < groups.length; i++) {
+	      keys.push({
+	        name: i,
+	        prefix: null,
+	        delimiter: null,
+	        optional: false,
+	        repeat: false,
+	        partial: false,
+	        asterisk: false,
+	        pattern: null
+	      });
+	    }
+	  }
+
+	  return attachKeys(path, keys)
+	}
+
+	/**
+	 * Transform an array into a regexp.
+	 *
+	 * @param  {!Array}  path
+	 * @param  {Array}   keys
+	 * @param  {!Object} options
+	 * @return {!RegExp}
+	 */
+	function arrayToRegexp (path, keys, options) {
+	  var parts = [];
+
+	  for (var i = 0; i < path.length; i++) {
+	    parts.push(pathToRegexp(path[i], keys, options).source);
+	  }
+
+	  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options));
+
+	  return attachKeys(regexp, keys)
+	}
+
+	/**
+	 * Create a path regexp from string input.
+	 *
+	 * @param  {string}  path
+	 * @param  {!Array}  keys
+	 * @param  {!Object} options
+	 * @return {!RegExp}
+	 */
+	function stringToRegexp (path, keys, options) {
+	  return tokensToRegExp(parse(path, options), keys, options)
+	}
+
+	/**
+	 * Expose a function for taking tokens and returning a RegExp.
+	 *
+	 * @param  {!Array}          tokens
+	 * @param  {(Array|Object)=} keys
+	 * @param  {Object=}         options
+	 * @return {!RegExp}
+	 */
+	function tokensToRegExp (tokens, keys, options) {
+	  if (!isarray(keys)) {
+	    options = /** @type {!Object} */ (keys || options);
+	    keys = [];
+	  }
+
+	  options = options || {};
+
+	  var strict = options.strict;
+	  var end = options.end !== false;
+	  var route = '';
+
+	  // Iterate over the tokens and create our regexp string.
+	  for (var i = 0; i < tokens.length; i++) {
+	    var token = tokens[i];
+
+	    if (typeof token === 'string') {
+	      route += escapeString(token);
+	    } else {
+	      var prefix = escapeString(token.prefix);
+	      var capture = '(?:' + token.pattern + ')';
+
+	      keys.push(token);
+
+	      if (token.repeat) {
+	        capture += '(?:' + prefix + capture + ')*';
+	      }
+
+	      if (token.optional) {
+	        if (!token.partial) {
+	          capture = '(?:' + prefix + '(' + capture + '))?';
+	        } else {
+	          capture = prefix + '(' + capture + ')?';
+	        }
+	      } else {
+	        capture = prefix + '(' + capture + ')';
+	      }
+
+	      route += capture;
+	    }
+	  }
+
+	  var delimiter = escapeString(options.delimiter || '/');
+	  var endsWithDelimiter = route.slice(-delimiter.length) === delimiter;
+
+	  // In non-strict mode we allow a slash at the end of match. If the path to
+	  // match already ends with a slash, we remove it for consistency. The slash
+	  // is valid at the end of a path match, not in the middle. This is important
+	  // in non-ending mode, where "/test/" shouldn't match "/test//route".
+	  if (!strict) {
+	    route = (endsWithDelimiter ? route.slice(0, -delimiter.length) : route) + '(?:' + delimiter + '(?=$))?';
+	  }
+
+	  if (end) {
+	    route += '$';
+	  } else {
+	    // In non-ending mode, we need the capturing groups to match as much as
+	    // possible by using a positive lookahead to the end or next path segment.
+	    route += strict && endsWithDelimiter ? '' : '(?=' + delimiter + '|$)';
+	  }
+
+	  return attachKeys(new RegExp('^' + route, flags(options)), keys)
+	}
+
+	/**
+	 * Normalize the given path string, returning a regular expression.
+	 *
+	 * An empty array can be passed in for the keys, which will hold the
+	 * placeholder key descriptions. For example, using `/user/:id`, `keys` will
+	 * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
+	 *
+	 * @param  {(string|RegExp|Array)} path
+	 * @param  {(Array|Object)=}       keys
+	 * @param  {Object=}               options
+	 * @return {!RegExp}
+	 */
+	function pathToRegexp (path, keys, options) {
+	  if (!isarray(keys)) {
+	    options = /** @type {!Object} */ (keys || options);
+	    keys = [];
+	  }
+
+	  options = options || {};
+
+	  if (path instanceof RegExp) {
+	    return regexpToRegexp(path, /** @type {!Array} */ (keys))
+	  }
+
+	  if (isarray(path)) {
+	    return arrayToRegexp(/** @type {!Array} */ (path), /** @type {!Array} */ (keys), options)
+	  }
+
+	  return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
+	}
+
+	index.parse = parse_1;
+	index.compile = compile_1;
+	index.tokensToFunction = tokensToFunction_1;
+	index.tokensToRegExp = tokensToRegExp_1;
+
+	/*  */
+
+	var regexpCache = Object.create(null);
+
+	function getRouteRegex (path) {
+	  var hit = regexpCache[path];
+	  var keys, regexp;
+
+	  if (hit) {
+	    keys = hit.keys;
+	    regexp = hit.regexp;
+	  } else {
+	    keys = [];
+	    regexp = index(path, keys);
+	    regexpCache[path] = { keys: keys, regexp: regexp };
+	  }
+
+	  return { keys: keys, regexp: regexp }
+	}
+
+	var regexpCompileCache = Object.create(null);
+
+	function fillParams (
+	  path,
+	  params,
+	  routeMsg
+	) {
+	  try {
+	    var filler =
+	      regexpCompileCache[path] ||
+	      (regexpCompileCache[path] = index.compile(path));
+	    return filler(params || {}, { pretty: true })
+	  } catch (e) {
+	    if (process.env.NODE_ENV !== 'production') {
+	      warn(false, ("missing param for " + routeMsg + ": " + (e.message)));
+	    }
+	    return ''
+	  }
+	}
+
+	/*  */
+
+
+	function normalizeLocation (
+	  raw,
+	  current,
+	  append,
+	  router
+	) {
+	  var next = typeof raw === 'string' ? { path: raw } : raw;
+	  // named target
+	  if (next.name || next._normalized) {
+	    return next
+	  }
+
+	  // relative params
+	  if (!next.path && next.params && current) {
+	    next = assign({}, next);
+	    next._normalized = true;
+	    var params = assign(assign({}, current.params), next.params);
+	    if (current.name) {
+	      next.name = current.name;
+	      next.params = params;
+	    } else if (current.matched) {
+	      var rawPath = current.matched[current.matched.length - 1].path;
+	      next.path = fillParams(rawPath, params, ("path " + (current.path)));
+	    } else if (process.env.NODE_ENV !== 'production') {
+	      warn(false, "relative params navigation requires a current route.");
+	    }
+	    return next
+	  }
+
+	  var parsedPath = parsePath(next.path || '');
+	  var basePath = (current && current.path) || '/';
+	  var path = parsedPath.path
+	    ? resolvePath(parsedPath.path, basePath, append || next.append)
+	    : (current && current.path) || '/';
+
+	  var query = resolveQuery(
+	    parsedPath.query,
+	    next.query,
+	    router && router.options.parseQuery
+	  );
+
+	  var hash = next.hash || parsedPath.hash;
+	  if (hash && hash.charAt(0) !== '#') {
+	    hash = "#" + hash;
+	  }
+
+	  return {
+	    _normalized: true,
+	    path: path,
+	    query: query,
+	    hash: hash
+	  }
+	}
+
+	function assign (a, b) {
+	  for (var key in b) {
+	    a[key] = b[key];
+	  }
+	  return a
+	}
+
+	/*  */
+
+
+	function createMatcher (
+	  routes,
+	  router
+	) {
+	  var ref = createRouteMap(routes);
+	  var pathMap = ref.pathMap;
+	  var nameMap = ref.nameMap;
+
+	  function addRoutes (routes) {
+	    createRouteMap(routes, pathMap, nameMap);
+	  }
+
+	  function match (
+	    raw,
+	    currentRoute,
+	    redirectedFrom
+	  ) {
+	    var location = normalizeLocation(raw, currentRoute, false, router);
+	    var name = location.name;
+
+	    if (name) {
+	      var record = nameMap[name];
+	      if (process.env.NODE_ENV !== 'production') {
+	        warn(record, ("Route with name '" + name + "' does not exist"));
+	      }
+	      var paramNames = getRouteRegex(record.path).keys
+	        .filter(function (key) { return !key.optional; })
+	        .map(function (key) { return key.name; });
+
+	      if (typeof location.params !== 'object') {
+	        location.params = {};
+	      }
+
+	      if (currentRoute && typeof currentRoute.params === 'object') {
+	        for (var key in currentRoute.params) {
+	          if (!(key in location.params) && paramNames.indexOf(key) > -1) {
+	            location.params[key] = currentRoute.params[key];
+	          }
+	        }
+	      }
+
+	      if (record) {
+	        location.path = fillParams(record.path, location.params, ("named route \"" + name + "\""));
+	        return _createRoute(record, location, redirectedFrom)
+	      }
+	    } else if (location.path) {
+	      location.params = {};
+	      for (var path in pathMap) {
+	        if (matchRoute(path, location.params, location.path)) {
+	          return _createRoute(pathMap[path], location, redirectedFrom)
+	        }
+	      }
+	    }
+	    // no match
+	    return _createRoute(null, location)
+	  }
+
+	  function redirect (
+	    record,
+	    location
+	  ) {
+	    var originalRedirect = record.redirect;
+	    var redirect = typeof originalRedirect === 'function'
+	        ? originalRedirect(createRoute(record, location, null, router))
+	        : originalRedirect;
+
+	    if (typeof redirect === 'string') {
+	      redirect = { path: redirect };
+	    }
+
+	    if (!redirect || typeof redirect !== 'object') {
+	      if (process.env.NODE_ENV !== 'production') {
+	        warn(
+	          false, ("invalid redirect option: " + (JSON.stringify(redirect)))
+	        );
+	      }
+	      return _createRoute(null, location)
+	    }
+
+	    var re = redirect;
+	    var name = re.name;
+	    var path = re.path;
+	    var query = location.query;
+	    var hash = location.hash;
+	    var params = location.params;
+	    query = re.hasOwnProperty('query') ? re.query : query;
+	    hash = re.hasOwnProperty('hash') ? re.hash : hash;
+	    params = re.hasOwnProperty('params') ? re.params : params;
+
+	    if (name) {
+	      // resolved named direct
+	      var targetRecord = nameMap[name];
+	      if (process.env.NODE_ENV !== 'production') {
+	        assert(targetRecord, ("redirect failed: named route \"" + name + "\" not found."));
+	      }
+	      return match({
+	        _normalized: true,
+	        name: name,
+	        query: query,
+	        hash: hash,
+	        params: params
+	      }, undefined, location)
+	    } else if (path) {
+	      // 1. resolve relative redirect
+	      var rawPath = resolveRecordPath(path, record);
+	      // 2. resolve params
+	      var resolvedPath = fillParams(rawPath, params, ("redirect route with path \"" + rawPath + "\""));
+	      // 3. rematch with existing query and hash
+	      return match({
+	        _normalized: true,
+	        path: resolvedPath,
+	        query: query,
+	        hash: hash
+	      }, undefined, location)
+	    } else {
+	      if (process.env.NODE_ENV !== 'production') {
+	        warn(false, ("invalid redirect option: " + (JSON.stringify(redirect))));
+	      }
+	      return _createRoute(null, location)
+	    }
+	  }
+
+	  function alias (
+	    record,
+	    location,
+	    matchAs
+	  ) {
+	    var aliasedPath = fillParams(matchAs, location.params, ("aliased route with path \"" + matchAs + "\""));
+	    var aliasedMatch = match({
+	      _normalized: true,
+	      path: aliasedPath
+	    });
+	    if (aliasedMatch) {
+	      var matched = aliasedMatch.matched;
+	      var aliasedRecord = matched[matched.length - 1];
+	      location.params = aliasedMatch.params;
+	      return _createRoute(aliasedRecord, location)
+	    }
+	    return _createRoute(null, location)
+	  }
+
+	  function _createRoute (
+	    record,
+	    location,
+	    redirectedFrom
+	  ) {
+	    if (record && record.redirect) {
+	      return redirect(record, redirectedFrom || location)
+	    }
+	    if (record && record.matchAs) {
+	      return alias(record, location, record.matchAs)
+	    }
+	    return createRoute(record, location, redirectedFrom, router)
+	  }
+
+	  return {
+	    match: match,
+	    addRoutes: addRoutes
+	  }
+	}
+
+	function matchRoute (
+	  path,
+	  params,
+	  pathname
+	) {
+	  var ref = getRouteRegex(path);
+	  var regexp = ref.regexp;
+	  var keys = ref.keys;
+	  var m = pathname.match(regexp);
+
+	  if (!m) {
+	    return false
+	  } else if (!params) {
+	    return true
+	  }
+
+	  for (var i = 1, len = m.length; i < len; ++i) {
+	    var key = keys[i - 1];
+	    var val = typeof m[i] === 'string' ? decodeURIComponent(m[i]) : m[i];
+	    if (key) { params[key.name] = val; }
+	  }
+
+	  return true
+	}
+
+	function resolveRecordPath (path, record) {
+	  return resolvePath(path, record.parent ? record.parent.path : '/', true)
+	}
+
+	/*  */
+
+
+	var positionStore = Object.create(null);
+
+	function setupScroll () {
+	  window.addEventListener('popstate', function (e) {
+	    saveScrollPosition();
+	    if (e.state && e.state.key) {
+	      setStateKey(e.state.key);
+	    }
+	  });
+	}
+
+	function handleScroll (
+	  router,
+	  to,
+	  from,
+	  isPop
+	) {
+	  if (!router.app) {
+	    return
+	  }
+
+	  var behavior = router.options.scrollBehavior;
+	  if (!behavior) {
+	    return
+	  }
+
+	  if (process.env.NODE_ENV !== 'production') {
+	    assert(typeof behavior === 'function', "scrollBehavior must be a function");
+	  }
+
+	  // wait until re-render finishes before scrolling
+	  router.app.$nextTick(function () {
+	    var position = getScrollPosition();
+	    var shouldScroll = behavior(to, from, isPop ? position : null);
+	    if (!shouldScroll) {
+	      return
+	    }
+	    var isObject = typeof shouldScroll === 'object';
+	    if (isObject && typeof shouldScroll.selector === 'string') {
+	      var el = document.querySelector(shouldScroll.selector);
+	      if (el) {
+	        position = getElementPosition(el);
+	      } else if (isValidPosition(shouldScroll)) {
+	        position = normalizePosition(shouldScroll);
+	      }
+	    } else if (isObject && isValidPosition(shouldScroll)) {
+	      position = normalizePosition(shouldScroll);
+	    }
+
+	    if (position) {
+	      window.scrollTo(position.x, position.y);
+	    }
+	  });
+	}
+
+	function saveScrollPosition () {
+	  var key = getStateKey();
+	  if (key) {
+	    positionStore[key] = {
+	      x: window.pageXOffset,
+	      y: window.pageYOffset
+	    };
+	  }
+	}
+
+	function getScrollPosition () {
+	  var key = getStateKey();
+	  if (key) {
+	    return positionStore[key]
+	  }
+	}
+
+	function getElementPosition (el) {
+	  var docEl = document.documentElement;
+	  var docRect = docEl.getBoundingClientRect();
+	  var elRect = el.getBoundingClientRect();
+	  return {
+	    x: elRect.left - docRect.left,
+	    y: elRect.top - docRect.top
+	  }
+	}
+
+	function isValidPosition (obj) {
+	  return isNumber(obj.x) || isNumber(obj.y)
+	}
+
+	function normalizePosition (obj) {
+	  return {
+	    x: isNumber(obj.x) ? obj.x : window.pageXOffset,
+	    y: isNumber(obj.y) ? obj.y : window.pageYOffset
+	  }
+	}
+
+	function isNumber (v) {
+	  return typeof v === 'number'
+	}
+
+	/*  */
+
+	var supportsPushState = inBrowser && (function () {
+	  var ua = window.navigator.userAgent;
+
+	  if (
+	    (ua.indexOf('Android 2.') !== -1 || ua.indexOf('Android 4.0') !== -1) &&
+	    ua.indexOf('Mobile Safari') !== -1 &&
+	    ua.indexOf('Chrome') === -1 &&
+	    ua.indexOf('Windows Phone') === -1
+	  ) {
+	    return false
+	  }
+
+	  return window.history && 'pushState' in window.history
+	})();
+
+	// use User Timing api (if present) for more accurate key precision
+	var Time = inBrowser && window.performance && window.performance.now
+	  ? window.performance
+	  : Date;
+
+	var _key = genKey();
+
+	function genKey () {
+	  return Time.now().toFixed(3)
+	}
+
+	function getStateKey () {
+	  return _key
+	}
+
+	function setStateKey (key) {
+	  _key = key;
+	}
+
+	function pushState (url, replace) {
+	  saveScrollPosition();
+	  // try...catch the pushState call to get around Safari
+	  // DOM Exception 18 where it limits to 100 pushState calls
+	  var history = window.history;
+	  try {
+	    if (replace) {
+	      history.replaceState({ key: _key }, '', url);
+	    } else {
+	      _key = genKey();
+	      history.pushState({ key: _key }, '', url);
+	    }
+	  } catch (e) {
+	    window.location[replace ? 'replace' : 'assign'](url);
+	  }
+	}
+
+	function replaceState (url) {
+	  pushState(url, true);
+	}
+
+	/*  */
+
+	function runQueue (queue, fn, cb) {
+	  var step = function (index) {
+	    if (index >= queue.length) {
+	      cb();
+	    } else {
+	      if (queue[index]) {
+	        fn(queue[index], function () {
+	          step(index + 1);
+	        });
+	      } else {
+	        step(index + 1);
+	      }
+	    }
+	  };
+	  step(0);
+	}
+
+	/*  */
+
+	var History = function History (router, base) {
+	  this.router = router;
+	  this.base = normalizeBase(base);
+	  // start with a route object that stands for "nowhere"
+	  this.current = START;
+	  this.pending = null;
+	  this.ready = false;
+	  this.readyCbs = [];
+	  this.readyErrorCbs = [];
+	  this.errorCbs = [];
+	};
+
+	History.prototype.listen = function listen (cb) {
+	  this.cb = cb;
+	};
+
+	History.prototype.onReady = function onReady (cb, errorCb) {
+	  if (this.ready) {
+	    cb();
+	  } else {
+	    this.readyCbs.push(cb);
+	    if (errorCb) {
+	      this.readyErrorCbs.push(errorCb);
+	    }
+	  }
+	};
+
+	History.prototype.onError = function onError (errorCb) {
+	  this.errorCbs.push(errorCb);
+	};
+
+	History.prototype.transitionTo = function transitionTo (location, onComplete, onAbort) {
+	    var this$1 = this;
+
+	  var route = this.router.match(location, this.current);
+	  this.confirmTransition(route, function () {
+	    this$1.updateRoute(route);
+	    onComplete && onComplete(route);
+	    this$1.ensureURL();
+
+	    // fire ready cbs once
+	    if (!this$1.ready) {
+	      this$1.ready = true;
+	      this$1.readyCbs.forEach(function (cb) { cb(route); });
+	    }
+	  }, function (err) {
+	    if (onAbort) {
+	      onAbort(err);
+	    }
+	    if (err && !this$1.ready) {
+	      this$1.ready = true;
+	      this$1.readyErrorCbs.forEach(function (cb) { cb(err); });
+	    }
+	  });
+	};
+
+	History.prototype.confirmTransition = function confirmTransition (route, onComplete, onAbort) {
+	    var this$1 = this;
+
+	  var current = this.current;
+	  var abort = function (err) {
+	    if (err instanceof Error) {
+	      this$1.errorCbs.forEach(function (cb) { cb(err); });
+	    }
+	    onAbort && onAbort(err);
+	  };
+	  if (
+	    isSameRoute(route, current) &&
+	    // in the case the route map has been dynamically appended to
+	    route.matched.length === current.matched.length
+	  ) {
+	    this.ensureURL();
+	    return abort()
+	  }
+
+	  var ref = resolveQueue(this.current.matched, route.matched);
+	    var updated = ref.updated;
+	    var deactivated = ref.deactivated;
+	    var activated = ref.activated;
+
+	  var queue = [].concat(
+	    // in-component leave guards
+	    extractLeaveGuards(deactivated),
+	    // global before hooks
+	    this.router.beforeHooks,
+	    // in-component update hooks
+	    extractUpdateHooks(updated),
+	    // in-config enter guards
+	    activated.map(function (m) { return m.beforeEnter; }),
+	    // async components
+	    resolveAsyncComponents(activated)
+	  );
+
+	  this.pending = route;
+	  var iterator = function (hook, next) {
+	    if (this$1.pending !== route) {
+	      return abort()
+	    }
+	    try {
+	      hook(route, current, function (to) {
+	        if (to === false || to instanceof Error) {
+	          // next(false) -> abort navigation, ensure current URL
+	          this$1.ensureURL(true);
+	          abort(to);
+	        } else if (typeof to === 'string' || typeof to === 'object') {
+	          // next('/') or next({ path: '/' }) -> redirect
+	          abort();
+	          if (typeof to === 'object' && to.replace) {
+	            this$1.replace(to);
+	          } else {
+	            this$1.push(to);
+	          }
+	        } else {
+	          // confirm transition and pass on the value
+	          next(to);
+	        }
+	      });
+	    } catch (e) {
+	      abort(e);
+	    }
+	  };
+
+	  runQueue(queue, iterator, function () {
+	    var postEnterCbs = [];
+	    var isValid = function () { return this$1.current === route; };
+	    var enterGuards = extractEnterGuards(activated, postEnterCbs, isValid);
+	    // wait until async components are resolved before
+	    // extracting in-component enter guards
+	    runQueue(enterGuards, iterator, function () {
+	      if (this$1.pending !== route) {
+	        return abort()
+	      }
+	      this$1.pending = null;
+	      onComplete(route);
+	      if (this$1.router.app) {
+	        this$1.router.app.$nextTick(function () {
+	          postEnterCbs.forEach(function (cb) { cb(); });
+	        });
+	      }
+	    });
+	  });
+	};
+
+	History.prototype.updateRoute = function updateRoute (route) {
+	  var prev = this.current;
+	  this.current = route;
+	  this.cb && this.cb(route);
+	  this.router.afterHooks.forEach(function (hook) {
+	    hook && hook(route, prev);
+	  });
+	};
+
+	function normalizeBase (base) {
+	  if (!base) {
+	    if (inBrowser) {
+	      // respect <base> tag
+	      var baseEl = document.querySelector('base');
+	      base = (baseEl && baseEl.getAttribute('href')) || '/';
+	    } else {
+	      base = '/';
+	    }
+	  }
+	  // make sure there's the starting slash
+	  if (base.charAt(0) !== '/') {
+	    base = '/' + base;
+	  }
+	  // remove trailing slash
+	  return base.replace(/\/$/, '')
+	}
+
+	function resolveQueue (
+	  current,
+	  next
+	) {
+	  var i;
+	  var max = Math.max(current.length, next.length);
+	  for (i = 0; i < max; i++) {
+	    if (current[i] !== next[i]) {
+	      break
+	    }
+	  }
+	  return {
+	    updated: next.slice(0, i),
+	    activated: next.slice(i),
+	    deactivated: current.slice(i)
+	  }
+	}
+
+	function extractGuards (
+	  records,
+	  name,
+	  bind,
+	  reverse
+	) {
+	  var guards = flatMapComponents(records, function (def, instance, match, key) {
+	    var guard = extractGuard(def, name);
+	    if (guard) {
+	      return Array.isArray(guard)
+	        ? guard.map(function (guard) { return bind(guard, instance, match, key); })
+	        : bind(guard, instance, match, key)
+	    }
+	  });
+	  return flatten(reverse ? guards.reverse() : guards)
+	}
+
+	function extractGuard (
+	  def,
+	  key
+	) {
+	  if (typeof def !== 'function') {
+	    // extend now so that global mixins are applied.
+	    def = _Vue.extend(def);
+	  }
+	  return def.options[key]
+	}
+
+	function extractLeaveGuards (deactivated) {
+	  return extractGuards(deactivated, 'beforeRouteLeave', bindGuard, true)
+	}
+
+	function extractUpdateHooks (updated) {
+	  return extractGuards(updated, 'beforeRouteUpdate', bindGuard)
+	}
+
+	function bindGuard (guard, instance) {
+	  return function boundRouteGuard () {
+	    return guard.apply(instance, arguments)
+	  }
+	}
+
+	function extractEnterGuards (
+	  activated,
+	  cbs,
+	  isValid
+	) {
+	  return extractGuards(activated, 'beforeRouteEnter', function (guard, _, match, key) {
+	    return bindEnterGuard(guard, match, key, cbs, isValid)
+	  })
+	}
+
+	function bindEnterGuard (
+	  guard,
+	  match,
+	  key,
+	  cbs,
+	  isValid
+	) {
+	  return function routeEnterGuard (to, from, next) {
+	    return guard(to, from, function (cb) {
+	      next(cb);
+	      if (typeof cb === 'function') {
+	        cbs.push(function () {
+	          // #750
+	          // if a router-view is wrapped with an out-in transition,
+	          // the instance may not have been registered at this time.
+	          // we will need to poll for registration until current route
+	          // is no longer valid.
+	          poll(cb, match.instances, key, isValid);
+	        });
+	      }
+	    })
+	  }
+	}
+
+	function poll (
+	  cb, // somehow flow cannot infer this is a function
+	  instances,
+	  key,
+	  isValid
+	) {
+	  if (instances[key]) {
+	    cb(instances[key]);
+	  } else if (isValid()) {
+	    setTimeout(function () {
+	      poll(cb, instances, key, isValid);
+	    }, 16);
+	  }
+	}
+
+	function resolveAsyncComponents (matched) {
+	  var _next;
+	  var pending = 0;
+	  var error = null;
+
+	  flatMapComponents(matched, function (def, _, match, key) {
+	    // if it's a function and doesn't have cid attached,
+	    // assume it's an async component resolve function.
+	    // we are not using Vue's default async resolving mechanism because
+	    // we want to halt the navigation until the incoming component has been
+	    // resolved.
+	    if (typeof def === 'function' && def.cid === undefined) {
+	      pending++;
+
+	      var resolve = once(function (resolvedDef) {
+	        // save resolved on async factory in case it's used elsewhere
+	        def.resolved = typeof resolvedDef === 'function'
+	          ? resolvedDef
+	          : _Vue.extend(resolvedDef);
+	        match.components[key] = resolvedDef;
+	        pending--;
+	        if (pending <= 0 && _next) {
+	          _next();
+	        }
+	      });
+
+	      var reject = once(function (reason) {
+	        var msg = "Failed to resolve async component " + key + ": " + reason;
+	        process.env.NODE_ENV !== 'production' && warn(false, msg);
+	        if (!error) {
+	          error = reason instanceof Error
+	            ? reason
+	            : new Error(msg);
+	          if (_next) { _next(error); }
+	        }
+	      });
+
+	      var res;
+	      try {
+	        res = def(resolve, reject);
+	      } catch (e) {
+	        reject(e);
+	      }
+	      if (res) {
+	        if (typeof res.then === 'function') {
+	          res.then(resolve, reject);
+	        } else {
+	          // new syntax in Vue 2.3
+	          var comp = res.component;
+	          if (comp && typeof comp.then === 'function') {
+	            comp.then(resolve, reject);
+	          }
+	        }
+	      }
+	    }
+	  });
+
+	  return function (to, from, next) {
+	    if (error) {
+	      next(error);
+	    } else if (pending <= 0) {
+	      next();
+	    } else {
+	      _next = next;
+	    }
+	  }
+	}
+
+	function flatMapComponents (
+	  matched,
+	  fn
+	) {
+	  return flatten(matched.map(function (m) {
+	    return Object.keys(m.components).map(function (key) { return fn(
+	      m.components[key],
+	      m.instances[key],
+	      m, key
+	    ); })
+	  }))
+	}
+
+	function flatten (arr) {
+	  return Array.prototype.concat.apply([], arr)
+	}
+
+	// in Webpack 2, require.ensure now also returns a Promise
+	// so the resolve/reject functions may get called an extra time
+	// if the user uses an arrow function shorthand that happens to
+	// return that Promise.
+	function once (fn) {
+	  var called = false;
+	  return function () {
+	    if (called) { return }
+	    called = true;
+	    return fn.apply(this, arguments)
+	  }
+	}
+
+	/*  */
+
+
+	var HTML5History = (function (History$$1) {
+	  function HTML5History (router, base) {
+	    var this$1 = this;
+
+	    History$$1.call(this, router, base);
+
+	    var expectScroll = router.options.scrollBehavior;
+
+	    if (expectScroll) {
+	      setupScroll();
+	    }
+
+	    window.addEventListener('popstate', function (e) {
+	      this$1.transitionTo(getLocation(this$1.base), function (route) {
+	        if (expectScroll) {
+	          handleScroll(router, route, this$1.current, true);
+	        }
+	      });
+	    });
+	  }
+
+	  if ( History$$1 ) HTML5History.__proto__ = History$$1;
+	  HTML5History.prototype = Object.create( History$$1 && History$$1.prototype );
+	  HTML5History.prototype.constructor = HTML5History;
+
+	  HTML5History.prototype.go = function go (n) {
+	    window.history.go(n);
+	  };
+
+	  HTML5History.prototype.push = function push (location, onComplete, onAbort) {
+	    var this$1 = this;
+
+	    var ref = this;
+	    var fromRoute = ref.current;
+	    this.transitionTo(location, function (route) {
+	      pushState(cleanPath(this$1.base + route.fullPath));
+	      handleScroll(this$1.router, route, fromRoute, false);
+	      onComplete && onComplete(route);
+	    }, onAbort);
+	  };
+
+	  HTML5History.prototype.replace = function replace (location, onComplete, onAbort) {
+	    var this$1 = this;
+
+	    var ref = this;
+	    var fromRoute = ref.current;
+	    this.transitionTo(location, function (route) {
+	      replaceState(cleanPath(this$1.base + route.fullPath));
+	      handleScroll(this$1.router, route, fromRoute, false);
+	      onComplete && onComplete(route);
+	    }, onAbort);
+	  };
+
+	  HTML5History.prototype.ensureURL = function ensureURL (push) {
+	    if (getLocation(this.base) !== this.current.fullPath) {
+	      var current = cleanPath(this.base + this.current.fullPath);
+	      push ? pushState(current) : replaceState(current);
+	    }
+	  };
+
+	  HTML5History.prototype.getCurrentLocation = function getCurrentLocation () {
+	    return getLocation(this.base)
+	  };
+
+	  return HTML5History;
+	}(History));
+
+	function getLocation (base) {
+	  var path = window.location.pathname;
+	  if (base && path.indexOf(base) === 0) {
+	    path = path.slice(base.length);
+	  }
+	  return (path || '/') + window.location.search + window.location.hash
+	}
+
+	/*  */
+
+
+	var HashHistory = (function (History$$1) {
+	  function HashHistory (router, base, fallback) {
+	    History$$1.call(this, router, base);
+	    // check history fallback deeplinking
+	    if (fallback && checkFallback(this.base)) {
+	      return
+	    }
+	    ensureSlash();
+	  }
+
+	  if ( History$$1 ) HashHistory.__proto__ = History$$1;
+	  HashHistory.prototype = Object.create( History$$1 && History$$1.prototype );
+	  HashHistory.prototype.constructor = HashHistory;
+
+	  // this is delayed until the app mounts
+	  // to avoid the hashchange listener being fired too early
+	  HashHistory.prototype.setupListeners = function setupListeners () {
+	    var this$1 = this;
+
+	    window.addEventListener('hashchange', function () {
+	      if (!ensureSlash()) {
+	        return
+	      }
+	      this$1.transitionTo(getHash(), function (route) {
+	        replaceHash(route.fullPath);
+	      });
+	    });
+	  };
+
+	  HashHistory.prototype.push = function push (location, onComplete, onAbort) {
+	    this.transitionTo(location, function (route) {
+	      pushHash(route.fullPath);
+	      onComplete && onComplete(route);
+	    }, onAbort);
+	  };
+
+	  HashHistory.prototype.replace = function replace (location, onComplete, onAbort) {
+	    this.transitionTo(location, function (route) {
+	      replaceHash(route.fullPath);
+	      onComplete && onComplete(route);
+	    }, onAbort);
+	  };
+
+	  HashHistory.prototype.go = function go (n) {
+	    window.history.go(n);
+	  };
+
+	  HashHistory.prototype.ensureURL = function ensureURL (push) {
+	    var current = this.current.fullPath;
+	    if (getHash() !== current) {
+	      push ? pushHash(current) : replaceHash(current);
+	    }
+	  };
+
+	  HashHistory.prototype.getCurrentLocation = function getCurrentLocation () {
+	    return getHash()
+	  };
+
+	  return HashHistory;
+	}(History));
+
+	function checkFallback (base) {
+	  var location = getLocation(base);
+	  if (!/^\/#/.test(location)) {
+	    window.location.replace(
+	      cleanPath(base + '/#' + location)
+	    );
+	    return true
+	  }
+	}
+
+	function ensureSlash () {
+	  var path = getHash();
+	  if (path.charAt(0) === '/') {
+	    return true
+	  }
+	  replaceHash('/' + path);
+	  return false
+	}
+
+	function getHash () {
+	  // We can't use window.location.hash here because it's not
+	  // consistent across browsers - Firefox will pre-decode it!
+	  var href = window.location.href;
+	  var index = href.indexOf('#');
+	  return index === -1 ? '' : href.slice(index + 1)
+	}
+
+	function pushHash (path) {
+	  window.location.hash = path;
+	}
+
+	function replaceHash (path) {
+	  var i = window.location.href.indexOf('#');
+	  window.location.replace(
+	    window.location.href.slice(0, i >= 0 ? i : 0) + '#' + path
+	  );
+	}
+
+	/*  */
+
+
+	var AbstractHistory = (function (History$$1) {
+	  function AbstractHistory (router, base) {
+	    History$$1.call(this, router, base);
+	    this.stack = [];
+	    this.index = -1;
+	  }
+
+	  if ( History$$1 ) AbstractHistory.__proto__ = History$$1;
+	  AbstractHistory.prototype = Object.create( History$$1 && History$$1.prototype );
+	  AbstractHistory.prototype.constructor = AbstractHistory;
+
+	  AbstractHistory.prototype.push = function push (location, onComplete, onAbort) {
+	    var this$1 = this;
+
+	    this.transitionTo(location, function (route) {
+	      this$1.stack = this$1.stack.slice(0, this$1.index + 1).concat(route);
+	      this$1.index++;
+	      onComplete && onComplete(route);
+	    }, onAbort);
+	  };
+
+	  AbstractHistory.prototype.replace = function replace (location, onComplete, onAbort) {
+	    var this$1 = this;
+
+	    this.transitionTo(location, function (route) {
+	      this$1.stack = this$1.stack.slice(0, this$1.index).concat(route);
+	      onComplete && onComplete(route);
+	    }, onAbort);
+	  };
+
+	  AbstractHistory.prototype.go = function go (n) {
+	    var this$1 = this;
+
+	    var targetIndex = this.index + n;
+	    if (targetIndex < 0 || targetIndex >= this.stack.length) {
+	      return
+	    }
+	    var route = this.stack[targetIndex];
+	    this.confirmTransition(route, function () {
+	      this$1.index = targetIndex;
+	      this$1.updateRoute(route);
+	    });
+	  };
+
+	  AbstractHistory.prototype.getCurrentLocation = function getCurrentLocation () {
+	    var current = this.stack[this.stack.length - 1];
+	    return current ? current.fullPath : '/'
+	  };
+
+	  AbstractHistory.prototype.ensureURL = function ensureURL () {
+	    // noop
+	  };
+
+	  return AbstractHistory;
+	}(History));
+
+	/*  */
+
+	var VueRouter = function VueRouter (options) {
+	  if ( options === void 0 ) options = {};
+
+	  this.app = null;
+	  this.apps = [];
+	  this.options = options;
+	  this.beforeHooks = [];
+	  this.afterHooks = [];
+	  this.matcher = createMatcher(options.routes || [], this);
+
+	  var mode = options.mode || 'hash';
+	  this.fallback = mode === 'history' && !supportsPushState;
+	  if (this.fallback) {
+	    mode = 'hash';
+	  }
+	  if (!inBrowser) {
+	    mode = 'abstract';
+	  }
+	  this.mode = mode;
+
+	  switch (mode) {
+	    case 'history':
+	      this.history = new HTML5History(this, options.base);
+	      break
+	    case 'hash':
+	      this.history = new HashHistory(this, options.base, this.fallback);
+	      break
+	    case 'abstract':
+	      this.history = new AbstractHistory(this, options.base);
+	      break
+	    default:
+	      if (process.env.NODE_ENV !== 'production') {
+	        assert(false, ("invalid mode: " + mode));
+	      }
+	  }
+	};
+
+	var prototypeAccessors = { currentRoute: {} };
+
+	VueRouter.prototype.match = function match (
+	  raw,
+	  current,
+	  redirectedFrom
+	) {
+	  return this.matcher.match(raw, current, redirectedFrom)
+	};
+
+	prototypeAccessors.currentRoute.get = function () {
+	  return this.history && this.history.current
+	};
+
+	VueRouter.prototype.init = function init (app /* Vue component instance */) {
+	    var this$1 = this;
+
+	  process.env.NODE_ENV !== 'production' && assert(
+	    install.installed,
+	    "not installed. Make sure to call `Vue.use(VueRouter)` " +
+	    "before creating root instance."
+	  );
+
+	  this.apps.push(app);
+
+	  // main app already initialized.
+	  if (this.app) {
+	    return
+	  }
+
+	  this.app = app;
+
+	  var history = this.history;
+
+	  if (history instanceof HTML5History) {
+	    history.transitionTo(history.getCurrentLocation());
+	  } else if (history instanceof HashHistory) {
+	    var setupHashListener = function () {
+	      history.setupListeners();
+	    };
+	    history.transitionTo(
+	      history.getCurrentLocation(),
+	      setupHashListener,
+	      setupHashListener
+	    );
+	  }
+
+	  history.listen(function (route) {
+	    this$1.apps.forEach(function (app) {
+	      app._route = route;
+	    });
+	  });
+	};
+
+	VueRouter.prototype.beforeEach = function beforeEach (fn) {
+	  this.beforeHooks.push(fn);
+	};
+
+	VueRouter.prototype.afterEach = function afterEach (fn) {
+	  this.afterHooks.push(fn);
+	};
+
+	VueRouter.prototype.onReady = function onReady (cb, errorCb) {
+	  this.history.onReady(cb, errorCb);
+	};
+
+	VueRouter.prototype.onError = function onError (errorCb) {
+	  this.history.onError(errorCb);
+	};
+
+	VueRouter.prototype.push = function push (location, onComplete, onAbort) {
+	  this.history.push(location, onComplete, onAbort);
+	};
+
+	VueRouter.prototype.replace = function replace (location, onComplete, onAbort) {
+	  this.history.replace(location, onComplete, onAbort);
+	};
+
+	VueRouter.prototype.go = function go (n) {
+	  this.history.go(n);
+	};
+
+	VueRouter.prototype.back = function back () {
+	  this.go(-1);
+	};
+
+	VueRouter.prototype.forward = function forward () {
+	  this.go(1);
+	};
+
+	VueRouter.prototype.getMatchedComponents = function getMatchedComponents (to) {
+	  var route = to
+	    ? this.resolve(to).route
+	    : this.currentRoute;
+	  if (!route) {
+	    return []
+	  }
+	  return [].concat.apply([], route.matched.map(function (m) {
+	    return Object.keys(m.components).map(function (key) {
+	      return m.components[key]
+	    })
+	  }))
+	};
+
+	VueRouter.prototype.resolve = function resolve (
+	  to,
+	  current,
+	  append
+	) {
+	  var location = normalizeLocation(
+	    to,
+	    current || this.history.current,
+	    append,
+	    this
+	  );
+	  var route = this.match(location, current);
+	  var fullPath = route.redirectedFrom || route.fullPath;
+	  var base = this.history.base;
+	  var href = createHref(base, fullPath, this.mode);
+	  return {
+	    location: location,
+	    route: route,
+	    href: href,
+	    // for backwards compat
+	    normalizedTo: location,
+	    resolved: route
+	  }
+	};
+
+	VueRouter.prototype.addRoutes = function addRoutes (routes) {
+	  this.matcher.addRoutes(routes);
+	  if (this.history.current !== START) {
+	    this.history.transitionTo(this.history.getCurrentLocation());
+	  }
+	};
+
+	Object.defineProperties( VueRouter.prototype, prototypeAccessors );
+
+	function createHref (base, fullPath, mode) {
+	  var path = mode === 'hash' ? '#' + fullPath : fullPath;
+	  return base ? cleanPath(base + '/' + path) : path
+	}
+
+	VueRouter.install = install;
+	VueRouter.version = '2.4.0';
+
+	if (inBrowser && window.Vue) {
+	  window.Vue.use(VueRouter);
+	}
+
+	module.exports = VueRouter;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+	// shim for using process in browser
+	var process = module.exports = {};
+
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
+	(function () {
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
+	    }
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
+	    }
+	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+
+
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+
+
+
+	}
+	var queue = [];
+	var draining = false;
+	var currentQueue;
+	var queueIndex = -1;
+
+	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
+	    draining = false;
+	    if (currentQueue.length) {
+	        queue = currentQueue.concat(queue);
+	    } else {
+	        queueIndex = -1;
+	    }
+	    if (queue.length) {
+	        drainQueue();
+	    }
+	}
+
+	function drainQueue() {
+	    if (draining) {
+	        return;
+	    }
+	    var timeout = runTimeout(cleanUpNextTick);
+	    draining = true;
+
+	    var len = queue.length;
+	    while(len) {
+	        currentQueue = queue;
+	        queue = [];
+	        while (++queueIndex < len) {
+	            if (currentQueue) {
+	                currentQueue[queueIndex].run();
+	            }
+	        }
+	        queueIndex = -1;
+	        len = queue.length;
+	    }
+	    currentQueue = null;
+	    draining = false;
+	    runClearTimeout(timeout);
+	}
+
+	process.nextTick = function (fun) {
+	    var args = new Array(arguments.length - 1);
+	    if (arguments.length > 1) {
+	        for (var i = 1; i < arguments.length; i++) {
+	            args[i - 1] = arguments[i];
+	        }
+	    }
+	    queue.push(new Item(fun, args));
+	    if (queue.length === 1 && !draining) {
+	        runTimeout(drainQueue);
+	    }
+	};
+
+	// v8 likes predictible objects
+	function Item(fun, array) {
+	    this.fun = fun;
+	    this.array = array;
+	}
+	Item.prototype.run = function () {
+	    this.fun.apply(null, this.array);
+	};
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+	process.version = ''; // empty string to avoid regexp issues
+	process.versions = {};
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	};
+
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+	process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	var __vue_script__, __vue_template__
-	__webpack_require__(7)
-	__vue_script__ = __webpack_require__(16)
-	__vue_template__ = __webpack_require__(17)
+	__webpack_require__(9)
+	__vue_script__ = __webpack_require__(18)
+	__vue_template__ = __webpack_require__(19)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -21073,16 +23640,16 @@
 	})()}
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(8);
+	var content = __webpack_require__(10);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(14)(content, {});
+	var update = __webpack_require__(16)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -21099,10 +23666,10 @@
 	}
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(9)(undefined);
+	exports = module.exports = __webpack_require__(11)(undefined);
 	// imports
 
 
@@ -21113,7 +23680,7 @@
 
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -21192,10 +23759,10 @@
 	  return '/*# ' + data + ' */';
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10).Buffer))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12).Buffer))
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -21208,9 +23775,9 @@
 
 	'use strict'
 
-	var base64 = __webpack_require__(11)
-	var ieee754 = __webpack_require__(12)
-	var isArray = __webpack_require__(13)
+	var base64 = __webpack_require__(13)
+	var ieee754 = __webpack_require__(14)
+	var isArray = __webpack_require__(15)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -22991,7 +25558,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports) {
 
 	'use strict'
@@ -23111,7 +25678,7 @@
 
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -23201,7 +25768,7 @@
 
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports) {
 
 	var toString = {}.toString;
@@ -23212,7 +25779,7 @@
 
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*
@@ -23249,7 +25816,7 @@
 		singletonElement = null,
 		singletonCounter = 0,
 		styleElementsInsertedAtTop = [],
-		fixUrls = __webpack_require__(15);
+		fixUrls = __webpack_require__(17);
 
 	module.exports = function(list, options) {
 		if(false) {
@@ -23508,7 +26075,7 @@
 
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports) {
 
 	
@@ -23603,7 +26170,7 @@
 
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -23642,12 +26209,12 @@
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/pacientes/page/1/">
 	//                                 <v-list-tile-title>Lista Paciente</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/vista_agregar_paciente/">
 	//                                 <v-list-tile-title>Crear Paciente</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
@@ -23667,12 +26234,12 @@
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/agenda/">
 	//                                 <v-list-tile-title>Agenda del Dia</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/agenda/doctor/">
 	//                                 <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
@@ -23692,18 +26259,18 @@
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/ordenes/">
 	//                                 <v-list-tile-title>Lista de Ordenes</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/ordenesReporte/">
 	//                                 <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                     </v-list-group>
 	//                     <v-list-item>
-	//                         <v-list-tile>
+	//                         <v-list-tile ripple href="/portal_empresas/">
 	//                             <v-list-tile-avatar>
 	//                                 <v-icon>search</v-icon>
 	//                             </v-list-tile-avatar>
@@ -23729,12 +26296,12 @@
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/medicos/">
 	//                                 <v-list-tile-title>Medicos</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/instituciones/">
 	//                                 <v-list-tile-title>Instituciones</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
@@ -23754,12 +26321,12 @@
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/empresas/">
 	//                                 <v-list-tile-title>Empresas</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/planes/">
 	//                                 <v-list-tile-title>Planes de Salud</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
@@ -23779,22 +26346,83 @@
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/procedimientos/">
 	//                                 <v-list-tile-title>Procedimientos</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/plantillas/">
 	//                                 <v-list-tile-title>Plantillas</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple>
+	//                             <v-list-tile ripple href="/servicios/">
 	//                                 <v-list-tile-title>Servicios</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                     </v-list-group>
+	//                     <v-list-item>
+	//                         <v-list-tile ripple href="/usuarios/">
+	//                             <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>
+	//                         </v-list-tile>
+	//                     </v-list-item>
+	//                     <v-list-item>
+	//                         <v-list-tile ripple href="/usuariosEmpresa/">
+	//                             <v-list-tile-title>Usuarios Empresas</v-list-tile-title>
+	//                         </v-list-tile>
+	//                     </v-list-item>
 	//                     <v-divider light></v-divider>
+	//                     <v-subheader>Laboratorio</v-subheader>
+	//                     <v-list-group>
+	//                         <v-list-item slot="item">
+	//                             <v-list-tile ripple>
+	//                                 <v-list-tile-avatar>
+	//                                     <v-icon>local_hospital</v-icon>
+	//                                 </v-list-tile-avatar>
+	//                                 <v-list-tile-content>
+	//                                     <v-list-tile-title>Administración</v-list-tile-title>
+	//                                 </v-list-tile-content>
+	//                                 <v-list-tile-action>
+	//                                     <v-icon>keyboard_arrow_down</v-icon>
+	//                                 </v-list-tile-action>
+	//                             </v-list-tile>
+	//                         </v-list-item>
+	//                         <v-list-item>
+	//                             <v-list-tile ripple href="#/laboratorios/">
+	//                               <v-list-tile-title>Laboratorios</v-list-tile-title>
+	//                             </v-list-tile>
+	//                         </v-list-item>
+	//                         <v-list-item>
+	//                             <v-list-tile ripple href="#/equipos/">
+	//                                 <v-list-tile-title>Equipos</v-list-tile-title>
+	//                             </v-list-tile>
+	//                         </v-list-item>
+	//                         <v-list-item>
+	//                             <v-list-tile ripple href="#/tecnicas/">
+	//                                 <v-list-tile-title>Tecnicas</v-list-tile-title>
+	//                             </v-list-tile>
+	//                         </v-list-item>
+	//                         <v-list-item>
+	//                             <v-list-tile ripple href="#/secciones_trabajo/">
+	//                                 <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>
+	//                             </v-list-tile>
+	//                         </v-list-item>
+	//                         <v-list-item>
+	//                             <v-list-tile ripple href="#/reactivos/">
+	//                                 <v-list-tile-title>Reactivos</v-list-tile-title>
+	//                             </v-list-tile>
+	//                         </v-list-item>
+	//                         <v-list-item>
+	//                             <v-list-tile ripple href="#/caracteristicas/">
+	//                                 <v-list-tile-title>Caracteristicas</v-list-tile-title>
+	//                             </v-list-tile>
+	//                         </v-list-item>
+	//                         <v-list-item>
+	//                             <v-list-tile ripple href="#/especificacion_caracteristicas/">
+	//                                 <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>
+	//                             </v-list-tile>
+	//                         </v-list-item>
+	//                     </v-list-group>
 	//                 </v-list>
 	//             </v-sidebar>
 	//             <div class="main">
@@ -23830,19 +26458,19 @@
 	//
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports) {
 
-	module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n            <v-toolbar-side-icon @click.native.stop=\"sidebar = !sidebar\"></v-toolbar-side-icon>\n            <v-toolbar-title>Dasalud</v-toolbar-title>\n        </v-toolbar>\n        <main>\n            <v-sidebar v-model=\"sidebar\" drawer class=\"mt-0 scroll-y\" :mobile-break-point=\"576\">\n                <v-list dense>\n                    <v-list-item>\n                        <v-list-tile>\n                            <v-list-tile-avatar>\n                                <v-icon>accessibility</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Dashboard</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>people</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Pacientes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Lista Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Crear Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>today</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Agendas</v-list-tile-title>\n                                </v-list-tile-content>\n                                    <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Agenda del Dia</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>open_in_browser</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Lista de Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-item>\n                        <v-list-tile>\n                            <v-list-tile-avatar>\n                                <v-icon>search</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Buscar Orden</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-divider light></v-divider>\n                    <v-subheader>Utilidades</v-subheader>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Medicos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Instituciones</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>business_center</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Empresas y Planes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Planes de Salud</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Procedimientos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Plantillas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple>\n                                <v-list-tile-title>Servicios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-divider light></v-divider>\n                </v-list>\n            </v-sidebar>\n            <div class=\"main\">\n                <v-content class=\"grey lighten-4\">\n                    <v-container fluid>\n                        <br>\n                        <v-spacer></v-spacer>\n                        <slot></slot>\n                    </v-container>\n                </v-content>\n            </div>\n        </main>\n    </div>\n";
+	module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n            <v-toolbar-side-icon @click.native.stop=\"sidebar = !sidebar\"></v-toolbar-side-icon>\n            <v-toolbar-title>Dasalud</v-toolbar-title>\n        </v-toolbar>\n        <main>\n            <v-sidebar v-model=\"sidebar\" drawer class=\"mt-0 scroll-y\" :mobile-break-point=\"576\">\n                <v-list dense>\n                    <v-list-item>\n                        <v-list-tile>\n                            <v-list-tile-avatar>\n                                <v-icon>accessibility</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Dashboard</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>people</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Pacientes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/pacientes/page/1/\">\n                                <v-list-tile-title>Lista Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/vista_agregar_paciente/\">\n                                <v-list-tile-title>Crear Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>today</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Agendas</v-list-tile-title>\n                                </v-list-tile-content>\n                                    <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/\">\n                                <v-list-tile-title>Agenda del Dia</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/doctor/\">\n                                <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>open_in_browser</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenes/\">\n                                <v-list-tile-title>Lista de Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenesReporte/\">\n                                <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/portal_empresas/\">\n                            <v-list-tile-avatar>\n                                <v-icon>search</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Buscar Orden</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-divider light></v-divider>\n                    <v-subheader>Utilidades</v-subheader>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/medicos/\">\n                                <v-list-tile-title>Medicos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/instituciones/\">\n                                <v-list-tile-title>Instituciones</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>business_center</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Empresas y Planes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/empresas/\">\n                                <v-list-tile-title>Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/planes/\">\n                                <v-list-tile-title>Planes de Salud</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/procedimientos/\">\n                                <v-list-tile-title>Procedimientos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/plantillas/\">\n                                <v-list-tile-title>Plantillas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/servicios/\">\n                                <v-list-tile-title>Servicios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/usuarios/\">\n                            <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/usuariosEmpresa/\">\n                            <v-list-tile-title>Usuarios Empresas</v-list-tile-title>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-divider light></v-divider>\n                    <v-subheader>Laboratorio</v-subheader>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Administración</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/laboratorios/\">\n                              <v-list-tile-title>Laboratorios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/equipos/\">\n                                <v-list-tile-title>Equipos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/tecnicas/\">\n                                <v-list-tile-title>Tecnicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/secciones_trabajo/\">\n                                <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/reactivos/\">\n                                <v-list-tile-title>Reactivos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/caracteristicas/\">\n                                <v-list-tile-title>Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/especificacion_caracteristicas/\">\n                                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                </v-list>\n            </v-sidebar>\n            <div class=\"main\">\n                <v-content class=\"grey lighten-4\">\n                    <v-container fluid>\n                        <br>\n                        <v-spacer></v-spacer>\n                        <slot></slot>\n                    </v-container>\n                </v-content>\n            </div>\n        </main>\n    </div>\n";
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__webpack_require__(19)
-	__vue_script__ = __webpack_require__(21)
-	__vue_template__ = __webpack_require__(60)
+	__webpack_require__(21)
+	__vue_script__ = __webpack_require__(23)
+	__vue_template__ = __webpack_require__(62)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -23859,16 +26487,16 @@
 	})()}
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(20);
+	var content = __webpack_require__(22);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(14)(content, {});
+	var update = __webpack_require__(16)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -23885,10 +26513,10 @@
 	}
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(9)(undefined);
+	exports = module.exports = __webpack_require__(11)(undefined);
 	// imports
 
 
@@ -23899,7 +26527,7 @@
 
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23908,7 +26536,7 @@
 	    value: true
 	});
 
-	var _getIterator2 = __webpack_require__(22);
+	var _getIterator2 = __webpack_require__(24);
 
 	var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -23924,16 +26552,16 @@
 	//         <v-data-table
 	//             v-bind:headers="headers"
 	//             v-model="data"
-	//             v-bind:search="buscador" select-all
+	//             v-bind:search="buscador"
 	//             :rows-per-page-items="[10]"
 	//             rowsPerPage="10"
 	//             rows-per-page-text="Filas por Página"
 	//             no-results-text="No se encontraron resultados"
 	//             ref="dataTable">
 	//             <template slot="items" scope="props">
-	//                 <td @click="updateForm(props.item)">
+	//                 <!-- <td @click="updateForm(props.item)">
 	//                     <v-checkbox primary v-model="props.item.selected" ></v-checkbox>
-	//                 </td>
+	//                 </td> -->
 	//                 <template v-for="field of fields">
 	//                     <td class="text-xs-center" @click="updateForm(props.item)">{{ getattr(props.item, field) }}</td>
 	//                 </template>
@@ -23973,7 +26601,7 @@
 	        };
 	    },
 	    mounted: function mounted() {
-	        this.$refs.dataTable.rowsPerPage = 10;
+	        // this.$refs.dataTable.rowsPerPage = 10;
 	    },
 	    methods: {
 	        getattr: function getattr(obj, attr) {
@@ -24019,42 +26647,42 @@
 	//
 
 /***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(23), __esModule: true };
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	__webpack_require__(24);
-	__webpack_require__(52);
-	module.exports = __webpack_require__(55);
-
-/***/ }),
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	__webpack_require__(25);
-	var Iterators = __webpack_require__(28);
-	Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
+	module.exports = { "default": __webpack_require__(25), __esModule: true };
 
 /***/ }),
 /* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	__webpack_require__(26);
+	__webpack_require__(54);
+	module.exports = __webpack_require__(57);
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	__webpack_require__(27);
+	var Iterators = __webpack_require__(30);
+	Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	'use strict';
-	var addToUnscopables = __webpack_require__(26)
-	  , step             = __webpack_require__(27)
-	  , Iterators        = __webpack_require__(28)
-	  , toIObject        = __webpack_require__(29);
+	var addToUnscopables = __webpack_require__(28)
+	  , step             = __webpack_require__(29)
+	  , Iterators        = __webpack_require__(30)
+	  , toIObject        = __webpack_require__(31);
 
 	// 22.1.3.4 Array.prototype.entries()
 	// 22.1.3.13 Array.prototype.keys()
 	// 22.1.3.29 Array.prototype.values()
 	// 22.1.3.30 Array.prototype[@@iterator]()
-	module.exports = __webpack_require__(33)(Array, 'Array', function(iterated, kind){
+	module.exports = __webpack_require__(35)(Array, 'Array', function(iterated, kind){
 	  this._t = toIObject(iterated); // target
 	  this._i = 0;                   // next index
 	  this._k = kind;                // kind
@@ -24080,13 +26708,13 @@
 	addToUnscopables('entries');
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports) {
 
 	module.exports = function(){ /* empty */ };
 
 /***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, exports) {
 
 	module.exports = function(done, value){
@@ -24094,34 +26722,34 @@
 	};
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports) {
 
 	module.exports = {};
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// to indexed object, toObject with fallback for non-array-like ES3 strings
-	var IObject = __webpack_require__(30)
-	  , defined = __webpack_require__(32);
+	var IObject = __webpack_require__(32)
+	  , defined = __webpack_require__(34);
 	module.exports = function(it){
 	  return IObject(defined(it));
 	};
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// fallback for non-array-like ES3 and non-enumerable old V8 strings
-	var cof = __webpack_require__(31);
+	var cof = __webpack_require__(33);
 	module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
 	  return cof(it) == 'String' ? it.split('') : Object(it);
 	};
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports) {
 
 	var toString = {}.toString;
@@ -24131,7 +26759,7 @@
 	};
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports) {
 
 	// 7.2.1 RequireObjectCoercible(argument)
@@ -24141,20 +26769,20 @@
 	};
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var LIBRARY        = __webpack_require__(34)
-	  , $export        = __webpack_require__(35)
-	  , redefine       = __webpack_require__(40)
-	  , hide           = __webpack_require__(41)
-	  , has            = __webpack_require__(46)
-	  , Iterators      = __webpack_require__(28)
-	  , $iterCreate    = __webpack_require__(47)
-	  , setToStringTag = __webpack_require__(48)
-	  , getProto       = __webpack_require__(42).getProto
-	  , ITERATOR       = __webpack_require__(49)('iterator')
+	var LIBRARY        = __webpack_require__(36)
+	  , $export        = __webpack_require__(37)
+	  , redefine       = __webpack_require__(42)
+	  , hide           = __webpack_require__(43)
+	  , has            = __webpack_require__(48)
+	  , Iterators      = __webpack_require__(30)
+	  , $iterCreate    = __webpack_require__(49)
+	  , setToStringTag = __webpack_require__(50)
+	  , getProto       = __webpack_require__(44).getProto
+	  , ITERATOR       = __webpack_require__(51)('iterator')
 	  , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
 	  , FF_ITERATOR    = '@@iterator'
 	  , KEYS           = 'keys'
@@ -24212,18 +26840,18 @@
 	};
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, exports) {
 
 	module.exports = true;
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var global    = __webpack_require__(36)
-	  , core      = __webpack_require__(37)
-	  , ctx       = __webpack_require__(38)
+	var global    = __webpack_require__(38)
+	  , core      = __webpack_require__(39)
+	  , ctx       = __webpack_require__(40)
 	  , PROTOTYPE = 'prototype';
 
 	var $export = function(type, name, source){
@@ -24269,7 +26897,7 @@
 	module.exports = $export;
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, exports) {
 
 	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
@@ -24278,18 +26906,18 @@
 	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports) {
 
 	var core = module.exports = {version: '1.2.6'};
 	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// optional / simple context binding
-	var aFunction = __webpack_require__(39);
+	var aFunction = __webpack_require__(41);
 	module.exports = function(fn, that, length){
 	  aFunction(fn);
 	  if(that === undefined)return fn;
@@ -24310,7 +26938,7 @@
 	};
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, exports) {
 
 	module.exports = function(it){
@@ -24319,18 +26947,18 @@
 	};
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(41);
+	module.exports = __webpack_require__(43);
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var $          = __webpack_require__(42)
-	  , createDesc = __webpack_require__(43);
-	module.exports = __webpack_require__(44) ? function(object, key, value){
+	var $          = __webpack_require__(44)
+	  , createDesc = __webpack_require__(45);
+	module.exports = __webpack_require__(46) ? function(object, key, value){
 	  return $.setDesc(object, key, createDesc(1, value));
 	} : function(object, key, value){
 	  object[key] = value;
@@ -24338,7 +26966,7 @@
 	};
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, exports) {
 
 	var $Object = Object;
@@ -24356,7 +26984,7 @@
 	};
 
 /***/ }),
-/* 43 */
+/* 45 */
 /***/ (function(module, exports) {
 
 	module.exports = function(bitmap, value){
@@ -24369,16 +26997,16 @@
 	};
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// Thank's IE8 for his funny defineProperty
-	module.exports = !__webpack_require__(45)(function(){
+	module.exports = !__webpack_require__(47)(function(){
 	  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
 	});
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, exports) {
 
 	module.exports = function(exec){
@@ -24390,7 +27018,7 @@
 	};
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, exports) {
 
 	var hasOwnProperty = {}.hasOwnProperty;
@@ -24399,17 +27027,17 @@
 	};
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var $              = __webpack_require__(42)
-	  , descriptor     = __webpack_require__(43)
-	  , setToStringTag = __webpack_require__(48)
+	var $              = __webpack_require__(44)
+	  , descriptor     = __webpack_require__(45)
+	  , setToStringTag = __webpack_require__(50)
 	  , IteratorPrototype = {};
 
 	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	__webpack_require__(41)(IteratorPrototype, __webpack_require__(49)('iterator'), function(){ return this; });
+	__webpack_require__(43)(IteratorPrototype, __webpack_require__(51)('iterator'), function(){ return this; });
 
 	module.exports = function(Constructor, NAME, next){
 	  Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
@@ -24417,34 +27045,34 @@
 	};
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var def = __webpack_require__(42).setDesc
-	  , has = __webpack_require__(46)
-	  , TAG = __webpack_require__(49)('toStringTag');
+	var def = __webpack_require__(44).setDesc
+	  , has = __webpack_require__(48)
+	  , TAG = __webpack_require__(51)('toStringTag');
 
 	module.exports = function(it, tag, stat){
 	  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
 	};
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var store  = __webpack_require__(50)('wks')
-	  , uid    = __webpack_require__(51)
-	  , Symbol = __webpack_require__(36).Symbol;
+	var store  = __webpack_require__(52)('wks')
+	  , uid    = __webpack_require__(53)
+	  , Symbol = __webpack_require__(38).Symbol;
 	module.exports = function(name){
 	  return store[name] || (store[name] =
 	    Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
 	};
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var global = __webpack_require__(36)
+	var global = __webpack_require__(38)
 	  , SHARED = '__core-js_shared__'
 	  , store  = global[SHARED] || (global[SHARED] = {});
 	module.exports = function(key){
@@ -24452,7 +27080,7 @@
 	};
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports) {
 
 	var id = 0
@@ -24462,14 +27090,14 @@
 	};
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var $at  = __webpack_require__(53)(true);
+	var $at  = __webpack_require__(55)(true);
 
 	// 21.1.3.27 String.prototype[@@iterator]()
-	__webpack_require__(33)(String, 'String', function(iterated){
+	__webpack_require__(35)(String, 'String', function(iterated){
 	  this._t = String(iterated); // target
 	  this._i = 0;                // next index
 	// 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -24484,11 +27112,11 @@
 	});
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var toInteger = __webpack_require__(54)
-	  , defined   = __webpack_require__(32);
+	var toInteger = __webpack_require__(56)
+	  , defined   = __webpack_require__(34);
 	// true  -> String#at
 	// false -> String#codePointAt
 	module.exports = function(TO_STRING){
@@ -24506,7 +27134,7 @@
 	};
 
 /***/ }),
-/* 54 */
+/* 56 */
 /***/ (function(module, exports) {
 
 	// 7.1.4 ToInteger
@@ -24517,29 +27145,29 @@
 	};
 
 /***/ }),
-/* 55 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var anObject = __webpack_require__(56)
-	  , get      = __webpack_require__(58);
-	module.exports = __webpack_require__(37).getIterator = function(it){
+	var anObject = __webpack_require__(58)
+	  , get      = __webpack_require__(60);
+	module.exports = __webpack_require__(39).getIterator = function(it){
 	  var iterFn = get(it);
 	  if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
 	  return anObject(iterFn.call(it));
 	};
 
 /***/ }),
-/* 56 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(57);
+	var isObject = __webpack_require__(59);
 	module.exports = function(it){
 	  if(!isObject(it))throw TypeError(it + ' is not an object!');
 	  return it;
 	};
 
 /***/ }),
-/* 57 */
+/* 59 */
 /***/ (function(module, exports) {
 
 	module.exports = function(it){
@@ -24547,25 +27175,25 @@
 	};
 
 /***/ }),
-/* 58 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var classof   = __webpack_require__(59)
-	  , ITERATOR  = __webpack_require__(49)('iterator')
-	  , Iterators = __webpack_require__(28);
-	module.exports = __webpack_require__(37).getIteratorMethod = function(it){
+	var classof   = __webpack_require__(61)
+	  , ITERATOR  = __webpack_require__(51)('iterator')
+	  , Iterators = __webpack_require__(30);
+	module.exports = __webpack_require__(39).getIteratorMethod = function(it){
 	  if(it != undefined)return it[ITERATOR]
 	    || it['@@iterator']
 	    || Iterators[classof(it)];
 	};
 
 /***/ }),
-/* 59 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// getting tag from 19.1.3.6 Object.prototype.toString()
-	var cof = __webpack_require__(31)
-	  , TAG = __webpack_require__(49)('toStringTag')
+	var cof = __webpack_require__(33)
+	  , TAG = __webpack_require__(51)('toStringTag')
 	  // ES3 wrong here
 	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
 
@@ -24581,19 +27209,19 @@
 	};
 
 /***/ }),
-/* 60 */
+/* 62 */
 /***/ (function(module, exports) {
 
-	module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <v-data-table\n            v-bind:headers=\"headers\"\n            v-model=\"data\"\n            v-bind:search=\"buscador\" select-all\n            :rows-per-page-items=\"[10]\"\n            rowsPerPage=\"10\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"items\" scope=\"props\">\n                <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td>\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\">{{ getattr(props.item, field) }}</td>\n                </template>\n            </template>\n        </v-data-table>\n    </v-card>\n";
+	module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <v-data-table\n            v-bind:headers=\"headers\"\n            v-model=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            rowsPerPage=\"10\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\">{{ getattr(props.item, field) }}</td>\n                </template>\n            </template>\n        </v-data-table>\n    </v-card>\n";
 
 /***/ }),
-/* 61 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__webpack_require__(62)
-	__vue_script__ = __webpack_require__(64)
-	__vue_template__ = __webpack_require__(65)
+	__webpack_require__(64)
+	__vue_script__ = __webpack_require__(66)
+	__vue_template__ = __webpack_require__(67)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -24610,16 +27238,16 @@
 	})()}
 
 /***/ }),
-/* 62 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(63);
+	var content = __webpack_require__(65);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(14)(content, {});
+	var update = __webpack_require__(16)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -24636,10 +27264,10 @@
 	}
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(9)(undefined);
+	exports = module.exports = __webpack_require__(11)(undefined);
 	// imports
 
 
@@ -24650,7 +27278,7 @@
 
 
 /***/ }),
-/* 64 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24659,7 +27287,7 @@
 	    value: true
 	});
 
-	var _getIterator2 = __webpack_require__(22);
+	var _getIterator2 = __webpack_require__(24);
 
 	var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -24952,12 +27580,10 @@
 	            var method = 'post';
 	            var message = void 0;
 	            var token = document.getElementsByName('csrfmiddlewaretoken')[0];
-	            console.log(this.models);
 	            if (this.selected) {
 	                url += this.selected.id + '/';
 	                method = 'put';
 	            }
-	            console.log(this.models);
 	            this.$http[method](url, this.models, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
 	                if (response.status == 201) {
 	                    // this.selected_before = response.body;
@@ -24993,13 +27619,13 @@
 	//
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports) {
 
 	module.exports = "\n    <v-card>\n        <v-card-title>\n            <!-- <span>{[ selected ? 'Editar Laboratorio '.concat(codigo.toUpperCase()): 'Crear Laboratorio' ]}</span> -->\n            <v-spacer></v-spacer>\n            <v-btn flat @click.native=\"cleanFields()\" v-show=\"selected\"><v-icon>clear_all</v-icon>Limpiar</v-btn>\n        </v-card-title>\n        <v-card-text>\n          <br>\n            <v-container>\n                <!--<template v-for=\"f in fields.length\">-->\n                    <v-row>\n                        <v-col md6 xs12 v-for=\"field in fields\" :key=\"field.name\">\n                            <template v-if=\"field.type == String\"><!---->\n                                <v-text-field\n                                :label=\"field.verbose_name || ''\"\n                                :hint=\"field.hint || ''\"\n                                :required=\"fieldIsRequired(field)\"\n                                :rules=\"getRules(field)\"\n                                v-model=\"models[field.name]\"\n                                ></v-text-field>\n                            </template>\n                            <template v-else>\n                                <v-select\n                                :label=\"field.verbose_name || ''\"\n                                :hint=\"field.hint || ''\"\n                                :items=\"items[field.name]\"\n                                :required=\"fieldIsRequired(field)\"\n                                :rules=\"getRules(field)\"\n                                v-model=\"models[field.name]\"\n                                item-value=\"text\"\n                                light\n                                ></v-select>\n                            </template>\n                        </v-col>\n                    </v-row>\n                <!--</template>-->\n            </v-container>\n            <small>* Campos requeridos.</small>\n            <br>\n        </v-card-text>\n        <v-card-row actions>\n            <v-btn flat @click.native=\"submitForm()\">\n                {{ !selected ? 'Crear': 'Editar' }}\n                <v-icon>check_circle</v-icon>\n            </v-btn>\n        </v-card-row>\n    </v-card>\n";
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25008,7 +27634,7 @@
 	    value: true
 	});
 
-	var _getIterator2 = __webpack_require__(22);
+	var _getIterator2 = __webpack_require__(24);
 
 	var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -25019,10 +27645,11 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = {
-	    data: {
-	        elements: [],
-	        snackbar: false,
-	        snackbarText: ''
+	    data: function data() {
+	        return {
+	            elements: [],
+	            __parent_: undefined
+	        };
 	    },
 	    methods: {
 	        getElements: function getElements() {
@@ -25062,9 +27689,25 @@
 	                showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.');
 	            });
 	        },
+	        __getParent__: function __getParent__() {
+	            if (!this.__parent_) {
+	                // singleton
+	                var parent = this.$parent;
+	                while (parent !== undefined) {
+	                    if (parent.$parent === undefined) {
+	                        break;
+	                    }
+	                    parent = parent.$parent;
+	                }
+	                this.__parent_ = parent;
+	            }
+	            return this.__parent_;
+	        },
+	        getParent: function getParent() {
+	            return this.__getParent__().$options.methods;
+	        },
 	        showSnackBar: function showSnackBar(value) {
-	            this.snackbarText = value;
-	            this.snackbar = true;
+	            this.$emit('mostrarsnackbar', value);
 	        },
 	        eventCreatedObject: function eventCreatedObject(value) {
 	            value.selected = false;
@@ -25078,7 +27721,276 @@
 	};
 
 /***/ }),
-/* 67 */
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _vueRouter = __webpack_require__(6);
+
+	var _vueRouter2 = _interopRequireDefault(_vueRouter);
+
+	var _laboratorios = __webpack_require__(70);
+
+	var _laboratorios2 = _interopRequireDefault(_laboratorios);
+
+	var _equipos = __webpack_require__(76);
+
+	var _equipos2 = _interopRequireDefault(_equipos);
+
+	var _tecnicas = __webpack_require__(81);
+
+	var _tecnicas2 = _interopRequireDefault(_tecnicas);
+
+	var _secciones_trabajo = __webpack_require__(86);
+
+	var _secciones_trabajo2 = _interopRequireDefault(_secciones_trabajo);
+
+	var _reactivos = __webpack_require__(91);
+
+	var _reactivos2 = _interopRequireDefault(_reactivos);
+
+	var _caracteristicas = __webpack_require__(96);
+
+	var _caracteristicas2 = _interopRequireDefault(_caracteristicas);
+
+	var _especificacion_caracteristica = __webpack_require__(101);
+
+	var _especificacion_caracteristica2 = _interopRequireDefault(_especificacion_caracteristica);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var routes = [{ path: '/laboratorios/', component: _laboratorios2.default }, { path: '/equipos/', component: _equipos2.default }, { path: '/tecnicas/', component: _tecnicas2.default }, { path: '/secciones_trabajo/', component: _secciones_trabajo2.default }, { path: '/reactivos/', component: _reactivos2.default }, { path: '/caracteristicas/', component: _caracteristicas2.default }, { path: '/especificacion_caracteristicas/', component: _especificacion_caracteristica2.default }];
+
+	var router = new _vueRouter2.default({ routes: routes });
+	exports.default = router;
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__webpack_require__(71)
+	__vue_script__ = __webpack_require__(73)
+	__vue_template__ = __webpack_require__(75)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), true)
+	  if (!hotAPI.compatible) return
+	  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/laboratorios.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(72);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(16)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-726f14db&file=laboratorios.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-726f14db&file=laboratorios.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(11)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _underscore = __webpack_require__(1);
+
+	var _underscore2 = _interopRequireDefault(_underscore);
+
+	var _vue = __webpack_require__(2);
+
+	var _vue2 = _interopRequireDefault(_vue);
+
+	var _vuetify = __webpack_require__(3);
+
+	var _vuetify2 = _interopRequireDefault(_vuetify);
+
+	var _vueResource = __webpack_require__(4);
+
+	var _vueResource2 = _interopRequireDefault(_vueResource);
+
+	var _menu = __webpack_require__(8);
+
+	var _menu2 = _interopRequireDefault(_menu);
+
+	var _table = __webpack_require__(20);
+
+	var _table2 = _interopRequireDefault(_table);
+
+	var _form = __webpack_require__(63);
+
+	var _form2 = _interopRequireDefault(_form);
+
+	var _igmixin = __webpack_require__(68);
+
+	var _igmixin2 = _interopRequireDefault(_igmixin);
+
+	var _urls = __webpack_require__(74);
+
+	var _urls2 = _interopRequireDefault(_urls);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Vue.use(VueRouter);
+	_vue2.default.use(_vueResource2.default); // <template lang="html">
+	//     <div>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-table
+	//               table-title="Laboratorios"
+	//               :headers="headers"
+	//               :data="elements"
+	//               :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
+	//               @selectedrow="eventUpdatedForm"
+	//               ></ig-table>
+	//             </v-col>
+	//           </v-row>
+	//         </v-container>
+	//         <br>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-form
+	//               :fields="fields"
+	//               :url="urlForm"
+	//               @showsnack="showSnackBar"
+	//               @objectcreated="eventCreatedObject"
+	//               @clearselected="selected = false"
+	//               :selected="selected"
+	//               >
+	//             </ig-form>
+	//           </v-col>
+	//         </v-row>
+	//         <br>
+	//       </v-container>
+	//     </div>
+	// </template>
+	//
+	// <script>
+
+	_vue2.default.use(_vuetify2.default);
+
+	var BASE_URL = _urls2.default.BASE;
+
+	exports.default = {
+	  mixins: [_igmixin2.default],
+	  data: function data() {
+	    return {
+	      urlForm: _urls2.default.laboratorios,
+	      selected: false,
+	      headers: [{
+	        text: 'Código',
+	        left: true,
+	        sortable: false,
+	        value: 'tabla-codigo'
+	      }, {
+	        text: 'Nombre', value: 'tabla-nombre', left: true
+	      }, {
+	        text: 'Código Internacional', value: 'tabla-codigo-internacional', left: true
+	      }, {
+	        text: 'Equipo', value: 'table-equipo', left: true
+	      }, {
+	        text: 'Sección de Trabajo', value: 'tabla-seccion-trabajo', left: true
+	      }],
+	      fields: [{
+	        name: 'codigo',
+	        verbose_name: 'Código',
+	        type: String,
+	        hint: 'Este es el código que identifica a cada laboratorio.'
+	      }, {
+	        name: 'nombre',
+	        verbose_name: 'Nombre',
+	        type: String,
+	        hint: 'Este es el nombre del equipo.'
+	      }, {
+	        name: 'codigo_internacional',
+	        verbose_name: 'Código Internacional',
+	        type: String,
+	        hint: 'Este es el código de representacion internacional del laboratorio.'
+	      }, {
+	        name: 'equipo',
+	        verbose_name: 'Equipo',
+	        type: Array,
+	        url: _urls2.default.equipos,
+	        hint: 'Este es el equipo que sera usado en este laboratorio.',
+	        key: 'nombre'
+	      }, {
+	        name: 'seccion_trabajo',
+	        verbose_name: 'Sección de Trabajo',
+	        type: Array,
+	        url: _urls2.default.secciones_trabajo,
+	        hint: 'Este es el area o sección de trabajo de este laboratorio.',
+	        key: 'codigo'
+	      }]
+	    };
+	  },
+	  components: {
+	    igMenu: _menu2.default,
+	    igTable: _table2.default,
+	    igForm: _form2.default
+	  },
+	  mounted: function mounted() {
+	    this.getElements(_urls2.default.laboratorios);
+	  }
+	};
+	// </script>
+	//
+	// <style lang="css">
+	// </style>
+	//
+
+/***/ }),
+/* 74 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -25090,13 +28002,1273 @@
 	var equipos = BASE.concat('equipos/');
 	var laboratorios = BASE.concat('laboratorios/');
 	var secciones_trabajo = BASE.concat('seccion_trabajo/');
+	var tecnicas = BASE.concat('tecnicas/');
+	var reactivos = BASE.concat('reactivos/');
+	var caracteristicas = BASE.concat('caracteristicas/');
+	var especificacion_caracteristicas = BASE.concat('especificacion_caracteristicas/');
 
 	exports.default = {
 	    BASE: BASE,
 	    equipos: equipos,
 	    laboratorios: laboratorios,
-	    secciones_trabajo: secciones_trabajo
+	    secciones_trabajo: secciones_trabajo,
+	    tecnicas: tecnicas,
+	    reactivos: reactivos,
+	    caracteristicas: caracteristicas,
+	    especificacion_caracteristicas: especificacion_caracteristicas
 	};
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports) {
+
+	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__webpack_require__(77)
+	__vue_script__ = __webpack_require__(79)
+	__vue_template__ = __webpack_require__(80)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), true)
+	  if (!hotAPI.compatible) return
+	  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/equipos.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(78);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(16)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6e288830&file=equipos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6e288830&file=equipos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(11)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _underscore = __webpack_require__(1);
+
+	var _underscore2 = _interopRequireDefault(_underscore);
+
+	var _vue = __webpack_require__(2);
+
+	var _vue2 = _interopRequireDefault(_vue);
+
+	var _vuetify = __webpack_require__(3);
+
+	var _vuetify2 = _interopRequireDefault(_vuetify);
+
+	var _vueResource = __webpack_require__(4);
+
+	var _vueResource2 = _interopRequireDefault(_vueResource);
+
+	var _menu = __webpack_require__(8);
+
+	var _menu2 = _interopRequireDefault(_menu);
+
+	var _table = __webpack_require__(20);
+
+	var _table2 = _interopRequireDefault(_table);
+
+	var _form = __webpack_require__(63);
+
+	var _form2 = _interopRequireDefault(_form);
+
+	var _igmixin = __webpack_require__(68);
+
+	var _igmixin2 = _interopRequireDefault(_igmixin);
+
+	var _urls = __webpack_require__(74);
+
+	var _urls2 = _interopRequireDefault(_urls);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Vue.use(VueRouter);
+	_vue2.default.use(_vueResource2.default); // <template lang="html">
+	//     <div>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-table
+	//               table-title="Equipos"
+	//               :headers="headers"
+	//               :data="elements"
+	//               :fields="['codigo', 'nombre', 'tecnica.codigo']"
+	//               @selectedrow="eventUpdatedForm"
+	//               ></ig-table>
+	//             </v-col>
+	//           </v-row>
+	//         </v-container>
+	//         <br>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-form
+	//               :fields="fields"
+	//               :url="urlForm"
+	//               @showsnack="showSnackBar"
+	//               @objectcreated="eventCreatedObject"
+	//               @clearselected="selected = false"
+	//               :selected="selected"
+	//               >
+	//             </ig-form>
+	//           </v-col>
+	//         </v-row>
+	//         <br>
+	//       </v-container>
+	//     </div>
+	// </template>
+	//
+	// <script>
+
+	_vue2.default.use(_vuetify2.default);
+
+	var BASE_URL = _urls2.default.BASE;
+
+	exports.default = {
+	  mixins: [_igmixin2.default],
+	  data: function data() {
+	    return {
+	      urlForm: _urls2.default.equipos,
+	      selected: false,
+	      headers: [{
+	        text: 'Código',
+	        value: 'tabla-codigo',
+	        left: true
+	      }, {
+	        text: 'Nombre',
+	        value: 'tabla-nombre',
+	        left: true
+	      }, {
+	        text: 'Técnica',
+	        value: 'tabla-tecnica',
+	        left: true
+	      }],
+	      fields: [{
+	        name: 'codigo',
+	        verbose_name: 'Código',
+	        type: String,
+	        hint: 'Este es el código que identifica a cada equipo.'
+	      }, {
+	        name: 'nombre',
+	        verbose_name: 'Nombre',
+	        type: String,
+	        hint: 'Este es el nombre del equipo.'
+	      }, {
+	        name: 'tecnica',
+	        verbose_name: 'Técnica',
+	        type: Array,
+	        hint: 'Este es el código de representacion internacional del laboratorio.',
+	        url: _urls2.default.tecnicas,
+	        key: 'codigo'
+	      }]
+	    };
+	  },
+	  components: {
+	    igMenu: _menu2.default,
+	    igTable: _table2.default,
+	    igForm: _form2.default
+	  },
+	  mounted: function mounted() {
+	    this.getElements(_urls2.default.equipos);
+	  }
+	};
+	// </script>
+	//
+	// <style lang="css">
+	// </style>
+	//
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports) {
+
+	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Equipos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__webpack_require__(82)
+	__vue_script__ = __webpack_require__(84)
+	__vue_template__ = __webpack_require__(85)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), true)
+	  if (!hotAPI.compatible) return
+	  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/tecnicas.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(83);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(16)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1ac668fc&file=tecnicas.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1ac668fc&file=tecnicas.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 83 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(11)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _underscore = __webpack_require__(1);
+
+	var _underscore2 = _interopRequireDefault(_underscore);
+
+	var _vue = __webpack_require__(2);
+
+	var _vue2 = _interopRequireDefault(_vue);
+
+	var _vuetify = __webpack_require__(3);
+
+	var _vuetify2 = _interopRequireDefault(_vuetify);
+
+	var _vueResource = __webpack_require__(4);
+
+	var _vueResource2 = _interopRequireDefault(_vueResource);
+
+	var _menu = __webpack_require__(8);
+
+	var _menu2 = _interopRequireDefault(_menu);
+
+	var _table = __webpack_require__(20);
+
+	var _table2 = _interopRequireDefault(_table);
+
+	var _form = __webpack_require__(63);
+
+	var _form2 = _interopRequireDefault(_form);
+
+	var _igmixin = __webpack_require__(68);
+
+	var _igmixin2 = _interopRequireDefault(_igmixin);
+
+	var _urls = __webpack_require__(74);
+
+	var _urls2 = _interopRequireDefault(_urls);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Vue.use(VueRouter);
+	_vue2.default.use(_vueResource2.default); // <template lang="html">
+	//     <div>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-table
+	//               table-title="Tecnicas"
+	//               :headers="headers"
+	//               :data="elements"
+	//               :fields="['codigo', 'nombre']"
+	//               @selectedrow="eventUpdatedForm"
+	//               ></ig-table>
+	//             </v-col>
+	//           </v-row>
+	//         </v-container>
+	//         <br>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-form
+	//               :fields="fields"
+	//               :url="urlForm"
+	//               @showsnack="showSnackBar"
+	//               @objectcreated="eventCreatedObject"
+	//               @clearselected="selected = false"
+	//               :selected="selected"
+	//               >
+	//             </ig-form>
+	//           </v-col>
+	//         </v-row>
+	//         <br>
+	//       </v-container>
+	//     </div>
+	// </template>
+	//
+	// <script>
+
+	_vue2.default.use(_vuetify2.default);
+
+	exports.default = {
+	  mixins: [_igmixin2.default],
+	  data: function data() {
+	    return {
+	      urlForm: _urls2.default.tecnicas,
+	      selected: false,
+	      headers: [{
+	        text: 'Código',
+	        value: 'tabla-codigo',
+	        left: true
+	      }, {
+	        text: 'Nombre', value: 'tabla-nombre',
+	        left: true
+	      }],
+	      fields: [{
+	        name: 'codigo',
+	        verbose_name: 'Código',
+	        type: String,
+	        hint: 'Este es el código que identifica a cada tecnica.'
+	      }, {
+	        name: 'nombre',
+	        verbose_name: 'Nombre',
+	        type: String,
+	        hint: 'Este es el nombre de la tecnica.'
+	      }]
+	    };
+	  },
+	  components: {
+	    igMenu: _menu2.default,
+	    igTable: _table2.default,
+	    igForm: _form2.default
+	  },
+	  mounted: function mounted() {
+	    this.getElements(_urls2.default.tecnicas);
+	  }
+	};
+	// </script>
+	//
+	// <style lang="css">
+	// </style>
+	//
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports) {
+
+	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Tecnicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__webpack_require__(87)
+	__vue_script__ = __webpack_require__(89)
+	__vue_template__ = __webpack_require__(90)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), true)
+	  if (!hotAPI.compatible) return
+	  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/secciones_trabajo.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ }),
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(88);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(16)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5fd94188&file=secciones_trabajo.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5fd94188&file=secciones_trabajo.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(11)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _underscore = __webpack_require__(1);
+
+	var _underscore2 = _interopRequireDefault(_underscore);
+
+	var _vue = __webpack_require__(2);
+
+	var _vue2 = _interopRequireDefault(_vue);
+
+	var _vuetify = __webpack_require__(3);
+
+	var _vuetify2 = _interopRequireDefault(_vuetify);
+
+	var _vueResource = __webpack_require__(4);
+
+	var _vueResource2 = _interopRequireDefault(_vueResource);
+
+	var _menu = __webpack_require__(8);
+
+	var _menu2 = _interopRequireDefault(_menu);
+
+	var _table = __webpack_require__(20);
+
+	var _table2 = _interopRequireDefault(_table);
+
+	var _form = __webpack_require__(63);
+
+	var _form2 = _interopRequireDefault(_form);
+
+	var _igmixin = __webpack_require__(68);
+
+	var _igmixin2 = _interopRequireDefault(_igmixin);
+
+	var _urls = __webpack_require__(74);
+
+	var _urls2 = _interopRequireDefault(_urls);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Vue.use(VueRouter);
+	_vue2.default.use(_vueResource2.default); // <template lang="html">
+	//     <div>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-table
+	//               table-title="Secciones de Trabajo"
+	//               :headers="headers"
+	//               :data="elements"
+	//               :fields="['codigo', 'descripcion']"
+	//               @selectedrow="eventUpdatedForm"
+	//               ></ig-table>
+	//             </v-col>
+	//           </v-row>
+	//         </v-container>
+	//         <br>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-form
+	//               :fields="fields"
+	//               :url="urlForm"
+	//               @showsnack="showSnackBar"
+	//               @objectcreated="eventCreatedObject"
+	//               @clearselected="selected = false"
+	//               :selected="selected"
+	//               >
+	//             </ig-form>
+	//           </v-col>
+	//         </v-row>
+	//         <br>
+	//       </v-container>
+	//     </div>
+	// </template>
+	//
+	// <script>
+
+	_vue2.default.use(_vuetify2.default);
+
+	exports.default = {
+	  mixins: [_igmixin2.default],
+	  data: function data() {
+	    return {
+	      urlForm: _urls2.default.secciones_trabajo,
+	      selected: false,
+	      headers: [{
+	        text: 'Código',
+	        value: 'codigo',
+	        left: true
+	      }, {
+	        text: 'Nombre',
+	        value: 'tabla-nombre',
+	        left: true
+	      }],
+	      fields: [{
+	        name: 'codigo',
+	        verbose_name: 'Código',
+	        type: String,
+	        hint: 'Este es el código que identifica a cada equipo.'
+	      }, {
+	        name: 'descripcion',
+	        verbose_name: 'Descripción',
+	        type: String,
+	        hint: 'Este es el nombre del equipo.'
+	      }]
+	    };
+	  },
+	  components: {
+	    igMenu: _menu2.default,
+	    igTable: _table2.default,
+	    igForm: _form2.default
+	  },
+	  mounted: function mounted() {
+	    this.getElements(_urls2.default.secciones_trabajo);
+	  }
+	};
+	// </script>
+	//
+	// <style lang="css">
+	// </style>
+	//
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports) {
+
+	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Secciones de Trabajo\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 91 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__webpack_require__(92)
+	__vue_script__ = __webpack_require__(94)
+	__vue_template__ = __webpack_require__(95)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), true)
+	  if (!hotAPI.compatible) return
+	  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/reactivos.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ }),
+/* 92 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(93);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(16)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4bfb5628&file=reactivos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4bfb5628&file=reactivos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 93 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(11)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 94 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _underscore = __webpack_require__(1);
+
+	var _underscore2 = _interopRequireDefault(_underscore);
+
+	var _vue = __webpack_require__(2);
+
+	var _vue2 = _interopRequireDefault(_vue);
+
+	var _vuetify = __webpack_require__(3);
+
+	var _vuetify2 = _interopRequireDefault(_vuetify);
+
+	var _vueResource = __webpack_require__(4);
+
+	var _vueResource2 = _interopRequireDefault(_vueResource);
+
+	var _menu = __webpack_require__(8);
+
+	var _menu2 = _interopRequireDefault(_menu);
+
+	var _table = __webpack_require__(20);
+
+	var _table2 = _interopRequireDefault(_table);
+
+	var _form = __webpack_require__(63);
+
+	var _form2 = _interopRequireDefault(_form);
+
+	var _igmixin = __webpack_require__(68);
+
+	var _igmixin2 = _interopRequireDefault(_igmixin);
+
+	var _urls = __webpack_require__(74);
+
+	var _urls2 = _interopRequireDefault(_urls);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Vue.use(VueRouter);
+	_vue2.default.use(_vueResource2.default); // <template lang="html">
+	//     <div>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-table
+	//               table-title="Reactivos"
+	//               :headers="headers"
+	//               :data="elements"
+	//               :fields="['codigo', 'nombre', 'laboratorio.codigo', 'costos']"
+	//               @selectedrow="eventUpdatedForm"
+	//               ></ig-table>
+	//             </v-col>
+	//           </v-row>
+	//         </v-container>
+	//         <br>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-form
+	//               :fields="fields"
+	//               :url="urlForm"
+	//               @showsnack="showSnackBar"
+	//               @objectcreated="eventCreatedObject"
+	//               @clearselected="selected = false"
+	//               :selected="selected"
+	//               >
+	//             </ig-form>
+	//           </v-col>
+	//         </v-row>
+	//         <br>
+	//       </v-container>
+	//     </div>
+	// </template>
+	//
+	// <script>
+
+	_vue2.default.use(_vuetify2.default);
+
+	exports.default = {
+	  mixins: [_igmixin2.default],
+	  data: function data() {
+	    return {
+	      urlForm: _urls2.default.reactivos,
+	      selected: false,
+	      headers: [{
+	        text: 'Código',
+	        value: 'tabla-codigo',
+	        left: true
+	      }, {
+	        text: 'Nombre',
+	        value: 'tabla-nombre',
+	        left: true
+	      }, {
+	        text: 'Laboratorio',
+	        value: 'tabla-laboratorio',
+	        left: true
+	      }, {
+	        text: 'Costo',
+	        value: 'tabla-costo',
+	        left: true
+	      }],
+	      fields: [{
+	        name: 'codigo',
+	        verbose_name: 'Código',
+	        type: String,
+	        hint: 'Este es el código que identifica a cada equipo.'
+	      }, {
+	        name: 'nombre',
+	        verbose_name: 'Nombre',
+	        type: String,
+	        hint: 'Este es el código que identifica a cada equipo.'
+	      }, {
+	        name: 'laboratorio',
+	        verbose_name: 'Laboratorio',
+	        type: Array,
+	        url: _urls2.default.laboratorios,
+	        hint: 'Este es el equipo que sera usado en este laboratorio.',
+	        key: 'codigo'
+	      }, {
+	        name: 'alarma_media',
+	        verbose_name: 'Alarma Media',
+	        type: String,
+	        hint: 'Este es el código que identifica a cada equipo.'
+	      }, {
+	        name: 'alarma_inferior',
+	        verbose_name: 'Alarma Inferior',
+	        type: String,
+	        hint: 'Este es el código que identifica a cada equipo.'
+	      }, {
+	        name: 'costos',
+	        verbose_name: 'Costo',
+	        type: String,
+	        hint: 'Este es el código que identifica a cada equipo.'
+	      }]
+	    };
+	  },
+	  components: {
+	    igMenu: _menu2.default,
+	    igTable: _table2.default,
+	    igForm: _form2.default
+	  },
+	  mounted: function mounted() {
+	    this.getElements(_urls2.default.reactivos);
+	  }
+	};
+	// </script>
+	//
+	// <style lang="css">
+	// </style>
+	//
+
+/***/ }),
+/* 95 */
+/***/ (function(module, exports) {
+
+	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Reactivos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'laboratorio.codigo', 'costos']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__webpack_require__(97)
+	__vue_script__ = __webpack_require__(99)
+	__vue_template__ = __webpack_require__(100)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), true)
+	  if (!hotAPI.compatible) return
+	  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/caracteristicas.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ }),
+/* 97 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(98);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(16)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4f578db2&file=caracteristicas.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4f578db2&file=caracteristicas.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 98 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(11)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 99 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _underscore = __webpack_require__(1);
+
+	var _underscore2 = _interopRequireDefault(_underscore);
+
+	var _vue = __webpack_require__(2);
+
+	var _vue2 = _interopRequireDefault(_vue);
+
+	var _vuetify = __webpack_require__(3);
+
+	var _vuetify2 = _interopRequireDefault(_vuetify);
+
+	var _vueResource = __webpack_require__(4);
+
+	var _vueResource2 = _interopRequireDefault(_vueResource);
+
+	var _menu = __webpack_require__(8);
+
+	var _menu2 = _interopRequireDefault(_menu);
+
+	var _table = __webpack_require__(20);
+
+	var _table2 = _interopRequireDefault(_table);
+
+	var _form = __webpack_require__(63);
+
+	var _form2 = _interopRequireDefault(_form);
+
+	var _igmixin = __webpack_require__(68);
+
+	var _igmixin2 = _interopRequireDefault(_igmixin);
+
+	var _urls = __webpack_require__(74);
+
+	var _urls2 = _interopRequireDefault(_urls);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Vue.use(VueRouter);
+	_vue2.default.use(_vueResource2.default); // <template lang="html">
+	//     <div>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-table
+	//               table-title="Caracteristicas"
+	//               :headers="headers"
+	//               :data="elements"
+	//               :fields="['codigo', 'descripcion']"
+	//               @selectedrow="eventUpdatedForm"
+	//               ></ig-table>
+	//             </v-col>
+	//           </v-row>
+	//         </v-container>
+	//         <br>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-form
+	//               :fields="fields"
+	//               :url="urlForm"
+	//               @showsnack="showSnackBar"
+	//               @objectcreated="eventCreatedObject"
+	//               @clearselected="selected = false"
+	//               :selected="selected"
+	//               >
+	//             </ig-form>
+	//           </v-col>
+	//         </v-row>
+	//         <br>
+	//       </v-container>
+	//     </div>
+	// </template>
+	//
+	// <script>
+
+	_vue2.default.use(_vuetify2.default);
+
+	exports.default = {
+	    mixins: [_igmixin2.default],
+	    data: function data() {
+	        return {
+	            urlForm: _urls2.default.caracteristicas,
+	            selected: false,
+	            headers: [{
+	                text: 'Código',
+	                value: 'tabla-codigo',
+	                left: true
+	            }, {
+	                text: 'Descripción',
+	                value: 'tabla-nombre',
+	                left: true
+	            }],
+	            fields: [{
+	                name: 'codigo',
+	                verbose_name: 'Código',
+	                type: String,
+	                hint: 'Este es el código que identifica a cada equipo.'
+	            }, {
+	                name: 'descripcion',
+	                verbose_name: 'Descripción',
+	                type: String,
+	                hint: 'Este es el código que identifica a cada equipo.'
+	            }]
+	        };
+	    },
+	    components: {
+	        igMenu: _menu2.default,
+	        igTable: _table2.default,
+	        igForm: _form2.default
+	    },
+	    mounted: function mounted() {
+	        this.getElements(_urls2.default.caracteristicas);
+	    }
+	};
+	// </script>
+	//
+	// <style lang="css">
+	// </style>
+	//
+
+/***/ }),
+/* 100 */
+/***/ (function(module, exports) {
+
+	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Caracteristicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__webpack_require__(102)
+	__vue_script__ = __webpack_require__(104)
+	__vue_template__ = __webpack_require__(105)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), true)
+	  if (!hotAPI.compatible) return
+	  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/especificacion_caracteristica.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ }),
+/* 102 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(103);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(16)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0d7fabd4&file=especificacion_caracteristica.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0d7fabd4&file=especificacion_caracteristica.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 103 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(11)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 104 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _underscore = __webpack_require__(1);
+
+	var _underscore2 = _interopRequireDefault(_underscore);
+
+	var _vue = __webpack_require__(2);
+
+	var _vue2 = _interopRequireDefault(_vue);
+
+	var _vuetify = __webpack_require__(3);
+
+	var _vuetify2 = _interopRequireDefault(_vuetify);
+
+	var _vueResource = __webpack_require__(4);
+
+	var _vueResource2 = _interopRequireDefault(_vueResource);
+
+	var _menu = __webpack_require__(8);
+
+	var _menu2 = _interopRequireDefault(_menu);
+
+	var _table = __webpack_require__(20);
+
+	var _table2 = _interopRequireDefault(_table);
+
+	var _form = __webpack_require__(63);
+
+	var _form2 = _interopRequireDefault(_form);
+
+	var _igmixin = __webpack_require__(68);
+
+	var _igmixin2 = _interopRequireDefault(_igmixin);
+
+	var _urls = __webpack_require__(74);
+
+	var _urls2 = _interopRequireDefault(_urls);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Vue.use(VueRouter);
+	_vue2.default.use(_vueResource2.default); // <template lang="html">
+	//     <div>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-table
+	//               table-title="Especificacion Caracteristica"
+	//               :headers="headers"
+	//               :data="elements"
+	//               :fields="['nombre', 'caracteristica.codigo']"
+	//               @selectedrow="eventUpdatedForm"
+	//               ></ig-table>
+	//             </v-col>
+	//           </v-row>
+	//         </v-container>
+	//         <br>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-form
+	//               :fields="fields"
+	//               :url="urlForm"
+	//               @showsnack="showSnackBar"
+	//               @objectcreated="eventCreatedObject"
+	//               @clearselected="selected = false"
+	//               :selected="selected"
+	//               >
+	//             </ig-form>
+	//           </v-col>
+	//         </v-row>
+	//         <br>
+	//       </v-container>
+	//     </div>
+	// </template>
+	//
+	// <script>
+
+	_vue2.default.use(_vuetify2.default);
+
+	var BASE_URL = _urls2.default.BASE;
+
+	exports.default = {
+	  mixins: [_igmixin2.default],
+	  data: function data() {
+	    return {
+	      urlForm: _urls2.default.especificacion_caracteristicas,
+	      selected: false,
+	      headers: [{
+	        text: 'Nombre',
+	        value: 'tabla-codigo',
+	        left: true
+	      }, {
+	        text: 'Caracteristica',
+	        value: 'tabla-nombre',
+	        left: true
+	      }],
+	      fields: [{
+	        name: 'nombre',
+	        verbose_name: 'Nombre',
+	        type: String,
+	        hint: 'Este es el código que identifica a cada equipo.'
+	      }, {
+	        name: 'caracteristica',
+	        verbose_name: 'Caracteristica',
+	        type: Array,
+	        url: _urls2.default.caracteristicas,
+	        hint: 'Este es el nombre del equipo.',
+	        key: 'codigo'
+	      }]
+	    };
+	  },
+	  components: {
+	    igMenu: _menu2.default,
+	    igTable: _table2.default,
+	    igForm: _form2.default
+	  },
+	  mounted: function mounted() {
+	    this.getElements(_urls2.default.especificacion_caracteristicas);
+	  }
+	};
+	// </script>
+	//
+	// <style lang="css">
+	// </style>
+	//
+
+/***/ }),
+/* 105 */
+/***/ (function(module, exports) {
+
+	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Especificacion Caracteristica\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['nombre', 'caracteristica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ })
 /******/ ]);

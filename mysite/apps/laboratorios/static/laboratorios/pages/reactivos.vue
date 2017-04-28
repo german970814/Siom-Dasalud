@@ -4,10 +4,10 @@
           <v-row>
             <v-col xs12 md12>
               <ig-table
-              table-title="Laboratorios"
+              table-title="Reactivos"
               :headers="headers"
               :data="elements"
-              :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
+              :fields="['codigo', 'nombre', 'laboratorio.codigo', 'costos']"
               @selectedrow="eventUpdatedForm"
               ></ig-table>
             </v-col>
@@ -52,68 +52,73 @@ import URL from './../urls.js';
 Vue.use(VueResource);
 Vue.use(Vuetify);
 
-const BASE_URL = URL.BASE;
 
 export default {
     mixins: [IgMixin],
     data: function () {
           return {
-              urlForm: URL.laboratorios,
+              urlForm: URL.reactivos,
               selected: false,
               headers: [
                 {
                   text: 'Código',
+                  value: 'tabla-codigo',
                   left: true,
-                  sortable: false,
-                  value: 'tabla-codigo'
                 },
                 {
-                  text: 'Nombre', value: 'tabla-nombre', left: true,
+                  text: 'Nombre',
+                  value: 'tabla-nombre',
+                  left: true,
                 },
                 {
-                  text: 'Código Internacional', value: 'tabla-codigo-internacional', left: true,
+                  text: 'Laboratorio',
+                  value: 'tabla-laboratorio',
+                  left: true,
                 },
                 {
-                  text: 'Equipo', value: 'table-equipo', left: true,
+                  text: 'Costo',
+                  value: 'tabla-costo',
+                  left: true,
                 },
-                {
-                  text: 'Sección de Trabajo', value: 'tabla-seccion-trabajo', left: true,
-                }
               ],
               fields: [
                 {
                   name: 'codigo',
                   verbose_name: 'Código',
                   type: String,
-                  hint: 'Este es el código que identifica a cada laboratorio.'
+                  hint: 'Este es el código que identifica a cada equipo.'
                 },
                 {
                   name: 'nombre',
                   verbose_name: 'Nombre',
                   type: String,
-                  hint: 'Este es el nombre del equipo.',
+                  hint: 'Este es el código que identifica a cada equipo.'
                 },
                 {
-                  name: 'codigo_internacional',
-                  verbose_name: 'Código Internacional',
-                  type: String,
-                  hint: 'Este es el código de representacion internacional del laboratorio.',
-                },
-                {
-                  name: 'equipo',
-                  verbose_name: 'Equipo',
+                  name: 'laboratorio',
+                  verbose_name: 'Laboratorio',
                   type: Array,
-                  url: URL.equipos,
+                  url: URL.laboratorios,
                   hint: 'Este es el equipo que sera usado en este laboratorio.',
-                  key: 'nombre'
+                  key: 'codigo'
                 },
                 {
-                  name: 'seccion_trabajo',
-                  verbose_name: 'Sección de Trabajo',
-                  type: Array,
-                  url: URL.secciones_trabajo,
-                  hint: 'Este es el area o sección de trabajo de este laboratorio.',
-                  key: 'codigo'
+                  name: 'alarma_media',
+                  verbose_name: 'Alarma Media',
+                  type: String,
+                  hint: 'Este es el código que identifica a cada equipo.'
+                },
+                {
+                  name: 'alarma_inferior',
+                  verbose_name: 'Alarma Inferior',
+                  type: String,
+                  hint: 'Este es el código que identifica a cada equipo.'
+                },
+                {
+                  name: 'costos',
+                  verbose_name: 'Costo',
+                  type: String,
+                  hint: 'Este es el código que identifica a cada equipo.'
                 },
             ]
           }
@@ -124,7 +129,7 @@ export default {
         igForm: FormComponent,
     },
     mounted: function () {
-        this.getElements(URL.laboratorios);
+        this.getElements(URL.reactivos);
     }
 }
 </script>

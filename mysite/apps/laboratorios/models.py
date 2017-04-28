@@ -10,6 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
 from mysite.apps.historias.models import orden as Orden
+from mysite.apps.parametros.models import servicios as Servicio
 
 
 def ruta_imagen_bacteriologo(self, filename):
@@ -66,6 +67,7 @@ class Laboratorio(models.Model):
     codigo_internacional = models.CharField(max_length=50, verbose_name=_('Código Internacional'), blank=True, null=True)
     equipo = models.ForeignKey(Equipo, verbose_name=_('Equipo'), related_name='laboratorios')
     seccion_trabajo = models.ForeignKey(SeccionTrabajo, verbose_name=_('Seccion de Trabajo'), related_name=('laboratorios'))
+    servicio = models.OneToOneField(Servicio, related_name='laboratorio')
 
     __str__ = lambda self: '{self.nombre} ({self.codigo})'.format(self=self).upper()
 

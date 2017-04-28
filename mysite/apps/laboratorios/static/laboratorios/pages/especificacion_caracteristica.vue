@@ -4,10 +4,10 @@
           <v-row>
             <v-col xs12 md12>
               <ig-table
-              table-title="Laboratorios"
+              table-title="Especificacion Caracteristica"
               :headers="headers"
               :data="elements"
-              :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
+              :fields="['nombre', 'caracteristica.codigo']"
               @selectedrow="eventUpdatedForm"
               ></ig-table>
             </v-col>
@@ -58,62 +58,34 @@ export default {
     mixins: [IgMixin],
     data: function () {
           return {
-              urlForm: URL.laboratorios,
+              urlForm: URL.especificacion_caracteristicas,
               selected: false,
               headers: [
                 {
-                  text: 'Código',
+                  text: 'Nombre',
+                  value: 'tabla-codigo',
                   left: true,
-                  sortable: false,
-                  value: 'tabla-codigo'
                 },
                 {
-                  text: 'Nombre', value: 'tabla-nombre', left: true,
+                  text: 'Caracteristica',
+                  value: 'tabla-nombre',
+                  left: true,
                 },
-                {
-                  text: 'Código Internacional', value: 'tabla-codigo-internacional', left: true,
-                },
-                {
-                  text: 'Equipo', value: 'table-equipo', left: true,
-                },
-                {
-                  text: 'Sección de Trabajo', value: 'tabla-seccion-trabajo', left: true,
-                }
               ],
               fields: [
-                {
-                  name: 'codigo',
-                  verbose_name: 'Código',
-                  type: String,
-                  hint: 'Este es el código que identifica a cada laboratorio.'
-                },
                 {
                   name: 'nombre',
                   verbose_name: 'Nombre',
                   type: String,
+                  hint: 'Este es el código que identifica a cada equipo.'
+                },
+                {
+                  name: 'caracteristica',
+                  verbose_name: 'Caracteristica',
+                  type: Array,
+                  url: URL.caracteristicas,
                   hint: 'Este es el nombre del equipo.',
-                },
-                {
-                  name: 'codigo_internacional',
-                  verbose_name: 'Código Internacional',
-                  type: String,
-                  hint: 'Este es el código de representacion internacional del laboratorio.',
-                },
-                {
-                  name: 'equipo',
-                  verbose_name: 'Equipo',
-                  type: Array,
-                  url: URL.equipos,
-                  hint: 'Este es el equipo que sera usado en este laboratorio.',
-                  key: 'nombre'
-                },
-                {
-                  name: 'seccion_trabajo',
-                  verbose_name: 'Sección de Trabajo',
-                  type: Array,
-                  url: URL.secciones_trabajo,
-                  hint: 'Este es el area o sección de trabajo de este laboratorio.',
-                  key: 'codigo'
+                  key: 'codigo',
                 },
             ]
           }
@@ -124,7 +96,7 @@ export default {
         igForm: FormComponent,
     },
     mounted: function () {
-        this.getElements(URL.laboratorios);
+        this.getElements(URL.especificacion_caracteristicas);
     }
 }
 </script>

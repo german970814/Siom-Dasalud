@@ -163,12 +163,10 @@ export default {
             let method = 'post';
             let message;
             let token = document.getElementsByName('csrfmiddlewaretoken')[0];
-            console.log(this.models);
             if (this.selected) {
                 url += this.selected.id + '/';
                 method = 'put';
             }
-            console.log(this.models);
             this.$http[method](url, this.models, {headers: {'X-CSRFToken': token.value}})
                 .then(response => {
                     if (response.status == 201) {

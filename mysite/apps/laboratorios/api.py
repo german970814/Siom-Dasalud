@@ -10,8 +10,15 @@ from rest_framework.response import Response
 from rest_framework import permissions, generics
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
-from .models import Laboratorio, Equipo, SeccionTrabajo
-from .serializers import LaboratorioSerializer, EquipoSerializer, SeccionTrabajoSerializer
+from .models import (
+    Laboratorio, Equipo, SeccionTrabajo, Tecnica, Reactivo, Caracteristica,
+    EspecificacionCaracteristica
+)
+from .serializers import (
+    LaboratorioSerializer, EquipoSerializer, SeccionTrabajoSerializer,
+    TecnicaSerializer, ReactivoSerializer, CaracteristicaSerializer,
+    EspecificacionCaracteristicaSerializer
+)
 from .utils import get_object_or_404_api
 
 
@@ -77,16 +84,56 @@ class EquiposListAPI(generics.ListCreateAPIView):
     serializer_class = EquipoSerializer
 
 
+class EquipoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Equipo.objects.all()
+    serializer_class = EquipoSerializer
+
+
 class SeccionesTrabajoListAPI(generics.ListCreateAPIView):
     queryset = SeccionTrabajo.objects.all()
     serializer_class = SeccionTrabajoSerializer
 
 
-# class DetalleCodigoPuntoView(RetrieveAPIView):
-#     """Devuelve la información del un punto de recolección de muestras de agua en formato JSON según el id del codigo
-#     del punto."""
+class SeccionTrabajoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SeccionTrabajo.objects.all()
+    serializer_class = SeccionTrabajoSerializer
 
-#     queryset = CodigoPunto.objects.all()
-#     serializer_class = CodigoPuntoSerializer
-#     permission_classes = [permissions.IsAuthenticated]
 
+class TecnicasListAPI(generics.ListCreateAPIView):
+    queryset = Tecnica.objects.all()
+    serializer_class = TecnicaSerializer
+
+
+class TecnicaDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Tecnica.objects.all()
+    serializer_class = TecnicaSerializer
+
+
+class ReactivosListAPI(generics.ListCreateAPIView):
+    queryset = Reactivo.objects.all()
+    serializer_class = ReactivoSerializer
+
+
+class ReactivoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Reactivo.objects.all()
+    serializer_class = ReactivoSerializer
+
+
+class CaracteristicasListAPI(generics.ListCreateAPIView):
+    queryset = Caracteristica.objects.all()
+    serializer_class = CaracteristicaSerializer
+
+
+class CaracteristicaDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Caracteristica.objects.all()
+    serializer_class = CaracteristicaSerializer
+
+
+class EspecificacionCaracteristicasListAPI(generics.ListCreateAPIView):
+    queryset = EspecificacionCaracteristica.objects.all()
+    serializer_class = EspecificacionCaracteristicaSerializer
+
+
+class EspecificacionCaracteristicaDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = EspecificacionCaracteristica.objects.all()
+    serializer_class = EspecificacionCaracteristicaSerializer

@@ -277,7 +277,7 @@ class addhistoria_clinicaForm(forms.ModelForm):
         self.fields['concepto'].widget.attrs.update({'class' : 'form-control'})
         self.fields['remitir'].widget.attrs.update({'class' : 'form-control'})
         self.fields['valoracion'].widget.attrs.update({'class' : 'form-control','rows' : '3'})
-        self.fields['recomendacion'].widget.attrs.update({'class' : 'form-control','rows' : '3'})			
+        self.fields['recomendacion'].widget.attrs.update({'class' : 'form-control','rows' : '3'})
 
 class addtest_alturaForm(forms.ModelForm):
     class Meta:
@@ -371,9 +371,9 @@ class addhistoria_procedimientosForm(forms.ModelForm):
         self.fields['impresion'].widget.attrs.update({'class' : 'form-control','rows' : '3'})
         self.fields['remision'].widget.attrs.update({'class' : 'form-control','rows' : '3'})
         self.fields['ambito'].widget.attrs.update({'class' : 'form-control'})
-        self.fields['finalidad'].widget.attrs.update({'class' : 'form-control'})	
-        self.fields['personal'].widget.attrs.update({'class' : 'form-control'})	
-        self.fields['forma'].widget.attrs.update({'class' : 'form-control'})		
+        self.fields['finalidad'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['personal'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['forma'].widget.attrs.update({'class' : 'form-control'})
 
 class addposologiaForm(forms.ModelForm):
     class Meta:

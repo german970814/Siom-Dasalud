@@ -32,12 +32,12 @@
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/pacientes/page/1/">
                                 <v-list-tile-title>Lista Paciente</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/vista_agregar_paciente/">
                                 <v-list-tile-title>Crear Paciente</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
@@ -57,12 +57,12 @@
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/agenda/">
                                 <v-list-tile-title>Agenda del Dia</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/agenda/doctor/">
                                 <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
@@ -82,18 +82,18 @@
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/ordenes/">
                                 <v-list-tile-title>Lista de Ordenes</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/ordenesReporte/">
                                 <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
                     </v-list-group>
                     <v-list-item>
-                        <v-list-tile>
+                        <v-list-tile ripple href="/portal_empresas/">
                             <v-list-tile-avatar>
                                 <v-icon>search</v-icon>
                             </v-list-tile-avatar>
@@ -119,12 +119,12 @@
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/medicos/">
                                 <v-list-tile-title>Medicos</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/instituciones/">
                                 <v-list-tile-title>Instituciones</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
@@ -144,12 +144,12 @@
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/empresas/">
                                 <v-list-tile-title>Empresas</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/planes/">
                                 <v-list-tile-title>Planes de Salud</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
@@ -169,22 +169,83 @@
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/procedimientos/">
                                 <v-list-tile-title>Procedimientos</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/plantillas/">
                                 <v-list-tile-title>Plantillas</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple>
+                            <v-list-tile ripple href="/servicios/">
                                 <v-list-tile-title>Servicios</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
                     </v-list-group>
+                    <v-list-item>
+                        <v-list-tile ripple href="/usuarios/">
+                            <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>
+                        </v-list-tile>
+                    </v-list-item>
+                    <v-list-item>
+                        <v-list-tile ripple href="/usuariosEmpresa/">
+                            <v-list-tile-title>Usuarios Empresas</v-list-tile-title>
+                        </v-list-tile>
+                    </v-list-item>
                     <v-divider light></v-divider>
+                    <v-subheader>Laboratorio</v-subheader>
+                    <v-list-group>
+                        <v-list-item slot="item">
+                            <v-list-tile ripple>
+                                <v-list-tile-avatar>
+                                    <v-icon>local_hospital</v-icon>
+                                </v-list-tile-avatar>
+                                <v-list-tile-content>
+                                    <v-list-tile-title>Administración</v-list-tile-title>
+                                </v-list-tile-content>
+                                <v-list-tile-action>
+                                    <v-icon>keyboard_arrow_down</v-icon>
+                                </v-list-tile-action>
+                            </v-list-tile>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-tile ripple href="#/laboratorios/">
+                              <v-list-tile-title>Laboratorios</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-tile ripple href="#/equipos/">
+                                <v-list-tile-title>Equipos</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-tile ripple href="#/tecnicas/">
+                                <v-list-tile-title>Tecnicas</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-tile ripple href="#/secciones_trabajo/">
+                                <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-tile ripple href="#/reactivos/">
+                                <v-list-tile-title>Reactivos</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-tile ripple href="#/caracteristicas/">
+                                <v-list-tile-title>Caracteristicas</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-tile ripple href="#/especificacion_caracteristicas/">
+                                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list-item>
+                    </v-list-group>
                 </v-list>
             </v-sidebar>
             <div class="main">

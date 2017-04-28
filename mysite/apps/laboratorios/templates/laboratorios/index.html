@@ -17,17 +17,17 @@
     <body>
         {% csrf_token %}
         <div id="app">
-            <v-app sidebar-under-toolbar>
+            <v-app>
                 <ig-menu>
                     <v-container fluid>
                         <br>
                         <v-spacer></v-spacer>
                         <!--Start-->
-                        <router-view></router-view>
+                        <router-view @mostrarsnackbar="mostrarSnackBar"></router-view>
                         <!--End-->
                     </v-container>
                 </ig-menu>
-                <v-snackbar :timeout="4000" :top="false" :bottom="true" v-model="snackbar">
+                <v-snackbar v-model="snackbar">
                     {[ snackbarText ]}
                     <v-btn flat class="pink--text" @click.native="snackbar = false">Cerrar</v-btn>
                 </v-snackbar>

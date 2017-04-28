@@ -3,16 +3,18 @@ import _ from 'underscore';
 import Vue from 'vue/dist/vue.js';
 import Vuetify from 'vuetify';
 import VueResource from 'vue-resource';
-// import router from './routes';
+import VueRouter from 'vue-router';
+
 import MenuComponent from './components/menu.vue';
 import TableComponent from './components/table.vue';
 import FormComponent from './components/form.vue';
 
 import IgMixin from './mixins/igmixin.js';
+import router from './routes';
 
 import URL from './urls.js';
 
-// Vue.use(VueRouter);
+Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(Vuetify);
 
@@ -21,81 +23,28 @@ const BASE_URL = URL.BASE;
 const app = new Vue({
     el: '#app',
     delimiters: ['{[', ']}'],
-    mixins: [IgMixin],
+    data: {
+        snackbar: false,
+        snackbarText: 'soy el campeon',
+    },
     components: {
         igMenu: MenuComponent,
         igTable: TableComponent,
         igForm: FormComponent,
     },
-    props: {
-    },
-    data: {
-        urlForm: URL.laboratorios,
-        selected: false,
-        headers: [
-            {
-                text: 'Código',
-                left: true,
-                sortable: false,
-                value: 'tabla-codigo'
-            },
-            {
-                text: 'Nombre', value: 'tabla-nombre'
-            },
-            {
-                text: 'Código Internacional', value: 'tabla-codigo-internacional'
-            },
-            {
-                text: 'Equipo', value: 'table-equipo'
-            },
-            {
-                text: 'Sección de Trabajo', value: 'tabla-seccion-trabajo'
-            }
-        ],
-        laboratorios: [
-
-        ],
-        fields: [
-            {
-                name: 'codigo',
-                verbose_name: 'Código',
-                type: String,
-                hint: 'Este es el código que identifica a cada laboratorio.'
-            },
-            {
-              name: 'nombre',
-              verbose_name: 'Nombre',
-              type: String,
-              hint: 'Este es el nombre del equipo.',
-            },
-            {
-              name: 'codigo_internacional',
-              verbose_name: 'Código Internacional',
-              type: String,
-              hint: 'Este es el código de representacion internacional del laboratorio.',
-            },
-            {
-                name: 'equipo',
-                verbose_name: 'Equipo',
-                type: Array,
-                url: URL.equipos,
-                hint: 'Este es el equipo que sera usado en este laboratorio.',
-                key: 'nombre'
-            },
-            {
-                name: 'seccion_trabajo',
-                verbose_name: 'Sección de Trabajo',
-                type: Array,
-                url: URL.secciones_trabajo,
-                hint: 'Este es el area o sección de trabajo de este laboratorio.',
-                key: 'codigo'
-            },
-        ]
-    },
-    mounted: function () {
-        this.getElements(URL.laboratorios);
-    },
     methods: {
-
-    }
+        mostrarSnackBar: function (value) {
+            this.snackbarText = value;
+            this.snackbar = true;
+        },
+        eventoObjetoCreado: function (value) {
+            value.selected = false;
+            this.elements.push(value);
+            this.selected = value;
+        },
+        eventoFormularioActualizado: function (value) {
+            this.selected = value;
+        },
+    },
+    router: router
 })//.$mount();

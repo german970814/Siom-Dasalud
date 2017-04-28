@@ -1,0 +1,17 @@
+Django==1.8.17
+Markdown==2.6.8
+Pillow==4.0.0
+configparser==3.5.0
+django-debug-toolbar==1.7
+django-extensions==1.7.8
+django-filter==1.0.2
+djangorestframework==3.6.2
+mysqlclient==1.3.10
+olefile==0.44
+psycopg2==2.7.1
+pydot==1.2.3
+pygraphviz==1.3.1
+pyparsing==2.2.0
+reportlab==3.3.0
+six==1.10.0
+sqlparse==0.2.3

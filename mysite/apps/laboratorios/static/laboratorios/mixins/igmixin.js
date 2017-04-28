@@ -1,10 +1,11 @@
 import _ from 'underscore';
 
 export default {
-    data: {
-        elements: [],
-        snackbar: false,
-        snackbarText: ''
+    data: function () {
+        return {
+          elements: [],
+          __parent_: undefined,
+        }
     },
     methods: {
         getElements: function () {
@@ -22,9 +23,24 @@ export default {
                     showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
                 });
         },
+        __getParent__: function () {
+            if (!this.__parent_) {  // singleton
+                let parent = this.$parent;
+                while (parent !== undefined) {
+                    if (parent.$parent === undefined) {
+                        break;
+                    }
+                    parent = parent.$parent;
+                }
+                this.__parent_ = parent;
+            }
+            return this.__parent_;
+        },
+        getParent: function () {
+            return this.__getParent__().$options.methods;
+        },
         showSnackBar: function (value) {
-            this.snackbarText = value;
-            this.snackbar = true;
+            this.$emit('mostrarsnackbar', value);
         },
         eventCreatedObject: function (value) {
             value.selected = false;

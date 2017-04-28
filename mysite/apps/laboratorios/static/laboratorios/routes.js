@@ -1,10 +1,21 @@
 import VueRouter from 'vue-router';
-import algo from './algo.vue';
-import lista from './table.vue';
+
+import Laboratorios from './pages/laboratorios.vue';
+import Equipos from './pages/equipos.vue';
+import Tecnicas from './pages/tecnicas.vue';
+import SeccionesTrabajo from './pages/secciones_trabajo.vue';
+import Reactivos from './pages/reactivos.vue';
+import Caracteristicas from './pages/caracteristicas.vue';
+import EspecificacionCaracteristica from './pages/especificacion_caracteristica.vue';
 
 const routes = [
-    {path: '/', component: algo},
-    {path: '/bar', component: lista}
+    {path: '/laboratorios/', component: Laboratorios},
+    {path: '/equipos/', component: Equipos},
+    {path: '/tecnicas/', component: Tecnicas},
+    {path: '/secciones_trabajo/', component: SeccionesTrabajo},
+    {path: '/reactivos/', component: Reactivos},
+    {path: '/caracteristicas/', component: Caracteristicas},
+    {path: '/especificacion_caracteristicas/', component: EspecificacionCaracteristica},
 ]
 
 
