@@ -5,15 +5,20 @@
             <v-spacer></v-spacer>
             <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
         </v-card-title>
+        <!-- v-bind:headers="headers" -->
         <v-data-table
             v-bind:headers="headers"
             v-model="data"
             v-bind:search="buscador"
             :rows-per-page-items="[10]"
-            rowsPerPage="10"
+            :rowsPerPage="10"
+            :filter="filter"
             rows-per-page-text="Filas por Página"
             no-results-text="No se encontraron resultados"
             ref="dataTable">
+            <template slot="headers" scope="props">
+                <span style="text-align:before: center !important">{{ props.item.text }}</span>
+            </template>
             <template slot="items" scope="props">
                 <!-- <td @click="updateForm(props.item)">
                     <v-checkbox primary v-model="props.item.selected" ></v-checkbox>
@@ -58,11 +63,38 @@ export default {
         // this.$refs.dataTable.rowsPerPage = 10;
     },
     methods: {
+        _validValue: function (val) {
+            return val !== null && ['undefined', 'boolean'].indexOf(typeof val) === -1
+        },
+        customFilter: function (val, search) {
+            return val.toString().toLowerCase().indexOf(search) !== -1;
+        },
+        filter: function (val, search) {
+            var valid = this._validValue(val);
+            if (valid) {
+                valid = valid && this.customFilter(val, search);
+                if (['object'].indexOf(typeof val) === 0 && !valid) {
+                    valid = Object.keys(val).some(j => this._validValue(val[j]) && this.customFilter(val[j], search));
+                }
+            }
+            return valid;
+        },
         getattr: function (obj, attr) {
             let attrs = attr.split('.');
             for (let at of attrs) {
                 if (at in obj) {
                     obj = obj[at];
+                }
+                if (obj instanceof Array) {
+                    var mix = '';
+                    for (let elem of obj) {
+                        attr = attrs[attrs.length - 1];
+                        if (mix) {
+                            mix += ', ';
+                        }
+                        mix += elem[attr];
+                    }
+                    return mix;
                 }
             }
             return obj;
@@ -75,4 +107,7 @@ export default {
 </script>
 
 <style lang="css">
+.text-xs-left {
+    text-align: center !important;
+}
 </style>

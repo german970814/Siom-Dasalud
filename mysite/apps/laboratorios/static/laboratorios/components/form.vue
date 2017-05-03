@@ -29,6 +29,7 @@
                                 :rules="getRules(field)"
                                 v-model="models[field.name]"
                                 item-value="text"
+                                autocomplete
                                 light
                                 ></v-select>
                             </template>
@@ -73,9 +74,10 @@ export default {
     },
     data: function () {
         return {
-            models: {},
-            items: {},
-            _validated: false
+            models: {},  // los modelos
+            items: {},  // los items de los selects
+            _validated: false,
+            appended: {},
         }
     },
     watch: {
@@ -94,7 +96,19 @@ export default {
                             if (key) {
                                 this.models[attr] = key;
                             } else {
-                                this.$emit('showsnack', 'No se encuentra el ' + attr.toString() + ' deseado.');
+                                key = this.fields.find(x => x.name == attr);
+                                if (key) {
+                                    this.selected[attr].text = this.selected[attr][key.key];
+                                    if (attr in this.appended && this.appended[attr]) {
+                                        this.items[attr].pop();
+                                        this.appended[attr] = false;
+                                    }
+                                    this.items[attr].push(this.selected[attr]);
+                                    this.appended[attr] = true;
+                                    this.models[attr] = this.selected[attr];
+                                } else {
+                                    this.$emit('showsnack', 'No se encuentra el ' + attr.toString() + ' deseado.');
+                                }
                             }
                         } else {
                             this.models[attr] = this.selected[attr];
@@ -108,6 +122,10 @@ export default {
         cleanFields: function () {
             for (let field of this.fields) {
                 this.models[field.name] = '';
+                if (field.name in this.appended) {
+                    this.appended[field.name] = false;
+                    this.items[field.name].pop();
+                }
             }
             // this.selected = false;
             this.$emit('clearselected');

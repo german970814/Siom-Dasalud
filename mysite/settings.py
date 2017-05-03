@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'mysite.apps.laboratorios',
     'rest_framework',
     # 'debug_toolbar',
+    'autofixture',
 )
 
 MIDDLEWARE_CLASSES = (

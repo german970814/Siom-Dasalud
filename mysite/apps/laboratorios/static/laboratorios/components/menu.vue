@@ -37,7 +37,7 @@
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
-                            <v-list-tile ripple href="/vista_agregar_paciente/">
+                            <v-list-tile ripple href="/add/paciente/">
                                 <v-list-tile-title>Crear Paciente</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
@@ -184,18 +184,38 @@
                             </v-list-tile>
                         </v-list-item>
                     </v-list-group>
-                    <v-list-item>
-                        <v-list-tile ripple href="/usuarios/">
-                            <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>
-                        </v-list-tile>
-                    </v-list-item>
-                    <v-list-item>
-                        <v-list-tile ripple href="/usuariosEmpresa/">
-                            <v-list-tile-title>Usuarios Empresas</v-list-tile-title>
-                        </v-list-tile>
-                    </v-list-item>
+                    <v-list-group>
+                        <v-list-item slot="item">
+                            <v-list-tile ripple>
+                                <v-list-tile-avatar>
+                                    <v-icon>featured_play_list</v-icon>
+                                </v-list-tile-avatar>
+                                <v-list-tile-content>
+                                    <v-list-tile-title>Usuarios</v-list-tile-title>
+                                </v-list-tile-content>
+                                <v-list-tile-action>
+                                    <v-icon>keyboard_arrow_down</v-icon>
+                                </v-list-tile-action>
+                            </v-list-tile>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-tile ripple href="/usuarios/">
+                                <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list-item>
+                        <v-list-item>
+                            <v-list-tile ripple href="/usuariosEmpresa/">
+                                <v-list-tile-title>Usuarios Empresas</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list-item>
+                    </v-list-group>
                     <v-divider light></v-divider>
                     <v-subheader>Laboratorio</v-subheader>
+                    <v-list-item>
+                        <v-list-tile ripple href="#/ordenes_laboratorios/">
+                            <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>
+                        </v-list-tile>
+                    </v-list-item>
                     <v-list-group>
                         <v-list-item slot="item">
                             <v-list-tile ripple>

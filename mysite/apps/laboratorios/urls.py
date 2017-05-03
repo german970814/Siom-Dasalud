@@ -22,4 +22,7 @@ urlpatterns += [
     url(r'^api/caracteristicas/(?P<pk>\d+)/$', api.CaracteristicaDetailAPI.as_view(), name='detalle_caracteristica'),
     url(r'^api/especificacion_caracteristicas/$', api.EspecificacionCaracteristicasListAPI.as_view(), name='especificacion_caracteristicas'),
     url(r'^api/especificacion_caracteristicas/(?P<pk>\d+)/$', api.EspecificacionCaracteristicaDetailAPI.as_view(), name='detalle_especificacion_caracteristica'),
+    url(r'^api/ordenes_laboratorios/$', api.ordenes_laboratorios, name='ordenes_laboratorios'),
+    url(r'^api/servicios/$', api.ServiciosListAPI.as_view(), name='servicios'),
+    url(r'^api/servicios/(?P<pk>\d+)/$', api.ServicioLaboratorioAPI.as_view(), name='detalle_servicio'),
 ]

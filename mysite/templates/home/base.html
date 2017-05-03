@@ -37,6 +37,10 @@
                 padding: inherit;
             }
 
+            table.table tbody td:first-child, table.table tbody td:not(:first-child), table.table tbody th:first-child, table.table tbody th:not(:first-child), table.table thead td:first-child, table.table thead td:not(:first-child), table.table thead th:first-child, table.table thead th:not(:first-child) {
+                padding: 8px;
+            }
+
             table tbody td, table tbody th {
                 height: inherit;
             }
@@ -54,10 +58,20 @@
                 height: inherit;
                 margin: inherit;
                 text-transform: inherit;
+                transition: inherit;
+                min-width: inherit;
             }
 
+            a.btn.btn-xs:not(.btn-primary) {
+                background: inherit;
+                color: inherit;
+            }
             a:hover, a:focus {
                 text-decoration: none;
+            }
+
+            a.btn {
+                height: initial;
             }
         </style>
     </head>
@@ -293,6 +307,11 @@
                                   <v-divider light></v-divider>
                                   {% endif %}
                                   <v-subheader>Laboratorio</v-subheader>
+                                  <v-list-item>
+                                      <v-list-tile ripple href="{% url 'laboratorios:index' %}#/ordenes_laboratorios/">
+                                          <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>
+                                      </v-list-tile>
+                                  </v-list-item>
                                   <v-list-group>
                                       <v-list-item slot="item">
                                           <v-list-tile ripple>
@@ -396,7 +415,7 @@
         <!-- Page-Level Demo Scripts - Tables - Use for reference -->
         <script>
         $(document).ready(function() {
-            $('input[type="text"], input[type="number"], textarea').each(function (obj, indx) {
+            $('input[type="text"], input[type="number"], input[type="email"], textarea, select').each(function (obj, indx) {
                 if (!$(this).hasClass('form-control')) {
                     $(this).addClass('form-control');
                 }

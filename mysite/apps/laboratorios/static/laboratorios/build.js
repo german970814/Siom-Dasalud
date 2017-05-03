@@ -74,19 +74,19 @@
 
 	var _table2 = _interopRequireDefault(_table);
 
-	var _form = __webpack_require__(63);
+	var _form = __webpack_require__(77);
 
 	var _form2 = _interopRequireDefault(_form);
 
-	var _igmixin = __webpack_require__(68);
+	var _igmixin = __webpack_require__(82);
 
 	var _igmixin2 = _interopRequireDefault(_igmixin);
 
-	var _routes = __webpack_require__(69);
+	var _routes = __webpack_require__(83);
 
 	var _routes2 = _interopRequireDefault(_routes);
 
-	var _urls = __webpack_require__(74);
+	var _urls = __webpack_require__(88);
 
 	var _urls2 = _interopRequireDefault(_urls);
 
@@ -26214,7 +26214,7 @@
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                         <v-list-item>
-	//                             <v-list-tile ripple href="/vista_agregar_paciente/">
+	//                             <v-list-tile ripple href="/add/paciente/">
 	//                                 <v-list-tile-title>Crear Paciente</v-list-tile-title>
 	//                             </v-list-tile>
 	//                         </v-list-item>
@@ -26361,18 +26361,38 @@
 	//                             </v-list-tile>
 	//                         </v-list-item>
 	//                     </v-list-group>
-	//                     <v-list-item>
-	//                         <v-list-tile ripple href="/usuarios/">
-	//                             <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>
-	//                         </v-list-tile>
-	//                     </v-list-item>
-	//                     <v-list-item>
-	//                         <v-list-tile ripple href="/usuariosEmpresa/">
-	//                             <v-list-tile-title>Usuarios Empresas</v-list-tile-title>
-	//                         </v-list-tile>
-	//                     </v-list-item>
+	//                     <v-list-group>
+	//                         <v-list-item slot="item">
+	//                             <v-list-tile ripple>
+	//                                 <v-list-tile-avatar>
+	//                                     <v-icon>featured_play_list</v-icon>
+	//                                 </v-list-tile-avatar>
+	//                                 <v-list-tile-content>
+	//                                     <v-list-tile-title>Usuarios</v-list-tile-title>
+	//                                 </v-list-tile-content>
+	//                                 <v-list-tile-action>
+	//                                     <v-icon>keyboard_arrow_down</v-icon>
+	//                                 </v-list-tile-action>
+	//                             </v-list-tile>
+	//                         </v-list-item>
+	//                         <v-list-item>
+	//                             <v-list-tile ripple href="/usuarios/">
+	//                                 <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>
+	//                             </v-list-tile>
+	//                         </v-list-item>
+	//                         <v-list-item>
+	//                             <v-list-tile ripple href="/usuariosEmpresa/">
+	//                                 <v-list-tile-title>Usuarios Empresas</v-list-tile-title>
+	//                             </v-list-tile>
+	//                         </v-list-item>
+	//                     </v-list-group>
 	//                     <v-divider light></v-divider>
 	//                     <v-subheader>Laboratorio</v-subheader>
+	//                     <v-list-item>
+	//                         <v-list-tile ripple href="#/ordenes_laboratorios/">
+	//                             <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>
+	//                         </v-list-tile>
+	//                     </v-list-item>
 	//                     <v-list-group>
 	//                         <v-list-item slot="item">
 	//                             <v-list-tile ripple>
@@ -26461,7 +26481,7 @@
 /* 19 */
 /***/ (function(module, exports) {
 
-	module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n            <v-toolbar-side-icon @click.native.stop=\"sidebar = !sidebar\"></v-toolbar-side-icon>\n            <v-toolbar-title>Dasalud</v-toolbar-title>\n        </v-toolbar>\n        <main>\n            <v-sidebar v-model=\"sidebar\" drawer class=\"mt-0 scroll-y\" :mobile-break-point=\"576\">\n                <v-list dense>\n                    <v-list-item>\n                        <v-list-tile>\n                            <v-list-tile-avatar>\n                                <v-icon>accessibility</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Dashboard</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>people</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Pacientes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/pacientes/page/1/\">\n                                <v-list-tile-title>Lista Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/vista_agregar_paciente/\">\n                                <v-list-tile-title>Crear Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>today</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Agendas</v-list-tile-title>\n                                </v-list-tile-content>\n                                    <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/\">\n                                <v-list-tile-title>Agenda del Dia</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/doctor/\">\n                                <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>open_in_browser</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenes/\">\n                                <v-list-tile-title>Lista de Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenesReporte/\">\n                                <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/portal_empresas/\">\n                            <v-list-tile-avatar>\n                                <v-icon>search</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Buscar Orden</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-divider light></v-divider>\n                    <v-subheader>Utilidades</v-subheader>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/medicos/\">\n                                <v-list-tile-title>Medicos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/instituciones/\">\n                                <v-list-tile-title>Instituciones</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>business_center</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Empresas y Planes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/empresas/\">\n                                <v-list-tile-title>Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/planes/\">\n                                <v-list-tile-title>Planes de Salud</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/procedimientos/\">\n                                <v-list-tile-title>Procedimientos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/plantillas/\">\n                                <v-list-tile-title>Plantillas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/servicios/\">\n                                <v-list-tile-title>Servicios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/usuarios/\">\n                            <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/usuariosEmpresa/\">\n                            <v-list-tile-title>Usuarios Empresas</v-list-tile-title>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-divider light></v-divider>\n                    <v-subheader>Laboratorio</v-subheader>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Administración</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/laboratorios/\">\n                              <v-list-tile-title>Laboratorios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/equipos/\">\n                                <v-list-tile-title>Equipos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/tecnicas/\">\n                                <v-list-tile-title>Tecnicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/secciones_trabajo/\">\n                                <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/reactivos/\">\n                                <v-list-tile-title>Reactivos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/caracteristicas/\">\n                                <v-list-tile-title>Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/especificacion_caracteristicas/\">\n                                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                </v-list>\n            </v-sidebar>\n            <div class=\"main\">\n                <v-content class=\"grey lighten-4\">\n                    <v-container fluid>\n                        <br>\n                        <v-spacer></v-spacer>\n                        <slot></slot>\n                    </v-container>\n                </v-content>\n            </div>\n        </main>\n    </div>\n";
+	module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n            <v-toolbar-side-icon @click.native.stop=\"sidebar = !sidebar\"></v-toolbar-side-icon>\n            <v-toolbar-title>Dasalud</v-toolbar-title>\n        </v-toolbar>\n        <main>\n            <v-sidebar v-model=\"sidebar\" drawer class=\"mt-0 scroll-y\" :mobile-break-point=\"576\">\n                <v-list dense>\n                    <v-list-item>\n                        <v-list-tile>\n                            <v-list-tile-avatar>\n                                <v-icon>accessibility</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Dashboard</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>people</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Pacientes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/pacientes/page/1/\">\n                                <v-list-tile-title>Lista Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/add/paciente/\">\n                                <v-list-tile-title>Crear Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>today</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Agendas</v-list-tile-title>\n                                </v-list-tile-content>\n                                    <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/\">\n                                <v-list-tile-title>Agenda del Dia</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/doctor/\">\n                                <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>open_in_browser</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenes/\">\n                                <v-list-tile-title>Lista de Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenesReporte/\">\n                                <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/portal_empresas/\">\n                            <v-list-tile-avatar>\n                                <v-icon>search</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Buscar Orden</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-divider light></v-divider>\n                    <v-subheader>Utilidades</v-subheader>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/medicos/\">\n                                <v-list-tile-title>Medicos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/instituciones/\">\n                                <v-list-tile-title>Instituciones</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>business_center</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Empresas y Planes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/empresas/\">\n                                <v-list-tile-title>Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/planes/\">\n                                <v-list-tile-title>Planes de Salud</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/procedimientos/\">\n                                <v-list-tile-title>Procedimientos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/plantillas/\">\n                                <v-list-tile-title>Plantillas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/servicios/\">\n                                <v-list-tile-title>Servicios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Usuarios</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuarios/\">\n                                <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuariosEmpresa/\">\n                                <v-list-tile-title>Usuarios Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-divider light></v-divider>\n                    <v-subheader>Laboratorio</v-subheader>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"#/ordenes_laboratorios/\">\n                            <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Administración</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/laboratorios/\">\n                              <v-list-tile-title>Laboratorios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/equipos/\">\n                                <v-list-tile-title>Equipos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/tecnicas/\">\n                                <v-list-tile-title>Tecnicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/secciones_trabajo/\">\n                                <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/reactivos/\">\n                                <v-list-tile-title>Reactivos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/caracteristicas/\">\n                                <v-list-tile-title>Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/especificacion_caracteristicas/\">\n                                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                </v-list>\n            </v-sidebar>\n            <div class=\"main\">\n                <v-content class=\"grey lighten-4\">\n                    <v-container fluid>\n                        <br>\n                        <v-spacer></v-spacer>\n                        <slot></slot>\n                    </v-container>\n                </v-content>\n            </div>\n        </main>\n    </div>\n";
 
 /***/ }),
 /* 20 */
@@ -26470,7 +26490,7 @@
 	var __vue_script__, __vue_template__
 	__webpack_require__(21)
 	__vue_script__ = __webpack_require__(23)
-	__vue_template__ = __webpack_require__(62)
+	__vue_template__ = __webpack_require__(76)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -26521,7 +26541,7 @@
 
 
 	// module
-	exports.push([module.id, "\n", ""]);
+	exports.push([module.id, "\n.text-xs-left {\n    text-align: center !important;\n}\n", ""]);
 
 	// exports
 
@@ -26540,6 +26560,14 @@
 
 	var _getIterator3 = _interopRequireDefault(_getIterator2);
 
+	var _keys = __webpack_require__(62);
+
+	var _keys2 = _interopRequireDefault(_keys);
+
+	var _typeof2 = __webpack_require__(67);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// <template lang="html">
@@ -26549,15 +26577,20 @@
 	//             <v-spacer></v-spacer>
 	//             <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
 	//         </v-card-title>
+	//         <!-- v-bind:headers="headers" -->
 	//         <v-data-table
 	//             v-bind:headers="headers"
 	//             v-model="data"
 	//             v-bind:search="buscador"
 	//             :rows-per-page-items="[10]"
-	//             rowsPerPage="10"
+	//             :rowsPerPage="10"
+	//             :filter="filter"
 	//             rows-per-page-text="Filas por Página"
 	//             no-results-text="No se encontraron resultados"
 	//             ref="dataTable">
+	//             <template slot="headers" scope="props">
+	//                 <span style="text-align:before: center !important">{{ props.item.text }}</span>
+	//             </template>
 	//             <template slot="items" scope="props">
 	//                 <!-- <td @click="updateForm(props.item)">
 	//                     <v-checkbox primary v-model="props.item.selected" ></v-checkbox>
@@ -26604,6 +26637,26 @@
 	        // this.$refs.dataTable.rowsPerPage = 10;
 	    },
 	    methods: {
+	        _validValue: function _validValue(val) {
+	            return val !== null && ['undefined', 'boolean'].indexOf(typeof val === 'undefined' ? 'undefined' : (0, _typeof3.default)(val)) === -1;
+	        },
+	        customFilter: function customFilter(val, search) {
+	            return val.toString().toLowerCase().indexOf(search) !== -1;
+	        },
+	        filter: function filter(val, search) {
+	            var _this = this;
+
+	            var valid = this._validValue(val);
+	            if (valid) {
+	                valid = valid && this.customFilter(val, search);
+	                if (['object'].indexOf(typeof val === 'undefined' ? 'undefined' : (0, _typeof3.default)(val)) === 0 && !valid) {
+	                    valid = (0, _keys2.default)(val).some(function (j) {
+	                        return _this._validValue(val[j]) && _this.customFilter(val[j], search);
+	                    });
+	                }
+	            }
+	            return valid;
+	        },
 	        getattr: function getattr(obj, attr) {
 	            var attrs = attr.split('.');
 	            var _iteratorNormalCompletion = true;
@@ -26616,6 +26669,39 @@
 
 	                    if (at in obj) {
 	                        obj = obj[at];
+	                    }
+	                    if (obj instanceof Array) {
+	                        var mix = '';
+	                        var _iteratorNormalCompletion2 = true;
+	                        var _didIteratorError2 = false;
+	                        var _iteratorError2 = undefined;
+
+	                        try {
+	                            for (var _iterator2 = (0, _getIterator3.default)(obj), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	                                var elem = _step2.value;
+
+	                                attr = attrs[attrs.length - 1];
+	                                if (mix) {
+	                                    mix += ', ';
+	                                }
+	                                mix += elem[attr];
+	                            }
+	                        } catch (err) {
+	                            _didIteratorError2 = true;
+	                            _iteratorError2 = err;
+	                        } finally {
+	                            try {
+	                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                                    _iterator2.return();
+	                                }
+	                            } finally {
+	                                if (_didIteratorError2) {
+	                                    throw _iteratorError2;
+	                                }
+	                            }
+	                        }
+
+	                        return mix;
 	                    }
 	                }
 	            } catch (err) {
@@ -26643,6 +26729,9 @@
 	// </script>
 	//
 	// <style lang="css">
+	// .text-xs-left {
+	//     text-align: center !important;
+	// }
 	// </style>
 	//
 
@@ -27210,18 +27299,404 @@
 
 /***/ }),
 /* 62 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <v-data-table\n            v-bind:headers=\"headers\"\n            v-model=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            rowsPerPage=\"10\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\">{{ getattr(props.item, field) }}</td>\n                </template>\n            </template>\n        </v-data-table>\n    </v-card>\n";
+	module.exports = { "default": __webpack_require__(63), __esModule: true };
 
 /***/ }),
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	__webpack_require__(64);
+	module.exports = __webpack_require__(39).Object.keys;
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// 19.1.2.14 Object.keys(O)
+	var toObject = __webpack_require__(65);
+
+	__webpack_require__(66)('keys', function($keys){
+	  return function keys(it){
+	    return $keys(toObject(it));
+	  };
+	});
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// 7.1.13 ToObject(argument)
+	var defined = __webpack_require__(34);
+	module.exports = function(it){
+	  return Object(defined(it));
+	};
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// most Object methods by ES6 should accept primitives
+	var $export = __webpack_require__(37)
+	  , core    = __webpack_require__(39)
+	  , fails   = __webpack_require__(47);
+	module.exports = function(KEY, exec){
+	  var fn  = (core.Object || {})[KEY] || Object[KEY]
+	    , exp = {};
+	  exp[KEY] = exec(fn);
+	  $export($export.S + $export.F * fails(function(){ fn(1); }), 'Object', exp);
+	};
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _Symbol = __webpack_require__(68)["default"];
+
+	exports["default"] = function (obj) {
+	  return obj && obj.constructor === _Symbol ? "symbol" : typeof obj;
+	};
+
+	exports.__esModule = true;
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(69), __esModule: true };
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	__webpack_require__(70);
+	__webpack_require__(75);
+	module.exports = __webpack_require__(39).Symbol;
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	// ECMAScript 6 symbols shim
+	var $              = __webpack_require__(44)
+	  , global         = __webpack_require__(38)
+	  , has            = __webpack_require__(48)
+	  , DESCRIPTORS    = __webpack_require__(46)
+	  , $export        = __webpack_require__(37)
+	  , redefine       = __webpack_require__(42)
+	  , $fails         = __webpack_require__(47)
+	  , shared         = __webpack_require__(52)
+	  , setToStringTag = __webpack_require__(50)
+	  , uid            = __webpack_require__(53)
+	  , wks            = __webpack_require__(51)
+	  , keyOf          = __webpack_require__(71)
+	  , $names         = __webpack_require__(72)
+	  , enumKeys       = __webpack_require__(73)
+	  , isArray        = __webpack_require__(74)
+	  , anObject       = __webpack_require__(58)
+	  , toIObject      = __webpack_require__(31)
+	  , createDesc     = __webpack_require__(45)
+	  , getDesc        = $.getDesc
+	  , setDesc        = $.setDesc
+	  , _create        = $.create
+	  , getNames       = $names.get
+	  , $Symbol        = global.Symbol
+	  , $JSON          = global.JSON
+	  , _stringify     = $JSON && $JSON.stringify
+	  , setter         = false
+	  , HIDDEN         = wks('_hidden')
+	  , isEnum         = $.isEnum
+	  , SymbolRegistry = shared('symbol-registry')
+	  , AllSymbols     = shared('symbols')
+	  , useNative      = typeof $Symbol == 'function'
+	  , ObjectProto    = Object.prototype;
+
+	// fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
+	var setSymbolDesc = DESCRIPTORS && $fails(function(){
+	  return _create(setDesc({}, 'a', {
+	    get: function(){ return setDesc(this, 'a', {value: 7}).a; }
+	  })).a != 7;
+	}) ? function(it, key, D){
+	  var protoDesc = getDesc(ObjectProto, key);
+	  if(protoDesc)delete ObjectProto[key];
+	  setDesc(it, key, D);
+	  if(protoDesc && it !== ObjectProto)setDesc(ObjectProto, key, protoDesc);
+	} : setDesc;
+
+	var wrap = function(tag){
+	  var sym = AllSymbols[tag] = _create($Symbol.prototype);
+	  sym._k = tag;
+	  DESCRIPTORS && setter && setSymbolDesc(ObjectProto, tag, {
+	    configurable: true,
+	    set: function(value){
+	      if(has(this, HIDDEN) && has(this[HIDDEN], tag))this[HIDDEN][tag] = false;
+	      setSymbolDesc(this, tag, createDesc(1, value));
+	    }
+	  });
+	  return sym;
+	};
+
+	var isSymbol = function(it){
+	  return typeof it == 'symbol';
+	};
+
+	var $defineProperty = function defineProperty(it, key, D){
+	  if(D && has(AllSymbols, key)){
+	    if(!D.enumerable){
+	      if(!has(it, HIDDEN))setDesc(it, HIDDEN, createDesc(1, {}));
+	      it[HIDDEN][key] = true;
+	    } else {
+	      if(has(it, HIDDEN) && it[HIDDEN][key])it[HIDDEN][key] = false;
+	      D = _create(D, {enumerable: createDesc(0, false)});
+	    } return setSymbolDesc(it, key, D);
+	  } return setDesc(it, key, D);
+	};
+	var $defineProperties = function defineProperties(it, P){
+	  anObject(it);
+	  var keys = enumKeys(P = toIObject(P))
+	    , i    = 0
+	    , l = keys.length
+	    , key;
+	  while(l > i)$defineProperty(it, key = keys[i++], P[key]);
+	  return it;
+	};
+	var $create = function create(it, P){
+	  return P === undefined ? _create(it) : $defineProperties(_create(it), P);
+	};
+	var $propertyIsEnumerable = function propertyIsEnumerable(key){
+	  var E = isEnum.call(this, key);
+	  return E || !has(this, key) || !has(AllSymbols, key) || has(this, HIDDEN) && this[HIDDEN][key]
+	    ? E : true;
+	};
+	var $getOwnPropertyDescriptor = function getOwnPropertyDescriptor(it, key){
+	  var D = getDesc(it = toIObject(it), key);
+	  if(D && has(AllSymbols, key) && !(has(it, HIDDEN) && it[HIDDEN][key]))D.enumerable = true;
+	  return D;
+	};
+	var $getOwnPropertyNames = function getOwnPropertyNames(it){
+	  var names  = getNames(toIObject(it))
+	    , result = []
+	    , i      = 0
+	    , key;
+	  while(names.length > i)if(!has(AllSymbols, key = names[i++]) && key != HIDDEN)result.push(key);
+	  return result;
+	};
+	var $getOwnPropertySymbols = function getOwnPropertySymbols(it){
+	  var names  = getNames(toIObject(it))
+	    , result = []
+	    , i      = 0
+	    , key;
+	  while(names.length > i)if(has(AllSymbols, key = names[i++]))result.push(AllSymbols[key]);
+	  return result;
+	};
+	var $stringify = function stringify(it){
+	  if(it === undefined || isSymbol(it))return; // IE8 returns string on undefined
+	  var args = [it]
+	    , i    = 1
+	    , $$   = arguments
+	    , replacer, $replacer;
+	  while($$.length > i)args.push($$[i++]);
+	  replacer = args[1];
+	  if(typeof replacer == 'function')$replacer = replacer;
+	  if($replacer || !isArray(replacer))replacer = function(key, value){
+	    if($replacer)value = $replacer.call(this, key, value);
+	    if(!isSymbol(value))return value;
+	  };
+	  args[1] = replacer;
+	  return _stringify.apply($JSON, args);
+	};
+	var buggyJSON = $fails(function(){
+	  var S = $Symbol();
+	  // MS Edge converts symbol values to JSON as {}
+	  // WebKit converts symbol values to JSON as null
+	  // V8 throws on boxed symbols
+	  return _stringify([S]) != '[null]' || _stringify({a: S}) != '{}' || _stringify(Object(S)) != '{}';
+	});
+
+	// 19.4.1.1 Symbol([description])
+	if(!useNative){
+	  $Symbol = function Symbol(){
+	    if(isSymbol(this))throw TypeError('Symbol is not a constructor');
+	    return wrap(uid(arguments.length > 0 ? arguments[0] : undefined));
+	  };
+	  redefine($Symbol.prototype, 'toString', function toString(){
+	    return this._k;
+	  });
+
+	  isSymbol = function(it){
+	    return it instanceof $Symbol;
+	  };
+
+	  $.create     = $create;
+	  $.isEnum     = $propertyIsEnumerable;
+	  $.getDesc    = $getOwnPropertyDescriptor;
+	  $.setDesc    = $defineProperty;
+	  $.setDescs   = $defineProperties;
+	  $.getNames   = $names.get = $getOwnPropertyNames;
+	  $.getSymbols = $getOwnPropertySymbols;
+
+	  if(DESCRIPTORS && !__webpack_require__(36)){
+	    redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
+	  }
+	}
+
+	var symbolStatics = {
+	  // 19.4.2.1 Symbol.for(key)
+	  'for': function(key){
+	    return has(SymbolRegistry, key += '')
+	      ? SymbolRegistry[key]
+	      : SymbolRegistry[key] = $Symbol(key);
+	  },
+	  // 19.4.2.5 Symbol.keyFor(sym)
+	  keyFor: function keyFor(key){
+	    return keyOf(SymbolRegistry, key);
+	  },
+	  useSetter: function(){ setter = true; },
+	  useSimple: function(){ setter = false; }
+	};
+	// 19.4.2.2 Symbol.hasInstance
+	// 19.4.2.3 Symbol.isConcatSpreadable
+	// 19.4.2.4 Symbol.iterator
+	// 19.4.2.6 Symbol.match
+	// 19.4.2.8 Symbol.replace
+	// 19.4.2.9 Symbol.search
+	// 19.4.2.10 Symbol.species
+	// 19.4.2.11 Symbol.split
+	// 19.4.2.12 Symbol.toPrimitive
+	// 19.4.2.13 Symbol.toStringTag
+	// 19.4.2.14 Symbol.unscopables
+	$.each.call((
+	  'hasInstance,isConcatSpreadable,iterator,match,replace,search,' +
+	  'species,split,toPrimitive,toStringTag,unscopables'
+	).split(','), function(it){
+	  var sym = wks(it);
+	  symbolStatics[it] = useNative ? sym : wrap(sym);
+	});
+
+	setter = true;
+
+	$export($export.G + $export.W, {Symbol: $Symbol});
+
+	$export($export.S, 'Symbol', symbolStatics);
+
+	$export($export.S + $export.F * !useNative, 'Object', {
+	  // 19.1.2.2 Object.create(O [, Properties])
+	  create: $create,
+	  // 19.1.2.4 Object.defineProperty(O, P, Attributes)
+	  defineProperty: $defineProperty,
+	  // 19.1.2.3 Object.defineProperties(O, Properties)
+	  defineProperties: $defineProperties,
+	  // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
+	  getOwnPropertyDescriptor: $getOwnPropertyDescriptor,
+	  // 19.1.2.7 Object.getOwnPropertyNames(O)
+	  getOwnPropertyNames: $getOwnPropertyNames,
+	  // 19.1.2.8 Object.getOwnPropertySymbols(O)
+	  getOwnPropertySymbols: $getOwnPropertySymbols
+	});
+
+	// 24.3.2 JSON.stringify(value [, replacer [, space]])
+	$JSON && $export($export.S + $export.F * (!useNative || buggyJSON), 'JSON', {stringify: $stringify});
+
+	// 19.4.3.5 Symbol.prototype[@@toStringTag]
+	setToStringTag($Symbol, 'Symbol');
+	// 20.2.1.9 Math[@@toStringTag]
+	setToStringTag(Math, 'Math', true);
+	// 24.3.3 JSON[@@toStringTag]
+	setToStringTag(global.JSON, 'JSON', true);
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var $         = __webpack_require__(44)
+	  , toIObject = __webpack_require__(31);
+	module.exports = function(object, el){
+	  var O      = toIObject(object)
+	    , keys   = $.getKeys(O)
+	    , length = keys.length
+	    , index  = 0
+	    , key;
+	  while(length > index)if(O[key = keys[index++]] === el)return key;
+	};
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
+	var toIObject = __webpack_require__(31)
+	  , getNames  = __webpack_require__(44).getNames
+	  , toString  = {}.toString;
+
+	var windowNames = typeof window == 'object' && Object.getOwnPropertyNames
+	  ? Object.getOwnPropertyNames(window) : [];
+
+	var getWindowNames = function(it){
+	  try {
+	    return getNames(it);
+	  } catch(e){
+	    return windowNames.slice();
+	  }
+	};
+
+	module.exports.get = function getOwnPropertyNames(it){
+	  if(windowNames && toString.call(it) == '[object Window]')return getWindowNames(it);
+	  return getNames(toIObject(it));
+	};
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// all enumerable object keys, includes symbols
+	var $ = __webpack_require__(44);
+	module.exports = function(it){
+	  var keys       = $.getKeys(it)
+	    , getSymbols = $.getSymbols;
+	  if(getSymbols){
+	    var symbols = getSymbols(it)
+	      , isEnum  = $.isEnum
+	      , i       = 0
+	      , key;
+	    while(symbols.length > i)if(isEnum.call(it, key = symbols[i++]))keys.push(key);
+	  }
+	  return keys;
+	};
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// 7.2.2 IsArray(argument)
+	var cof = __webpack_require__(33);
+	module.exports = Array.isArray || function(arg){
+	  return cof(arg) == 'Array';
+	};
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports) {
+
+	
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports) {
+
+	module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <!-- v-bind:headers=\"headers\" -->\n        <v-data-table\n            v-bind:headers=\"headers\"\n            v-model=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            :rowsPerPage=\"10\"\n            :filter=\"filter\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"headers\" scope=\"props\">\n                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n            </template>\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\">{{ getattr(props.item, field) }}</td>\n                </template>\n            </template>\n        </v-data-table>\n    </v-card>\n";
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	var __vue_script__, __vue_template__
-	__webpack_require__(64)
-	__vue_script__ = __webpack_require__(66)
-	__vue_template__ = __webpack_require__(67)
+	__webpack_require__(78)
+	__vue_script__ = __webpack_require__(80)
+	__vue_template__ = __webpack_require__(81)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -27238,13 +27713,13 @@
 	})()}
 
 /***/ }),
-/* 64 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(65);
+	var content = __webpack_require__(79);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(16)(content, {});
@@ -27264,7 +27739,7 @@
 	}
 
 /***/ }),
-/* 65 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(11)(undefined);
@@ -27278,7 +27753,7 @@
 
 
 /***/ }),
-/* 66 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27336,6 +27811,7 @@
 	//                                 :rules="getRules(field)"
 	//                                 v-model="models[field.name]"
 	//                                 item-value="text"
+	//                                 autocomplete
 	//                                 light
 	//                                 ></v-select>
 	//                             </template>
@@ -27374,18 +27850,21 @@
 	    },
 	    data: function data() {
 	        return {
-	            models: {},
-	            items: {},
-	            _validated: false
+	            models: {}, // los modelos
+	            items: {}, // los items de los selects
+	            _validated: false,
+	            appended: {}
 	        };
 	    },
 	    watch: {
 	        selected: function selected() {
+	            var _this = this;
+
 	            if (this.selected) {
-	                for (var attr in this.selected) {
-	                    if (attr in this.models) {
+	                var _loop = function _loop(attr) {
+	                    if (attr in _this.models) {
 	                        // si esta en los campos
-	                        if (attr in this.items) {
+	                        if (attr in _this.items) {
 	                            // si esta en los items que ya fueron fetched
 	                            var key = void 0;
 	                            var _iteratorNormalCompletion = true;
@@ -27393,10 +27872,10 @@
 	                            var _iteratorError = undefined;
 
 	                            try {
-	                                for (var _iterator = (0, _getIterator3.default)(this.items[attr]), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                                for (var _iterator = (0, _getIterator3.default)(_this.items[attr]), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	                                    var obj = _step.value;
 
-	                                    if (obj.id == this.selected[attr].id) {
+	                                    if (obj.id == _this.selected[attr].id) {
 	                                        key = obj;
 	                                        break;
 	                                    }
@@ -27417,14 +27896,32 @@
 	                            }
 
 	                            if (key) {
-	                                this.models[attr] = key;
+	                                _this.models[attr] = key;
 	                            } else {
-	                                this.$emit('showsnack', 'No se encuentra el ' + attr.toString() + ' deseado.');
+	                                key = _this.fields.find(function (x) {
+	                                    return x.name == attr;
+	                                });
+	                                if (key) {
+	                                    _this.selected[attr].text = _this.selected[attr][key.key];
+	                                    if (attr in _this.appended && _this.appended[attr]) {
+	                                        _this.items[attr].pop();
+	                                        _this.appended[attr] = false;
+	                                    }
+	                                    _this.items[attr].push(_this.selected[attr]);
+	                                    _this.appended[attr] = true;
+	                                    _this.models[attr] = _this.selected[attr];
+	                                } else {
+	                                    _this.$emit('showsnack', 'No se encuentra el ' + attr.toString() + ' deseado.');
+	                                }
 	                            }
 	                        } else {
-	                            this.models[attr] = this.selected[attr];
+	                            _this.models[attr] = _this.selected[attr];
 	                        }
 	                    }
+	                };
+
+	                for (var attr in this.selected) {
+	                    _loop(attr);
 	                }
 	            }
 	        }
@@ -27440,6 +27937,10 @@
 	                    var field = _step2.value;
 
 	                    this.models[field.name] = '';
+	                    if (field.name in this.appended) {
+	                        this.appended[field.name] = false;
+	                        this.items[field.name].pop();
+	                    }
 	                }
 	                // this.selected = false;
 	            } catch (err) {
@@ -27464,19 +27965,19 @@
 	            return field.required === undefined || field.required;
 	        },
 	        _getFetchData: function _getFetchData() {
-	            var _this = this;
+	            var _this2 = this;
 
 	            var _iteratorNormalCompletion3 = true;
 	            var _didIteratorError3 = false;
 	            var _iteratorError3 = undefined;
 
 	            try {
-	                var _loop = function _loop() {
+	                var _loop2 = function _loop2() {
 	                    var field = _step3.value;
 
 	                    if ('url' in field) {
-	                        _vue2.default.set(_this.items, field.name, []); // Se setean las propiedades de acuerdo a la documentacion, de forma reactiva
-	                        _this.$http.get(field.url).then(function (response) {
+	                        _vue2.default.set(_this2.items, field.name, []); // Se setean las propiedades de acuerdo a la documentacion, de forma reactiva
+	                        _this2.$http.get(field.url).then(function (response) {
 	                            var _iteratorNormalCompletion4 = true;
 	                            var _didIteratorError4 = false;
 	                            var _iteratorError4 = undefined;
@@ -27486,7 +27987,7 @@
 	                                    var _item = _step4.value;
 
 	                                    _item.text = _item[field.key];
-	                                    _this.items[field.name].push(_item);
+	                                    _this2.items[field.name].push(_item);
 	                                }
 	                            } catch (err) {
 	                                _didIteratorError4 = true;
@@ -27504,19 +28005,19 @@
 	                            }
 	                        }, function (response) {
 	                            if ('detail' in response.body) {
-	                                _this.snackbarText = response.body.detail;
-	                                _this.snackbar = true;
+	                                _this2.snackbarText = response.body.detail;
+	                                _this2.snackbar = true;
 	                            } else {
-	                                _this.snackbarText = 'Han ocurrido errores';
-	                                _this.snackbar = true;
+	                                _this2.snackbarText = 'Han ocurrido errores';
+	                                _this2.snackbar = true;
 	                            }
 	                        });
 	                    }
-	                    _vue2.default.set(_this.models, field.name, field.type == String ? '' : {});
+	                    _vue2.default.set(_this2.models, field.name, field.type == String ? '' : {});
 	                };
 
 	                for (var _iterator3 = (0, _getIterator3.default)(this.fields), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-	                    _loop();
+	                    _loop2();
 	                }
 	            } catch (err) {
 	                _didIteratorError3 = true;
@@ -27573,7 +28074,7 @@
 	            return rules;
 	        },
 	        submitForm: function submitForm() {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            this._validated = true;
 	            var url = this.url;
@@ -27589,12 +28090,12 @@
 	                    // this.selected_before = response.body;
 	                    // this.laboratorios.push(this.selected_before);
 	                    message = 'Laboratorio Creado Correctamente';
-	                    _this2.$emit('objectcreated', response.body);
+	                    _this3.$emit('objectcreated', response.body);
 	                } else {
 	                    message = 'Laboratorio Editado Correctamente';
 	                }
 	                if (message) {
-	                    _this2.$emit('showsnack', message);
+	                    _this3.$emit('showsnack', message);
 	                }
 	            }, function (response) {
 	                if (response.status == 400) {
@@ -27606,7 +28107,7 @@
 	                    console.error(response);
 	                }
 	                if (message) {
-	                    _this2.$emit('showsnack', message);
+	                    _this3.$emit('showsnack', message);
 	                }
 	            });
 	        }
@@ -27619,13 +28120,13 @@
 	//
 
 /***/ }),
-/* 67 */
+/* 81 */
 /***/ (function(module, exports) {
 
-	module.exports = "\n    <v-card>\n        <v-card-title>\n            <!-- <span>{[ selected ? 'Editar Laboratorio '.concat(codigo.toUpperCase()): 'Crear Laboratorio' ]}</span> -->\n            <v-spacer></v-spacer>\n            <v-btn flat @click.native=\"cleanFields()\" v-show=\"selected\"><v-icon>clear_all</v-icon>Limpiar</v-btn>\n        </v-card-title>\n        <v-card-text>\n          <br>\n            <v-container>\n                <!--<template v-for=\"f in fields.length\">-->\n                    <v-row>\n                        <v-col md6 xs12 v-for=\"field in fields\" :key=\"field.name\">\n                            <template v-if=\"field.type == String\"><!---->\n                                <v-text-field\n                                :label=\"field.verbose_name || ''\"\n                                :hint=\"field.hint || ''\"\n                                :required=\"fieldIsRequired(field)\"\n                                :rules=\"getRules(field)\"\n                                v-model=\"models[field.name]\"\n                                ></v-text-field>\n                            </template>\n                            <template v-else>\n                                <v-select\n                                :label=\"field.verbose_name || ''\"\n                                :hint=\"field.hint || ''\"\n                                :items=\"items[field.name]\"\n                                :required=\"fieldIsRequired(field)\"\n                                :rules=\"getRules(field)\"\n                                v-model=\"models[field.name]\"\n                                item-value=\"text\"\n                                light\n                                ></v-select>\n                            </template>\n                        </v-col>\n                    </v-row>\n                <!--</template>-->\n            </v-container>\n            <small>* Campos requeridos.</small>\n            <br>\n        </v-card-text>\n        <v-card-row actions>\n            <v-btn flat @click.native=\"submitForm()\">\n                {{ !selected ? 'Crear': 'Editar' }}\n                <v-icon>check_circle</v-icon>\n            </v-btn>\n        </v-card-row>\n    </v-card>\n";
+	module.exports = "\n    <v-card>\n        <v-card-title>\n            <!-- <span>{[ selected ? 'Editar Laboratorio '.concat(codigo.toUpperCase()): 'Crear Laboratorio' ]}</span> -->\n            <v-spacer></v-spacer>\n            <v-btn flat @click.native=\"cleanFields()\" v-show=\"selected\"><v-icon>clear_all</v-icon>Limpiar</v-btn>\n        </v-card-title>\n        <v-card-text>\n          <br>\n            <v-container>\n                <!--<template v-for=\"f in fields.length\">-->\n                    <v-row>\n                        <v-col md6 xs12 v-for=\"field in fields\" :key=\"field.name\">\n                            <template v-if=\"field.type == String\"><!---->\n                                <v-text-field\n                                :label=\"field.verbose_name || ''\"\n                                :hint=\"field.hint || ''\"\n                                :required=\"fieldIsRequired(field)\"\n                                :rules=\"getRules(field)\"\n                                v-model=\"models[field.name]\"\n                                ></v-text-field>\n                            </template>\n                            <template v-else>\n                                <v-select\n                                :label=\"field.verbose_name || ''\"\n                                :hint=\"field.hint || ''\"\n                                :items=\"items[field.name]\"\n                                :required=\"fieldIsRequired(field)\"\n                                :rules=\"getRules(field)\"\n                                v-model=\"models[field.name]\"\n                                item-value=\"text\"\n                                autocomplete\n                                light\n                                ></v-select>\n                            </template>\n                        </v-col>\n                    </v-row>\n                <!--</template>-->\n            </v-container>\n            <small>* Campos requeridos.</small>\n            <br>\n        </v-card-text>\n        <v-card-row actions>\n            <v-btn flat @click.native=\"submitForm()\">\n                {{ !selected ? 'Crear': 'Editar' }}\n                <v-icon>check_circle</v-icon>\n            </v-btn>\n        </v-card-row>\n    </v-card>\n";
 
 /***/ }),
-/* 68 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27721,7 +28222,7 @@
 	};
 
 /***/ }),
-/* 69 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27734,49 +28235,53 @@
 
 	var _vueRouter2 = _interopRequireDefault(_vueRouter);
 
-	var _laboratorios = __webpack_require__(70);
+	var _laboratorios = __webpack_require__(84);
 
 	var _laboratorios2 = _interopRequireDefault(_laboratorios);
 
-	var _equipos = __webpack_require__(76);
+	var _equipos = __webpack_require__(90);
 
 	var _equipos2 = _interopRequireDefault(_equipos);
 
-	var _tecnicas = __webpack_require__(81);
+	var _tecnicas = __webpack_require__(95);
 
 	var _tecnicas2 = _interopRequireDefault(_tecnicas);
 
-	var _secciones_trabajo = __webpack_require__(86);
+	var _secciones_trabajo = __webpack_require__(100);
 
 	var _secciones_trabajo2 = _interopRequireDefault(_secciones_trabajo);
 
-	var _reactivos = __webpack_require__(91);
+	var _reactivos = __webpack_require__(105);
 
 	var _reactivos2 = _interopRequireDefault(_reactivos);
 
-	var _caracteristicas = __webpack_require__(96);
+	var _caracteristicas = __webpack_require__(110);
 
 	var _caracteristicas2 = _interopRequireDefault(_caracteristicas);
 
-	var _especificacion_caracteristica = __webpack_require__(101);
+	var _especificacion_caracteristica = __webpack_require__(115);
 
 	var _especificacion_caracteristica2 = _interopRequireDefault(_especificacion_caracteristica);
 
+	var _ordenes_laboratorios = __webpack_require__(120);
+
+	var _ordenes_laboratorios2 = _interopRequireDefault(_ordenes_laboratorios);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var routes = [{ path: '/laboratorios/', component: _laboratorios2.default }, { path: '/equipos/', component: _equipos2.default }, { path: '/tecnicas/', component: _tecnicas2.default }, { path: '/secciones_trabajo/', component: _secciones_trabajo2.default }, { path: '/reactivos/', component: _reactivos2.default }, { path: '/caracteristicas/', component: _caracteristicas2.default }, { path: '/especificacion_caracteristicas/', component: _especificacion_caracteristica2.default }];
+	var routes = [{ path: '/laboratorios/', component: _laboratorios2.default }, { path: '/equipos/', component: _equipos2.default }, { path: '/tecnicas/', component: _tecnicas2.default }, { path: '/secciones_trabajo/', component: _secciones_trabajo2.default }, { path: '/reactivos/', component: _reactivos2.default }, { path: '/caracteristicas/', component: _caracteristicas2.default }, { path: '/especificacion_caracteristicas/', component: _especificacion_caracteristica2.default }, { path: '/ordenes_laboratorios/', component: _ordenes_laboratorios2.default }];
 
 	var router = new _vueRouter2.default({ routes: routes });
 	exports.default = router;
 
 /***/ }),
-/* 70 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__webpack_require__(71)
-	__vue_script__ = __webpack_require__(73)
-	__vue_template__ = __webpack_require__(75)
+	__webpack_require__(85)
+	__vue_script__ = __webpack_require__(87)
+	__vue_template__ = __webpack_require__(89)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -27793,13 +28298,13 @@
 	})()}
 
 /***/ }),
-/* 71 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(72);
+	var content = __webpack_require__(86);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(16)(content, {});
@@ -27819,7 +28324,7 @@
 	}
 
 /***/ }),
-/* 72 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(11)(undefined);
@@ -27833,7 +28338,7 @@
 
 
 /***/ }),
-/* 73 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -27866,15 +28371,15 @@
 
 	var _table2 = _interopRequireDefault(_table);
 
-	var _form = __webpack_require__(63);
+	var _form = __webpack_require__(77);
 
 	var _form2 = _interopRequireDefault(_form);
 
-	var _igmixin = __webpack_require__(68);
+	var _igmixin = __webpack_require__(82);
 
 	var _igmixin2 = _interopRequireDefault(_igmixin);
 
-	var _urls = __webpack_require__(74);
+	var _urls = __webpack_require__(88);
 
 	var _urls2 = _interopRequireDefault(_urls);
 
@@ -27891,7 +28396,7 @@
 	//               :headers="headers"
 	//               :data="elements"
 	//               :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
-	//               @selectedrow="eventUpdatedForm"
+	//               @selectedrow="customEventUpdatedForm"
 	//               ></ig-table>
 	//             </v-col>
 	//           </v-row>
@@ -27971,6 +28476,13 @@
 	        url: _urls2.default.secciones_trabajo,
 	        hint: 'Este es el area o sección de trabajo de este laboratorio.',
 	        key: 'codigo'
+	      }, {
+	        name: 'servicio',
+	        verbose_name: 'Servicio',
+	        type: Array,
+	        url: _urls2.default.servicios,
+	        hint: 'Este es el servicio asociado, con el cual se hará la relación en la orden.',
+	        key: 'nombre'
 	      }]
 	    };
 	  },
@@ -27978,6 +28490,19 @@
 	    igMenu: _menu2.default,
 	    igTable: _table2.default,
 	    igForm: _form2.default
+	  },
+	  methods: {
+	    customEventUpdatedForm: function customEventUpdatedForm(value) {
+	      var _this = this;
+
+	      this.$http.get(_urls2.default.servicios.concat(value.servicio.id.toString() + '/')).then(function (response) {
+	        value.servicio = response.body;
+	        _this.eventUpdatedForm(value);
+	      }, function (response) {
+	        console.error(response);
+	        _this.showSnackBar(response.detail || 'Ha ocurrido un error');
+	      });
+	    }
 	  },
 	  mounted: function mounted() {
 	    this.getElements(_urls2.default.laboratorios);
@@ -27990,7 +28515,7 @@
 	//
 
 /***/ }),
-/* 74 */
+/* 88 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -28006,6 +28531,8 @@
 	var reactivos = BASE.concat('reactivos/');
 	var caracteristicas = BASE.concat('caracteristicas/');
 	var especificacion_caracteristicas = BASE.concat('especificacion_caracteristicas/');
+	var ordenes_laboratorios = BASE.concat('ordenes_laboratorios/');
+	var servicios = BASE.concat('servicios/');
 
 	exports.default = {
 	    BASE: BASE,
@@ -28015,23 +28542,25 @@
 	    tecnicas: tecnicas,
 	    reactivos: reactivos,
 	    caracteristicas: caracteristicas,
-	    especificacion_caracteristicas: especificacion_caracteristicas
+	    especificacion_caracteristicas: especificacion_caracteristicas,
+	    ordenes_laboratorios: ordenes_laboratorios,
+	    servicios: servicios
 	};
 
 /***/ }),
-/* 75 */
+/* 89 */
 /***/ (function(module, exports) {
 
-	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']\"\n              @selectedrow=\"customEventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 76 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__webpack_require__(77)
-	__vue_script__ = __webpack_require__(79)
-	__vue_template__ = __webpack_require__(80)
+	__webpack_require__(91)
+	__vue_script__ = __webpack_require__(93)
+	__vue_template__ = __webpack_require__(94)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -28048,13 +28577,13 @@
 	})()}
 
 /***/ }),
-/* 77 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(78);
+	var content = __webpack_require__(92);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(16)(content, {});
@@ -28074,7 +28603,7 @@
 	}
 
 /***/ }),
-/* 78 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(11)(undefined);
@@ -28088,7 +28617,7 @@
 
 
 /***/ }),
-/* 79 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28121,15 +28650,15 @@
 
 	var _table2 = _interopRequireDefault(_table);
 
-	var _form = __webpack_require__(63);
+	var _form = __webpack_require__(77);
 
 	var _form2 = _interopRequireDefault(_form);
 
-	var _igmixin = __webpack_require__(68);
+	var _igmixin = __webpack_require__(82);
 
 	var _igmixin2 = _interopRequireDefault(_igmixin);
 
-	var _urls = __webpack_require__(74);
+	var _urls = __webpack_require__(88);
 
 	var _urls2 = _interopRequireDefault(_urls);
 
@@ -28232,19 +28761,19 @@
 	//
 
 /***/ }),
-/* 80 */
+/* 94 */
 /***/ (function(module, exports) {
 
 	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Equipos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 81 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__webpack_require__(82)
-	__vue_script__ = __webpack_require__(84)
-	__vue_template__ = __webpack_require__(85)
+	__webpack_require__(96)
+	__vue_script__ = __webpack_require__(98)
+	__vue_template__ = __webpack_require__(99)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -28261,13 +28790,13 @@
 	})()}
 
 /***/ }),
-/* 82 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(83);
+	var content = __webpack_require__(97);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(16)(content, {});
@@ -28287,7 +28816,7 @@
 	}
 
 /***/ }),
-/* 83 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(11)(undefined);
@@ -28301,7 +28830,7 @@
 
 
 /***/ }),
-/* 84 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28334,15 +28863,15 @@
 
 	var _table2 = _interopRequireDefault(_table);
 
-	var _form = __webpack_require__(63);
+	var _form = __webpack_require__(77);
 
 	var _form2 = _interopRequireDefault(_form);
 
-	var _igmixin = __webpack_require__(68);
+	var _igmixin = __webpack_require__(82);
 
 	var _igmixin2 = _interopRequireDefault(_igmixin);
 
-	var _urls = __webpack_require__(74);
+	var _urls = __webpack_require__(88);
 
 	var _urls2 = _interopRequireDefault(_urls);
 
@@ -28431,19 +28960,19 @@
 	//
 
 /***/ }),
-/* 85 */
+/* 99 */
 /***/ (function(module, exports) {
 
 	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Tecnicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 86 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__webpack_require__(87)
-	__vue_script__ = __webpack_require__(89)
-	__vue_template__ = __webpack_require__(90)
+	__webpack_require__(101)
+	__vue_script__ = __webpack_require__(103)
+	__vue_template__ = __webpack_require__(104)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -28460,13 +28989,13 @@
 	})()}
 
 /***/ }),
-/* 87 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(88);
+	var content = __webpack_require__(102);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(16)(content, {});
@@ -28486,7 +29015,7 @@
 	}
 
 /***/ }),
-/* 88 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(11)(undefined);
@@ -28500,7 +29029,7 @@
 
 
 /***/ }),
-/* 89 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28533,15 +29062,15 @@
 
 	var _table2 = _interopRequireDefault(_table);
 
-	var _form = __webpack_require__(63);
+	var _form = __webpack_require__(77);
 
 	var _form2 = _interopRequireDefault(_form);
 
-	var _igmixin = __webpack_require__(68);
+	var _igmixin = __webpack_require__(82);
 
 	var _igmixin2 = _interopRequireDefault(_igmixin);
 
-	var _urls = __webpack_require__(74);
+	var _urls = __webpack_require__(88);
 
 	var _urls2 = _interopRequireDefault(_urls);
 
@@ -28631,19 +29160,19 @@
 	//
 
 /***/ }),
-/* 90 */
+/* 104 */
 /***/ (function(module, exports) {
 
 	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Secciones de Trabajo\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 91 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__webpack_require__(92)
-	__vue_script__ = __webpack_require__(94)
-	__vue_template__ = __webpack_require__(95)
+	__webpack_require__(106)
+	__vue_script__ = __webpack_require__(108)
+	__vue_template__ = __webpack_require__(109)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -28660,13 +29189,13 @@
 	})()}
 
 /***/ }),
-/* 92 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(93);
+	var content = __webpack_require__(107);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(16)(content, {});
@@ -28686,7 +29215,7 @@
 	}
 
 /***/ }),
-/* 93 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(11)(undefined);
@@ -28700,7 +29229,7 @@
 
 
 /***/ }),
-/* 94 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28733,15 +29262,15 @@
 
 	var _table2 = _interopRequireDefault(_table);
 
-	var _form = __webpack_require__(63);
+	var _form = __webpack_require__(77);
 
 	var _form2 = _interopRequireDefault(_form);
 
-	var _igmixin = __webpack_require__(68);
+	var _igmixin = __webpack_require__(82);
 
 	var _igmixin2 = _interopRequireDefault(_igmixin);
 
-	var _urls = __webpack_require__(74);
+	var _urls = __webpack_require__(88);
 
 	var _urls2 = _interopRequireDefault(_urls);
 
@@ -28861,19 +29390,19 @@
 	//
 
 /***/ }),
-/* 95 */
+/* 109 */
 /***/ (function(module, exports) {
 
 	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Reactivos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'laboratorio.codigo', 'costos']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 96 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__webpack_require__(97)
-	__vue_script__ = __webpack_require__(99)
-	__vue_template__ = __webpack_require__(100)
+	__webpack_require__(111)
+	__vue_script__ = __webpack_require__(113)
+	__vue_template__ = __webpack_require__(114)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -28890,13 +29419,13 @@
 	})()}
 
 /***/ }),
-/* 97 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(98);
+	var content = __webpack_require__(112);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(16)(content, {});
@@ -28916,7 +29445,7 @@
 	}
 
 /***/ }),
-/* 98 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(11)(undefined);
@@ -28930,7 +29459,7 @@
 
 
 /***/ }),
-/* 99 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -28963,15 +29492,15 @@
 
 	var _table2 = _interopRequireDefault(_table);
 
-	var _form = __webpack_require__(63);
+	var _form = __webpack_require__(77);
 
 	var _form2 = _interopRequireDefault(_form);
 
-	var _igmixin = __webpack_require__(68);
+	var _igmixin = __webpack_require__(82);
 
 	var _igmixin2 = _interopRequireDefault(_igmixin);
 
-	var _urls = __webpack_require__(74);
+	var _urls = __webpack_require__(88);
 
 	var _urls2 = _interopRequireDefault(_urls);
 
@@ -29061,19 +29590,19 @@
 	//
 
 /***/ }),
-/* 100 */
+/* 114 */
 /***/ (function(module, exports) {
 
 	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Caracteristicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 101 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__webpack_require__(102)
-	__vue_script__ = __webpack_require__(104)
-	__vue_template__ = __webpack_require__(105)
+	__webpack_require__(116)
+	__vue_script__ = __webpack_require__(118)
+	__vue_template__ = __webpack_require__(119)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -29090,13 +29619,13 @@
 	})()}
 
 /***/ }),
-/* 102 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(103);
+	var content = __webpack_require__(117);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(16)(content, {});
@@ -29116,7 +29645,7 @@
 	}
 
 /***/ }),
-/* 103 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(11)(undefined);
@@ -29130,7 +29659,7 @@
 
 
 /***/ }),
-/* 104 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29163,15 +29692,15 @@
 
 	var _table2 = _interopRequireDefault(_table);
 
-	var _form = __webpack_require__(63);
+	var _form = __webpack_require__(77);
 
 	var _form2 = _interopRequireDefault(_form);
 
-	var _igmixin = __webpack_require__(68);
+	var _igmixin = __webpack_require__(82);
 
 	var _igmixin2 = _interopRequireDefault(_igmixin);
 
-	var _urls = __webpack_require__(74);
+	var _urls = __webpack_require__(88);
 
 	var _urls2 = _interopRequireDefault(_urls);
 
@@ -29265,10 +29794,207 @@
 	//
 
 /***/ }),
-/* 105 */
+/* 119 */
 /***/ (function(module, exports) {
 
 	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Especificacion Caracteristica\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['nombre', 'caracteristica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__webpack_require__(121)
+	__vue_script__ = __webpack_require__(123)
+	__vue_template__ = __webpack_require__(124)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), true)
+	  if (!hotAPI.compatible) return
+	  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/ordenes_laboratorios.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(122);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(16)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-14bdf0c2&file=ordenes_laboratorios.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-14bdf0c2&file=ordenes_laboratorios.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 122 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(11)(undefined);
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _underscore = __webpack_require__(1);
+
+	var _underscore2 = _interopRequireDefault(_underscore);
+
+	var _vue = __webpack_require__(2);
+
+	var _vue2 = _interopRequireDefault(_vue);
+
+	var _vuetify = __webpack_require__(3);
+
+	var _vuetify2 = _interopRequireDefault(_vuetify);
+
+	var _vueResource = __webpack_require__(4);
+
+	var _vueResource2 = _interopRequireDefault(_vueResource);
+
+	var _menu = __webpack_require__(8);
+
+	var _menu2 = _interopRequireDefault(_menu);
+
+	var _table = __webpack_require__(20);
+
+	var _table2 = _interopRequireDefault(_table);
+
+	var _form = __webpack_require__(77);
+
+	var _form2 = _interopRequireDefault(_form);
+
+	var _igmixin = __webpack_require__(82);
+
+	var _igmixin2 = _interopRequireDefault(_igmixin);
+
+	var _urls = __webpack_require__(88);
+
+	var _urls2 = _interopRequireDefault(_urls);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Vue.use(VueRouter);
+	_vue2.default.use(_vueResource2.default); // <template lang="html">
+	//     <div>
+	//         <v-container>
+	//           <v-row>
+	//             <v-col xs12 md12>
+	//               <ig-table
+	//               table-title="Ordenes con Laboratorios"
+	//               :headers="headers"
+	//               :data="elements"
+	//               :fields="['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.codigo', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']"
+	//               @selectedrow="eventUpdatedForm"
+	//               ></ig-table>
+	//             </v-col>
+	//           </v-row>
+	//         </v-container>
+	//         <br>
+	//     </div>
+	// </template>
+	//
+	// <script>
+
+	_vue2.default.use(_vuetify2.default);
+
+	exports.default = {
+	    mixins: [_igmixin2.default],
+	    data: function data() {
+	        return {
+	            selected: false,
+	            headers: [{
+	                text: 'ID',
+	                value: 'id',
+	                left: true
+	            }, {
+	                text: 'Cedula',
+	                value: 'tabla-cedula',
+	                left: true,
+	                sortable: false
+	            }, {
+	                text: 'Nombre',
+	                value: 'paciente-pnombre',
+	                left: true
+	            }, {
+	                text: 'Tipo',
+	                value: 'tipo',
+	                left: true
+	            }, {
+	                text: 'IPS',
+	                value: 'paciente-pnombre',
+	                left: true
+	            }, {
+	                text: 'Empresa',
+	                value: 'paciente-pnombre',
+	                left: true
+	            }, {
+	                text: 'Empresa Cliente',
+	                value: 'paciente-pnombre',
+	                left: true
+	            }, {
+	                text: 'Fecha Atención',
+	                value: 'paciente-pnombre',
+	                left: true
+	            }]
+	        };
+	    },
+	    components: {
+	        igMenu: _menu2.default,
+	        igTable: _table2.default,
+	        igForm: _form2.default
+	    },
+	    mounted: function mounted() {
+	        this.getElements(_urls2.default.ordenes_laboratorios);
+	    }
+	};
+	// </script>
+	//
+	// <style lang="css">
+	// </style>
+	//
+
+/***/ }),
+/* 124 */
+/***/ (function(module, exports) {
+
+	module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Ordenes con Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.codigo', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n    </div>\n";
 
 /***/ })
 /******/ ]);

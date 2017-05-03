@@ -1,12 +1,15 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 from django.db import models
 from mysite.apps.datos.models import paciente,medico
 from mysite.apps.home.models import departamentos
 from mysite.apps.organizaciones.models import empresas,instituciones,eps,arp
 from mysite.apps.parametros.models import serviciosEmpresa,procedimientos,consultas,cie
-from django.contrib.auth.models import User	
+from django.contrib.auth.models import User
 import datetime
 from datetime import date
+
+from .managers import OrdenManager
+
 
 class orden(models.Model):
 	opciones = (
@@ -32,8 +35,8 @@ class orden(models.Model):
 		('2', 'Post Incapacidad'),
 		('3', 'Ninguno'),
 		('4', 'Manipulacion de Alimentos'),
-    )         
-         
+    )
+
 	#Datos de la Historia Clinica
 	paciente	= models.ForeignKey(paciente,related_name='orden_paciente')
 	empresa = models.ForeignKey(empresas,related_name='orden_empresa',verbose_name=u'Empresa que ordena')
@@ -47,10 +50,12 @@ class orden(models.Model):
 	examen_adicional = models.CharField(max_length=2, choices=opExamen2, default='3',verbose_name=u'Examen Adicional')
 	empresa_cliente = models.CharField(max_length=200, verbose_name='Empresa Cliente')
 	cargo   = models.CharField(max_length=100)
-	seccion = models.CharField(max_length=100)  
+	seccion = models.CharField(max_length=100)
 	#Octubre 14 de 2015
 	anulada = models.BooleanField(default=False)
 	razon_anulacion = models.TextField(max_length=100, null=True, blank=True)
+
+	objects = OrdenManager()
 	def __unicode__(self):
 		return "%s %s" %(self.paciente.pnombre,self.id)
 
@@ -77,7 +82,7 @@ class historia_clinica(models.Model):
 		('P', 'De Pie'),
 		('S', 'Sentado'),
 		('D', 'Deambulado'),
-    )  
+    )
 
 	opEstado = (
 		('B', 'Bueno'),
@@ -99,7 +104,7 @@ class historia_clinica(models.Model):
 	opGenitales = (
 		('N', 'No Explorado'),
 		('E', 'Explorado'),
-    )             
+    )
 
 	opRuidos = (
 		('N', 'Normales'),
@@ -134,7 +139,7 @@ class historia_clinica(models.Model):
 		('E', 'E.P.S'),
 		('A', 'A.R.S'),
 		('N', 'Ninguno'),
-    )             
+    )
 
 	opBiologico = (
 		('1', 'Virus'),
@@ -162,8 +167,8 @@ class historia_clinica(models.Model):
 		('6', 'Iluminación'),
 		('7', 'Radiaciones'),
 		('8', 'Vibraciones'),
-		('9', 'Ruido'),		
-		('A', 'Otros'),								
+		('9', 'Ruido'),
+		('A', 'Otros'),
 		('B', 'Ninguno'),
     )
 
@@ -192,10 +197,10 @@ class historia_clinica(models.Model):
 		('8', 'Explosivos'),
 		('9', 'Radiactivos'),
 		('A', 'Nocivos'),
-		('B', 'Explosivos'),												
+		('B', 'Explosivos'),
 		('C', 'Polvos'),
 		('D', 'Solidos'),
-		('E', 'Otros'),				
+		('E', 'Otros'),
 		('F', 'Ninguno'),
     )
 
@@ -207,7 +212,7 @@ class historia_clinica(models.Model):
 		('5', 'Inyección'),
 		('6', 'Píldora'),
 		('7', 'Ritmo'),
-		('8', 'Otros'),				
+		('8', 'Otros'),
 		('9', 'Ninguno'),
     )
 
@@ -218,13 +223,13 @@ class historia_clinica(models.Model):
 		('4', 'Diafragmatica'),
 		('5', 'Hiatal'),
 		('N', 'Ninguno'),
-    ) 
+    )
 
 	opPreconcepto = (
 		('A', 'Paciente Aparentemente Sano'),
 		('O', 'Paciente con Observaciones'),
 		('N', 'Ninguno'),
-    ) 
+    )
 
 	orden	= models.ForeignKey(orden,related_name='historia_orden')
 	paciente	= models.ForeignKey(paciente,related_name='historia_paciente')
@@ -258,10 +263,10 @@ class historia_clinica(models.Model):
 	a_erg2   = models.CharField(max_length=1, choices=opErgonomicos, default='4')
 	a_psi2   = models.CharField(max_length=1, choices=opPsicologicos, default='4')
 	a_qui2   = models.CharField(max_length=1, choices=opQuimicos, default='F')
-	a_prot2   = models.CharField(max_length=1, choices=opcionesSiNo, default='S')	
+	a_prot2   = models.CharField(max_length=1, choices=opcionesSiNo, default='S')
 
 	accidente =   models.CharField(max_length=2, choices=opcionesSiNo, default='N',verbose_name=u'Accidente de Trabajo')
-	enfermedad_profesional =   models.CharField(max_length=2, choices=opcionesSiNo, default='N',verbose_name=u'Enfermedad Profesional')	
+	enfermedad_profesional =   models.CharField(max_length=2, choices=opcionesSiNo, default='N',verbose_name=u'Enfermedad Profesional')
 	detalle =  models.TextField(max_length=200, null=True, blank=True)
 
 	#Antecedentes(Todos estos: Negativos)
@@ -271,7 +276,7 @@ class historia_clinica(models.Model):
 	fracturas = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	tabaquismo = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	intoxicaciones = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
-	alcoholismo = models.CharField(max_length=1, choices=opcionesSiNo, default='N') 
+	alcoholismo = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	mentales = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	asma  = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	tbc   = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
@@ -292,7 +297,7 @@ class historia_clinica(models.Model):
 	f_fracturas = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	f_tabaquismo = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	f_intoxicaciones = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
-	f_alcoholismo = models.CharField(max_length=1, choices=opcionesSiNo, default='N') 
+	f_alcoholismo = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	f_mentales = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	f_asma  = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	f_tbc   = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
@@ -305,16 +310,16 @@ class historia_clinica(models.Model):
 	f_epilepsia  = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	f_cancer  = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	f_hipertension  = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
-	f_otros	= models.CharField(max_length=1, choices=opcionesSiNo, default='N')	
+	f_otros	= models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	descripcion_antecedente = models.TextField(max_length=300, null=True, blank=True)
 	#Habitos
-	alcohol	= models.CharField(max_length=1, choices=opcionesSiNo, default='N')	
+	alcohol	= models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	deportes = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	frecuencia = models.TextField(max_length=30, null=True, blank=True)
 	#Gineco
 	menarquia  = models.CharField(max_length=50, null=True, blank=True)
 	hijos_vivos	=  models.CharField(max_length=2, verbose_name=u'Nº Hijos Vivos', default='0', null=True, blank=True)
-	ciclos   = models.CharField(max_length=50, null=True, blank=True) 
+	ciclos   = models.CharField(max_length=50, null=True, blank=True)
 	gravida = models.CharField(max_length=6, null=True, blank=True)
 	partos =  models.CharField(max_length=6, null=True, blank=True)
 	abortos = models.CharField(max_length=6, null=True, blank=True)
@@ -432,8 +437,8 @@ class historia_clinica(models.Model):
 	recomendacion = models.TextField(max_length=500, null=True, blank=True)
 
 	def __unicode__(self):
-		salida = "%s  %s"%(self.paciente,self.id)	
-		return salida.encode('utf-8')	
+		salida = "%s  %s"%(self.paciente,self.id)
+		return salida.encode('utf-8')
 
 class test_altura(models.Model):
 	opcionesSiNo = (
@@ -470,7 +475,7 @@ class test_altura(models.Model):
 	dolor_pecho3  = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	late_irregularmente   = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	dolor_pecho_indigestion  = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
-	otros_sintomas   = models.CharField(max_length=1, choices=opcionesSiNo, default='N')	
+	otros_sintomas   = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 
 	lentes_contacto   = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	lentes  = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
@@ -489,7 +494,7 @@ class test_altura(models.Model):
 	dificultad_oir   = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	aparato_oir  = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	prob_audicion   = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
-	d_prob_audicion   = models.CharField(max_length=150, null=True, blank=True)		
+	d_prob_audicion   = models.CharField(max_length=150, null=True, blank=True)
 
 	debilidad_brazos  = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
 	dolor_espalda  = models.CharField(max_length=1, choices=opcionesSiNo, default='N')
@@ -510,47 +515,47 @@ class test_altura(models.Model):
 	hallpike   = models.CharField(max_length=1, choices=opciones, default='N')
 	ob_hallpike   = models.CharField(max_length=150, null=True, blank=True)
 	#Pruebas de equilibrio dinamico
-	babinski_m_d   = models.CharField(max_length=5, null=True, blank=True)	
+	babinski_m_d   = models.CharField(max_length=5, null=True, blank=True)
 	ob_babinski_m_d   = models.CharField(max_length=150, null=True, blank=True)
-	babinski_m_i   = models.CharField(max_length=5, null=True, blank=True)	
+	babinski_m_i   = models.CharField(max_length=5, null=True, blank=True)
 	ob_babinski_m_i   = models.CharField(max_length=150, null=True, blank=True)
-	babinski_m_n   = models.CharField(max_length=5, null=True, blank=True)	
+	babinski_m_n   = models.CharField(max_length=5, null=True, blank=True)
 	ob_babinski_m_n   = models.CharField(max_length=150, null=True, blank=True)
 
-	unterberger_m_d   = models.CharField(max_length=5, null=True, blank=True)	
+	unterberger_m_d   = models.CharField(max_length=5, null=True, blank=True)
 	ob_unterberger_m_d   = models.CharField(max_length=150, null=True, blank=True)
-	unterberger_m_c   = models.CharField(max_length=5, null=True, blank=True)	
+	unterberger_m_c   = models.CharField(max_length=5, null=True, blank=True)
 	ob_unterberger_m_c   = models.CharField(max_length=150, null=True, blank=True)
-	unterberger_m_i   = models.CharField(max_length=5, null=True, blank=True)	
+	unterberger_m_i   = models.CharField(max_length=5, null=True, blank=True)
 	ob_unterberger_m_i   = models.CharField(max_length=150, null=True, blank=True)
 	#Impresion Diagnostica
-	neg_vert_per   = models.CharField(max_length=5, null=True, blank=True)	
+	neg_vert_per   = models.CharField(max_length=5, null=True, blank=True)
 	ob_neg_vert_per  = models.CharField(max_length=150, null=True, blank=True)
-	pos_vert_per   = models.CharField(max_length=5, null=True, blank=True)	
+	pos_vert_per   = models.CharField(max_length=5, null=True, blank=True)
 	ob_pos_vert_per  = models.CharField(max_length=150, null=True, blank=True)
-	post_vert_cent   = models.CharField(max_length=5, null=True, blank=True)	
-	ob_post_vert_cent = models.CharField(max_length=150, null=True, blank=True)						
-			
+	post_vert_cent   = models.CharField(max_length=5, null=True, blank=True)
+	ob_post_vert_cent = models.CharField(max_length=150, null=True, blank=True)
+
 	def __unicode__(self):
-		return "Test Orden #: %s. Orden: %s"%(self.orden.id,self.orden)	
+		return "Test Orden #: %s. Orden: %s"%(self.orden.id,self.orden)
 
 class laboratorios(models.Model):
-	orden	= models.ForeignKey(orden,related_name='laboratorios_orden') 
+	orden	= models.ForeignKey(orden,related_name='laboratorios_orden')
 	examen  = models.CharField(max_length=50)
 	fecha   = models.DateField(verbose_name="Fecha Examen", null=True, blank=True)
 	resultado = models.CharField(max_length=150)
 
 	def __unicode__(self):
-		return "Orden: %s. Examen: %s"%(self.orden,self.examen)	
+		return "Orden: %s. Examen: %s"%(self.orden,self.examen)
 
 class posologias(models.Model):
-	orden	= models.ForeignKey(orden,related_name='posologias_orden') 
+	orden	= models.ForeignKey(orden,related_name='posologias_orden')
 	medicamento		= models.CharField(max_length=150)
 	uso				= models.TextField(max_length=300)
 
 class remision(models.Model):
 	orden	= models.ForeignKey(orden,related_name='remision_orden')
-	ordenado    		= models.CharField(max_length=150) 
+	ordenado    		= models.CharField(max_length=150)
 	descripcion_orden	= models.TextField(max_length=300)
 	entidad				= models.CharField(max_length=100) #preguntar si estas entidades estan establecidas
 
@@ -568,7 +573,7 @@ def number():
 		return no["numero__max"]+ 1
 
 class consecutivo(models.Model):
-	numero = models.PositiveIntegerField(unique=True, default=number)	  
+	numero = models.PositiveIntegerField(unique=True, default=number)
 
 class historia_procedimientos(models.Model):
 	opciones = (
@@ -604,7 +609,7 @@ class historia_procedimientos(models.Model):
 	orden	= models.ForeignKey(orden,related_name='procedimiento_orden')
 	paciente	= models.ForeignKey(paciente,related_name='historia_procedimientos_paciente')
 	procedimiento = models.ForeignKey(procedimientos,related_name='procedimiento_empresa')
-	hallazgos = models.TextField(max_length=1000) 
+	hallazgos = models.TextField(max_length=1000)
 	#Impresión Diagnóstica
 	impresion 		= models.TextField(max_length=300, default="")
 	#Remision Interna
@@ -619,4 +624,4 @@ class historia_procedimientos(models.Model):
 	forma = models.CharField(max_length=1, choices=opciones4, default='1',verbose_name=u'Forma de realizacion del acto quirurgico')
 
 	def __unicode__(self):
-		return "%s   %s"%(self.paciente,self.procedimiento)	
+		return "%s   %s"%(self.paciente,self.procedimiento)

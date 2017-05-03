@@ -20,6 +20,10 @@ from .serializers import (
     EspecificacionCaracteristicaSerializer
 )
 from .utils import get_object_or_404_api
+from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
+from mysite.apps.historias.serializers import OrdenSerializer
+from mysite.apps.parametros.models import servicios as Servicio
+from mysite.apps.parametros.serializers import ServicioSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -137,3 +141,37 @@ class EspecificacionCaracteristicasListAPI(generics.ListCreateAPIView):
 class EspecificacionCaracteristicaDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = EspecificacionCaracteristica.objects.all()
     serializer_class = EspecificacionCaracteristicaSerializer
+
+
+class ServiciosListAPI(generics.ListAPIView):
+    queryset = Servicio.objects.filter(laboratorio__isnull=True)
+    serializer_class = ServicioSerializer
+
+
+class ServicioLaboratorioAPI(generics.RetrieveAPIView):
+    queryset = Servicio.objects.filter(laboratorio__isnull=False)
+    serializer_class = ServicioSerializer
+
+
+@api_view(['GET'])
+def ordenes_laboratorios(request):
+    """
+    Lista las ordenes que tengan laboratorios.
+    """
+
+    args = tuple()
+    kwargs = dict()
+
+    if request.method == 'GET':
+        # bacteriologo = request.user.bacteriologo
+        servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
+
+        ordenes = Orden.objects.filter(
+            id__in=OrdenProducto.objects.filter(
+                servicio__in=servicios
+            ).values_list('orden_id', flat=True).distinct()
+        )
+        serializer = OrdenSerializer(ordenes, many=True)
+        args = (serializer.data, )
+
+    return Response(*args, **kwargs)

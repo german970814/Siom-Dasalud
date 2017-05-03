@@ -8,7 +8,7 @@
               :headers="headers"
               :data="elements"
               :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
-              @selectedrow="eventUpdatedForm"
+              @selectedrow="customEventUpdatedForm"
               ></ig-table>
             </v-col>
           </v-row>
@@ -78,7 +78,7 @@ export default {
                 },
                 {
                   text: 'Sección de Trabajo', value: 'tabla-seccion-trabajo', left: true,
-                }
+                },
               ],
               fields: [
                 {
@@ -115,6 +115,14 @@ export default {
                   hint: 'Este es el area o sección de trabajo de este laboratorio.',
                   key: 'codigo'
                 },
+                {
+                  name: 'servicio',
+                  verbose_name: 'Servicio',
+                  type: Array,
+                  url: URL.servicios,
+                  hint: 'Este es el servicio asociado, con el cual se hará la relación en la orden.',
+                  key: 'nombre'
+                },
             ]
           }
     },
@@ -122,6 +130,18 @@ export default {
         igMenu: MenuComponent,
         igTable: TableComponent,
         igForm: FormComponent,
+    },
+    methods: {
+        customEventUpdatedForm: function (value) {
+            this.$http.get(URL.servicios.concat(value.servicio.id.toString() + '/'))
+                .then(response => {
+                    value.servicio = response.body;
+                    this.eventUpdatedForm(value);
+                }, response => {
+                    console.error(response);
+                    this.showSnackBar(response.detail || 'Ha ocurrido un error');
+                })
+        },
     },
     mounted: function () {
         this.getElements(URL.laboratorios);

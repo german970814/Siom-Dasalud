@@ -7,6 +7,7 @@ import SeccionesTrabajo from './pages/secciones_trabajo.vue';
 import Reactivos from './pages/reactivos.vue';
 import Caracteristicas from './pages/caracteristicas.vue';
 import EspecificacionCaracteristica from './pages/especificacion_caracteristica.vue';
+import OrdenesLaboratorios from './pages/ordenes_laboratorios.vue';
 
 const routes = [
     {path: '/laboratorios/', component: Laboratorios},
@@ -16,6 +17,7 @@ const routes = [
     {path: '/reactivos/', component: Reactivos},
     {path: '/caracteristicas/', component: Caracteristicas},
     {path: '/especificacion_caracteristicas/', component: EspecificacionCaracteristica},
+    {path: '/ordenes_laboratorios/', component: OrdenesLaboratorios},
 ]
 
 
