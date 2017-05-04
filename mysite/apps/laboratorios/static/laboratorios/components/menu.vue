@@ -265,6 +265,11 @@
                                 <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
+                        <v-list-item>
+                            <v-list-tile ripple href="#/formatos/">
+                                <v-list-tile-title>Formatos</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list-item>
                     </v-list-group>
                 </v-list>
             </v-sidebar>

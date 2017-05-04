@@ -178,6 +178,8 @@ class Campo(models.Model):
     help_text = models.CharField(max_length=255, verbose_name=_('Ayuda'), blank=True, null=True)
     value = models.TextField(max_length=255, verbose_name=_('Valor'), blank=True, null=True)
     tipo = models.CharField(max_length=10, choices=OPCIONES_TIPO, default=TEXT)
+    referencia = models.CharField(max_length=255, verbose_name=_('Referencia'), blank=True, null=True)
+    unidades = models.CharField(max_length=100, verbose_name=_('Unidades'), blank=True, null=True)
 
     def __str__(self):
         return self.render()
@@ -198,8 +200,6 @@ class Formato(models.Model):
 
     campos = models.ManyToManyField(Campo, related_name='formatos')
     observacion = models.TextField(verbose_name=_('Observación'), blank=True, null=True)
-    referencia = models.CharField(max_length=255, verbose_name=_('Referencia'), blank=True, null=True)
-    unidades = models.CharField(max_length=100, verbose_name=_('Unidades'), blank=True, null=True)
     laboratorio = models.OneToOneField(Laboratorio, related_name='formato', verbose_name=_('Laboratorio'))
 
     __str__ = lambda self: '({self.id})'.format(self=self)
