@@ -3,9 +3,9 @@ from rest_framework import serializers
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo,
     Tecnica, Reactivo, Caracteristica,
-    EspecificacionCaracteristica, Bacteriologo
+    EspecificacionCaracteristica, Bacteriologo, Formato
 )
-from .mixins import IGModelSerializer
+from .mixins import IGModelSerializer, IGSerializer
 from mysite.apps.parametros.serializers import ServicioSerializer
 
 
@@ -67,7 +67,7 @@ class ReactivoSerializer(IGModelSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Reactivo
-        fields = ('id', 'codigo', 'nombre', 'laboratorio', 'alarma_media', 'alarma_inferior', 'costos')
+        fields = ('id', 'codigo', 'nombre', 'laboratorio', 'alarma_media', 'alarma_inferior', 'costos', )
 
 
 class CaracteristicaSerializer(IGModelSerializer, serializers.ModelSerializer):
@@ -88,3 +88,25 @@ class BacteriologoSerializer(IGModelSerializer, serializers.ModelSerializer):
     class Meta:
         model = Bacteriologo
         fields = ('id', 'usuario', 'codigo', 'nombre', 'registro', 'firma', 'areas', )
+
+
+class FormatoSerializer(IGSerializer):
+    class Meta:
+        model = Formato
+        fields = ('id', 'formato', 'laboratorio', )
+
+
+def dict_to_object(json, Model):
+    """
+    """
+    obj = Model()
+    for field in json:
+        try:
+            field = Model._meta.get_field(field)
+            toset = json[field]
+            if field.is_relation and isinstance(json[field]):
+                model = field.related_model
+                toset = dict_to_object(json[field], model)
+            setattr(obj, field, toset)
+        except:
+            continue

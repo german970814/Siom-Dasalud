@@ -28542,6 +28542,7 @@
 	var especificacion_caracteristicas = BASE.concat('especificacion_caracteristicas/');
 	var ordenes_laboratorios = BASE.concat('ordenes_laboratorios/');
 	var servicios = BASE.concat('servicios/');
+	var especificaciones_por_carateristica = BASE.concat('especificacion_caracteristicas/caracteristica/');
 
 	exports.default = {
 	    BASE: BASE,
@@ -28553,7 +28554,8 @@
 	    caracteristicas: caracteristicas,
 	    especificacion_caracteristicas: especificacion_caracteristicas,
 	    ordenes_laboratorios: ordenes_laboratorios,
-	    servicios: servicios
+	    servicios: servicios,
+	    especificaciones_por_carateristica: especificaciones_por_carateristica
 	};
 
 /***/ }),
@@ -30063,25 +30065,167 @@
 
 
 	// module
-	exports.push([module.id, "\n", ""]);
+	exports.push([module.id, "\n.ig-floating-button {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin: 15px;\n}\n", ""]);
 
 	// exports
 
 
 /***/ }),
 /* 128 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+
+	var _getIterator2 = __webpack_require__(24);
+
+	var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+	var _urls = __webpack_require__(88);
+
+	var _urls2 = _interopRequireDefault(_urls);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = {
+	    props: {},
+	    data: function data() {
+	        return {
+	            dialog: false,
+	            caracteristicas: [],
+	            modalchoice: '',
+	            items: [{
+	                nombre: 'Campo1',
+	                help: '',
+	                choices: [{ edit: false, name: 'Option 1', checked: false }],
+	                choices_select: [{ text: 'Escoje una Caracteristica Primero.' }],
+	                model_text: '',
+	                model_check: [],
+	                tipo: '',
+	                referencia: ''
+	            }],
+	            lastItem: {},
+	            tipoHelpText: 'Escoja un tipo de campo para los resultados.',
+	            tipoOpciones: [{
+	                text: 'Texto',
+	                name: 'text',
+	                help: 'Con este campo se puede dar un resultado libre corto y consiso.'
+	            }, {
+	                text: 'Selección Unica',
+	                name: 'radio',
+	                help: 'Con este campo se proveen varias opciones y solo podrá ser escogida 1.'
+	            }, {
+	                text: 'Multiple Selección',
+	                name: 'checkbox',
+	                help: 'Con este campo se proveen varias opciones y podrán ser escogidas 1 o todas.'
+	            }, {
+	                text: 'Caracteristicas',
+	                name: 'select',
+	                help: 'Con este campo se muestran solo las opciones a partir de una caracteristica escogida.'
+	            }, {
+	                text: 'Libre',
+	                name: 'textarea',
+	                help: 'Con este campo se puede escribir libremente, bajo ciertos formatos.'
+	            }]
+	        };
+	    },
+	    watch: {
+	        dialog: function dialog() {
+	            var _this = this;
+
+	            if (this.dialog) {
+	                this.$http.get(_urls2.default.caracteristicas).then(function (response) {
+	                    _this.caracteristicas = response.body;
+	                }, function (response) {});
+	            }
+	        }
+	    },
+	    methods: {
+	        addItem: function addItem() {
+	            var length = (this.items.length + 1).toString();
+	            this.items.push({
+	                nombre: 'Campo ' + length,
+	                help: '',
+	                choices: [{ edit: false, name: 'Option 1', checked: false }],
+	                choices_select: [{ text: 'Escoje una Caracteristica Primero.' }],
+	                model_text: '',
+	                model_check: [],
+	                tipo: '',
+	                referencia: ''
+	            });
+	        },
+	        deleteChoiceItem: function deleteChoiceItem(item, choice) {
+	            item.choices.splice(choice, 1);
+	        },
+	        addChoiceItem: function addChoiceItem(item) {
+	            var length = (item.choices.length + 1).toString();
+	            item.choices.push({ edit: false, name: 'Option ' + length });
+	        },
+	        toggleValueEditCheckBox: function toggleValueEditCheckBox(item) {
+	            // item es un choice
+	            if (!'edit' in item) {
+	                console.warning('No hay una propiedad ¨edit¨ de la opcion, por lo que no sera reactiva.');
+	            }
+	            item.edit = !item.edit;
+	        },
+	        removeItem: function removeItem(item) {
+	            this.items.splice(item, 1);
+	        },
+	        llenarCaracteristicas: function llenarCaracteristicas() {
+	            var item = this.lastItem;
+	            if (this.modalchoice) {
+	                this.$http.get(_urls2.default.especificaciones_por_carateristica + this.modalchoice.toString() + '/').then(function (response) {
+	                    item.choices_select = [];
+	                    var _iteratorNormalCompletion = true;
+	                    var _didIteratorError = false;
+	                    var _iteratorError = undefined;
+
+	                    try {
+	                        for (var _iterator = (0, _getIterator3.default)(response.body), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                            var choice = _step.value;
+
+	                            choice.text = choice.nombre;
+	                            item.choices_select.push(choice);
+	                        }
+	                    } catch (err) {
+	                        _didIteratorError = true;
+	                        _iteratorError = err;
+	                    } finally {
+	                        try {
+	                            if (!_iteratorNormalCompletion && _iterator.return) {
+	                                _iterator.return();
+	                            }
+	                        } finally {
+	                            if (_didIteratorError) {
+	                                throw _iteratorError;
+	                            }
+	                        }
+	                    }
+	                }, function (response) {});
+	            }
+	            this.dialog = false;
+	        }
+	    }
+	};
+	// </script>
+	//
+	// <style lang="css">
+	// .ig-floating-button {
+	//     position: fixed;
+	//     bottom: 0;
+	//     right: 0;
+	//     margin: 15px;
+	// }
+	// </style>
+	//
 	// <template lang="html">
 	//     <div>
 	//         <v-container>
 	//             <v-row>
-	//                 <h4>Creación de Formatos</h4>
+	//                 <h1 class="title">Creación de Formatos</h1>
 	//             </v-row>
 	//             <v-row>
 	//                 <v-col md6 xs12 class="mb-5" v-for="(item, id) of items" :key="id">
@@ -30123,18 +30267,41 @@
 	//                                     ></v-text-field>
 	//                                     <br>
 	//                                     <v-text-field
+	//                                         label="Unidades"
+	//                                         v-model="item.unidades"
+	//                                         hint="Medida en unidades de el resultado"
+	//                                     ></v-text-field>
+	//                                     <br>
+	//                                     <v-text-field
 	//                                         v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea'"
 	//                                         :multi-line="item.tipo.name == 'textarea'"
 	//                                         :label="item.nombre"
 	//                                         :hint="item.help"
 	//                                         v-model="item.model_text"
+	//                                         persistent-hint
 	//                                     ></v-text-field>
-	//                                     <v-select
-	//                                         v-else-if="item.tipo.name == 'select'"
-	//                                         :label="item.nombre"
-	//                                         :hint="item.help"
-	//                                         v-model="item.model"
-	//                                     ></v-select>
+	//                                     <div v-else-if="item.tipo.name == 'select'">
+	//                                         <v-row>
+	//                                             <v-col md10 xs10>
+	//                                                 <v-select
+	//                                                     :label="item.nombre"
+	//                                                     :hint="item.help"
+	//                                                     v-model="item.model_text"
+	//                                                     :items="item.choices_select"
+	//                                                     item-value="text"
+	//                                                     persistent-hint
+	//                                                 ></v-select>
+	//                                             </v-col>
+	//                                             <v-col md2 xs2>
+	//                                                 <v-btn
+	//                                                     v-tooltip:top="{html: 'Agregar Opciones'}"
+	//                                                     class="green--text darken-1" icon="icon"
+	//                                                     @click.native.stop="dialog = true; lastItem = item">
+	//                                                     <v-icon>add</v-icon>
+	//                                                 </v-btn>
+	//                                             </v-col>
+	//                                         </v-row>
+	//                                     </div>
 	//                                     <div v-else-if="item.tipo.name == 'checkbox'">
 	//                                         <v-row v-for="(choice, choiceId) of item.choices" :key="choiceId">
 	//                                             <v-col xs7 md7>
@@ -30209,94 +30376,43 @@
 	//                 </v-col>
 	//             </v-row>
 	//         </v-container>
-	//         <code><pre>{{ $data }}</pre></code>
-	//         <v-btn floating error @click.native="addItem">
-	//             <v-icon>add</v-icon>
-	//         </v-btn>
+	//         <div class="ig-floating-button">
+	//             <v-btn floating error @click.native="addItem">
+	//                 <v-icon>add</v-icon>
+	//             </v-btn>
+	//         </div>
+	//         <v-dialog v-model="dialog" scrollable>
+	//             <v-card>
+	//                 <v-card-title>Selecciona una Caracteristica</v-card-title>
+	//                 <v-divider></v-divider>
+	//                 <v-card-row height="300px">
+	//                     <v-card-text>
+	//                       <v-radio
+	//                       v-for="(caracteristica, caracteristicaId) of caracteristicas"
+	//                       :key="caracteristica.id"
+	//                       :label="caracteristica.codigo.toUpperCase()"
+	//                       v-model="modalchoice"
+	//                       :value="caracteristica.id"
+	//                       primary></v-radio>
+	//                     </v-card-text>
+	//                 </v-card-row>
+	//                 <v-divider></v-divider>
+	//                 <v-card-row actions>
+	//                     <v-btn class="blue--text darken-1" flat @click.native="dialog = false">Cerrar</v-btn>
+	//                     <v-btn class="blue--text darken-1" flat @click.native="llenarCaracteristicas">Escoger</v-btn>
+	//                 </v-card-row>
+	//             </v-card>
+	//         </v-dialog>
 	//     </div>
 	// </template>
 	//
 	// <script>
-	exports.default = {
-	    props: {},
-	    data: function data() {
-	        return {
-	            items: [{
-	                nombre: 'Campo1',
-	                help: '',
-	                choices: [{ edit: false, name: 'Option 1', checked: false }],
-	                model_text: '',
-	                model_check: [],
-	                tipo: '',
-	                referencia: ''
-	            }],
-	            tipoHelpText: 'Escoja un tipo de campo para los resultados.',
-	            tipoOpciones: [{
-	                text: 'Texto',
-	                name: 'text',
-	                help: 'Con este campo se puede dar un resultado libre corto y consiso.'
-	            }, {
-	                text: 'Selección Unica',
-	                name: 'radio',
-	                help: 'Con este campo se proveen varias opciones y solo podrá ser escogida 1.'
-	            }, {
-	                text: 'Multiple Selección',
-	                name: 'checkbox',
-	                help: 'Con este campo se proveen varias opciones y podrán ser escogidas 1 o todas.'
-	            }, {
-	                text: 'Caracteristicas',
-	                name: 'select',
-	                help: 'Con este campo se muestran solo las opciones a partir de una caracteristica escogida.'
-	            }, {
-	                text: 'Libre',
-	                name: 'textarea',
-	                help: 'Con este campo se puede escribir libremente, bajo ciertos formatos.'
-	            }]
-	        };
-	    },
-	    methods: {
-	        addItem: function addItem() {
-	            var length = (this.items.length + 1).toString();
-	            this.items.push({
-	                nombre: 'Campo ' + length,
-	                help: '',
-	                choices: [{ edit: false, name: 'Option 1', checked: false }],
-	                model_text: '',
-	                model_check: [],
-	                tipo: '',
-	                referencia: ''
-	            });
-	        },
-	        deleteChoiceItem: function deleteChoiceItem(item, choice) {
-	            item.choices.splice(choice, 1);
-	        },
-	        addChoiceItem: function addChoiceItem(item) {
-	            var length = (item.choices.length + 1).toString();
-	            item.choices.push({ edit: false, name: 'Option ' + length });
-	        },
-	        toggleValueEditCheckBox: function toggleValueEditCheckBox(item) {
-	            // item es un choice
-	            if (!'edit' in item) {
-	                console.warning('No hay una propiedad ¨edit¨ de la opcion, por lo que no sera reactiva.');
-	            }
-	            item.edit = !item.edit;
-	        },
-	        removeItem: function removeItem(item) {
-	            this.items.splice(item, 1);
-	        }
-	    }
-	};
-	// </script>
-	//
-	// <style lang="css">
-	// </style>
-	//
 
 /***/ }),
 /* 129 */
 /***/ (function(module, exports) {
 
-	module.exports = "\n    <div>\n        <v-container>\n            <v-row>\n                <h4>Creación de Formatos</h4>\n            </v-row>\n            <v-row>\n                <v-col md6 xs12 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand>\n                        <v-expansion-panel-content><!--v-bind:value=\"item === 1\"-->\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title></v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        required\n                                        persistent-hint\n                                        autocomplete\n                                        light\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Texto de ayuda\"\n                                        v-model=\"item.help\"\n                                        hint=\"Ayuda textual que acompaña el campo\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia\"\n                                        v-model=\"item.referencia\"\n                                        hint=\"Texto de referencia para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                        :multi-line=\"item.tipo.name == 'textarea'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model_text\"\n                                    ></v-text-field>\n                                    <v-select\n                                        v-else-if=\"item.tipo.name == 'select'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model\"\n                                    ></v-select>\n                                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-col xs7 md7>\n                                                <v-checkbox\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_check\"\n                                                  :value=\"choice\"\n                                                  primary\n                                                ></v-checkbox>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-col>\n                                            <v-col xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-col>\n                                        </v-row>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-col xs7 md7>\n                                                <v-radio\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_text\"\n                                                  :value=\"choice.name\"\n                                                  primary\n                                                ></v-radio>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-col>\n                                            <v-col xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-col>\n                                        </v-row>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-col>\n            </v-row>\n        </v-container>\n        <code><pre>{{ $data }}</pre></code>\n        <v-btn floating error @click.native=\"addItem\">\n            <v-icon>add</v-icon>\n        </v-btn>\n    </div>\n";
+	module.exports = "\n    <div>\n        <v-container>\n            <v-row>\n                <h1 class=\"title\">Creación de Formatos</h1>\n            </v-row>\n            <v-row>\n                <v-col md6 xs12 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand>\n                        <v-expansion-panel-content><!--v-bind:value=\"item === 1\"-->\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title></v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        required\n                                        persistent-hint\n                                        autocomplete\n                                        light\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Texto de ayuda\"\n                                        v-model=\"item.help\"\n                                        hint=\"Ayuda textual que acompaña el campo\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia\"\n                                        v-model=\"item.referencia\"\n                                        hint=\"Texto de referencia para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Unidades\"\n                                        v-model=\"item.unidades\"\n                                        hint=\"Medida en unidades de el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                        :multi-line=\"item.tipo.name == 'textarea'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model_text\"\n                                        persistent-hint\n                                    ></v-text-field>\n                                    <div v-else-if=\"item.tipo.name == 'select'\">\n                                        <v-row>\n                                            <v-col md10 xs10>\n                                                <v-select\n                                                    :label=\"item.nombre\"\n                                                    :hint=\"item.help\"\n                                                    v-model=\"item.model_text\"\n                                                    :items=\"item.choices_select\"\n                                                    item-value=\"text\"\n                                                    persistent-hint\n                                                ></v-select>\n                                            </v-col>\n                                            <v-col md2 xs2>\n                                                <v-btn\n                                                    v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                    class=\"green--text darken-1\" icon=\"icon\"\n                                                    @click.native.stop=\"dialog = true; lastItem = item\">\n                                                    <v-icon>add</v-icon>\n                                                </v-btn>\n                                            </v-col>\n                                        </v-row>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-col xs7 md7>\n                                                <v-checkbox\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_check\"\n                                                  :value=\"choice\"\n                                                  primary\n                                                ></v-checkbox>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-col>\n                                            <v-col xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-col>\n                                        </v-row>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-col xs7 md7>\n                                                <v-radio\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_text\"\n                                                  :value=\"choice.name\"\n                                                  primary\n                                                ></v-radio>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-col>\n                                            <v-col xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-col>\n                                        </v-row>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-col>\n            </v-row>\n        </v-container>\n        <div class=\"ig-floating-button\">\n            <v-btn floating error @click.native=\"addItem\">\n                <v-icon>add</v-icon>\n            </v-btn>\n        </div>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ })
 /******/ ]);

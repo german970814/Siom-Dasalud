@@ -175,3 +175,16 @@ def ordenes_laboratorios(request):
         args = (serializer.data, )
 
     return Response(*args, **kwargs)
+
+
+@api_view(['GET'])
+def especificacion_caracteristica_por_caracteristica(request, pk):
+    """
+    Retorna las especificaciones de una caracteristica
+    """
+    args = tuple()
+    if request.method == 'GET':
+        especificaciones = EspecificacionCaracteristica.objects.filter(caracteristica_id=pk)
+        serializer = EspecificacionCaracteristicaSerializer(especificaciones, many=True)
+        args = (serializer.data, )
+    return Response(*args)

@@ -8,6 +8,7 @@ const caracteristicas = BASE.concat('caracteristicas/');
 const especificacion_caracteristicas = BASE.concat('especificacion_caracteristicas/');
 const ordenes_laboratorios = BASE.concat('ordenes_laboratorios/');
 const servicios = BASE.concat('servicios/');
+const especificaciones_por_carateristica = BASE.concat('especificacion_caracteristicas/caracteristica/');
 
 export default {
     BASE,
@@ -20,4 +21,5 @@ export default {
     especificacion_caracteristicas,
     ordenes_laboratorios,
     servicios,
+    especificaciones_por_carateristica,
 }

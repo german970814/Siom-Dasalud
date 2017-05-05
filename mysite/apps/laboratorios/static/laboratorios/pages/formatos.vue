@@ -2,7 +2,7 @@
     <div>
         <v-container>
             <v-row>
-                <h4>Creación de Formatos</h4>
+                <h1 class="title">Creación de Formatos</h1>
             </v-row>
             <v-row>
                 <v-col md6 xs12 class="mb-5" v-for="(item, id) of items" :key="id">
@@ -44,18 +44,41 @@
                                     ></v-text-field>
                                     <br>
                                     <v-text-field
+                                        label="Unidades"
+                                        v-model="item.unidades"
+                                        hint="Medida en unidades de el resultado"
+                                    ></v-text-field>
+                                    <br>
+                                    <v-text-field
                                         v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea'"
                                         :multi-line="item.tipo.name == 'textarea'"
                                         :label="item.nombre"
                                         :hint="item.help"
                                         v-model="item.model_text"
+                                        persistent-hint
                                     ></v-text-field>
-                                    <v-select
-                                        v-else-if="item.tipo.name == 'select'"
-                                        :label="item.nombre"
-                                        :hint="item.help"
-                                        v-model="item.model"
-                                    ></v-select>
+                                    <div v-else-if="item.tipo.name == 'select'">
+                                        <v-row>
+                                            <v-col md10 xs10>
+                                                <v-select
+                                                    :label="item.nombre"
+                                                    :hint="item.help"
+                                                    v-model="item.model_text"
+                                                    :items="item.choices_select"
+                                                    item-value="text"
+                                                    persistent-hint
+                                                ></v-select>
+                                            </v-col>
+                                            <v-col md2 xs2>
+                                                <v-btn
+                                                    v-tooltip:top="{html: 'Agregar Opciones'}"
+                                                    class="green--text darken-1" icon="icon"
+                                                    @click.native.stop="dialog = true; lastItem = item">
+                                                    <v-icon>add</v-icon>
+                                                </v-btn>
+                                            </v-col>
+                                        </v-row>
+                                    </div>
                                     <div v-else-if="item.tipo.name == 'checkbox'">
                                         <v-row v-for="(choice, choiceId) of item.choices" :key="choiceId">
                                             <v-col xs7 md7>
@@ -130,29 +153,60 @@
                 </v-col>
             </v-row>
         </v-container>
-        <code><pre>{{ $data }}</pre></code>
-        <v-btn floating error @click.native="addItem">
-            <v-icon>add</v-icon>
-        </v-btn>
+        <div class="ig-floating-button">
+            <v-btn floating error @click.native="addItem">
+                <v-icon>add</v-icon>
+            </v-btn>
+        </div>
+        <v-dialog v-model="dialog" scrollable>
+            <v-card>
+                <v-card-title>Selecciona una Caracteristica</v-card-title>
+                <v-divider></v-divider>
+                <v-card-row height="300px">
+                    <v-card-text>
+                      <v-radio
+                      v-for="(caracteristica, caracteristicaId) of caracteristicas"
+                      :key="caracteristica.id"
+                      :label="caracteristica.codigo.toUpperCase()"
+                      v-model="modalchoice"
+                      :value="caracteristica.id"
+                      primary></v-radio>
+                    </v-card-text>
+                </v-card-row>
+                <v-divider></v-divider>
+                <v-card-row actions>
+                    <v-btn class="blue--text darken-1" flat @click.native="dialog = false">Cerrar</v-btn>
+                    <v-btn class="blue--text darken-1" flat @click.native="llenarCaracteristicas">Escoger</v-btn>
+                </v-card-row>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
 <script>
+import URL from './../urls.js';
+
 export default {
     props: {
 
     },
     data: function () {
         return {
+            dialog: false,
+            caracteristicas: [],
+            modalchoice: '',
             items: [{
                 nombre: 'Campo1',
                 help: '',
                 choices: [{edit: false, name: 'Option 1', checked: false}],
+                choices_select: [{text: 'Escoje una Caracteristica Primero.'}],
+                unidades: '',
                 model_text: '',
                 model_check: [],
                 tipo: '',
                 referencia: '',
             }],
+            lastItem: {},
             tipoHelpText: 'Escoja un tipo de campo para los resultados.',
             tipoOpciones: [
                 {
@@ -183,6 +237,18 @@ export default {
             ]
         }
     },
+    watch: {
+        dialog: function () {
+            if (this.dialog) {
+                this.$http.get(URL.caracteristicas)
+                  .then(response => {
+                      this.caracteristicas = response.body;
+                  }, response => {
+
+                  });
+            }
+        }
+    },
     methods: {
         addItem: function () {
             let length = (this.items.length + 1).toString();
@@ -190,8 +256,10 @@ export default {
                 nombre: 'Campo ' + length,
                 help: '',
                 choices: [{edit: false, name: 'Option 1', checked: false}],
+                choices_select: [{text: 'Escoje una Caracteristica Primero.'}],
                 model_text: '',
                 model_check: [],
+                unidades: '',
                 tipo: '',
                 referencia: '',
             })
@@ -214,10 +282,32 @@ export default {
         },
         removeItem: function (item) {
             this.items.splice(item, 1);
+        },
+        llenarCaracteristicas: function () {
+            let item = this.lastItem;
+            if (this.modalchoice) {
+                this.$http.get(URL.especificaciones_por_carateristica + this.modalchoice.toString() + '/')
+                  .then(response => {
+                      item.choices_select = [];
+                      for (let choice of response.body) {
+                          choice.text = choice.nombre;
+                          item.choices_select.push(choice);
+                      }
+                  }, response => {
+
+                  });
+            }
+            this.dialog = false;
         }
     }
 }
 </script>
 
 <style lang="css">
+.ig-floating-button {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 15px;
+}
 </style>

@@ -1,4 +1,6 @@
 from django.core.exceptions import FieldDoesNotExist
+from rest_framework import serializers
+
 
 class IGModelSerializer(object):
     """
@@ -48,3 +50,7 @@ class IGModelSerializer(object):
 
         instance.save()
         return instance
+
+
+class IGSerializer(IGModelSerializer, serializers.ModelSerializer):
+    pass

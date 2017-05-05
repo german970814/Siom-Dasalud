@@ -154,52 +154,10 @@ class Bacteriologo(models.Model):
 
 
 @python_2_unicode_compatible
-class Campo(models.Model):
-    """
-    Modelo para guardar los campos
-    """
-
-    TEXT = 'text'
-    CHECKBOX = 'checkbox'
-    RADIO = 'radio'
-    SELECT = 'select'
-    TEXTAREA = 'textarea'
-
-    OPCIONES_TIPO = (
-        (TEXT, _('Texto')),
-        (CHECKBOX, _('Muchas Opciones')),
-        (RADIO, _('Única Opción')),
-        (SELECT, _('Selección')),
-        (TEXTAREA, _('Texto Libre')),
-    )
-
-    name = models.CharField(max_length=150, verbose_name=_('Nombre'))
-    label = models.CharField(max_length=150, verbose_name=_('Label'))
-    help_text = models.CharField(max_length=255, verbose_name=_('Ayuda'), blank=True, null=True)
-    value = models.TextField(max_length=255, verbose_name=_('Valor'), blank=True, null=True)
-    tipo = models.CharField(max_length=10, choices=OPCIONES_TIPO, default=TEXT)
-    referencia = models.CharField(max_length=255, verbose_name=_('Referencia'), blank=True, null=True)
-    unidades = models.CharField(max_length=100, verbose_name=_('Unidades'), blank=True, null=True)
-
-    def __str__(self):
-        return self.render()
-
-    def save(self, *args, **kwargs):
-        if self.label:
-            self.name = self.label.replace(' ', '_').lower()
-        super(Campo, self).save(*args, **kwargs)
-
-    def render(self):
-        # raise NotImplementedError('No existe el método render sobre un campo.')
-        return ''
-
-
-@python_2_unicode_compatible
 class Formato(models.Model):
     """Modelo para guardar los formatos definidos para cada prueba de laboratorio."""
 
-    campos = models.ManyToManyField(Campo, related_name='formatos')
-    observacion = models.TextField(verbose_name=_('Observación'), blank=True, null=True)
+    formato = models.TextField()
     laboratorio = models.OneToOneField(Laboratorio, related_name='formato', verbose_name=_('Laboratorio'))
 
     __str__ = lambda self: '({self.id})'.format(self=self)
