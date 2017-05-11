@@ -8,7 +8,7 @@
             <v-sidebar v-model="sidebar" drawer class="mt-0 scroll-y" :mobile-break-point="576">
                 <v-list dense>
                     <v-list-item>
-                        <v-list-tile>
+                        <v-list-tile href="/">
                             <v-list-tile-avatar>
                                 <v-icon>accessibility</v-icon>
                             </v-list-tile-avatar>
@@ -263,11 +263,6 @@
                         <v-list-item>
                             <v-list-tile ripple href="#/especificacion_caracteristicas/">
                                 <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>
-                            </v-list-tile>
-                        </v-list-item>
-                        <v-list-item>
-                            <v-list-tile ripple href="#/formatos/">
-                                <v-list-tile-title>Formatos</v-list-tile-title>
                             </v-list-tile>
                         </v-list-item>
                     </v-list-group>

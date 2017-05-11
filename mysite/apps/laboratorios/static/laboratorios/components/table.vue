@@ -24,7 +24,12 @@
                     <v-checkbox primary v-model="props.item.selected" ></v-checkbox>
                 </td> -->
                 <template v-for="field of fields">
-                    <td class="text-xs-center" @click="updateForm(props.item)">{{ getattr(props.item, field) }}</td>
+                    <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
+                    <td class="text-xs-center" v-else>
+                        <v-btn floating small router class="cyan darken-1" :href="field.href.replace(':id', props.item.id)">
+                            <v-icon>mode_edit</v-icon>
+                        </v-btn>
+                    </td>
                 </template>
             </template>
         </v-data-table>

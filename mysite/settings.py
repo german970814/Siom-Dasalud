@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'rest_framework',
     # 'debug_toolbar',
     'autofixture',
+    'django_extensions',
 )
 
 MIDDLEWARE_CLASSES = (

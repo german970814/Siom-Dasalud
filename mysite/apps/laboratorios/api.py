@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-# from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404
 
 from rest_framework import status
 from rest_framework.renderers import JSONRenderer
@@ -12,12 +15,12 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo, Tecnica, Reactivo, Caracteristica,
-    EspecificacionCaracteristica
+    EspecificacionCaracteristica, Formato
 )
 from .serializers import (
     LaboratorioSerializer, EquipoSerializer, SeccionTrabajoSerializer,
     TecnicaSerializer, ReactivoSerializer, CaracteristicaSerializer,
-    EspecificacionCaracteristicaSerializer
+    EspecificacionCaracteristicaSerializer, FormatoSerializer
 )
 from .utils import get_object_or_404_api
 from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
@@ -152,6 +155,37 @@ class ServicioLaboratorioAPI(generics.RetrieveAPIView):
     queryset = Servicio.objects.filter(laboratorio__isnull=False)
     serializer_class = ServicioSerializer
 
+
+@api_view(['GET', 'POST'])
+def formato_api_view(request, pk):
+    """"""
+
+    laboratorio = get_object_or_404(Laboratorio.objects.all(), pk=pk)
+    args = tuple()
+    kwargs = {}
+
+    if request.method == 'GET':
+        try:
+            formato = laboratorio.formato
+        except Formato.DoesNotExist:
+            formato = Formato(laboratorio=laboratorio)
+        serializer = FormatoSerializer(instance=formato)
+        args = (serializer.data, )
+    elif request.method == 'POST':
+        try:
+            formato = laboratorio.formato
+            # request.data['formato'] = JSONRenderer().render(request.data['formato'])
+            formato = FormatoSerializer.update(FormatoSerializer(), formato, request.data)
+        except:
+            # if 'formato' in request.data:
+            #     request.data['formato'] = JSONRenderer().render(request.data['formato'])
+            formato = FormatoSerializer.create(FormatoSerializer(), request.data)
+        formato = Formato.objects.get(laboratorio=laboratorio)
+        serializer = FormatoSerializer(instance=formato)
+        args = (serializer.data, )
+        kwargs['status'] = status.HTTP_201_CREATED
+
+    return Response(*args, **kwargs)
 
 @api_view(['GET'])
 def ordenes_laboratorios(request):

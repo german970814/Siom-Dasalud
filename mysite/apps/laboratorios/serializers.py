@@ -1,4 +1,10 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.utils.six import BytesIO
 from rest_framework import serializers
+from rest_framework.parsers import JSONParser
+from rest_framework.fields import CharField
 
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo,
@@ -90,23 +96,24 @@ class BacteriologoSerializer(IGModelSerializer, serializers.ModelSerializer):
         fields = ('id', 'usuario', 'codigo', 'nombre', 'registro', 'firma', 'areas', )
 
 
+class _FormatoSerializer_(CharField):
+    def to_representation(self, value):
+        from django.utils import six
+        return six.text_type(value.decode('utf-8'))
+
 class FormatoSerializer(IGSerializer):
+
+    laboratorio = LaboratorioSerializer(fields=('codigo', 'nombre', ))
+    # formato = _FormatoSerializer_()
+
     class Meta:
         model = Formato
         fields = ('id', 'formato', 'laboratorio', )
 
-
-def dict_to_object(json, Model):
-    """
-    """
-    obj = Model()
-    for field in json:
-        try:
-            field = Model._meta.get_field(field)
-            toset = json[field]
-            if field.is_relation and isinstance(json[field]):
-                model = field.related_model
-                toset = dict_to_object(json[field], model)
-            setattr(obj, field, toset)
-        except:
-            continue
+    def to_representation(self, instance):
+        data = super(FormatoSerializer, self).to_representation(instance)
+        if instance.formato:
+            formato_string = instance.formato
+            stream = BytesIO(formato_string.encode('utf-8'))
+            data["formato"] = JSONParser().parse(stream)
+        return data

@@ -24,7 +24,9 @@ class IGModelSerializer(object):
 
     def create(self, data):
         Model = self.Meta.model
+        # print(data)
         for field in data:
+            print(field)
             try:
                 if Model._meta.get_field(field).is_relation:
                     data[field] = Model._meta.get_field(

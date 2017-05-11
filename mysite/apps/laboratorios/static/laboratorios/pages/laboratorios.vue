@@ -7,7 +7,7 @@
               table-title="Laboratorios"
               :headers="headers"
               :data="elements"
-              :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
+              :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]"
               @selectedrow="customEventUpdatedForm"
               ></ig-table>
             </v-col>
@@ -78,6 +78,9 @@ export default {
                 },
                 {
                   text: 'Sección de Trabajo', value: 'tabla-seccion-trabajo', left: true,
+                },
+                {
+                  text: 'Accion', left: true, sortable: false
                 },
               ],
               fields: [
