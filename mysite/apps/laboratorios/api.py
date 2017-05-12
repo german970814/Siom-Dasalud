@@ -15,12 +15,12 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo, Tecnica, Reactivo, Caracteristica,
-    EspecificacionCaracteristica, Formato
+    EspecificacionCaracteristica, Formato, Bacteriologo
 )
 from .serializers import (
     LaboratorioSerializer, EquipoSerializer, SeccionTrabajoSerializer,
     TecnicaSerializer, ReactivoSerializer, CaracteristicaSerializer,
-    EspecificacionCaracteristicaSerializer, FormatoSerializer
+    EspecificacionCaracteristicaSerializer, FormatoSerializer, BacteriologoSerializer
 )
 from .utils import get_object_or_404_api
 from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
@@ -54,9 +54,7 @@ def lista_laboratorio(request):
     return Response(*args, **kwargs)
 
 
-# @csrf_exempt
 @api_view(['GET', 'PUT', 'DELETE'])
-# @authentication_classes((SessionAuthentication, BasicAuthentication))
 def detalle_laboratorio(request, pk):
     """
     CRUD para los laboratorios.
@@ -156,6 +154,16 @@ class ServicioLaboratorioAPI(generics.RetrieveAPIView):
     serializer_class = ServicioSerializer
 
 
+class BacteriologoListAPI(generics.ListCreateAPIView):
+    queryset = Bacteriologo.objects.all()
+    serializer_class = BacteriologoSerializer
+
+
+class BacteriologoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Bacteriologo.objects.all()
+    serializer_class = BacteriologoSerializer
+
+
 @api_view(['GET', 'POST'])
 def formato_api_view(request, pk):
     """"""
@@ -186,6 +194,7 @@ def formato_api_view(request, pk):
         kwargs['status'] = status.HTTP_201_CREATED
 
     return Response(*args, **kwargs)
+
 
 @api_view(['GET'])
 def ordenes_laboratorios(request):

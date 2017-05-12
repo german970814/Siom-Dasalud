@@ -12883,17 +12883,19 @@ return Vue$3;
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 const BASE = '/laboratorios/api/';
-const equipos = BASE.concat('equipos/');
-const laboratorios = BASE.concat('laboratorios/');
-const secciones_trabajo = BASE.concat('seccion_trabajo/');
-const tecnicas = BASE.concat('tecnicas/');
-const reactivos = BASE.concat('reactivos/');
+
+const bacteriologos = BASE.concat('bacteriologos/');
 const caracteristicas = BASE.concat('caracteristicas/');
+const equipos = BASE.concat('equipos/');
 const especificacion_caracteristicas = BASE.concat('especificacion_caracteristicas/');
-const ordenes_laboratorios = BASE.concat('ordenes_laboratorios/');
-const servicios = BASE.concat('servicios/');
 const especificaciones_por_carateristica = BASE.concat('especificacion_caracteristicas/caracteristica/');
 const formatos = BASE.concat('formatos/');
+const laboratorios = BASE.concat('laboratorios/');
+const ordenes_laboratorios = BASE.concat('ordenes_laboratorios/');
+const reactivos = BASE.concat('reactivos/');
+const secciones_trabajo = BASE.concat('seccion_trabajo/');
+const tecnicas = BASE.concat('tecnicas/');
+const servicios = BASE.concat('servicios/');
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     BASE,
@@ -12908,6 +12910,7 @@ const formatos = BASE.concat('formatos/');
     servicios,
     especificaciones_por_carateristica,
     formatos,
+    bacteriologos,
 });
 
 
@@ -26438,7 +26441,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //               table-title="Ordenes con Laboratorios"
 //               :headers="headers"
 //               :data="elements"
-//               :fields="['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.codigo', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']"
+//               :fields="['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']"
 //               @selectedrow="eventUpdatedForm"
 //               ></ig-table>
 //             </v-col>
@@ -30400,7 +30403,7 @@ module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n       
 /* 117 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Ordenes con Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.codigo', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Ordenes con Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n    </div>\n";
 
 /***/ }),
 /* 118 */

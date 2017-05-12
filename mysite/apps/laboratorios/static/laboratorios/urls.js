@@ -1,15 +1,17 @@
 const BASE = '/laboratorios/api/';
-const equipos = BASE.concat('equipos/');
-const laboratorios = BASE.concat('laboratorios/');
-const secciones_trabajo = BASE.concat('seccion_trabajo/');
-const tecnicas = BASE.concat('tecnicas/');
-const reactivos = BASE.concat('reactivos/');
+
+const bacteriologos = BASE.concat('bacteriologos/');
 const caracteristicas = BASE.concat('caracteristicas/');
+const equipos = BASE.concat('equipos/');
 const especificacion_caracteristicas = BASE.concat('especificacion_caracteristicas/');
-const ordenes_laboratorios = BASE.concat('ordenes_laboratorios/');
-const servicios = BASE.concat('servicios/');
 const especificaciones_por_carateristica = BASE.concat('especificacion_caracteristicas/caracteristica/');
 const formatos = BASE.concat('formatos/');
+const laboratorios = BASE.concat('laboratorios/');
+const ordenes_laboratorios = BASE.concat('ordenes_laboratorios/');
+const reactivos = BASE.concat('reactivos/');
+const secciones_trabajo = BASE.concat('seccion_trabajo/');
+const tecnicas = BASE.concat('tecnicas/');
+const servicios = BASE.concat('servicios/');
 
 export default {
     BASE,
@@ -24,4 +26,5 @@ export default {
     servicios,
     especificaciones_por_carateristica,
     formatos,
+    bacteriologos,
 }

@@ -2,9 +2,9 @@
 from __future__ import unicode_literals
 
 from django.utils.six import BytesIO
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.parsers import JSONParser
-from rest_framework.fields import CharField
 
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo,
@@ -13,6 +13,7 @@ from .models import (
 )
 from .mixins import IGModelSerializer, IGSerializer
 from mysite.apps.parametros.serializers import ServicioSerializer
+from mysite.apps.datos.serializers import UsuarioSerializer
 
 
 class TecnicaSerializer(IGModelSerializer, serializers.ModelSerializer):
@@ -91,20 +92,21 @@ class EspecificacionCaracteristicaSerializer(IGModelSerializer, serializers.Mode
 
 
 class BacteriologoSerializer(IGModelSerializer, serializers.ModelSerializer):
+    """
+    Serializer para bacteriologos.
+    """
+    save_in_nested = ('usuario', )  # permite crear usuarios a partir de el serializer padre.
+
+    usuario = UsuarioSerializer(fields=('username', 'email', 'password', ))
+
     class Meta:
         model = Bacteriologo
         fields = ('id', 'usuario', 'codigo', 'nombre', 'registro', 'firma', 'areas', )
 
 
-class _FormatoSerializer_(CharField):
-    def to_representation(self, value):
-        from django.utils import six
-        return six.text_type(value.decode('utf-8'))
-
 class FormatoSerializer(IGSerializer):
 
     laboratorio = LaboratorioSerializer(fields=('codigo', 'nombre', ))
-    # formato = _FormatoSerializer_()
 
     class Meta:
         model = Formato

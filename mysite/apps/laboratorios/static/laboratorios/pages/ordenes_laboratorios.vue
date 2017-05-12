@@ -7,7 +7,7 @@
               table-title="Ordenes con Laboratorios"
               :headers="headers"
               :data="elements"
-              :fields="['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.codigo', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']"
+              :fields="['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']"
               @selectedrow="eventUpdatedForm"
               ></ig-table>
             </v-col>
