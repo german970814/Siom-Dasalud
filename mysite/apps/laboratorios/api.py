@@ -15,12 +15,13 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo, Tecnica, Reactivo, Caracteristica,
-    EspecificacionCaracteristica, Formato, Bacteriologo
+    EspecificacionCaracteristica, Formato, Bacteriologo, Resultado
 )
 from .serializers import (
     LaboratorioSerializer, EquipoSerializer, SeccionTrabajoSerializer,
     TecnicaSerializer, ReactivoSerializer, CaracteristicaSerializer,
-    EspecificacionCaracteristicaSerializer, FormatoSerializer, BacteriologoSerializer
+    EspecificacionCaracteristicaSerializer, FormatoSerializer, BacteriologoSerializer,
+    ResultadoSerializer
 )
 from .utils import get_object_or_404_api
 from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
@@ -164,6 +165,22 @@ class BacteriologoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BacteriologoSerializer
 
 
+@api_view(['POST', 'GET'])
+def resultado_api_view(request, pk):
+    orden = get_object_or_404(Orden, pk=pk)
+    args = tuple()
+    kwargs = dict()
+
+    if request.method == 'GET':
+        laboratorios = Laboratorio.objects.filter(id__in=list(filter(lambda x: x is not None,
+            Orden.objects.filter(id=orden.id).servicios().values_list('laboratorio__id', flat=True))))
+        formatos = Formato.objects.filter(id__in=laboratorios.values_list('formato__id', flat=True))
+        serializer = FormatoSerializer(formatos, many=True)
+        args = (serializer.data, )
+    # if request.method == 'POST':
+
+    return Response(*args, **kwargs)
+
 @api_view(['GET', 'POST'])
 def formato_api_view(request, pk):
     """"""
@@ -204,10 +221,16 @@ def ordenes_laboratorios(request):
 
     args = tuple()
     kwargs = dict()
+    try:
+        bacteriologo = request.user.bacteriologo
+    except:
+        kwargs['status'] = status.HTTP_403_FORBIDDEN
+        return Response(**kwargs)
 
     if request.method == 'GET':
-        # bacteriologo = request.user.bacteriologo
-        servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
+        servicios = Laboratorio.objects.filter(
+            seccion_trabajo__in=bacteriologo.areas.all()
+        ).values_list('servicio_id', flat=True)
 
         ordenes = Orden.objects.filter(
             id__in=OrdenProducto.objects.filter(

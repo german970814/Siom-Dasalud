@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 36);
+/******/ 	return __webpack_require__(__webpack_require__.s = 43);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -146,7 +146,7 @@ function toComment(sourceMap) {
   return '/*# ' + data + ' */';
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(80).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(98).Buffer))
 
 /***/ }),
 /* 1 */
@@ -186,7 +186,7 @@ var stylesInDom = {},
 	singletonElement = null,
 	singletonCounter = 0,
 	styleElementsInsertedAtTop = [],
-	fixUrls = __webpack_require__(96);
+	fixUrls = __webpack_require__(117);
 
 module.exports = function(list, options) {
 	if(typeof DEBUG !== "undefined" && DEBUG) {
@@ -2005,1552 +2005,62 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Url", function() { return Url; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Http", function() { return Http; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Resource", function() { return Resource; });
-/*!
- * vue-resource v1.3.1
- * https://github.com/pagekit/vue-resource
- * Released under the MIT License.
- */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
 
-/**
- * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
- */
 
-var RESOLVED = 0;
-var REJECTED = 1;
-var PENDING  = 2;
-
-function Promise$1(executor) {
-
-    this.state = PENDING;
-    this.value = undefined;
-    this.deferred = [];
-
-    var promise = this;
-
-    try {
-        executor(function (x) {
-            promise.resolve(x);
-        }, function (r) {
-            promise.reject(r);
-        });
-    } catch (e) {
-        promise.reject(e);
-    }
-}
-
-Promise$1.reject = function (r) {
-    return new Promise$1(function (resolve, reject) {
-        reject(r);
-    });
-};
-
-Promise$1.resolve = function (x) {
-    return new Promise$1(function (resolve, reject) {
-        resolve(x);
-    });
-};
-
-Promise$1.all = function all(iterable) {
-    return new Promise$1(function (resolve, reject) {
-        var count = 0, result = [];
-
-        if (iterable.length === 0) {
-            resolve(result);
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function () {
+        return {
+          elements: [],
+          __parent_: undefined,
         }
-
-        function resolver(i) {
-            return function (x) {
-                result[i] = x;
-                count += 1;
-
-                if (count === iterable.length) {
-                    resolve(result);
-                }
-            };
-        }
-
-        for (var i = 0; i < iterable.length; i += 1) {
-            Promise$1.resolve(iterable[i]).then(resolver(i), reject);
-        }
-    });
-};
-
-Promise$1.race = function race(iterable) {
-    return new Promise$1(function (resolve, reject) {
-        for (var i = 0; i < iterable.length; i += 1) {
-            Promise$1.resolve(iterable[i]).then(resolve, reject);
-        }
-    });
-};
-
-var p$1 = Promise$1.prototype;
-
-p$1.resolve = function resolve(x) {
-    var promise = this;
-
-    if (promise.state === PENDING) {
-        if (x === promise) {
-            throw new TypeError('Promise settled with itself.');
-        }
-
-        var called = false;
-
-        try {
-            var then = x && x['then'];
-
-            if (x !== null && typeof x === 'object' && typeof then === 'function') {
-                then.call(x, function (x) {
-                    if (!called) {
-                        promise.resolve(x);
+    },
+    methods: {
+        getElements: function () {
+            let url = this.url || arguments[0];
+            if (!url) {
+                throw new Error('URL no provehida para hacer consula de elementos');
+            }
+            this.$http.get(url)
+                .then(response => {
+                    for (let object of response.body) {
+                        object.selected = false;
+                        this.elements.push(object);
                     }
-                    called = true;
-
-                }, function (r) {
-                    if (!called) {
-                        promise.reject(r);
-                    }
-                    called = true;
+                }, response => {
+                    this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
                 });
-                return;
-            }
-        } catch (e) {
-            if (!called) {
-                promise.reject(e);
-            }
-            return;
-        }
-
-        promise.state = RESOLVED;
-        promise.value = x;
-        promise.notify();
-    }
-};
-
-p$1.reject = function reject(reason) {
-    var promise = this;
-
-    if (promise.state === PENDING) {
-        if (reason === promise) {
-            throw new TypeError('Promise settled with itself.');
-        }
-
-        promise.state = REJECTED;
-        promise.value = reason;
-        promise.notify();
-    }
-};
-
-p$1.notify = function notify() {
-    var promise = this;
-
-    nextTick(function () {
-        if (promise.state !== PENDING) {
-            while (promise.deferred.length) {
-                var deferred = promise.deferred.shift(),
-                    onResolved = deferred[0],
-                    onRejected = deferred[1],
-                    resolve = deferred[2],
-                    reject = deferred[3];
-
-                try {
-                    if (promise.state === RESOLVED) {
-                        if (typeof onResolved === 'function') {
-                            resolve(onResolved.call(undefined, promise.value));
-                        } else {
-                            resolve(promise.value);
-                        }
-                    } else if (promise.state === REJECTED) {
-                        if (typeof onRejected === 'function') {
-                            resolve(onRejected.call(undefined, promise.value));
-                        } else {
-                            reject(promise.value);
-                        }
+        },
+        __getParent__: function () {
+            if (!this.__parent_) {  // singleton
+                let parent = this.$parent;
+                while (parent !== undefined) {
+                    if (parent.$parent === undefined) {
+                        break;
                     }
-                } catch (e) {
-                    reject(e);
+                    parent = parent.$parent;
                 }
+                this.__parent_ = parent;
             }
-        }
-    });
-};
-
-p$1.then = function then(onResolved, onRejected) {
-    var promise = this;
-
-    return new Promise$1(function (resolve, reject) {
-        promise.deferred.push([onResolved, onRejected, resolve, reject]);
-        promise.notify();
-    });
-};
-
-p$1.catch = function (onRejected) {
-    return this.then(undefined, onRejected);
-};
-
-/**
- * Promise adapter.
- */
-
-if (typeof Promise === 'undefined') {
-    window.Promise = Promise$1;
-}
-
-function PromiseObj(executor, context) {
-
-    if (executor instanceof Promise) {
-        this.promise = executor;
-    } else {
-        this.promise = new Promise(executor.bind(context));
+            return this.__parent_;
+        },
+        getParent: function () {
+            return this.__getParent__().$options.methods;
+        },
+        showSnackBar: function (value) {
+            this.$emit('mostrarsnackbar', value);
+        },
+        eventCreatedObject: function (value) {
+            value.selected = false;
+            this.elements.push(value);
+            this.selected = value;
+        },
+        eventUpdatedForm: function (value) {
+            this.selected = value;
+        },
     }
-
-    this.context = context;
-}
-
-PromiseObj.all = function (iterable, context) {
-    return new PromiseObj(Promise.all(iterable), context);
-};
-
-PromiseObj.resolve = function (value, context) {
-    return new PromiseObj(Promise.resolve(value), context);
-};
-
-PromiseObj.reject = function (reason, context) {
-    return new PromiseObj(Promise.reject(reason), context);
-};
-
-PromiseObj.race = function (iterable, context) {
-    return new PromiseObj(Promise.race(iterable), context);
-};
-
-var p = PromiseObj.prototype;
-
-p.bind = function (context) {
-    this.context = context;
-    return this;
-};
-
-p.then = function (fulfilled, rejected) {
-
-    if (fulfilled && fulfilled.bind && this.context) {
-        fulfilled = fulfilled.bind(this.context);
-    }
-
-    if (rejected && rejected.bind && this.context) {
-        rejected = rejected.bind(this.context);
-    }
-
-    return new PromiseObj(this.promise.then(fulfilled, rejected), this.context);
-};
-
-p.catch = function (rejected) {
-
-    if (rejected && rejected.bind && this.context) {
-        rejected = rejected.bind(this.context);
-    }
-
-    return new PromiseObj(this.promise.catch(rejected), this.context);
-};
-
-p.finally = function (callback) {
-
-    return this.then(function (value) {
-            callback.call(this);
-            return value;
-        }, function (reason) {
-            callback.call(this);
-            return Promise.reject(reason);
-        }
-    );
-};
-
-/**
- * Utility functions.
- */
-
-var ref = {};
-var hasOwnProperty = ref.hasOwnProperty;
-
-var ref$1 = [];
-var slice = ref$1.slice;
-var debug = false;
-var ntick;
-
-var inBrowser = typeof window !== 'undefined';
-
-var Util = function (ref) {
-    var config = ref.config;
-    var nextTick = ref.nextTick;
-
-    ntick = nextTick;
-    debug = config.debug || !config.silent;
-};
-
-function warn(msg) {
-    if (typeof console !== 'undefined' && debug) {
-        console.warn('[VueResource warn]: ' + msg);
-    }
-}
-
-function error(msg) {
-    if (typeof console !== 'undefined') {
-        console.error(msg);
-    }
-}
-
-function nextTick(cb, ctx) {
-    return ntick(cb, ctx);
-}
-
-function trim(str) {
-    return str ? str.replace(/^\s*|\s*$/g, '') : '';
-}
-
-function toLower(str) {
-    return str ? str.toLowerCase() : '';
-}
-
-function toUpper(str) {
-    return str ? str.toUpperCase() : '';
-}
-
-var isArray = Array.isArray;
-
-function isString(val) {
-    return typeof val === 'string';
-}
-
-
-
-function isFunction(val) {
-    return typeof val === 'function';
-}
-
-function isObject(obj) {
-    return obj !== null && typeof obj === 'object';
-}
-
-function isPlainObject(obj) {
-    return isObject(obj) && Object.getPrototypeOf(obj) == Object.prototype;
-}
-
-function isBlob(obj) {
-    return typeof Blob !== 'undefined' && obj instanceof Blob;
-}
-
-function isFormData(obj) {
-    return typeof FormData !== 'undefined' && obj instanceof FormData;
-}
-
-function when(value, fulfilled, rejected) {
-
-    var promise = PromiseObj.resolve(value);
-
-    if (arguments.length < 2) {
-        return promise;
-    }
-
-    return promise.then(fulfilled, rejected);
-}
-
-function options(fn, obj, opts) {
-
-    opts = opts || {};
-
-    if (isFunction(opts)) {
-        opts = opts.call(obj);
-    }
-
-    return merge(fn.bind({$vm: obj, $options: opts}), fn, {$options: opts});
-}
-
-function each(obj, iterator) {
-
-    var i, key;
-
-    if (isArray(obj)) {
-        for (i = 0; i < obj.length; i++) {
-            iterator.call(obj[i], obj[i], i);
-        }
-    } else if (isObject(obj)) {
-        for (key in obj) {
-            if (hasOwnProperty.call(obj, key)) {
-                iterator.call(obj[key], obj[key], key);
-            }
-        }
-    }
-
-    return obj;
-}
-
-var assign = Object.assign || _assign;
-
-function merge(target) {
-
-    var args = slice.call(arguments, 1);
-
-    args.forEach(function (source) {
-        _merge(target, source, true);
-    });
-
-    return target;
-}
-
-function defaults(target) {
-
-    var args = slice.call(arguments, 1);
-
-    args.forEach(function (source) {
-
-        for (var key in source) {
-            if (target[key] === undefined) {
-                target[key] = source[key];
-            }
-        }
-
-    });
-
-    return target;
-}
-
-function _assign(target) {
-
-    var args = slice.call(arguments, 1);
-
-    args.forEach(function (source) {
-        _merge(target, source);
-    });
-
-    return target;
-}
-
-function _merge(target, source, deep) {
-    for (var key in source) {
-        if (deep && (isPlainObject(source[key]) || isArray(source[key]))) {
-            if (isPlainObject(source[key]) && !isPlainObject(target[key])) {
-                target[key] = {};
-            }
-            if (isArray(source[key]) && !isArray(target[key])) {
-                target[key] = [];
-            }
-            _merge(target[key], source[key], deep);
-        } else if (source[key] !== undefined) {
-            target[key] = source[key];
-        }
-    }
-}
-
-/**
- * Root Prefix Transform.
- */
-
-var root = function (options$$1, next) {
-
-    var url = next(options$$1);
-
-    if (isString(options$$1.root) && !url.match(/^(https?:)?\//)) {
-        url = options$$1.root + '/' + url;
-    }
-
-    return url;
-};
-
-/**
- * Query Parameter Transform.
- */
-
-var query = function (options$$1, next) {
-
-    var urlParams = Object.keys(Url.options.params), query = {}, url = next(options$$1);
-
-    each(options$$1.params, function (value, key) {
-        if (urlParams.indexOf(key) === -1) {
-            query[key] = value;
-        }
-    });
-
-    query = Url.params(query);
-
-    if (query) {
-        url += (url.indexOf('?') == -1 ? '?' : '&') + query;
-    }
-
-    return url;
-};
-
-/**
- * URL Template v2.0.6 (https://github.com/bramstein/url-template)
- */
-
-function expand(url, params, variables) {
-
-    var tmpl = parse(url), expanded = tmpl.expand(params);
-
-    if (variables) {
-        variables.push.apply(variables, tmpl.vars);
-    }
-
-    return expanded;
-}
-
-function parse(template) {
-
-    var operators = ['+', '#', '.', '/', ';', '?', '&'], variables = [];
-
-    return {
-        vars: variables,
-        expand: function expand(context) {
-            return template.replace(/\{([^\{\}]+)\}|([^\{\}]+)/g, function (_, expression, literal) {
-                if (expression) {
-
-                    var operator = null, values = [];
-
-                    if (operators.indexOf(expression.charAt(0)) !== -1) {
-                        operator = expression.charAt(0);
-                        expression = expression.substr(1);
-                    }
-
-                    expression.split(/,/g).forEach(function (variable) {
-                        var tmp = /([^:\*]*)(?::(\d+)|(\*))?/.exec(variable);
-                        values.push.apply(values, getValues(context, operator, tmp[1], tmp[2] || tmp[3]));
-                        variables.push(tmp[1]);
-                    });
-
-                    if (operator && operator !== '+') {
-
-                        var separator = ',';
-
-                        if (operator === '?') {
-                            separator = '&';
-                        } else if (operator !== '#') {
-                            separator = operator;
-                        }
-
-                        return (values.length !== 0 ? operator : '') + values.join(separator);
-                    } else {
-                        return values.join(',');
-                    }
-
-                } else {
-                    return encodeReserved(literal);
-                }
-            });
-        }
-    };
-}
-
-function getValues(context, operator, key, modifier) {
-
-    var value = context[key], result = [];
-
-    if (isDefined(value) && value !== '') {
-        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-            value = value.toString();
-
-            if (modifier && modifier !== '*') {
-                value = value.substring(0, parseInt(modifier, 10));
-            }
-
-            result.push(encodeValue(operator, value, isKeyOperator(operator) ? key : null));
-        } else {
-            if (modifier === '*') {
-                if (Array.isArray(value)) {
-                    value.filter(isDefined).forEach(function (value) {
-                        result.push(encodeValue(operator, value, isKeyOperator(operator) ? key : null));
-                    });
-                } else {
-                    Object.keys(value).forEach(function (k) {
-                        if (isDefined(value[k])) {
-                            result.push(encodeValue(operator, value[k], k));
-                        }
-                    });
-                }
-            } else {
-                var tmp = [];
-
-                if (Array.isArray(value)) {
-                    value.filter(isDefined).forEach(function (value) {
-                        tmp.push(encodeValue(operator, value));
-                    });
-                } else {
-                    Object.keys(value).forEach(function (k) {
-                        if (isDefined(value[k])) {
-                            tmp.push(encodeURIComponent(k));
-                            tmp.push(encodeValue(operator, value[k].toString()));
-                        }
-                    });
-                }
-
-                if (isKeyOperator(operator)) {
-                    result.push(encodeURIComponent(key) + '=' + tmp.join(','));
-                } else if (tmp.length !== 0) {
-                    result.push(tmp.join(','));
-                }
-            }
-        }
-    } else {
-        if (operator === ';') {
-            result.push(encodeURIComponent(key));
-        } else if (value === '' && (operator === '&' || operator === '?')) {
-            result.push(encodeURIComponent(key) + '=');
-        } else if (value === '') {
-            result.push('');
-        }
-    }
-
-    return result;
-}
-
-function isDefined(value) {
-    return value !== undefined && value !== null;
-}
-
-function isKeyOperator(operator) {
-    return operator === ';' || operator === '&' || operator === '?';
-}
-
-function encodeValue(operator, value, key) {
-
-    value = (operator === '+' || operator === '#') ? encodeReserved(value) : encodeURIComponent(value);
-
-    if (key) {
-        return encodeURIComponent(key) + '=' + value;
-    } else {
-        return value;
-    }
-}
-
-function encodeReserved(str) {
-    return str.split(/(%[0-9A-Fa-f]{2})/g).map(function (part) {
-        if (!/%[0-9A-Fa-f]/.test(part)) {
-            part = encodeURI(part);
-        }
-        return part;
-    }).join('');
-}
-
-/**
- * URL Template (RFC 6570) Transform.
- */
-
-var template = function (options) {
-
-    var variables = [], url = expand(options.url, options.params, variables);
-
-    variables.forEach(function (key) {
-        delete options.params[key];
-    });
-
-    return url;
-};
-
-/**
- * Service for URL templating.
- */
-
-function Url(url, params) {
-
-    var self = this || {}, options$$1 = url, transform;
-
-    if (isString(url)) {
-        options$$1 = {url: url, params: params};
-    }
-
-    options$$1 = merge({}, Url.options, self.$options, options$$1);
-
-    Url.transforms.forEach(function (handler) {
-
-        if (isString(handler)) {
-            handler = Url.transform[handler];
-        }
-
-        if (isFunction(handler)) {
-            transform = factory(handler, transform, self.$vm);
-        }
-
-    });
-
-    return transform(options$$1);
-}
-
-/**
- * Url options.
- */
-
-Url.options = {
-    url: '',
-    root: null,
-    params: {}
-};
-
-/**
- * Url transforms.
- */
-
-Url.transform = {template: template, query: query, root: root};
-Url.transforms = ['template', 'query', 'root'];
-
-/**
- * Encodes a Url parameter string.
- *
- * @param {Object} obj
- */
-
-Url.params = function (obj) {
-
-    var params = [], escape = encodeURIComponent;
-
-    params.add = function (key, value) {
-
-        if (isFunction(value)) {
-            value = value();
-        }
-
-        if (value === null) {
-            value = '';
-        }
-
-        this.push(escape(key) + '=' + escape(value));
-    };
-
-    serialize(params, obj);
-
-    return params.join('&').replace(/%20/g, '+');
-};
-
-/**
- * Parse a URL and return its components.
- *
- * @param {String} url
- */
-
-Url.parse = function (url) {
-
-    var el = document.createElement('a');
-
-    if (document.documentMode) {
-        el.href = url;
-        url = el.href;
-    }
-
-    el.href = url;
-
-    return {
-        href: el.href,
-        protocol: el.protocol ? el.protocol.replace(/:$/, '') : '',
-        port: el.port,
-        host: el.host,
-        hostname: el.hostname,
-        pathname: el.pathname.charAt(0) === '/' ? el.pathname : '/' + el.pathname,
-        search: el.search ? el.search.replace(/^\?/, '') : '',
-        hash: el.hash ? el.hash.replace(/^#/, '') : ''
-    };
-};
-
-function factory(handler, next, vm) {
-    return function (options$$1) {
-        return handler.call(vm, options$$1, next);
-    };
-}
-
-function serialize(params, obj, scope) {
-
-    var array = isArray(obj), plain = isPlainObject(obj), hash;
-
-    each(obj, function (value, key) {
-
-        hash = isObject(value) || isArray(value);
-
-        if (scope) {
-            key = scope + '[' + (plain || hash ? key : '') + ']';
-        }
-
-        if (!scope && array) {
-            params.add(value.name, value.value);
-        } else if (hash) {
-            serialize(params, value, key);
-        } else {
-            params.add(key, value);
-        }
-    });
-}
-
-/**
- * XDomain client (Internet Explorer).
- */
-
-var xdrClient = function (request) {
-    return new PromiseObj(function (resolve) {
-
-        var xdr = new XDomainRequest(), handler = function (ref) {
-            var type = ref.type;
-
-
-            var status = 0;
-
-            if (type === 'load') {
-                status = 200;
-            } else if (type === 'error') {
-                status = 500;
-            }
-
-            resolve(request.respondWith(xdr.responseText, {status: status}));
-        };
-
-        request.abort = function () { return xdr.abort(); };
-
-        xdr.open(request.method, request.getUrl());
-
-        if (request.timeout) {
-            xdr.timeout = request.timeout;
-        }
-
-        xdr.onload = handler;
-        xdr.onabort = handler;
-        xdr.onerror = handler;
-        xdr.ontimeout = handler;
-        xdr.onprogress = function () {};
-        xdr.send(request.getBody());
-    });
-};
-
-/**
- * CORS Interceptor.
- */
-
-var SUPPORTS_CORS = inBrowser && 'withCredentials' in new XMLHttpRequest();
-
-var cors = function (request, next) {
-
-    if (inBrowser) {
-
-        var orgUrl = Url.parse(location.href);
-        var reqUrl = Url.parse(request.getUrl());
-
-        if (reqUrl.protocol !== orgUrl.protocol || reqUrl.host !== orgUrl.host) {
-
-            request.crossOrigin = true;
-            request.emulateHTTP = false;
-
-            if (!SUPPORTS_CORS) {
-                request.client = xdrClient;
-            }
-        }
-    }
-
-    next();
-};
-
-/**
- * Body Interceptor.
- */
-
-var body = function (request, next) {
-
-    if (isFormData(request.body)) {
-
-        request.headers.delete('Content-Type');
-
-    } else if (isObject(request.body) || isArray(request.body)) {
-
-        if (request.emulateJSON) {
-            request.body = Url.params(request.body);
-            request.headers.set('Content-Type', 'application/x-www-form-urlencoded');
-        } else {
-            request.body = JSON.stringify(request.body);
-        }
-    }
-
-    next(function (response) {
-
-        Object.defineProperty(response, 'data', {
-
-            get: function get() {
-                return this.body;
-            },
-
-            set: function set(body) {
-                this.body = body;
-            }
-
-        });
-
-        return response.bodyText ? when(response.text(), function (text) {
-
-            var type = response.headers.get('Content-Type') || '';
-
-            if (type.indexOf('application/json') === 0 || isJson(text)) {
-
-                try {
-                    response.body = JSON.parse(text);
-                } catch (e) {
-                    response.body = null;
-                }
-
-            } else {
-                response.body = text;
-            }
-
-            return response;
-
-        }) : response;
-
-    });
-};
-
-function isJson(str) {
-
-    var start = str.match(/^\[|^\{(?!\{)/), end = {'[': /]$/, '{': /}$/};
-
-    return start && end[start[0]].test(str);
-}
-
-/**
- * JSONP client (Browser).
- */
-
-var jsonpClient = function (request) {
-    return new PromiseObj(function (resolve) {
-
-        var name = request.jsonp || 'callback', callback = request.jsonpCallback || '_jsonp' + Math.random().toString(36).substr(2), body = null, handler, script;
-
-        handler = function (ref) {
-            var type = ref.type;
-
-
-            var status = 0;
-
-            if (type === 'load' && body !== null) {
-                status = 200;
-            } else if (type === 'error') {
-                status = 500;
-            }
-
-            if (status && window[callback]) {
-                delete window[callback];
-                document.body.removeChild(script);
-            }
-
-            resolve(request.respondWith(body, {status: status}));
-        };
-
-        window[callback] = function (result) {
-            body = JSON.stringify(result);
-        };
-
-        request.abort = function () {
-            handler({type: 'abort'});
-        };
-
-        request.params[name] = callback;
-
-        if (request.timeout) {
-            setTimeout(request.abort, request.timeout);
-        }
-
-        script = document.createElement('script');
-        script.src = request.getUrl();
-        script.type = 'text/javascript';
-        script.async = true;
-        script.onload = handler;
-        script.onerror = handler;
-
-        document.body.appendChild(script);
-    });
-};
-
-/**
- * JSONP Interceptor.
- */
-
-var jsonp = function (request, next) {
-
-    if (request.method == 'JSONP') {
-        request.client = jsonpClient;
-    }
-
-    next();
-};
-
-/**
- * Before Interceptor.
- */
-
-var before = function (request, next) {
-
-    if (isFunction(request.before)) {
-        request.before.call(this, request);
-    }
-
-    next();
-};
-
-/**
- * HTTP method override Interceptor.
- */
-
-var method = function (request, next) {
-
-    if (request.emulateHTTP && /^(PUT|PATCH|DELETE)$/i.test(request.method)) {
-        request.headers.set('X-HTTP-Method-Override', request.method);
-        request.method = 'POST';
-    }
-
-    next();
-};
-
-/**
- * Header Interceptor.
- */
-
-var header = function (request, next) {
-
-    var headers = assign({}, Http.headers.common,
-        !request.crossOrigin ? Http.headers.custom : {},
-        Http.headers[toLower(request.method)]
-    );
-
-    each(headers, function (value, name) {
-        if (!request.headers.has(name)) {
-            request.headers.set(name, value);
-        }
-    });
-
-    next();
-};
-
-/**
- * XMLHttp client (Browser).
- */
-
-var xhrClient = function (request) {
-    return new PromiseObj(function (resolve) {
-
-        var xhr = new XMLHttpRequest(), handler = function (event) {
-
-            var response = request.respondWith(
-                'response' in xhr ? xhr.response : xhr.responseText, {
-                    status: xhr.status === 1223 ? 204 : xhr.status, // IE9 status bug
-                    statusText: xhr.status === 1223 ? 'No Content' : trim(xhr.statusText)
-                }
-            );
-
-            each(trim(xhr.getAllResponseHeaders()).split('\n'), function (row) {
-                response.headers.append(row.slice(0, row.indexOf(':')), row.slice(row.indexOf(':') + 1));
-            });
-
-            resolve(response);
-        };
-
-        request.abort = function () { return xhr.abort(); };
-
-        if (request.progress) {
-            if (request.method === 'GET') {
-                xhr.addEventListener('progress', request.progress);
-            } else if (/^(POST|PUT)$/i.test(request.method)) {
-                xhr.upload.addEventListener('progress', request.progress);
-            }
-        }
-
-        xhr.open(request.method, request.getUrl(), true);
-
-        if (request.timeout) {
-            xhr.timeout = request.timeout;
-        }
-
-        if (request.responseType && 'responseType' in xhr) {
-            xhr.responseType = request.responseType;
-        }
-
-        if (request.withCredentials || request.credentials) {
-            xhr.withCredentials = true;
-        }
-
-        if (!request.crossOrigin) {
-            request.headers.set('X-Requested-With', 'XMLHttpRequest');
-        }
-
-        request.headers.forEach(function (value, name) {
-            xhr.setRequestHeader(name, value);
-        });
-
-        xhr.onload = handler;
-        xhr.onabort = handler;
-        xhr.onerror = handler;
-        xhr.ontimeout = handler;
-        xhr.send(request.getBody());
-    });
-};
-
-/**
- * Http client (Node).
- */
-
-var nodeClient = function (request) {
-
-    var client = __webpack_require__(130);
-
-    return new PromiseObj(function (resolve) {
-
-        var url = request.getUrl();
-        var body = request.getBody();
-        var method = request.method;
-        var headers = {}, handler;
-
-        request.headers.forEach(function (value, name) {
-            headers[name] = value;
-        });
-
-        client(url, {body: body, method: method, headers: headers}).then(handler = function (resp) {
-
-            var response = request.respondWith(resp.body, {
-                    status: resp.statusCode,
-                    statusText: trim(resp.statusMessage)
-                }
-            );
-
-            each(resp.headers, function (value, name) {
-                response.headers.set(name, value);
-            });
-
-            resolve(response);
-
-        }, function (error$$1) { return handler(error$$1.response); });
-    });
-};
-
-/**
- * Base client.
- */
-
-var Client = function (context) {
-
-    var reqHandlers = [sendRequest], resHandlers = [], handler;
-
-    if (!isObject(context)) {
-        context = null;
-    }
-
-    function Client(request) {
-        return new PromiseObj(function (resolve) {
-
-            function exec() {
-
-                handler = reqHandlers.pop();
-
-                if (isFunction(handler)) {
-                    handler.call(context, request, next);
-                } else {
-                    warn(("Invalid interceptor of type " + (typeof handler) + ", must be a function"));
-                    next();
-                }
-            }
-
-            function next(response) {
-
-                if (isFunction(response)) {
-
-                    resHandlers.unshift(response);
-
-                } else if (isObject(response)) {
-
-                    resHandlers.forEach(function (handler) {
-                        response = when(response, function (response) {
-                            return handler.call(context, response) || response;
-                        });
-                    });
-
-                    when(response, resolve);
-
-                    return;
-                }
-
-                exec();
-            }
-
-            exec();
-
-        }, context);
-    }
-
-    Client.use = function (handler) {
-        reqHandlers.push(handler);
-    };
-
-    return Client;
-};
-
-function sendRequest(request, resolve) {
-
-    var client = request.client || (inBrowser ? xhrClient : nodeClient);
-
-    resolve(client(request));
-}
-
-/**
- * HTTP Headers.
- */
-
-var Headers = function Headers(headers) {
-    var this$1 = this;
-
-
-    this.map = {};
-
-    each(headers, function (value, name) { return this$1.append(name, value); });
-};
-
-Headers.prototype.has = function has (name) {
-    return getName(this.map, name) !== null;
-};
-
-Headers.prototype.get = function get (name) {
-
-    var list = this.map[getName(this.map, name)];
-
-    return list ? list.join() : null;
-};
-
-Headers.prototype.getAll = function getAll (name) {
-    return this.map[getName(this.map, name)] || [];
-};
-
-Headers.prototype.set = function set (name, value) {
-    this.map[normalizeName(getName(this.map, name) || name)] = [trim(value)];
-};
-
-Headers.prototype.append = function append (name, value){
-
-    var list = this.map[getName(this.map, name)];
-
-    if (list) {
-        list.push(trim(value));
-    } else {
-        this.set(name, value);
-    }
-};
-
-Headers.prototype.delete = function delete$1 (name){
-    delete this.map[getName(this.map, name)];
-};
-
-Headers.prototype.deleteAll = function deleteAll (){
-    this.map = {};
-};
-
-Headers.prototype.forEach = function forEach (callback, thisArg) {
-        var this$1 = this;
-
-    each(this.map, function (list, name) {
-        each(list, function (value) { return callback.call(thisArg, value, name, this$1); });
-    });
-};
-
-function getName(map, name) {
-    return Object.keys(map).reduce(function (prev, curr) {
-        return toLower(name) === toLower(curr) ? curr : prev;
-    }, null);
-}
-
-function normalizeName(name) {
-
-    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
-        throw new TypeError('Invalid character in header field name');
-    }
-
-    return trim(name);
-}
-
-/**
- * HTTP Response.
- */
-
-var Response = function Response(body, ref) {
-    var url = ref.url;
-    var headers = ref.headers;
-    var status = ref.status;
-    var statusText = ref.statusText;
-
-
-    this.url = url;
-    this.ok = status >= 200 && status < 300;
-    this.status = status || 0;
-    this.statusText = statusText || '';
-    this.headers = new Headers(headers);
-    this.body = body;
-
-    if (isString(body)) {
-
-        this.bodyText = body;
-
-    } else if (isBlob(body)) {
-
-        this.bodyBlob = body;
-
-        if (isBlobText(body)) {
-            this.bodyText = blobText(body);
-        }
-    }
-};
-
-Response.prototype.blob = function blob () {
-    return when(this.bodyBlob);
-};
-
-Response.prototype.text = function text () {
-    return when(this.bodyText);
-};
-
-Response.prototype.json = function json () {
-    return when(this.text(), function (text) { return JSON.parse(text); });
-};
-
-function blobText(body) {
-    return new PromiseObj(function (resolve) {
-
-        var reader = new FileReader();
-
-        reader.readAsText(body);
-        reader.onload = function () {
-            resolve(reader.result);
-        };
-
-    });
-}
-
-function isBlobText(body) {
-    return body.type.indexOf('text') === 0 || body.type.indexOf('json') !== -1;
-}
-
-/**
- * HTTP Request.
- */
-
-var Request = function Request(options$$1) {
-
-    this.body = null;
-    this.params = {};
-
-    assign(this, options$$1, {
-        method: toUpper(options$$1.method || 'GET')
-    });
-
-    if (!(this.headers instanceof Headers)) {
-        this.headers = new Headers(this.headers);
-    }
-};
-
-Request.prototype.getUrl = function getUrl (){
-    return Url(this);
-};
-
-Request.prototype.getBody = function getBody (){
-    return this.body;
-};
-
-Request.prototype.respondWith = function respondWith (body, options$$1) {
-    return new Response(body, assign(options$$1 || {}, {url: this.getUrl()}));
-};
-
-/**
- * Service for sending network requests.
- */
-
-var COMMON_HEADERS = {'Accept': 'application/json, text/plain, */*'};
-var JSON_CONTENT_TYPE = {'Content-Type': 'application/json;charset=utf-8'};
-
-function Http(options$$1) {
-
-    var self = this || {}, client = Client(self.$vm);
-
-    defaults(options$$1 || {}, self.$options, Http.options);
-
-    Http.interceptors.forEach(function (handler) {
-
-        if (isString(handler)) {
-            handler = Http.interceptor[handler];
-        }
-
-        if (isFunction(handler)) {
-            client.use(handler);
-        }
-
-    });
-
-    return client(new Request(options$$1)).then(function (response) {
-
-        return response.ok ? response : PromiseObj.reject(response);
-
-    }, function (response) {
-
-        if (response instanceof Error) {
-            error(response);
-        }
-
-        return PromiseObj.reject(response);
-    });
-}
-
-Http.options = {};
-
-Http.headers = {
-    put: JSON_CONTENT_TYPE,
-    post: JSON_CONTENT_TYPE,
-    patch: JSON_CONTENT_TYPE,
-    delete: JSON_CONTENT_TYPE,
-    common: COMMON_HEADERS,
-    custom: {}
-};
-
-Http.interceptor = {before: before, method: method, body: body, jsonp: jsonp, header: header, cors: cors};
-Http.interceptors = ['before', 'method', 'body', 'jsonp', 'header', 'cors'];
-
-['get', 'delete', 'head', 'jsonp'].forEach(function (method$$1) {
-
-    Http[method$$1] = function (url, options$$1) {
-        return this(assign(options$$1 || {}, {url: url, method: method$$1}));
-    };
-
 });
-
-['post', 'put', 'patch'].forEach(function (method$$1) {
-
-    Http[method$$1] = function (url, body$$1, options$$1) {
-        return this(assign(options$$1 || {}, {url: url, method: method$$1, body: body$$1}));
-    };
-
-});
-
-/**
- * Service for interacting with RESTful services.
- */
-
-function Resource(url, params, actions, options$$1) {
-
-    var self = this || {}, resource = {};
-
-    actions = assign({},
-        Resource.actions,
-        actions
-    );
-
-    each(actions, function (action, name) {
-
-        action = merge({url: url, params: assign({}, params)}, options$$1, action);
-
-        resource[name] = function () {
-            return (self.$http || Http)(opts(action, arguments));
-        };
-    });
-
-    return resource;
-}
-
-function opts(action, args) {
-
-    var options$$1 = assign({}, action), params = {}, body;
-
-    switch (args.length) {
-
-        case 2:
-
-            params = args[0];
-            body = args[1];
-
-            break;
-
-        case 1:
-
-            if (/^(POST|PUT|PATCH)$/i.test(options$$1.method)) {
-                body = args[0];
-            } else {
-                params = args[0];
-            }
-
-            break;
-
-        case 0:
-
-            break;
-
-        default:
-
-            throw 'Expected up to 2 arguments [params, body], got ' + args.length + ' arguments';
-    }
-
-    options$$1.body = body;
-    options$$1.params = assign({}, options$$1.params, params);
-
-    return options$$1;
-}
-
-Resource.actions = {
-
-    get: {method: 'GET'},
-    save: {method: 'POST'},
-    query: {method: 'GET'},
-    update: {method: 'PUT'},
-    remove: {method: 'DELETE'},
-    delete: {method: 'DELETE'}
-
-};
-
-/**
- * Install plugin.
- */
-
-function plugin(Vue) {
-
-    if (plugin.installed) {
-        return;
-    }
-
-    Util(Vue);
-
-    Vue.url = Url;
-    Vue.http = Http;
-    Vue.resource = Resource;
-    Vue.Promise = PromiseObj;
-
-    Object.defineProperties(Vue.prototype, {
-
-        $url: {
-            get: function get() {
-                return options(Vue.url, this, this.$options.url);
-            }
-        },
-
-        $http: {
-            get: function get() {
-                return options(Vue.http, this, this.$options.http);
-            }
-        },
-
-        $resource: {
-            get: function get() {
-                return Vue.resource.bind(this);
-            }
-        },
-
-        $promise: {
-            get: function get() {
-                var this$1 = this;
-
-                return function (executor) { return new Vue.Promise(executor, this$1); };
-            }
-        }
-
-    });
-}
-
-if (typeof window !== 'undefined' && window.Vue) {
-    window.Vue.use(plugin);
-}
-
-/* harmony default export */ __webpack_exports__["default"] = (plugin);
-
 
 
 /***/ }),
@@ -12874,7 +11384,7 @@ return Vue$3;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(34)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(41)))
 
 /***/ }),
 /* 5 */
@@ -12916,76 +11426,11 @@ const servicios = BASE.concat('servicios/');
 
 /***/ }),
 /* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    data: function () {
-        return {
-          elements: [],
-          __parent_: undefined,
-        }
-    },
-    methods: {
-        getElements: function () {
-            let url = this.url || arguments[0];
-            if (!url) {
-                throw new Error('URL no provehida para hacer consula de elementos');
-            }
-            this.$http.get(url)
-                .then(response => {
-                    for (let object of response.body) {
-                        object.selected = false;
-                        this.elements.push(object);
-                    }
-                }, response => {
-                    showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
-                });
-        },
-        __getParent__: function () {
-            if (!this.__parent_) {  // singleton
-                let parent = this.$parent;
-                while (parent !== undefined) {
-                    if (parent.$parent === undefined) {
-                        break;
-                    }
-                    parent = parent.$parent;
-                }
-                this.__parent_ = parent;
-            }
-            return this.__parent_;
-        },
-        getParent: function () {
-            return this.__getParent__().$options.methods;
-        },
-        showSnackBar: function (value) {
-            this.$emit('mostrarsnackbar', value);
-        },
-        eventCreatedObject: function (value) {
-            value.selected = false;
-            this.elements.push(value);
-            this.selected = value;
-        },
-        eventUpdatedForm: function (value) {
-            this.selected = value;
-        },
-    }
-});
-
-
-/***/ }),
-/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(103)
-__vue_script__ = __webpack_require__(37)
-__vue_template__ = __webpack_require__(109)
+__webpack_require__(125)
+__vue_script__ = __webpack_require__(46)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -13002,36 +11447,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(108)
-__vue_script__ = __webpack_require__(38)
-__vue_template__ = __webpack_require__(110)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/components/menu.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(106)
-__vue_script__ = __webpack_require__(39)
-__vue_template__ = __webpack_require__(111)
+__webpack_require__(129)
+__vue_script__ = __webpack_require__(49)
+__vue_template__ = __webpack_require__(135)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -13040,6 +11462,1583 @@ if (false) {(function () {  module.hot.accept()
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/components/table.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Url", function() { return Url; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Http", function() { return Http; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Resource", function() { return Resource; });
+/*!
+ * vue-resource v1.3.1
+ * https://github.com/pagekit/vue-resource
+ * Released under the MIT License.
+ */
+
+/**
+ * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
+ */
+
+var RESOLVED = 0;
+var REJECTED = 1;
+var PENDING  = 2;
+
+function Promise$1(executor) {
+
+    this.state = PENDING;
+    this.value = undefined;
+    this.deferred = [];
+
+    var promise = this;
+
+    try {
+        executor(function (x) {
+            promise.resolve(x);
+        }, function (r) {
+            promise.reject(r);
+        });
+    } catch (e) {
+        promise.reject(e);
+    }
+}
+
+Promise$1.reject = function (r) {
+    return new Promise$1(function (resolve, reject) {
+        reject(r);
+    });
+};
+
+Promise$1.resolve = function (x) {
+    return new Promise$1(function (resolve, reject) {
+        resolve(x);
+    });
+};
+
+Promise$1.all = function all(iterable) {
+    return new Promise$1(function (resolve, reject) {
+        var count = 0, result = [];
+
+        if (iterable.length === 0) {
+            resolve(result);
+        }
+
+        function resolver(i) {
+            return function (x) {
+                result[i] = x;
+                count += 1;
+
+                if (count === iterable.length) {
+                    resolve(result);
+                }
+            };
+        }
+
+        for (var i = 0; i < iterable.length; i += 1) {
+            Promise$1.resolve(iterable[i]).then(resolver(i), reject);
+        }
+    });
+};
+
+Promise$1.race = function race(iterable) {
+    return new Promise$1(function (resolve, reject) {
+        for (var i = 0; i < iterable.length; i += 1) {
+            Promise$1.resolve(iterable[i]).then(resolve, reject);
+        }
+    });
+};
+
+var p$1 = Promise$1.prototype;
+
+p$1.resolve = function resolve(x) {
+    var promise = this;
+
+    if (promise.state === PENDING) {
+        if (x === promise) {
+            throw new TypeError('Promise settled with itself.');
+        }
+
+        var called = false;
+
+        try {
+            var then = x && x['then'];
+
+            if (x !== null && typeof x === 'object' && typeof then === 'function') {
+                then.call(x, function (x) {
+                    if (!called) {
+                        promise.resolve(x);
+                    }
+                    called = true;
+
+                }, function (r) {
+                    if (!called) {
+                        promise.reject(r);
+                    }
+                    called = true;
+                });
+                return;
+            }
+        } catch (e) {
+            if (!called) {
+                promise.reject(e);
+            }
+            return;
+        }
+
+        promise.state = RESOLVED;
+        promise.value = x;
+        promise.notify();
+    }
+};
+
+p$1.reject = function reject(reason) {
+    var promise = this;
+
+    if (promise.state === PENDING) {
+        if (reason === promise) {
+            throw new TypeError('Promise settled with itself.');
+        }
+
+        promise.state = REJECTED;
+        promise.value = reason;
+        promise.notify();
+    }
+};
+
+p$1.notify = function notify() {
+    var promise = this;
+
+    nextTick(function () {
+        if (promise.state !== PENDING) {
+            while (promise.deferred.length) {
+                var deferred = promise.deferred.shift(),
+                    onResolved = deferred[0],
+                    onRejected = deferred[1],
+                    resolve = deferred[2],
+                    reject = deferred[3];
+
+                try {
+                    if (promise.state === RESOLVED) {
+                        if (typeof onResolved === 'function') {
+                            resolve(onResolved.call(undefined, promise.value));
+                        } else {
+                            resolve(promise.value);
+                        }
+                    } else if (promise.state === REJECTED) {
+                        if (typeof onRejected === 'function') {
+                            resolve(onRejected.call(undefined, promise.value));
+                        } else {
+                            reject(promise.value);
+                        }
+                    }
+                } catch (e) {
+                    reject(e);
+                }
+            }
+        }
+    });
+};
+
+p$1.then = function then(onResolved, onRejected) {
+    var promise = this;
+
+    return new Promise$1(function (resolve, reject) {
+        promise.deferred.push([onResolved, onRejected, resolve, reject]);
+        promise.notify();
+    });
+};
+
+p$1.catch = function (onRejected) {
+    return this.then(undefined, onRejected);
+};
+
+/**
+ * Promise adapter.
+ */
+
+if (typeof Promise === 'undefined') {
+    window.Promise = Promise$1;
+}
+
+function PromiseObj(executor, context) {
+
+    if (executor instanceof Promise) {
+        this.promise = executor;
+    } else {
+        this.promise = new Promise(executor.bind(context));
+    }
+
+    this.context = context;
+}
+
+PromiseObj.all = function (iterable, context) {
+    return new PromiseObj(Promise.all(iterable), context);
+};
+
+PromiseObj.resolve = function (value, context) {
+    return new PromiseObj(Promise.resolve(value), context);
+};
+
+PromiseObj.reject = function (reason, context) {
+    return new PromiseObj(Promise.reject(reason), context);
+};
+
+PromiseObj.race = function (iterable, context) {
+    return new PromiseObj(Promise.race(iterable), context);
+};
+
+var p = PromiseObj.prototype;
+
+p.bind = function (context) {
+    this.context = context;
+    return this;
+};
+
+p.then = function (fulfilled, rejected) {
+
+    if (fulfilled && fulfilled.bind && this.context) {
+        fulfilled = fulfilled.bind(this.context);
+    }
+
+    if (rejected && rejected.bind && this.context) {
+        rejected = rejected.bind(this.context);
+    }
+
+    return new PromiseObj(this.promise.then(fulfilled, rejected), this.context);
+};
+
+p.catch = function (rejected) {
+
+    if (rejected && rejected.bind && this.context) {
+        rejected = rejected.bind(this.context);
+    }
+
+    return new PromiseObj(this.promise.catch(rejected), this.context);
+};
+
+p.finally = function (callback) {
+
+    return this.then(function (value) {
+            callback.call(this);
+            return value;
+        }, function (reason) {
+            callback.call(this);
+            return Promise.reject(reason);
+        }
+    );
+};
+
+/**
+ * Utility functions.
+ */
+
+var ref = {};
+var hasOwnProperty = ref.hasOwnProperty;
+
+var ref$1 = [];
+var slice = ref$1.slice;
+var debug = false;
+var ntick;
+
+var inBrowser = typeof window !== 'undefined';
+
+var Util = function (ref) {
+    var config = ref.config;
+    var nextTick = ref.nextTick;
+
+    ntick = nextTick;
+    debug = config.debug || !config.silent;
+};
+
+function warn(msg) {
+    if (typeof console !== 'undefined' && debug) {
+        console.warn('[VueResource warn]: ' + msg);
+    }
+}
+
+function error(msg) {
+    if (typeof console !== 'undefined') {
+        console.error(msg);
+    }
+}
+
+function nextTick(cb, ctx) {
+    return ntick(cb, ctx);
+}
+
+function trim(str) {
+    return str ? str.replace(/^\s*|\s*$/g, '') : '';
+}
+
+function toLower(str) {
+    return str ? str.toLowerCase() : '';
+}
+
+function toUpper(str) {
+    return str ? str.toUpperCase() : '';
+}
+
+var isArray = Array.isArray;
+
+function isString(val) {
+    return typeof val === 'string';
+}
+
+
+
+function isFunction(val) {
+    return typeof val === 'function';
+}
+
+function isObject(obj) {
+    return obj !== null && typeof obj === 'object';
+}
+
+function isPlainObject(obj) {
+    return isObject(obj) && Object.getPrototypeOf(obj) == Object.prototype;
+}
+
+function isBlob(obj) {
+    return typeof Blob !== 'undefined' && obj instanceof Blob;
+}
+
+function isFormData(obj) {
+    return typeof FormData !== 'undefined' && obj instanceof FormData;
+}
+
+function when(value, fulfilled, rejected) {
+
+    var promise = PromiseObj.resolve(value);
+
+    if (arguments.length < 2) {
+        return promise;
+    }
+
+    return promise.then(fulfilled, rejected);
+}
+
+function options(fn, obj, opts) {
+
+    opts = opts || {};
+
+    if (isFunction(opts)) {
+        opts = opts.call(obj);
+    }
+
+    return merge(fn.bind({$vm: obj, $options: opts}), fn, {$options: opts});
+}
+
+function each(obj, iterator) {
+
+    var i, key;
+
+    if (isArray(obj)) {
+        for (i = 0; i < obj.length; i++) {
+            iterator.call(obj[i], obj[i], i);
+        }
+    } else if (isObject(obj)) {
+        for (key in obj) {
+            if (hasOwnProperty.call(obj, key)) {
+                iterator.call(obj[key], obj[key], key);
+            }
+        }
+    }
+
+    return obj;
+}
+
+var assign = Object.assign || _assign;
+
+function merge(target) {
+
+    var args = slice.call(arguments, 1);
+
+    args.forEach(function (source) {
+        _merge(target, source, true);
+    });
+
+    return target;
+}
+
+function defaults(target) {
+
+    var args = slice.call(arguments, 1);
+
+    args.forEach(function (source) {
+
+        for (var key in source) {
+            if (target[key] === undefined) {
+                target[key] = source[key];
+            }
+        }
+
+    });
+
+    return target;
+}
+
+function _assign(target) {
+
+    var args = slice.call(arguments, 1);
+
+    args.forEach(function (source) {
+        _merge(target, source);
+    });
+
+    return target;
+}
+
+function _merge(target, source, deep) {
+    for (var key in source) {
+        if (deep && (isPlainObject(source[key]) || isArray(source[key]))) {
+            if (isPlainObject(source[key]) && !isPlainObject(target[key])) {
+                target[key] = {};
+            }
+            if (isArray(source[key]) && !isArray(target[key])) {
+                target[key] = [];
+            }
+            _merge(target[key], source[key], deep);
+        } else if (source[key] !== undefined) {
+            target[key] = source[key];
+        }
+    }
+}
+
+/**
+ * Root Prefix Transform.
+ */
+
+var root = function (options$$1, next) {
+
+    var url = next(options$$1);
+
+    if (isString(options$$1.root) && !url.match(/^(https?:)?\//)) {
+        url = options$$1.root + '/' + url;
+    }
+
+    return url;
+};
+
+/**
+ * Query Parameter Transform.
+ */
+
+var query = function (options$$1, next) {
+
+    var urlParams = Object.keys(Url.options.params), query = {}, url = next(options$$1);
+
+    each(options$$1.params, function (value, key) {
+        if (urlParams.indexOf(key) === -1) {
+            query[key] = value;
+        }
+    });
+
+    query = Url.params(query);
+
+    if (query) {
+        url += (url.indexOf('?') == -1 ? '?' : '&') + query;
+    }
+
+    return url;
+};
+
+/**
+ * URL Template v2.0.6 (https://github.com/bramstein/url-template)
+ */
+
+function expand(url, params, variables) {
+
+    var tmpl = parse(url), expanded = tmpl.expand(params);
+
+    if (variables) {
+        variables.push.apply(variables, tmpl.vars);
+    }
+
+    return expanded;
+}
+
+function parse(template) {
+
+    var operators = ['+', '#', '.', '/', ';', '?', '&'], variables = [];
+
+    return {
+        vars: variables,
+        expand: function expand(context) {
+            return template.replace(/\{([^\{\}]+)\}|([^\{\}]+)/g, function (_, expression, literal) {
+                if (expression) {
+
+                    var operator = null, values = [];
+
+                    if (operators.indexOf(expression.charAt(0)) !== -1) {
+                        operator = expression.charAt(0);
+                        expression = expression.substr(1);
+                    }
+
+                    expression.split(/,/g).forEach(function (variable) {
+                        var tmp = /([^:\*]*)(?::(\d+)|(\*))?/.exec(variable);
+                        values.push.apply(values, getValues(context, operator, tmp[1], tmp[2] || tmp[3]));
+                        variables.push(tmp[1]);
+                    });
+
+                    if (operator && operator !== '+') {
+
+                        var separator = ',';
+
+                        if (operator === '?') {
+                            separator = '&';
+                        } else if (operator !== '#') {
+                            separator = operator;
+                        }
+
+                        return (values.length !== 0 ? operator : '') + values.join(separator);
+                    } else {
+                        return values.join(',');
+                    }
+
+                } else {
+                    return encodeReserved(literal);
+                }
+            });
+        }
+    };
+}
+
+function getValues(context, operator, key, modifier) {
+
+    var value = context[key], result = [];
+
+    if (isDefined(value) && value !== '') {
+        if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+            value = value.toString();
+
+            if (modifier && modifier !== '*') {
+                value = value.substring(0, parseInt(modifier, 10));
+            }
+
+            result.push(encodeValue(operator, value, isKeyOperator(operator) ? key : null));
+        } else {
+            if (modifier === '*') {
+                if (Array.isArray(value)) {
+                    value.filter(isDefined).forEach(function (value) {
+                        result.push(encodeValue(operator, value, isKeyOperator(operator) ? key : null));
+                    });
+                } else {
+                    Object.keys(value).forEach(function (k) {
+                        if (isDefined(value[k])) {
+                            result.push(encodeValue(operator, value[k], k));
+                        }
+                    });
+                }
+            } else {
+                var tmp = [];
+
+                if (Array.isArray(value)) {
+                    value.filter(isDefined).forEach(function (value) {
+                        tmp.push(encodeValue(operator, value));
+                    });
+                } else {
+                    Object.keys(value).forEach(function (k) {
+                        if (isDefined(value[k])) {
+                            tmp.push(encodeURIComponent(k));
+                            tmp.push(encodeValue(operator, value[k].toString()));
+                        }
+                    });
+                }
+
+                if (isKeyOperator(operator)) {
+                    result.push(encodeURIComponent(key) + '=' + tmp.join(','));
+                } else if (tmp.length !== 0) {
+                    result.push(tmp.join(','));
+                }
+            }
+        }
+    } else {
+        if (operator === ';') {
+            result.push(encodeURIComponent(key));
+        } else if (value === '' && (operator === '&' || operator === '?')) {
+            result.push(encodeURIComponent(key) + '=');
+        } else if (value === '') {
+            result.push('');
+        }
+    }
+
+    return result;
+}
+
+function isDefined(value) {
+    return value !== undefined && value !== null;
+}
+
+function isKeyOperator(operator) {
+    return operator === ';' || operator === '&' || operator === '?';
+}
+
+function encodeValue(operator, value, key) {
+
+    value = (operator === '+' || operator === '#') ? encodeReserved(value) : encodeURIComponent(value);
+
+    if (key) {
+        return encodeURIComponent(key) + '=' + value;
+    } else {
+        return value;
+    }
+}
+
+function encodeReserved(str) {
+    return str.split(/(%[0-9A-Fa-f]{2})/g).map(function (part) {
+        if (!/%[0-9A-Fa-f]/.test(part)) {
+            part = encodeURI(part);
+        }
+        return part;
+    }).join('');
+}
+
+/**
+ * URL Template (RFC 6570) Transform.
+ */
+
+var template = function (options) {
+
+    var variables = [], url = expand(options.url, options.params, variables);
+
+    variables.forEach(function (key) {
+        delete options.params[key];
+    });
+
+    return url;
+};
+
+/**
+ * Service for URL templating.
+ */
+
+function Url(url, params) {
+
+    var self = this || {}, options$$1 = url, transform;
+
+    if (isString(url)) {
+        options$$1 = {url: url, params: params};
+    }
+
+    options$$1 = merge({}, Url.options, self.$options, options$$1);
+
+    Url.transforms.forEach(function (handler) {
+
+        if (isString(handler)) {
+            handler = Url.transform[handler];
+        }
+
+        if (isFunction(handler)) {
+            transform = factory(handler, transform, self.$vm);
+        }
+
+    });
+
+    return transform(options$$1);
+}
+
+/**
+ * Url options.
+ */
+
+Url.options = {
+    url: '',
+    root: null,
+    params: {}
+};
+
+/**
+ * Url transforms.
+ */
+
+Url.transform = {template: template, query: query, root: root};
+Url.transforms = ['template', 'query', 'root'];
+
+/**
+ * Encodes a Url parameter string.
+ *
+ * @param {Object} obj
+ */
+
+Url.params = function (obj) {
+
+    var params = [], escape = encodeURIComponent;
+
+    params.add = function (key, value) {
+
+        if (isFunction(value)) {
+            value = value();
+        }
+
+        if (value === null) {
+            value = '';
+        }
+
+        this.push(escape(key) + '=' + escape(value));
+    };
+
+    serialize(params, obj);
+
+    return params.join('&').replace(/%20/g, '+');
+};
+
+/**
+ * Parse a URL and return its components.
+ *
+ * @param {String} url
+ */
+
+Url.parse = function (url) {
+
+    var el = document.createElement('a');
+
+    if (document.documentMode) {
+        el.href = url;
+        url = el.href;
+    }
+
+    el.href = url;
+
+    return {
+        href: el.href,
+        protocol: el.protocol ? el.protocol.replace(/:$/, '') : '',
+        port: el.port,
+        host: el.host,
+        hostname: el.hostname,
+        pathname: el.pathname.charAt(0) === '/' ? el.pathname : '/' + el.pathname,
+        search: el.search ? el.search.replace(/^\?/, '') : '',
+        hash: el.hash ? el.hash.replace(/^#/, '') : ''
+    };
+};
+
+function factory(handler, next, vm) {
+    return function (options$$1) {
+        return handler.call(vm, options$$1, next);
+    };
+}
+
+function serialize(params, obj, scope) {
+
+    var array = isArray(obj), plain = isPlainObject(obj), hash;
+
+    each(obj, function (value, key) {
+
+        hash = isObject(value) || isArray(value);
+
+        if (scope) {
+            key = scope + '[' + (plain || hash ? key : '') + ']';
+        }
+
+        if (!scope && array) {
+            params.add(value.name, value.value);
+        } else if (hash) {
+            serialize(params, value, key);
+        } else {
+            params.add(key, value);
+        }
+    });
+}
+
+/**
+ * XDomain client (Internet Explorer).
+ */
+
+var xdrClient = function (request) {
+    return new PromiseObj(function (resolve) {
+
+        var xdr = new XDomainRequest(), handler = function (ref) {
+            var type = ref.type;
+
+
+            var status = 0;
+
+            if (type === 'load') {
+                status = 200;
+            } else if (type === 'error') {
+                status = 500;
+            }
+
+            resolve(request.respondWith(xdr.responseText, {status: status}));
+        };
+
+        request.abort = function () { return xdr.abort(); };
+
+        xdr.open(request.method, request.getUrl());
+
+        if (request.timeout) {
+            xdr.timeout = request.timeout;
+        }
+
+        xdr.onload = handler;
+        xdr.onabort = handler;
+        xdr.onerror = handler;
+        xdr.ontimeout = handler;
+        xdr.onprogress = function () {};
+        xdr.send(request.getBody());
+    });
+};
+
+/**
+ * CORS Interceptor.
+ */
+
+var SUPPORTS_CORS = inBrowser && 'withCredentials' in new XMLHttpRequest();
+
+var cors = function (request, next) {
+
+    if (inBrowser) {
+
+        var orgUrl = Url.parse(location.href);
+        var reqUrl = Url.parse(request.getUrl());
+
+        if (reqUrl.protocol !== orgUrl.protocol || reqUrl.host !== orgUrl.host) {
+
+            request.crossOrigin = true;
+            request.emulateHTTP = false;
+
+            if (!SUPPORTS_CORS) {
+                request.client = xdrClient;
+            }
+        }
+    }
+
+    next();
+};
+
+/**
+ * Body Interceptor.
+ */
+
+var body = function (request, next) {
+
+    if (isFormData(request.body)) {
+
+        request.headers.delete('Content-Type');
+
+    } else if (isObject(request.body) || isArray(request.body)) {
+
+        if (request.emulateJSON) {
+            request.body = Url.params(request.body);
+            request.headers.set('Content-Type', 'application/x-www-form-urlencoded');
+        } else {
+            request.body = JSON.stringify(request.body);
+        }
+    }
+
+    next(function (response) {
+
+        Object.defineProperty(response, 'data', {
+
+            get: function get() {
+                return this.body;
+            },
+
+            set: function set(body) {
+                this.body = body;
+            }
+
+        });
+
+        return response.bodyText ? when(response.text(), function (text) {
+
+            var type = response.headers.get('Content-Type') || '';
+
+            if (type.indexOf('application/json') === 0 || isJson(text)) {
+
+                try {
+                    response.body = JSON.parse(text);
+                } catch (e) {
+                    response.body = null;
+                }
+
+            } else {
+                response.body = text;
+            }
+
+            return response;
+
+        }) : response;
+
+    });
+};
+
+function isJson(str) {
+
+    var start = str.match(/^\[|^\{(?!\{)/), end = {'[': /]$/, '{': /}$/};
+
+    return start && end[start[0]].test(str);
+}
+
+/**
+ * JSONP client (Browser).
+ */
+
+var jsonpClient = function (request) {
+    return new PromiseObj(function (resolve) {
+
+        var name = request.jsonp || 'callback', callback = request.jsonpCallback || '_jsonp' + Math.random().toString(36).substr(2), body = null, handler, script;
+
+        handler = function (ref) {
+            var type = ref.type;
+
+
+            var status = 0;
+
+            if (type === 'load' && body !== null) {
+                status = 200;
+            } else if (type === 'error') {
+                status = 500;
+            }
+
+            if (status && window[callback]) {
+                delete window[callback];
+                document.body.removeChild(script);
+            }
+
+            resolve(request.respondWith(body, {status: status}));
+        };
+
+        window[callback] = function (result) {
+            body = JSON.stringify(result);
+        };
+
+        request.abort = function () {
+            handler({type: 'abort'});
+        };
+
+        request.params[name] = callback;
+
+        if (request.timeout) {
+            setTimeout(request.abort, request.timeout);
+        }
+
+        script = document.createElement('script');
+        script.src = request.getUrl();
+        script.type = 'text/javascript';
+        script.async = true;
+        script.onload = handler;
+        script.onerror = handler;
+
+        document.body.appendChild(script);
+    });
+};
+
+/**
+ * JSONP Interceptor.
+ */
+
+var jsonp = function (request, next) {
+
+    if (request.method == 'JSONP') {
+        request.client = jsonpClient;
+    }
+
+    next();
+};
+
+/**
+ * Before Interceptor.
+ */
+
+var before = function (request, next) {
+
+    if (isFunction(request.before)) {
+        request.before.call(this, request);
+    }
+
+    next();
+};
+
+/**
+ * HTTP method override Interceptor.
+ */
+
+var method = function (request, next) {
+
+    if (request.emulateHTTP && /^(PUT|PATCH|DELETE)$/i.test(request.method)) {
+        request.headers.set('X-HTTP-Method-Override', request.method);
+        request.method = 'POST';
+    }
+
+    next();
+};
+
+/**
+ * Header Interceptor.
+ */
+
+var header = function (request, next) {
+
+    var headers = assign({}, Http.headers.common,
+        !request.crossOrigin ? Http.headers.custom : {},
+        Http.headers[toLower(request.method)]
+    );
+
+    each(headers, function (value, name) {
+        if (!request.headers.has(name)) {
+            request.headers.set(name, value);
+        }
+    });
+
+    next();
+};
+
+/**
+ * XMLHttp client (Browser).
+ */
+
+var xhrClient = function (request) {
+    return new PromiseObj(function (resolve) {
+
+        var xhr = new XMLHttpRequest(), handler = function (event) {
+
+            var response = request.respondWith(
+                'response' in xhr ? xhr.response : xhr.responseText, {
+                    status: xhr.status === 1223 ? 204 : xhr.status, // IE9 status bug
+                    statusText: xhr.status === 1223 ? 'No Content' : trim(xhr.statusText)
+                }
+            );
+
+            each(trim(xhr.getAllResponseHeaders()).split('\n'), function (row) {
+                response.headers.append(row.slice(0, row.indexOf(':')), row.slice(row.indexOf(':') + 1));
+            });
+
+            resolve(response);
+        };
+
+        request.abort = function () { return xhr.abort(); };
+
+        if (request.progress) {
+            if (request.method === 'GET') {
+                xhr.addEventListener('progress', request.progress);
+            } else if (/^(POST|PUT)$/i.test(request.method)) {
+                xhr.upload.addEventListener('progress', request.progress);
+            }
+        }
+
+        xhr.open(request.method, request.getUrl(), true);
+
+        if (request.timeout) {
+            xhr.timeout = request.timeout;
+        }
+
+        if (request.responseType && 'responseType' in xhr) {
+            xhr.responseType = request.responseType;
+        }
+
+        if (request.withCredentials || request.credentials) {
+            xhr.withCredentials = true;
+        }
+
+        if (!request.crossOrigin) {
+            request.headers.set('X-Requested-With', 'XMLHttpRequest');
+        }
+
+        request.headers.forEach(function (value, name) {
+            xhr.setRequestHeader(name, value);
+        });
+
+        xhr.onload = handler;
+        xhr.onabort = handler;
+        xhr.onerror = handler;
+        xhr.ontimeout = handler;
+        xhr.send(request.getBody());
+    });
+};
+
+/**
+ * Http client (Node).
+ */
+
+var nodeClient = function (request) {
+
+    var client = __webpack_require__(158);
+
+    return new PromiseObj(function (resolve) {
+
+        var url = request.getUrl();
+        var body = request.getBody();
+        var method = request.method;
+        var headers = {}, handler;
+
+        request.headers.forEach(function (value, name) {
+            headers[name] = value;
+        });
+
+        client(url, {body: body, method: method, headers: headers}).then(handler = function (resp) {
+
+            var response = request.respondWith(resp.body, {
+                    status: resp.statusCode,
+                    statusText: trim(resp.statusMessage)
+                }
+            );
+
+            each(resp.headers, function (value, name) {
+                response.headers.set(name, value);
+            });
+
+            resolve(response);
+
+        }, function (error$$1) { return handler(error$$1.response); });
+    });
+};
+
+/**
+ * Base client.
+ */
+
+var Client = function (context) {
+
+    var reqHandlers = [sendRequest], resHandlers = [], handler;
+
+    if (!isObject(context)) {
+        context = null;
+    }
+
+    function Client(request) {
+        return new PromiseObj(function (resolve) {
+
+            function exec() {
+
+                handler = reqHandlers.pop();
+
+                if (isFunction(handler)) {
+                    handler.call(context, request, next);
+                } else {
+                    warn(("Invalid interceptor of type " + (typeof handler) + ", must be a function"));
+                    next();
+                }
+            }
+
+            function next(response) {
+
+                if (isFunction(response)) {
+
+                    resHandlers.unshift(response);
+
+                } else if (isObject(response)) {
+
+                    resHandlers.forEach(function (handler) {
+                        response = when(response, function (response) {
+                            return handler.call(context, response) || response;
+                        });
+                    });
+
+                    when(response, resolve);
+
+                    return;
+                }
+
+                exec();
+            }
+
+            exec();
+
+        }, context);
+    }
+
+    Client.use = function (handler) {
+        reqHandlers.push(handler);
+    };
+
+    return Client;
+};
+
+function sendRequest(request, resolve) {
+
+    var client = request.client || (inBrowser ? xhrClient : nodeClient);
+
+    resolve(client(request));
+}
+
+/**
+ * HTTP Headers.
+ */
+
+var Headers = function Headers(headers) {
+    var this$1 = this;
+
+
+    this.map = {};
+
+    each(headers, function (value, name) { return this$1.append(name, value); });
+};
+
+Headers.prototype.has = function has (name) {
+    return getName(this.map, name) !== null;
+};
+
+Headers.prototype.get = function get (name) {
+
+    var list = this.map[getName(this.map, name)];
+
+    return list ? list.join() : null;
+};
+
+Headers.prototype.getAll = function getAll (name) {
+    return this.map[getName(this.map, name)] || [];
+};
+
+Headers.prototype.set = function set (name, value) {
+    this.map[normalizeName(getName(this.map, name) || name)] = [trim(value)];
+};
+
+Headers.prototype.append = function append (name, value){
+
+    var list = this.map[getName(this.map, name)];
+
+    if (list) {
+        list.push(trim(value));
+    } else {
+        this.set(name, value);
+    }
+};
+
+Headers.prototype.delete = function delete$1 (name){
+    delete this.map[getName(this.map, name)];
+};
+
+Headers.prototype.deleteAll = function deleteAll (){
+    this.map = {};
+};
+
+Headers.prototype.forEach = function forEach (callback, thisArg) {
+        var this$1 = this;
+
+    each(this.map, function (list, name) {
+        each(list, function (value) { return callback.call(thisArg, value, name, this$1); });
+    });
+};
+
+function getName(map, name) {
+    return Object.keys(map).reduce(function (prev, curr) {
+        return toLower(name) === toLower(curr) ? curr : prev;
+    }, null);
+}
+
+function normalizeName(name) {
+
+    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
+        throw new TypeError('Invalid character in header field name');
+    }
+
+    return trim(name);
+}
+
+/**
+ * HTTP Response.
+ */
+
+var Response = function Response(body, ref) {
+    var url = ref.url;
+    var headers = ref.headers;
+    var status = ref.status;
+    var statusText = ref.statusText;
+
+
+    this.url = url;
+    this.ok = status >= 200 && status < 300;
+    this.status = status || 0;
+    this.statusText = statusText || '';
+    this.headers = new Headers(headers);
+    this.body = body;
+
+    if (isString(body)) {
+
+        this.bodyText = body;
+
+    } else if (isBlob(body)) {
+
+        this.bodyBlob = body;
+
+        if (isBlobText(body)) {
+            this.bodyText = blobText(body);
+        }
+    }
+};
+
+Response.prototype.blob = function blob () {
+    return when(this.bodyBlob);
+};
+
+Response.prototype.text = function text () {
+    return when(this.bodyText);
+};
+
+Response.prototype.json = function json () {
+    return when(this.text(), function (text) { return JSON.parse(text); });
+};
+
+function blobText(body) {
+    return new PromiseObj(function (resolve) {
+
+        var reader = new FileReader();
+
+        reader.readAsText(body);
+        reader.onload = function () {
+            resolve(reader.result);
+        };
+
+    });
+}
+
+function isBlobText(body) {
+    return body.type.indexOf('text') === 0 || body.type.indexOf('json') !== -1;
+}
+
+/**
+ * HTTP Request.
+ */
+
+var Request = function Request(options$$1) {
+
+    this.body = null;
+    this.params = {};
+
+    assign(this, options$$1, {
+        method: toUpper(options$$1.method || 'GET')
+    });
+
+    if (!(this.headers instanceof Headers)) {
+        this.headers = new Headers(this.headers);
+    }
+};
+
+Request.prototype.getUrl = function getUrl (){
+    return Url(this);
+};
+
+Request.prototype.getBody = function getBody (){
+    return this.body;
+};
+
+Request.prototype.respondWith = function respondWith (body, options$$1) {
+    return new Response(body, assign(options$$1 || {}, {url: this.getUrl()}));
+};
+
+/**
+ * Service for sending network requests.
+ */
+
+var COMMON_HEADERS = {'Accept': 'application/json, text/plain, */*'};
+var JSON_CONTENT_TYPE = {'Content-Type': 'application/json;charset=utf-8'};
+
+function Http(options$$1) {
+
+    var self = this || {}, client = Client(self.$vm);
+
+    defaults(options$$1 || {}, self.$options, Http.options);
+
+    Http.interceptors.forEach(function (handler) {
+
+        if (isString(handler)) {
+            handler = Http.interceptor[handler];
+        }
+
+        if (isFunction(handler)) {
+            client.use(handler);
+        }
+
+    });
+
+    return client(new Request(options$$1)).then(function (response) {
+
+        return response.ok ? response : PromiseObj.reject(response);
+
+    }, function (response) {
+
+        if (response instanceof Error) {
+            error(response);
+        }
+
+        return PromiseObj.reject(response);
+    });
+}
+
+Http.options = {};
+
+Http.headers = {
+    put: JSON_CONTENT_TYPE,
+    post: JSON_CONTENT_TYPE,
+    patch: JSON_CONTENT_TYPE,
+    delete: JSON_CONTENT_TYPE,
+    common: COMMON_HEADERS,
+    custom: {}
+};
+
+Http.interceptor = {before: before, method: method, body: body, jsonp: jsonp, header: header, cors: cors};
+Http.interceptors = ['before', 'method', 'body', 'jsonp', 'header', 'cors'];
+
+['get', 'delete', 'head', 'jsonp'].forEach(function (method$$1) {
+
+    Http[method$$1] = function (url, options$$1) {
+        return this(assign(options$$1 || {}, {url: url, method: method$$1}));
+    };
+
+});
+
+['post', 'put', 'patch'].forEach(function (method$$1) {
+
+    Http[method$$1] = function (url, body$$1, options$$1) {
+        return this(assign(options$$1 || {}, {url: url, method: method$$1, body: body$$1}));
+    };
+
+});
+
+/**
+ * Service for interacting with RESTful services.
+ */
+
+function Resource(url, params, actions, options$$1) {
+
+    var self = this || {}, resource = {};
+
+    actions = assign({},
+        Resource.actions,
+        actions
+    );
+
+    each(actions, function (action, name) {
+
+        action = merge({url: url, params: assign({}, params)}, options$$1, action);
+
+        resource[name] = function () {
+            return (self.$http || Http)(opts(action, arguments));
+        };
+    });
+
+    return resource;
+}
+
+function opts(action, args) {
+
+    var options$$1 = assign({}, action), params = {}, body;
+
+    switch (args.length) {
+
+        case 2:
+
+            params = args[0];
+            body = args[1];
+
+            break;
+
+        case 1:
+
+            if (/^(POST|PUT|PATCH)$/i.test(options$$1.method)) {
+                body = args[0];
+            } else {
+                params = args[0];
+            }
+
+            break;
+
+        case 0:
+
+            break;
+
+        default:
+
+            throw 'Expected up to 2 arguments [params, body], got ' + args.length + ' arguments';
+    }
+
+    options$$1.body = body;
+    options$$1.params = assign({}, options$$1.params, params);
+
+    return options$$1;
+}
+
+Resource.actions = {
+
+    get: {method: 'GET'},
+    save: {method: 'POST'},
+    query: {method: 'GET'},
+    update: {method: 'PUT'},
+    remove: {method: 'DELETE'},
+    delete: {method: 'DELETE'}
+
+};
+
+/**
+ * Install plugin.
+ */
+
+function plugin(Vue) {
+
+    if (plugin.installed) {
+        return;
+    }
+
+    Util(Vue);
+
+    Vue.url = Url;
+    Vue.http = Http;
+    Vue.resource = Resource;
+    Vue.Promise = PromiseObj;
+
+    Object.defineProperties(Vue.prototype, {
+
+        $url: {
+            get: function get() {
+                return options(Vue.url, this, this.$options.url);
+            }
+        },
+
+        $http: {
+            get: function get() {
+                return options(Vue.http, this, this.$options.http);
+            }
+        },
+
+        $resource: {
+            get: function get() {
+                return Vue.resource.bind(this);
+            }
+        },
+
+        $promise: {
+            get: function get() {
+                var this$1 = this;
+
+                return function (executor) { return new Vue.Promise(executor, this$1); };
+            }
+        }
+
+    });
+}
+
+if (typeof window !== 'undefined' && window.Vue) {
+    window.Vue.use(plugin);
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (plugin);
+
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(131)
+__vue_script__ = __webpack_require__(48)
+__vue_template__ = __webpack_require__(134)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/components/menu.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -21510,6 +21509,13 @@ if (typeof window !== 'undefined' && window.Vue) {
 /* 11 */
 /***/ (function(module, exports) {
 
+var core = module.exports = {version: '1.2.6'};
+if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
+
 var $Object = Object;
 module.exports = {
   create:     $Object.create,
@@ -21525,19 +21531,12 @@ module.exports = {
 };
 
 /***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-var core = module.exports = {version: '1.2.6'};
-if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-
-/***/ }),
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store  = __webpack_require__(32)('wks')
-  , uid    = __webpack_require__(33)
-  , Symbol = __webpack_require__(14).Symbol;
+var store  = __webpack_require__(36)('wks')
+  , uid    = __webpack_require__(38)
+  , Symbol = __webpack_require__(18).Symbol;
 module.exports = function(name){
   return store[name] || (store[name] =
     Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
@@ -21545,63 +21544,11 @@ module.exports = function(name){
 
 /***/ }),
 /* 14 */
-/***/ (function(module, exports) {
-
-// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-var global = module.exports = typeof window != 'undefined' && window.Math == Math
-  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
-if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports) {
-
-module.exports = {};
-
-/***/ }),
-/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(61)
-  , defined = __webpack_require__(19);
-module.exports = function(it){
-  return IObject(defined(it));
-};
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(52), __esModule: true };
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = function(it){
-  return toString.call(it).slice(8, -1);
-};
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports) {
-
-// 7.2.1 RequireObjectCoercible(argument)
-module.exports = function(it){
-  if(it == undefined)throw TypeError("Can't call method on  " + it);
-  return it;
-};
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var global    = __webpack_require__(14)
-  , core      = __webpack_require__(12)
-  , ctx       = __webpack_require__(58)
+var global    = __webpack_require__(18)
+  , core      = __webpack_require__(11)
+  , ctx       = __webpack_require__(30)
   , PROTOTYPE = 'prototype';
 
 var $export = function(type, name, source){
@@ -21647,7 +21594,19 @@ $export.W = 32; // wrap
 module.exports = $export;
 
 /***/ }),
-/* 21 */
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports = {};
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(67), __esModule: true };
+
+/***/ }),
+/* 17 */
 /***/ (function(module, exports) {
 
 module.exports = function(exec){
@@ -21659,7 +21618,72 @@ module.exports = function(exec){
 };
 
 /***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
+if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// to indexed object, toObject with fallback for non-array-like ES3 strings
+var IObject = __webpack_require__(32)
+  , defined = __webpack_require__(23);
+module.exports = function(it){
+  return IObject(defined(it));
+};
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Symbol = __webpack_require__(64)["default"];
+
+exports["default"] = function (obj) {
+  return obj && obj.constructor === _Symbol ? "symbol" : typeof obj;
+};
+
+exports.__esModule = true;
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(79);
+module.exports = function(it){
+  if(!isObject(it))throw TypeError(it + ' is not an object!');
+  return it;
+};
+
+/***/ }),
 /* 22 */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = function(it){
+  return toString.call(it).slice(8, -1);
+};
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports) {
+
+// 7.2.1 RequireObjectCoercible(argument)
+module.exports = function(it){
+  if(it == undefined)throw TypeError("Can't call method on  " + it);
+  return it;
+};
+
+/***/ }),
+/* 24 */
 /***/ (function(module, exports) {
 
 var hasOwnProperty = {}.hasOwnProperty;
@@ -21668,12 +21692,12 @@ module.exports = function(it, key){
 };
 
 /***/ }),
-/* 23 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var $          = __webpack_require__(11)
-  , createDesc = __webpack_require__(24);
-module.exports = __webpack_require__(28) ? function(object, key, value){
+var $          = __webpack_require__(12)
+  , createDesc = __webpack_require__(26);
+module.exports = __webpack_require__(31) ? function(object, key, value){
   return $.setDesc(object, key, createDesc(1, value));
 } : function(object, key, value){
   object[key] = value;
@@ -21681,7 +21705,7 @@ module.exports = __webpack_require__(28) ? function(object, key, value){
 };
 
 /***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, exports) {
 
 module.exports = function(bitmap, value){
@@ -21694,11 +21718,11 @@ module.exports = function(bitmap, value){
 };
 
 /***/ }),
-/* 25 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var def = __webpack_require__(11).setDesc
-  , has = __webpack_require__(22)
+var def = __webpack_require__(12).setDesc
+  , has = __webpack_require__(24)
   , TAG = __webpack_require__(13)('toStringTag');
 
 module.exports = function(it, tag, stat){
@@ -21706,7 +21730,17 @@ module.exports = function(it, tag, stat){
 };
 
 /***/ }),
-/* 26 */
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.13 ToObject(argument)
+var defined = __webpack_require__(23);
+module.exports = function(it){
+  return Object(defined(it));
+};
+
+/***/ }),
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24113,42 +24147,67 @@ if (inBrowser && window.Vue) {
 
 /* harmony default export */ __webpack_exports__["a"] = (VueRouter);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(95)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(116)))
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(63);
-module.exports = function(it){
-  if(!isObject(it))throw TypeError(it + ' is not an object!');
-  return it;
+// optional / simple context binding
+var aFunction = __webpack_require__(72);
+module.exports = function(fn, that, length){
+  aFunction(fn);
+  if(that === undefined)return fn;
+  switch(length){
+    case 1: return function(a){
+      return fn.call(that, a);
+    };
+    case 2: return function(a, b){
+      return fn.call(that, a, b);
+    };
+    case 3: return function(a, b, c){
+      return fn.call(that, a, b, c);
+    };
+  }
+  return function(/* ...args */){
+    return fn.apply(that, arguments);
+  };
 };
 
 /***/ }),
-/* 28 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(21)(function(){
+module.exports = !__webpack_require__(17)(function(){
   return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
 });
 
 /***/ }),
-/* 29 */
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// fallback for non-array-like ES3 and non-enumerable old V8 strings
+var cof = __webpack_require__(22);
+module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
+  return cof(it) == 'String' ? it.split('') : Object(it);
+};
+
+/***/ }),
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var LIBRARY        = __webpack_require__(30)
-  , $export        = __webpack_require__(20)
-  , redefine       = __webpack_require__(31)
-  , hide           = __webpack_require__(23)
-  , has            = __webpack_require__(22)
+var LIBRARY        = __webpack_require__(34)
+  , $export        = __webpack_require__(14)
+  , redefine       = __webpack_require__(35)
+  , hide           = __webpack_require__(25)
+  , has            = __webpack_require__(24)
   , Iterators      = __webpack_require__(15)
-  , $iterCreate    = __webpack_require__(64)
-  , setToStringTag = __webpack_require__(25)
-  , getProto       = __webpack_require__(11).getProto
+  , $iterCreate    = __webpack_require__(81)
+  , setToStringTag = __webpack_require__(27)
+  , getProto       = __webpack_require__(12).getProto
   , ITERATOR       = __webpack_require__(13)('iterator')
   , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
   , FF_ITERATOR    = '@@iterator'
@@ -24207,22 +24266,22 @@ module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED
 };
 
 /***/ }),
-/* 30 */
+/* 34 */
 /***/ (function(module, exports) {
 
 module.exports = true;
 
 /***/ }),
-/* 31 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(23);
+module.exports = __webpack_require__(25);
 
 /***/ }),
-/* 32 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(14)
+var global = __webpack_require__(18)
   , SHARED = '__core-js_shared__'
   , store  = global[SHARED] || (global[SHARED] = {});
 module.exports = function(key){
@@ -24230,7 +24289,18 @@ module.exports = function(key){
 };
 
 /***/ }),
-/* 33 */
+/* 37 */
+/***/ (function(module, exports) {
+
+// 7.1.4 ToInteger
+var ceil  = Math.ceil
+  , floor = Math.floor;
+module.exports = function(it){
+  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
+};
+
+/***/ }),
+/* 38 */
 /***/ (function(module, exports) {
 
 var id = 0
@@ -24240,7 +24310,43 @@ module.exports = function(key){
 };
 
 /***/ }),
-/* 34 */
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var classof   = __webpack_require__(74)
+  , ITERATOR  = __webpack_require__(13)('iterator')
+  , Iterators = __webpack_require__(15);
+module.exports = __webpack_require__(11).getIteratorMethod = function(it){
+  if(it != undefined)return it[ITERATOR]
+    || it['@@iterator']
+    || Iterators[classof(it)];
+};
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $at  = __webpack_require__(87)(true);
+
+// 21.1.3.27 String.prototype[@@iterator]()
+__webpack_require__(33)(String, 'String', function(iterated){
+  this._t = String(iterated); // target
+  this._i = 0;                // next index
+// 21.1.5.2.1 %StringIteratorPrototype%.next()
+}, function(){
+  var O     = this._t
+    , index = this._i
+    , point;
+  if(index >= O.length)return {value: undefined, done: true};
+  point = $at(O, index);
+  this._i += point.length;
+  return {value: point, done: false};
+});
+
+/***/ }),
+/* 41 */
 /***/ (function(module, exports) {
 
 var g;
@@ -24267,29 +24373,32 @@ module.exports = g;
 
 
 /***/ }),
-/* 35 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__ = __webpack_require__(125);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__ = __webpack_require__(153);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__ = __webpack_require__(122);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__ = __webpack_require__(150);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__ = __webpack_require__(129);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__ = __webpack_require__(157);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__ = __webpack_require__(128);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__ = __webpack_require__(156);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__ = __webpack_require__(127);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__ = __webpack_require__(155);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__ = __webpack_require__(121);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__ = __webpack_require__(149);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__ = __webpack_require__(151);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__ = __webpack_require__(126);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__ = __webpack_require__(154);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__ = __webpack_require__(152);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__ = __webpack_require__(148);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__);
+
 
 
 
@@ -24312,6 +24421,7 @@ const routes = [
     {path: '/especificacion_caracteristicas/', component: __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue___default.a},
     {path: '/ordenes_laboratorios/', component: __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue___default.a},
     {path: '/formatos/:id/', component: __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue___default.a},
+    {path: '/bacteriologos/', component: __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue___default.a},
 ]
 
 // router.beforeEach((to, from, next) => {
@@ -24336,7 +24446,7 @@ const router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({
 
 
 /***/ }),
-/* 36 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24347,16 +24457,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuetify__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue_resource__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_router__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue_resource__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_router__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_menu_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_table_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__components_form_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__mixins_igmixin_js__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__routes__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__mixins_igmixin_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__routes__ = __webpack_require__(42);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__urls_js__ = __webpack_require__(5);
 
 
@@ -24411,7 +24521,66 @@ const app = new __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default.a({
 
 
 /***/ }),
-/* 37 */
+/* 44 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function () {
+        return {
+            validations: [],
+            // _validated: false,
+            errors: [],
+        }
+    },
+    methods: {
+        addValidation: function (error) {
+            if (!'validations' in error) {
+                throw new Error ('No hay validaciones por hacer.');
+            }
+            // validations ever will evalue false for errors
+            this.validations.push(error);
+        },
+        removeValidation: function (error) {
+            this.validations.slice(this.validations.indexOf(error), 1);
+        },
+        hasError: function (obj) {
+            if (obj !== undefined) {
+                let validate = this.validations.find(i => i.target == obj);
+                validate.validations.forEach(validation => {
+                    const error = typeof validation === 'function' ? validation(validate): validation;
+                    if (error) {
+                        return true;
+                    }
+                })
+                return false;
+            }
+            return this.validate();
+        },
+        validate: function () {
+            // this._validated = true;
+            let errors = []
+            this.validations.forEach(error => {
+                error.validations.forEach(validation => {
+                    const _error = typeof validation === 'function' ? validation(error.target): validation;
+                    if (_error) {
+                        errors.push(error)
+                    }
+                });
+            });
+            return errors.length >= 1;
+        }
+    }
+});
+
+
+/***/ }),
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24421,7 +24590,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(17);
+var _toConsumableArray2 = __webpack_require__(65);
+
+var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+
+var _getIterator2 = __webpack_require__(16);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -24429,9 +24602,176 @@ var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vueResource = __webpack_require__(3);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    name: 'floating-button',
+    data: function data() {
+        return {
+            animated: false
+        };
+    },
+    created: function created() {
+        // console.log(this.$slots.default);
+    },
+    computed: {
+        classesMain: function classesMain() {
+            return {
+                animated: true,
+                // fadeIn: this.animated,
+                // fadeOut: !this.animated,
+                'ig-floating-button-main': true
+            };
+        },
+        classesChildren: function classesChildren() {
+            return {
+                animated: true,
+                fadeInUp: this.animated,
+                fadeOutDown: !this.animated,
+                'ig-floating-button': true
+            };
+        }
+    },
+    methods: {
+        genButtons: function genButtons() {
+            var children = [];
+            var index = 1;
+            var margin = 0;
+            var base = 80;
+            if (this.animated) {
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = (0, _getIterator3.default)(this.$slots.child), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var node = _step.value;
+
+                        if (node.tag) {
+                            children.push(this.$createElement('div', {
+                                'class': this.classesChildren,
+                                style: {
+                                    'margin-bottom': (base + margin * index).toString() + 'px'
+                                }
+                            }, [node]));
+                            margin += 45;
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            }
+            return children;
+        }
+    },
+    render: function render() {
+        var _this = this;
+
+        return this.$createElement('div', {
+            on: {
+                mouseover: function mouseover() {
+                    _this.animated = true;
+                },
+                mouseleave: function mouseleave() {
+                    _this.animated = false;
+                }
+            }
+        }, [this.$createElement('div', {
+            'class': this.classesMain
+        }, [this.$slots.default]), this.$createElement('div', { class: { 'ig-floating-button-container': this.animated } }, [].concat((0, _toConsumableArray3.default)(this.genButtons())))]);
+    }
+};
+// </script>
+//
+// <style lang="css">
+// .ig-floating-button {
+//     position: fixed;
+//     bottom: 0;
+//     right: 0;
+//     margin-right: 22px;
+//     /*margin-bottom: 90px;*/
+//     transition-duration: 50ms !important;
+//     animation-duration: 500ms;
+// }
+//
+// .ig-floating-button-main {
+//     position: fixed;
+//     bottom: 0;
+//     right: 0;
+//     margin: 15px;
+//     transition-duration: 500ms;
+//     z-index: 10;
+// }
+//
+// .ig-floating-button-main:hover {
+//     transform: rotate(360deg);
+//     transition-duration: 500ms;
+// }
+//
+// .ig-floating-button-container {
+//     position: fixed;
+//     background-color: transparent;
+//     /*background-color: #323213;*/
+//     padding: 40px;
+//     right: 0;
+//     top: 0;
+//     z-index: 0;
+//     height: 100%;
+// }
+//
+// /*.ig-rotator {
+//     transform: rotate(360deg);
+//     transition-duration: 500ms;
+// }*/
+// </style>
+//
+// <script>
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _assign = __webpack_require__(62);
+
+var _assign2 = _interopRequireDefault(_assign);
+
+var _typeof2 = __webpack_require__(20);
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _getIterator2 = __webpack_require__(16);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _vue = __webpack_require__(4);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _vueResource = __webpack_require__(8);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
+
+var _errormixin = __webpack_require__(44);
+
+var _errormixin2 = _interopRequireDefault(_errormixin);
 
 var _underscore = __webpack_require__(2);
 
@@ -24439,60 +24779,14 @@ var _underscore2 = _interopRequireDefault(_underscore);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_vue2.default.use(_vueResource2.default); // <template lang="html">
-//     <v-card>
-//         <v-card-title>
-//             <!-- <span>{[ selected ? 'Editar Laboratorio '.concat(codigo.toUpperCase()): 'Crear Laboratorio' ]}</span> -->
-//             <v-spacer></v-spacer>
-//             <v-btn flat @click.native="cleanFields()" v-show="selected"><v-icon>clear_all</v-icon>Limpiar</v-btn>
-//         </v-card-title>
-//         <v-card-text>
-//           <br>
-//             <v-container>
-//                 <!--<template v-for="f in fields.length">-->
-//                     <v-row>
-//                         <v-col md6 xs12 v-for="field in fields" :key="field.name">
-//                             <template v-if="field.type == String"><!---->
-//                                 <v-text-field
-//                                 :label="field.verbose_name || ''"
-//                                 :hint="field.hint || ''"
-//                                 :required="fieldIsRequired(field)"
-//                                 :rules="getRules(field)"
-//                                 v-model="models[field.name]"
-//                                 ></v-text-field>
-//                             </template>
-//                             <template v-else>
-//                                 <v-select
-//                                 :label="field.verbose_name || ''"
-//                                 :hint="field.hint || ''"
-//                                 :items="items[field.name]"
-//                                 :required="fieldIsRequired(field)"
-//                                 :rules="getRules(field)"
-//                                 v-model="models[field.name]"
-//                                 item-value="text"
-//                                 autocomplete
-//                                 light
-//                                 ></v-select>
-//                             </template>
-//                         </v-col>
-//                     </v-row>
-//                 <!--</template>-->
-//             </v-container>
-//             <small>* Campos requeridos.</small>
-//             <br>
-//         </v-card-text>
-//         <v-card-row actions>
-//             <v-btn flat @click.native="submitForm()">
-//                 {{ !selected ? 'Crear': 'Editar' }}
-//                 <v-icon>check_circle</v-icon>
-//             </v-btn>
-//         </v-card-row>
-//     </v-card>
-// </template>
-//
 // <script>
+_vue2.default.use(_vueResource2.default);
+/* TODO:
+  -Corregir el método getRules();
+*/
 exports.default = {
     name: 'igForm',
+    mixins: [_errormixin2.default],
     props: {
         fields: {
             type: Array,
@@ -24522,59 +24816,221 @@ exports.default = {
             if (this.selected) {
                 var _loop = function _loop(attr) {
                     if (attr in _this.models) {
-                        // si esta en los campos
-                        if (attr in _this.items) {
-                            // si esta en los items que ya fueron fetched
-                            var key = void 0;
-                            var _iteratorNormalCompletion = true;
-                            var _didIteratorError = false;
-                            var _iteratorError = undefined;
+                        // si está en los campos
+                        if (_this._isGroupField(attr)) {
+                            var _loop2 = function _loop2(subattr) {
+                                if (attr in _this.items) {
+                                    var key = void 0;
+                                    if (_this.selected[attr][subattr] instanceof Array) {
+                                        var field = _this.fields.find(function (field) {
+                                            return field.name == subattr && field.group == attr;
+                                        });
+                                        if (field && field.kwargs && field.type == Array && field.kwargs.multiple) {
+                                            key = [];
+                                            var _iteratorNormalCompletion = true;
+                                            var _didIteratorError = false;
+                                            var _iteratorError = undefined;
 
-                            try {
-                                for (var _iterator = (0, _getIterator3.default)(_this.items[attr]), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                    var obj = _step.value;
+                                            try {
+                                                var _loop3 = function _loop3() {
+                                                    var obj = _step.value;
 
-                                    if (obj.id == _this.selected[attr].id) {
-                                        key = obj;
-                                        break;
+                                                    var found = _this.items[attr].find(function (object) {
+                                                        return object.id == obj.id;
+                                                    });
+                                                    if (found) {
+                                                        key.push(found);
+                                                    }
+                                                };
+
+                                                for (var _iterator = (0, _getIterator3.default)(_this.selected[attr][subattr]), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                                    _loop3();
+                                                }
+                                            } catch (err) {
+                                                _didIteratorError = true;
+                                                _iteratorError = err;
+                                            } finally {
+                                                try {
+                                                    if (!_iteratorNormalCompletion && _iterator.return) {
+                                                        _iterator.return();
+                                                    }
+                                                } finally {
+                                                    if (_didIteratorError) {
+                                                        throw _iteratorError;
+                                                    }
+                                                }
+                                            }
+
+                                            if (!_underscore2.default.isEmpty(key)) {
+                                                _this.models[attr][subattr] = key;
+                                            } else {
+                                                _this.$emit('showsnack', 'No se encontró el campo múltiple ' + subattr.toString() + ' del grupo ' + attr.toString());
+                                                _this.models[attr][subattr] = [];
+                                            }
+                                        }
+                                    } else {
+                                        var _iteratorNormalCompletion2 = true;
+                                        var _didIteratorError2 = false;
+                                        var _iteratorError2 = undefined;
+
+                                        try {
+                                            for (var _iterator2 = (0, _getIterator3.default)(_this.items[attr]), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                                var _obj = _step2.value;
+
+                                                if (_obj.id == _this.selected[attr][subattr].id) {
+                                                    key = _obj;
+                                                    break;
+                                                }
+                                            }
+                                        } catch (err) {
+                                            _didIteratorError2 = true;
+                                            _iteratorError2 = err;
+                                        } finally {
+                                            try {
+                                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                                    _iterator2.return();
+                                                }
+                                            } finally {
+                                                if (_didIteratorError2) {
+                                                    throw _iteratorError2;
+                                                }
+                                            }
+                                        }
+
+                                        if (key) {
+                                            _this.models[attr][subattr] = key;
+                                        } else {
+                                            // support for OneToOneField and GroupField forms (models)
+                                            key = _this.fields.find(function (x) {
+                                                return x.group == attr && x.name == subattr;
+                                            });
+                                            if (key) {
+                                                _this.selected[attr][subattr].text = _this.selected[attr][subattr][key.key];
+                                                if (attr in _this.appended && _this.appended[attr]) {
+                                                    _this.items[attr].pop();
+                                                    _this.appended[attr] = false;
+                                                }
+                                                _this.items[attr].push(_this.selected[attr][subattr]);
+                                                _this.appended[attr] = true;
+                                                _this.models[attr][subattr] = _this.selected[attr][subattr];
+                                            } else {
+                                                _this.$emit('showsnack', 'No se encuentra el campo "' + subattr + '" de el grupo "' + attr + '" deseado.');
+                                            }
+                                        }
                                     }
                                 }
-                            } catch (err) {
-                                _didIteratorError = true;
-                                _iteratorError = err;
-                            } finally {
-                                try {
-                                    if (!_iteratorNormalCompletion && _iterator.return) {
-                                        _iterator.return();
-                                    }
-                                } finally {
-                                    if (_didIteratorError) {
-                                        throw _iteratorError;
-                                    }
-                                }
-                            }
+                                _this.models[attr][subattr] = _this.selected[attr][subattr];
+                            };
 
-                            if (key) {
-                                _this.models[attr] = key;
-                            } else {
-                                key = _this.fields.find(function (x) {
-                                    return x.name == attr;
-                                });
-                                if (key) {
-                                    _this.selected[attr].text = _this.selected[attr][key.key];
-                                    if (attr in _this.appended && _this.appended[attr]) {
-                                        _this.items[attr].pop();
-                                        _this.appended[attr] = false;
-                                    }
-                                    _this.items[attr].push(_this.selected[attr]);
-                                    _this.appended[attr] = true;
-                                    _this.models[attr] = _this.selected[attr];
-                                } else {
-                                    _this.$emit('showsnack', 'No se encuentra el ' + attr.toString() + ' deseado.');
-                                }
+                            for (var subattr in _this.models[attr]) {
+                                _loop2(subattr);
                             }
                         } else {
-                            _this.models[attr] = _this.selected[attr];
+                            if (attr in _this.items) {
+                                // si esta en los items que ya fueron fetched
+                                var key = void 0;
+                                if (_this.selected[attr] instanceof Array) {
+                                    // support for ManyToManyField
+                                    var field = _this.fields.find(function (field) {
+                                        return field.name == attr;
+                                    });
+                                    if (field && field.kwargs && field.type == Array && field.kwargs.multiple) {
+                                        key = [];
+                                        var _iteratorNormalCompletion3 = true;
+                                        var _didIteratorError3 = false;
+                                        var _iteratorError3 = undefined;
+
+                                        try {
+                                            var _loop4 = function _loop4() {
+                                                var obj = _step3.value;
+
+                                                var found = _this.items[attr].find(function (object) {
+                                                    return object.id == obj.id;
+                                                });
+                                                if (found) {
+                                                    key.push(found);
+                                                }
+                                            };
+
+                                            for (var _iterator3 = (0, _getIterator3.default)(_this.selected[attr]), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                                                _loop4();
+                                            }
+                                        } catch (err) {
+                                            _didIteratorError3 = true;
+                                            _iteratorError3 = err;
+                                        } finally {
+                                            try {
+                                                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                                                    _iterator3.return();
+                                                }
+                                            } finally {
+                                                if (_didIteratorError3) {
+                                                    throw _iteratorError3;
+                                                }
+                                            }
+                                        }
+
+                                        if (!_underscore2.default.isEmpty(key)) {
+                                            _this.models[attr] = key;
+                                        } else {
+                                            _this.$emit('showsnack', 'No se encontró el campo múltiple ' + attr.toString());
+                                            _this.models[attr] = [];
+                                        }
+                                    }
+                                } else {
+                                    var _iteratorNormalCompletion4 = true;
+                                    var _didIteratorError4 = false;
+                                    var _iteratorError4 = undefined;
+
+                                    try {
+                                        for (var _iterator4 = (0, _getIterator3.default)(_this.items[attr]), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                                            var _obj2 = _step4.value;
+
+                                            if (_obj2.id == _this.selected[attr].id) {
+                                                key = _obj2;
+                                                break;
+                                            }
+                                        }
+                                    } catch (err) {
+                                        _didIteratorError4 = true;
+                                        _iteratorError4 = err;
+                                    } finally {
+                                        try {
+                                            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                                                _iterator4.return();
+                                            }
+                                        } finally {
+                                            if (_didIteratorError4) {
+                                                throw _iteratorError4;
+                                            }
+                                        }
+                                    }
+
+                                    if (key) {
+                                        _this.models[attr] = key;
+                                    } else {
+                                        // support for OneToOneField
+                                        key = _this.fields.find(function (x) {
+                                            return x.name == attr;
+                                        });
+                                        if (key) {
+                                            _this.selected[attr].text = _this.selected[attr][key.key];
+                                            if (attr in _this.appended && _this.appended[attr]) {
+                                                _this.items[attr].pop();
+                                                _this.appended[attr] = false;
+                                            }
+                                            _this.items[attr].push(_this.selected[attr]);
+                                            _this.appended[attr] = true;
+                                            _this.models[attr] = _this.selected[attr];
+                                        } else {
+                                            _this.$emit('showsnack', 'No se encuentra el ' + attr.toString() + ' deseado.');
+                                            _this.models[attr] = '';
+                                        }
+                                    }
+                                }
+                            } else {
+                                _this.models[attr] = _this.selected[attr];
+                            }
                         }
                     }
                 };
@@ -24587,15 +25043,28 @@ exports.default = {
     },
     methods: {
         cleanFields: function cleanFields() {
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
+            var _iteratorNormalCompletion5 = true;
+            var _didIteratorError5 = false;
+            var _iteratorError5 = undefined;
 
             try {
-                for (var _iterator2 = (0, _getIterator3.default)(this.fields), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var field = _step2.value;
+                for (var _iterator5 = (0, _getIterator3.default)(this.fields), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                    var field = _step5.value;
 
-                    this.models[field.name] = '';
+                    if (field.group) {
+                        if (this.models[field.group][field.name] instanceof Array) {
+                            this.models[field.group][field.name] = new Array();
+                        } else {
+                            this.models[field.group][field.name] = '';
+                        }
+                    } else {
+                        if (this.models[field.name] instanceof Array) {
+                            this.models[field.name] = new Array();
+                        } else {
+                            this.models[field.name] = '';
+                        }
+                    }
+
                     if (field.name in this.appended) {
                         this.appended[field.name] = false;
                         this.items[field.name].pop();
@@ -24603,16 +25072,16 @@ exports.default = {
                 }
                 // this.selected = false;
             } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
+                _didIteratorError5 = true;
+                _iteratorError5 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
+                    if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                        _iterator5.return();
                     }
                 } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
+                    if (_didIteratorError5) {
+                        throw _iteratorError5;
                     }
                 }
             }
@@ -24626,39 +25095,40 @@ exports.default = {
         _getFetchData: function _getFetchData() {
             var _this2 = this;
 
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
+            var _iteratorNormalCompletion6 = true;
+            var _didIteratorError6 = false;
+            var _iteratorError6 = undefined;
 
             try {
-                var _loop2 = function _loop2() {
-                    var field = _step3.value;
+                var _loop5 = function _loop5() {
+                    var field = _step6.value;
 
                     if ('url' in field) {
+                        // si tiene una url donde hacer la consulta
                         _vue2.default.set(_this2.items, field.name, []); // Se setean las propiedades de acuerdo a la documentacion, de forma reactiva
                         _this2.$http.get(field.url).then(function (response) {
-                            var _iteratorNormalCompletion4 = true;
-                            var _didIteratorError4 = false;
-                            var _iteratorError4 = undefined;
+                            var _iteratorNormalCompletion7 = true;
+                            var _didIteratorError7 = false;
+                            var _iteratorError7 = undefined;
 
                             try {
-                                for (var _iterator4 = (0, _getIterator3.default)(response.body), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                                    var _item = _step4.value;
+                                for (var _iterator7 = (0, _getIterator3.default)(response.body), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                                    var _item = _step7.value;
 
                                     _item.text = _item[field.key];
                                     _this2.items[field.name].push(_item);
                                 }
                             } catch (err) {
-                                _didIteratorError4 = true;
-                                _iteratorError4 = err;
+                                _didIteratorError7 = true;
+                                _iteratorError7 = err;
                             } finally {
                                 try {
-                                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                                        _iterator4.return();
+                                    if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                                        _iterator7.return();
                                     }
                                 } finally {
-                                    if (_didIteratorError4) {
-                                        throw _iteratorError4;
+                                    if (_didIteratorError7) {
+                                        throw _iteratorError7;
                                     }
                                 }
                             }
@@ -24672,68 +25142,68 @@ exports.default = {
                             }
                         });
                     }
-                    _vue2.default.set(_this2.models, field.name, field.type == String ? '' : {});
+                    var fieldType = {};
+                    if (field.type == String || field.type == Number) {
+                        fieldType = '';
+                    } else if (field.type == Array) {
+                        if ('kwargs' in field) {
+                            fieldType = field.kwargs.multiple ? [] : {};
+                        }
+                    }
+                    if (field.group) {
+                        if (!_this2.models[field.group]) {
+                            _vue2.default.set(_this2.models, field.group, {});
+                        }
+                        _vue2.default.set(_this2.models[field.group], field.name, fieldType);
+                        // this.models[field.group][field.name] = fieldType;
+                    } else {
+                        _vue2.default.set(_this2.models, field.name, fieldType);
+                    }
                 };
 
-                for (var _iterator3 = (0, _getIterator3.default)(this.fields), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    _loop2();
+                for (var _iterator6 = (0, _getIterator3.default)(this.fields), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                    _loop5();
                 }
             } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
+                _didIteratorError6 = true;
+                _iteratorError6 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                        _iterator3.return();
+                    if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                        _iterator6.return();
                     }
                 } finally {
-                    if (_didIteratorError3) {
-                        throw _iteratorError3;
+                    if (_didIteratorError6) {
+                        throw _iteratorError6;
                     }
                 }
             }
         },
         getRules: function getRules(field) {
+            var _this3 = this;
+
             var rules = new Array();
-            if ('rules' in field) {
-                var customRules = field.rules();
-                if (typeof customRules === 'boolean' || typeof customRules === 'string') {
-                    rules.push(customRules);
-                } else {
-                    var _iteratorNormalCompletion5 = true;
-                    var _didIteratorError5 = false;
-                    var _iteratorError5 = undefined;
-
-                    try {
-                        for (var _iterator5 = (0, _getIterator3.default)(customRules), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                            var rule = _step5.value;
-
-                            rules.push(rule);
-                        }
-                    } catch (err) {
-                        _didIteratorError5 = true;
-                        _iteratorError5 = err;
-                    } finally {
-                        try {
-                            if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                                _iterator5.return();
-                            }
-                        } finally {
-                            if (_didIteratorError5) {
-                                throw _iteratorError5;
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (this.fieldIsRequired(field)) {
-                    rules.push(!this._validated || !_underscore2.default.isEmpty(this.models[field.name]) || 'Este campo es obligatorio');
-                }
+            if (this.fieldIsRequired(field)) {
+                rules.push(function (_field) {
+                    return !_underscore2.default.isEmpty(_this3.models[_field.name]) || 'Este campo es obligatorio';
+                });
             }
+            if ('rules' in field) {
+                if (!field.rules instanceof Array) {
+                    console.error('Las reglas de los campos, deben ser un array [' + field.name.toString() + ']');
+                }
+                rules.push.apply(rules, field.rules);
+            }
+            // this.addValidation({
+            //     target: field,
+            //     validations: rules.map(function (obj) {
+            //         // return typeof obj == 'function' ? _field => !obj(_field): obj;
+            //     })
+            // })
             return rules;
         },
         submitForm: function submitForm() {
-            var _this3 = this;
+            var _this4 = this;
 
             this._validated = true;
             var url = this.url;
@@ -24746,15 +25216,13 @@ exports.default = {
             }
             this.$http[method](url, this.models, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
                 if (response.status == 201) {
-                    // this.selected_before = response.body;
-                    // this.laboratorios.push(this.selected_before);
                     message = 'Laboratorio Creado Correctamente';
-                    _this3.$emit('objectcreated', response.body);
+                    _this4.$emit('objectcreated', response.body);
                 } else {
                     message = 'Laboratorio Editado Correctamente';
                 }
                 if (message) {
-                    _this3.$emit('showsnack', message);
+                    _this4.$emit('showsnack', message);
                 }
             }, function (response) {
                 if (response.status == 400) {
@@ -24766,10 +25234,151 @@ exports.default = {
                     console.error(response);
                 }
                 if (message) {
-                    _this3.$emit('showsnack', message);
+                    _this4.$emit('showsnack', message);
                 }
             });
+        },
+        _isGroupField: function _isGroupField(item) {
+            if (!_underscore2.default.isArray(this.models[item]) && !_underscore2.default.isObject(this.models[item])) {
+                var _iteratorNormalCompletion8 = true;
+                var _didIteratorError8 = false;
+                var _iteratorError8 = undefined;
+
+                try {
+                    for (var _iterator8 = (0, _getIterator3.default)(this.fields), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+                        var _field2 = _step8.value;
+
+                        if (_field2.group == item) {
+                            return true;
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError8 = true;
+                    _iteratorError8 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion8 && _iterator8.return) {
+                            _iterator8.return();
+                        }
+                    } finally {
+                        if (_didIteratorError8) {
+                            throw _iteratorError8;
+                        }
+                    }
+                }
+            }
+            return false;
+        },
+        _genCardHeader: function _genCardHeader() {
+            var _this5 = this;
+
+            var childs = [this.$createElement('v-spacer', [])];
+            if (this.selected) {
+                childs.push(this.$createElement('v-btn', {
+                    nativeOn: {
+                        click: function click() {
+                            _this5.cleanFields();
+                        }
+                    },
+                    props: { flat: true }
+                }, [this.$createElement('v-icon', ['clear_all']), 'Limpiar']));
+            }
+            return this.$createElement('v-card-title', childs);
+        },
+        _genCardBody: function _genCardBody() {
+            var _this6 = this;
+
+            var match = {};
+            match[(0, _typeof3.default)(String())] = 'v-text-field';
+            match[(0, _typeof3.default)(Number())] = 'v-text-field';
+            match[(0, _typeof3.default)(Array())] = 'v-select';
+
+            var childs = [];
+            var _iteratorNormalCompletion9 = true;
+            var _didIteratorError9 = false;
+            var _iteratorError9 = undefined;
+
+            try {
+                var _loop6 = function _loop6() {
+                    var field = _step9.value;
+
+                    var defaultProps = {
+                        label: field.verbose_name || '',
+                        hint: field.hint || '',
+                        required: _this6.fieldIsRequired(field),
+                        rules: _this6.getRules(field)
+                    };
+                    if (match[(0, _typeof3.default)(field.type())] == 'v-text-field') {
+                        defaultProps.type = _underscore2.default.isEmpty(field.kwargs) ? 'text' : _underscore2.default.isEmpty(field.kwargs.type) ? 'text' : field.kwargs.type;
+                    } else if (match[(0, _typeof3.default)(field.type())] == 'v-select') {
+                        defaultProps.items = _this6.items[field.name];
+                        defaultProps['item-value'] = 'text';
+                        defaultProps.autocomplete = true;
+                        defaultProps.light = true;
+                        if ('kwargs' in field) {
+                            defaultProps.multiple = field.kwargs.multiple ? true : false;
+                        }
+                    }
+
+                    childs.push(_this6.$createElement('v-col', { attrs: { 'md6': true, 'xs12': true } }, [_this6.$createElement(match[(0, _typeof3.default)(field.type())], {
+                        props: (0, _assign2.default)({}, defaultProps),
+                        domProps: {
+                            value: field.group ? _this6.models[field.group][field.name] : _this6.models[field.name]
+                        },
+                        on: {
+                            input: function input(event) {
+                                if (field.group) {
+                                    _this6.models[field.group][field.name] = event;
+                                } else {
+                                    _this6.models[field.name] = event;
+                                }
+                                _this6.$emit('input', event);
+                            }
+                        }
+                    }, [])]));
+                };
+
+                for (var _iterator9 = (0, _getIterator3.default)(this.fields), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+                    _loop6();
+                }
+            } catch (err) {
+                _didIteratorError9 = true;
+                _iteratorError9 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion9 && _iterator9.return) {
+                        _iterator9.return();
+                    }
+                } finally {
+                    if (_didIteratorError9) {
+                        throw _iteratorError9;
+                    }
+                }
+            }
+
+            return this.$createElement('v-card-text', [this.$createElement('br', []), this.$createElement('v-container', [this.$createElement('v-row', childs)]), this.$createElement('small', ['*Campos requeridos.']), this.$createElement('br', [])]);
+        },
+        _genCardFooter: function _genCardFooter() {
+            var _this7 = this;
+
+            return this.$createElement('v-card-row', {
+                props: {
+                    actions: true
+                }
+            }, [this.$createElement('v-btn', {
+                props: {
+                    flat: true
+                },
+                nativeOn: {
+                    click: function click(event) {
+                        _this7.submitForm(event.target.value);
+                    }
+                }
+            }, [!this.selected ? 'Crear' : 'Editar', this.$createElement('v-icon', ['check_circle'])])]);
         }
+    },
+    render: function render() {
+        return this.$createElement('v-card', [this._genCardHeader(), this._genCardBody(), this._genCardFooter()]);
     }
 };
 // </script>
@@ -24779,7 +25388,113 @@ exports.default = {
 //
 
 /***/ }),
-/* 38 */
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+// <template lang="html">
+//     <div>
+//         <v-container>
+//             <v-row>
+//                 <h1 class="title">Formulario de Resultado</h1>
+//             </v-row>
+//             <v-row v-for="(item, id) of value.items" :key="id">
+//                 <v-col md8>
+//                     <v-text-field
+//                         v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea'"
+//                         :multi-line="item.tipo.name == 'textarea'"
+//                         :label="item.nombre"
+//                         :hint="item.help"
+//                         v-model="item.model_text"
+//                         :disabled="disabled"
+//                         persistent-hint
+//                     ></v-text-field>
+//                     <v-select
+//                         v-else-if="item.tipo.name == 'select'"
+//                         :label="item.nombre"
+//                         :hint="item.help"
+//                         v-model="item.model_text"
+//                         :items="item.choices_select"
+//                         item-value="text"
+//                         :disabled="disabled"
+//                         persistent-hint
+//                     ></v-select>
+//                     <div v-else-if="item.tipo.name == 'checkbox'">
+//                         <dl class="section-text section-text--def">
+//                             <dt>{{ item.nombre }}</dt>
+//                             <dd>{{ item.help }}</dd>
+//                         </dl>
+//                         <v-row v-for="(choice, choiceId) of item.choices" :key="choiceId">
+//                             <v-col xs7 md7>
+//                                 <v-checkbox
+//                                     v-if="!choice.edit"
+//                                     :label="choice.name"
+//                                     v-model="item.model_check"
+//                                     :value="choice"
+//                                     :disabled="disabled"
+//                                     primary
+//                                 ></v-checkbox>
+//                             </v-col>
+//                         </v-row>
+//                     </div>
+//                     <div v-else-if="item.tipo.name == 'radio'">
+//                         <dl class="section-text section-text--def">
+//                             <dt>{{ item.nombre }}</dt>
+//                             <dd>{{ item.help }}</dd>
+//                         </dl>
+//                         <v-row v-for="(choice, choiceId) of item.choices" :key="choiceId">
+//                             <v-col xs7 md7>
+//                                 <v-radio
+//                                     v-if="!choice.edit"
+//                                     :label="choice.name"
+//                                     v-model="item.model_text"
+//                                     :value="choice.name"
+//                                     :disabled="disabled"
+//                                     primary
+//                                 ></v-radio>
+//                             </v-col>
+//                         </v-row>
+//                     </div>
+//                 </v-col>
+//                 <v-col md2 v-if="Boolean(item.referencia)">
+//                   <h6 class="title">Referencia:</h6> {{ item.referencia }}
+//                 </v-col>
+//                 <v-col md2 v-if="Boolean(item.unidades)">
+//                   <h6 class="title">Unidades:</h6> {{ item.unidades }}
+//                 </v-col>
+//             </v-row>
+//         </v-container>
+//     </div>
+// </template>
+//
+// <script>
+exports.default = {
+    name: 'formulario-resultado',
+    data: function data() {
+        return {};
+    },
+    props: {
+        value: {},
+        disabled: {
+            type: Boolean,
+            default: true
+        }
+    },
+    methods: {}
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+
+/***/ }),
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25018,6 +25733,11 @@ exports.default = {
 //                             </v-list-tile>
 //                         </v-list-item>
 //                         <v-list-item>
+//                             <v-list-tile ripple href="#/bacteriologos/">
+//                               <v-list-tile-title>Bacteriologos</v-list-tile-title>
+//                             </v-list-tile>
+//                         </v-list-item>
+//                         <v-list-item>
 //                             <v-list-tile ripple href="#/laboratorios/">
 //                               <v-list-tile-title>Laboratorios</v-list-tile-title>
 //                             </v-list-tile>
@@ -25088,7 +25808,7 @@ module.exports = {
 //
 
 /***/ }),
-/* 39 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25098,15 +25818,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(17);
+var _getIterator2 = __webpack_require__(16);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _keys = __webpack_require__(49);
+var _keys = __webpack_require__(63);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _typeof2 = __webpack_require__(51);
+var _typeof2 = __webpack_require__(20);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
@@ -25283,7 +26003,176 @@ exports.default = {
 //
 
 /***/ }),
-/* 40 */
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _igmixin = __webpack_require__(3);
+
+var _igmixin2 = _interopRequireDefault(_igmixin);
+
+var _table = __webpack_require__(7);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _form = __webpack_require__(6);
+
+var _form2 = _interopRequireDefault(_form);
+
+var _urls = __webpack_require__(5);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  components: {
+    igTable: _table2.default,
+    igForm: _form2.default
+  },
+  mixins: [_igmixin2.default],
+  data: function data() {
+    return {
+      urlForm: _urls2.default.bacteriologos,
+      selected: false,
+      headers: [{
+        text: 'Usuario',
+        value: 'username',
+        left: true
+      }, {
+        text: 'Nombre',
+        value: 'nombre',
+        left: true
+      }, {
+        text: 'Email',
+        value: 'usuario.email',
+        left: true
+      }, {
+        text: 'Codigo',
+        value: 'codigo',
+        left: true,
+        sortable: false
+      }, {
+        text: 'Registro',
+        value: 'registro',
+        left: true,
+        sortable: false
+      }, {
+        text: 'Areas',
+        value: 'areas-nombre',
+        left: true,
+        sortable: false
+      }],
+      fields: [{
+        name: 'username',
+        verbose_name: 'Usuario',
+        type: String,
+        hint: 'Este es el nombre de usuario de el bacteriologo.',
+        group: 'usuario'
+      }, {
+        name: 'password',
+        verbose_name: 'Contraseña',
+        type: String,
+        hint: 'Esta es la contraseña de el bacteriologo.',
+        group: 'usuario',
+        kwargs: {
+          type: 'password'
+        }
+      }, {
+        name: 'email',
+        verbose_name: 'Email',
+        type: String,
+        hint: 'Este es el email de el bacteriologo.',
+        group: 'usuario',
+        kwargs: {
+          type: 'email'
+        }
+      }, {
+        name: 'nombre',
+        verbose_name: 'Nombre',
+        type: String,
+        hint: 'Nombre de el bacteriologo.'
+      }, {
+        name: 'codigo',
+        verbose_name: 'Codigo',
+        type: String,
+        hint: 'Código de el bacteriologo.'
+      }, {
+        name: 'registro',
+        verbose_name: 'Registro',
+        type: Number,
+        hint: 'Registro de el bacteriologo.'
+      }, {
+        name: 'areas',
+        verbose_name: 'Areas',
+        type: Array,
+        hint: 'Este es el código de representacion internacional del laboratorio.',
+        url: _urls2.default.secciones_trabajo,
+        key: 'codigo',
+        kwargs: {
+          multiple: true
+        }
+      }]
+    };
+  },
+  mounted: function mounted() {
+    this.getElements(_urls2.default.bacteriologos);
+  }
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+// <template lang="html">
+//     <div>
+//         <v-container>
+//           <v-row>
+//             <v-col xs12 md12>
+//               <ig-table
+//               table-title="Bacteriologos"
+//               :headers="headers"
+//               :data="elements"
+//               :fields="['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']"
+//               @selectedrow="eventUpdatedForm"
+//               ></ig-table>
+//             </v-col>
+//           </v-row>
+//         </v-container>
+//         <br>
+//         <v-container>
+//           <v-row>
+//             <v-col xs12 md12>
+//               <ig-form
+//               :fields="fields"
+//               :url="urlForm"
+//               @showsnack="showSnackBar"
+//               @objectcreated="eventCreatedObject"
+//               @clearselected="selected = false"
+//               :selected="selected"
+//               >
+//             </ig-form>
+//           </v-col>
+//         </v-row>
+//         <br>
+//       </v-container>
+//     </div>
+// </template>
+//
+// <script>
+
+/***/ }),
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25305,23 +26194,23 @@ var _vuetify = __webpack_require__(10);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(3);
+var _vueResource = __webpack_require__(8);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(8);
+var _menu = __webpack_require__(9);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(9);
+var _table = __webpack_require__(7);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(6);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(6);
+var _igmixin = __webpack_require__(3);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -25415,7 +26304,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 41 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25437,23 +26326,23 @@ var _vuetify = __webpack_require__(10);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(3);
+var _vueResource = __webpack_require__(8);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(8);
+var _menu = __webpack_require__(9);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(9);
+var _table = __webpack_require__(7);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(6);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(6);
+var _igmixin = __webpack_require__(3);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -25560,7 +26449,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 42 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25582,23 +26471,23 @@ var _vuetify = __webpack_require__(10);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(3);
+var _vueResource = __webpack_require__(8);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(8);
+var _menu = __webpack_require__(9);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(9);
+var _table = __webpack_require__(7);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(6);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(6);
+var _igmixin = __webpack_require__(3);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -25696,7 +26585,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 43 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25706,15 +26595,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _typeof2 = __webpack_require__(51);
+var _typeof2 = __webpack_require__(20);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _stringify = __webpack_require__(149);
+var _stringify = __webpack_require__(61);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _getIterator2 = __webpack_require__(17);
+var _getIterator2 = __webpack_require__(16);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -25722,19 +26611,19 @@ var _urls = __webpack_require__(5);
 
 var _urls2 = _interopRequireDefault(_urls);
 
-var _igmixin = __webpack_require__(6);
+var _igmixin = __webpack_require__(3);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _errormixin = __webpack_require__(151);
+var _errormixin = __webpack_require__(44);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
 
-var _floatingButton = __webpack_require__(135);
+var _floatingButton = __webpack_require__(146);
 
 var _floatingButton2 = _interopRequireDefault(_floatingButton);
 
-var _formularioResultado = __webpack_require__(148);
+var _formularioResultado = __webpack_require__(147);
 
 var _formularioResultado2 = _interopRequireDefault(_formularioResultado);
 
@@ -26203,7 +27092,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 44 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26225,23 +27114,23 @@ var _vuetify = __webpack_require__(10);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(3);
+var _vueResource = __webpack_require__(8);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(8);
+var _menu = __webpack_require__(9);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(9);
+var _table = __webpack_require__(7);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(6);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(6);
+var _igmixin = __webpack_require__(3);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -26383,7 +27272,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 45 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26405,23 +27294,23 @@ var _vuetify = __webpack_require__(10);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(3);
+var _vueResource = __webpack_require__(8);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(8);
+var _menu = __webpack_require__(9);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(9);
+var _table = __webpack_require__(7);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(6);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(6);
+var _igmixin = __webpack_require__(3);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -26512,7 +27401,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 46 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26534,23 +27423,23 @@ var _vuetify = __webpack_require__(10);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(3);
+var _vueResource = __webpack_require__(8);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(8);
+var _menu = __webpack_require__(9);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(9);
+var _table = __webpack_require__(7);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(6);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(6);
+var _igmixin = __webpack_require__(3);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -26674,7 +27563,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 47 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26696,23 +27585,23 @@ var _vuetify = __webpack_require__(10);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(3);
+var _vueResource = __webpack_require__(8);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(8);
+var _menu = __webpack_require__(9);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(9);
+var _table = __webpack_require__(7);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(6);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(6);
+var _igmixin = __webpack_require__(3);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -26806,7 +27695,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 48 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26828,23 +27717,23 @@ var _vuetify = __webpack_require__(10);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(3);
+var _vueResource = __webpack_require__(8);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(8);
+var _menu = __webpack_require__(9);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(9);
+var _table = __webpack_require__(7);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(6);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(6);
+var _igmixin = __webpack_require__(3);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -26937,57 +27826,111 @@ exports.default = {
 //
 
 /***/ }),
-/* 49 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(53), __esModule: true };
+module.exports = { "default": __webpack_require__(66), __esModule: true };
 
 /***/ }),
-/* 50 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(54), __esModule: true };
+module.exports = { "default": __webpack_require__(68), __esModule: true };
 
 /***/ }),
-/* 51 */
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(69), __esModule: true };
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(70), __esModule: true };
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(71), __esModule: true };
+
+/***/ }),
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _Symbol = __webpack_require__(50)["default"];
-
-exports["default"] = function (obj) {
-  return obj && obj.constructor === _Symbol ? "symbol" : typeof obj;
-};
-
 exports.__esModule = true;
 
+var _from = __webpack_require__(60);
+
+var _from2 = _interopRequireDefault(_from);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  } else {
+    return (0, _from2.default)(arr);
+  }
+};
+
 /***/ }),
-/* 52 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(78);
-__webpack_require__(76);
-module.exports = __webpack_require__(72);
+__webpack_require__(40);
+__webpack_require__(90);
+module.exports = __webpack_require__(11).Array.from;
 
 /***/ }),
-/* 53 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(74);
-module.exports = __webpack_require__(12).Object.keys;
+__webpack_require__(96);
+__webpack_require__(40);
+module.exports = __webpack_require__(89);
 
 /***/ }),
-/* 54 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(77);
-__webpack_require__(75);
-module.exports = __webpack_require__(12).Symbol;
+var core = __webpack_require__(11);
+module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
+  return (core.JSON && core.JSON.stringify || JSON.stringify).apply(JSON, arguments);
+};
 
 /***/ }),
-/* 55 */
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(92);
+module.exports = __webpack_require__(11).Object.assign;
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(93);
+module.exports = __webpack_require__(11).Object.keys;
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(95);
+__webpack_require__(94);
+module.exports = __webpack_require__(11).Symbol;
+
+/***/ }),
+/* 72 */
 /***/ (function(module, exports) {
 
 module.exports = function(it){
@@ -26996,17 +27939,17 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 56 */
+/* 73 */
 /***/ (function(module, exports) {
 
 module.exports = function(){ /* empty */ };
 
 /***/ }),
-/* 57 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(18)
+var cof = __webpack_require__(22)
   , TAG = __webpack_require__(13)('toStringTag')
   // ES3 wrong here
   , ARG = cof(function(){ return arguments; }()) == 'Arguments';
@@ -27023,36 +27966,11 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// optional / simple context binding
-var aFunction = __webpack_require__(55);
-module.exports = function(fn, that, length){
-  aFunction(fn);
-  if(that === undefined)return fn;
-  switch(length){
-    case 1: return function(a){
-      return fn.call(that, a);
-    };
-    case 2: return function(a, b){
-      return fn.call(that, a, b);
-    };
-    case 3: return function(a, b, c){
-      return fn.call(that, a, b, c);
-    };
-  }
-  return function(/* ...args */){
-    return fn.apply(that, arguments);
-  };
-};
-
-/***/ }),
-/* 59 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // all enumerable object keys, includes symbols
-var $ = __webpack_require__(11);
+var $ = __webpack_require__(12);
 module.exports = function(it){
   var keys       = $.getKeys(it)
     , getSymbols = $.getSymbols;
@@ -27067,12 +27985,12 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 60 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-var toIObject = __webpack_require__(16)
-  , getNames  = __webpack_require__(11).getNames
+var toIObject = __webpack_require__(19)
+  , getNames  = __webpack_require__(12).getNames
   , toString  = {}.toString;
 
 var windowNames = typeof window == 'object' && Object.getOwnPropertyNames
@@ -27092,27 +28010,30 @@ module.exports.get = function getOwnPropertyNames(it){
 };
 
 /***/ }),
-/* 61 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(18);
-module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
-  return cof(it) == 'String' ? it.split('') : Object(it);
+// check on default Array iterator
+var Iterators  = __webpack_require__(15)
+  , ITERATOR   = __webpack_require__(13)('iterator')
+  , ArrayProto = Array.prototype;
+
+module.exports = function(it){
+  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
 };
 
 /***/ }),
-/* 62 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
-var cof = __webpack_require__(18);
+var cof = __webpack_require__(22);
 module.exports = Array.isArray || function(arg){
   return cof(arg) == 'Array';
 };
 
 /***/ }),
-/* 63 */
+/* 79 */
 /***/ (function(module, exports) {
 
 module.exports = function(it){
@@ -27120,18 +28041,35 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 64 */
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// call something on iterator step with safe closing on error
+var anObject = __webpack_require__(21);
+module.exports = function(iterator, fn, value, entries){
+  try {
+    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
+  // 7.4.6 IteratorClose(iterator, completion)
+  } catch(e){
+    var ret = iterator['return'];
+    if(ret !== undefined)anObject(ret.call(iterator));
+    throw e;
+  }
+};
+
+/***/ }),
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var $              = __webpack_require__(11)
-  , descriptor     = __webpack_require__(24)
-  , setToStringTag = __webpack_require__(25)
+var $              = __webpack_require__(12)
+  , descriptor     = __webpack_require__(26)
+  , setToStringTag = __webpack_require__(27)
   , IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(23)(IteratorPrototype, __webpack_require__(13)('iterator'), function(){ return this; });
+__webpack_require__(25)(IteratorPrototype, __webpack_require__(13)('iterator'), function(){ return this; });
 
 module.exports = function(Constructor, NAME, next){
   Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
@@ -27139,7 +28077,33 @@ module.exports = function(Constructor, NAME, next){
 };
 
 /***/ }),
-/* 65 */
+/* 82 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ITERATOR     = __webpack_require__(13)('iterator')
+  , SAFE_CLOSING = false;
+
+try {
+  var riter = [7][ITERATOR]();
+  riter['return'] = function(){ SAFE_CLOSING = true; };
+  Array.from(riter, function(){ throw 2; });
+} catch(e){ /* empty */ }
+
+module.exports = function(exec, skipClosing){
+  if(!skipClosing && !SAFE_CLOSING)return false;
+  var safe = false;
+  try {
+    var arr  = [7]
+      , iter = arr[ITERATOR]();
+    iter.next = function(){ return {done: safe = true}; };
+    arr[ITERATOR] = function(){ return iter; };
+    exec(arr);
+  } catch(e){ /* empty */ }
+  return safe;
+};
+
+/***/ }),
+/* 83 */
 /***/ (function(module, exports) {
 
 module.exports = function(done, value){
@@ -27147,11 +28111,11 @@ module.exports = function(done, value){
 };
 
 /***/ }),
-/* 66 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var $         = __webpack_require__(11)
-  , toIObject = __webpack_require__(16);
+var $         = __webpack_require__(12)
+  , toIObject = __webpack_require__(19);
 module.exports = function(object, el){
   var O      = toIObject(object)
     , keys   = $.getKeys(O)
@@ -27162,13 +28126,51 @@ module.exports = function(object, el){
 };
 
 /***/ }),
-/* 67 */
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.1 Object.assign(target, source, ...)
+var $        = __webpack_require__(12)
+  , toObject = __webpack_require__(28)
+  , IObject  = __webpack_require__(32);
+
+// should work with symbols and should have deterministic property order (V8 bug)
+module.exports = __webpack_require__(17)(function(){
+  var a = Object.assign
+    , A = {}
+    , B = {}
+    , S = Symbol()
+    , K = 'abcdefghijklmnopqrst';
+  A[S] = 7;
+  K.split('').forEach(function(k){ B[k] = k; });
+  return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
+}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
+  var T     = toObject(target)
+    , $$    = arguments
+    , $$len = $$.length
+    , index = 1
+    , getKeys    = $.getKeys
+    , getSymbols = $.getSymbols
+    , isEnum     = $.isEnum;
+  while($$len > index){
+    var S      = IObject($$[index++])
+      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
+      , length = keys.length
+      , j      = 0
+      , key;
+    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
+  }
+  return T;
+} : Object.assign;
+
+/***/ }),
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
-var $export = __webpack_require__(20)
-  , core    = __webpack_require__(12)
-  , fails   = __webpack_require__(21);
+var $export = __webpack_require__(14)
+  , core    = __webpack_require__(11)
+  , fails   = __webpack_require__(17);
 module.exports = function(KEY, exec){
   var fn  = (core.Object || {})[KEY] || Object[KEY]
     , exp = {};
@@ -27177,11 +28179,11 @@ module.exports = function(KEY, exec){
 };
 
 /***/ }),
-/* 68 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toInteger = __webpack_require__(69)
-  , defined   = __webpack_require__(19);
+var toInteger = __webpack_require__(37)
+  , defined   = __webpack_require__(23);
 // true  -> String#at
 // false -> String#codePointAt
 module.exports = function(TO_STRING){
@@ -27199,67 +28201,87 @@ module.exports = function(TO_STRING){
 };
 
 /***/ }),
-/* 69 */
-/***/ (function(module, exports) {
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
 
-// 7.1.4 ToInteger
-var ceil  = Math.ceil
-  , floor = Math.floor;
+// 7.1.15 ToLength
+var toInteger = __webpack_require__(37)
+  , min       = Math.min;
 module.exports = function(it){
-  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
+  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
 };
 
 /***/ }),
-/* 70 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// 7.1.13 ToObject(argument)
-var defined = __webpack_require__(19);
-module.exports = function(it){
-  return Object(defined(it));
-};
-
-/***/ }),
-/* 71 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var classof   = __webpack_require__(57)
-  , ITERATOR  = __webpack_require__(13)('iterator')
-  , Iterators = __webpack_require__(15);
-module.exports = __webpack_require__(12).getIteratorMethod = function(it){
-  if(it != undefined)return it[ITERATOR]
-    || it['@@iterator']
-    || Iterators[classof(it)];
-};
-
-/***/ }),
-/* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var anObject = __webpack_require__(27)
-  , get      = __webpack_require__(71);
-module.exports = __webpack_require__(12).getIterator = function(it){
+var anObject = __webpack_require__(21)
+  , get      = __webpack_require__(39);
+module.exports = __webpack_require__(11).getIterator = function(it){
   var iterFn = get(it);
   if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
   return anObject(iterFn.call(it));
 };
 
 /***/ }),
-/* 73 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(56)
-  , step             = __webpack_require__(65)
+var ctx         = __webpack_require__(30)
+  , $export     = __webpack_require__(14)
+  , toObject    = __webpack_require__(28)
+  , call        = __webpack_require__(80)
+  , isArrayIter = __webpack_require__(77)
+  , toLength    = __webpack_require__(88)
+  , getIterFn   = __webpack_require__(39);
+$export($export.S + $export.F * !__webpack_require__(82)(function(iter){ Array.from(iter); }), 'Array', {
+  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
+  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
+    var O       = toObject(arrayLike)
+      , C       = typeof this == 'function' ? this : Array
+      , $$      = arguments
+      , $$len   = $$.length
+      , mapfn   = $$len > 1 ? $$[1] : undefined
+      , mapping = mapfn !== undefined
+      , index   = 0
+      , iterFn  = getIterFn(O)
+      , length, result, step, iterator;
+    if(mapping)mapfn = ctx(mapfn, $$len > 2 ? $$[2] : undefined, 2);
+    // if object isn't iterable or it's array with default iterator - use simple case
+    if(iterFn != undefined && !(C == Array && isArrayIter(iterFn))){
+      for(iterator = iterFn.call(O), result = new C; !(step = iterator.next()).done; index++){
+        result[index] = mapping ? call(iterator, mapfn, [step.value, index], true) : step.value;
+      }
+    } else {
+      length = toLength(O.length);
+      for(result = new C(length); length > index; index++){
+        result[index] = mapping ? mapfn(O[index], index) : O[index];
+      }
+    }
+    result.length = index;
+    return result;
+  }
+});
+
+
+/***/ }),
+/* 91 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var addToUnscopables = __webpack_require__(73)
+  , step             = __webpack_require__(83)
   , Iterators        = __webpack_require__(15)
-  , toIObject        = __webpack_require__(16);
+  , toIObject        = __webpack_require__(19);
 
 // 22.1.3.4 Array.prototype.entries()
 // 22.1.3.13 Array.prototype.keys()
 // 22.1.3.29 Array.prototype.values()
 // 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(29)(Array, 'Array', function(iterated, kind){
+module.exports = __webpack_require__(33)(Array, 'Array', function(iterated, kind){
   this._t = toIObject(iterated); // target
   this._i = 0;                   // next index
   this._k = kind;                // kind
@@ -27285,72 +28307,58 @@ addToUnscopables('values');
 addToUnscopables('entries');
 
 /***/ }),
-/* 74 */
+/* 92 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.3.1 Object.assign(target, source)
+var $export = __webpack_require__(14);
+
+$export($export.S + $export.F, 'Object', {assign: __webpack_require__(85)});
+
+/***/ }),
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
-var toObject = __webpack_require__(70);
+var toObject = __webpack_require__(28);
 
-__webpack_require__(67)('keys', function($keys){
+__webpack_require__(86)('keys', function($keys){
   return function keys(it){
     return $keys(toObject(it));
   };
 });
 
 /***/ }),
-/* 75 */
+/* 94 */
 /***/ (function(module, exports) {
 
 
 
 /***/ }),
-/* 76 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var $at  = __webpack_require__(68)(true);
-
-// 21.1.3.27 String.prototype[@@iterator]()
-__webpack_require__(29)(String, 'String', function(iterated){
-  this._t = String(iterated); // target
-  this._i = 0;                // next index
-// 21.1.5.2.1 %StringIteratorPrototype%.next()
-}, function(){
-  var O     = this._t
-    , index = this._i
-    , point;
-  if(index >= O.length)return {value: undefined, done: true};
-  point = $at(O, index);
-  this._i += point.length;
-  return {value: point, done: false};
-});
-
-/***/ }),
-/* 77 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // ECMAScript 6 symbols shim
-var $              = __webpack_require__(11)
-  , global         = __webpack_require__(14)
-  , has            = __webpack_require__(22)
-  , DESCRIPTORS    = __webpack_require__(28)
-  , $export        = __webpack_require__(20)
-  , redefine       = __webpack_require__(31)
-  , $fails         = __webpack_require__(21)
-  , shared         = __webpack_require__(32)
-  , setToStringTag = __webpack_require__(25)
-  , uid            = __webpack_require__(33)
+var $              = __webpack_require__(12)
+  , global         = __webpack_require__(18)
+  , has            = __webpack_require__(24)
+  , DESCRIPTORS    = __webpack_require__(31)
+  , $export        = __webpack_require__(14)
+  , redefine       = __webpack_require__(35)
+  , $fails         = __webpack_require__(17)
+  , shared         = __webpack_require__(36)
+  , setToStringTag = __webpack_require__(27)
+  , uid            = __webpack_require__(38)
   , wks            = __webpack_require__(13)
-  , keyOf          = __webpack_require__(66)
-  , $names         = __webpack_require__(60)
-  , enumKeys       = __webpack_require__(59)
-  , isArray        = __webpack_require__(62)
-  , anObject       = __webpack_require__(27)
-  , toIObject      = __webpack_require__(16)
-  , createDesc     = __webpack_require__(24)
+  , keyOf          = __webpack_require__(84)
+  , $names         = __webpack_require__(76)
+  , enumKeys       = __webpack_require__(75)
+  , isArray        = __webpack_require__(78)
+  , anObject       = __webpack_require__(21)
+  , toIObject      = __webpack_require__(19)
+  , createDesc     = __webpack_require__(26)
   , getDesc        = $.getDesc
   , setDesc        = $.setDesc
   , _create        = $.create
@@ -27490,7 +28498,7 @@ if(!useNative){
   $.getNames   = $names.get = $getOwnPropertyNames;
   $.getSymbols = $getOwnPropertySymbols;
 
-  if(DESCRIPTORS && !__webpack_require__(30)){
+  if(DESCRIPTORS && !__webpack_require__(34)){
     redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
   }
 }
@@ -27560,15 +28568,15 @@ setToStringTag(Math, 'Math', true);
 setToStringTag(global.JSON, 'JSON', true);
 
 /***/ }),
-/* 78 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(73);
+__webpack_require__(91);
 var Iterators = __webpack_require__(15);
 Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
 
 /***/ }),
-/* 79 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27689,7 +28697,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 80 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27703,9 +28711,9 @@ function fromByteArray (uint8) {
 
 
 
-var base64 = __webpack_require__(79)
-var ieee754 = __webpack_require__(93)
-var isArray = __webpack_require__(94)
+var base64 = __webpack_require__(97)
+var ieee754 = __webpack_require__(114)
+var isArray = __webpack_require__(115)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -29483,10 +30491,10 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(34)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(41)))
 
 /***/ }),
-/* 81 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -29500,7 +30508,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 82 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -29514,7 +30522,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 83 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -29528,7 +30536,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 84 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -29542,7 +30550,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 85 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -29556,7 +30564,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 86 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -29570,7 +30578,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 87 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -29584,7 +30592,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 88 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -29598,7 +30606,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 89 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -29612,7 +30620,35 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 90 */
+/* 108 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 109 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -29626,7 +30662,7 @@ exports.push([module.i, "\n.text-xs-left {\n    text-align: center !important;\n
 
 
 /***/ }),
-/* 91 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -29640,7 +30676,7 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 92 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -29654,7 +30690,21 @@ exports.push([module.i, "\n  .main {\n    width: 100% !important;\n  }\n", ""]);
 
 
 /***/ }),
-/* 93 */
+/* 113 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.ig-floating-button {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin-right: 22px;\n    /*margin-bottom: 90px;*/\n    transition-duration: 50ms !important;\n    -webkit-animation-duration: 500ms;\n            animation-duration: 500ms;\n}\n\n.ig-floating-button-main {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin: 15px;\n    transition-duration: 500ms;\n    z-index: 10;\n}\n\n.ig-floating-button-main:hover {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg);\n    transition-duration: 500ms;\n}\n\n.ig-floating-button-container {\n    position: fixed;\n    background-color: transparent;\n    /*background-color: #323213;*/\n    padding: 40px;\n    right: 0;\n    top: 0;\n    z-index: 0;\n    height: 100%;\n}\n\n/*.ig-rotator {\n    transform: rotate(360deg);\n    transition-duration: 500ms;\n}*/\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 114 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -29744,7 +30794,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 94 */
+/* 115 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -29755,7 +30805,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 95 */
+/* 116 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -29945,7 +30995,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 96 */
+/* 117 */
 /***/ (function(module, exports) {
 
 
@@ -30040,13 +31090,13 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 97 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(81);
+var content = __webpack_require__(99);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -30066,13 +31116,13 @@ if(false) {
 }
 
 /***/ }),
-/* 98 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(82);
+var content = __webpack_require__(100);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -30092,13 +31142,13 @@ if(false) {
 }
 
 /***/ }),
-/* 99 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(83);
+var content = __webpack_require__(101);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -30118,1025 +31168,13 @@ if(false) {
 }
 
 /***/ }),
-/* 100 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(84);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4bfb5628&file=reactivos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4bfb5628&file=reactivos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 101 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(85);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4f578db2&file=caracteristicas.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4f578db2&file=caracteristicas.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 102 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(86);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5fd94188&file=secciones_trabajo.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5fd94188&file=secciones_trabajo.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 103 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(87);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6b65a878&file=form.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6b65a878&file=form.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 104 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(88);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6e288830&file=equipos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6e288830&file=equipos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 105 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(89);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-726f14db&file=laboratorios.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-726f14db&file=laboratorios.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 106 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(90);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-c0d89404&file=table.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-c0d89404&file=table.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 107 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(91);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-cfa827a2&file=formatos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-cfa827a2&file=formatos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 108 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(92);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ebd72242&file=menu.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ebd72242&file=menu.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 109 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <v-card>\n        <v-card-title>\n            <!-- <span>{[ selected ? 'Editar Laboratorio '.concat(codigo.toUpperCase()): 'Crear Laboratorio' ]}</span> -->\n            <v-spacer></v-spacer>\n            <v-btn flat @click.native=\"cleanFields()\" v-show=\"selected\"><v-icon>clear_all</v-icon>Limpiar</v-btn>\n        </v-card-title>\n        <v-card-text>\n          <br>\n            <v-container>\n                <!--<template v-for=\"f in fields.length\">-->\n                    <v-row>\n                        <v-col md6 xs12 v-for=\"field in fields\" :key=\"field.name\">\n                            <template v-if=\"field.type == String\"><!---->\n                                <v-text-field\n                                :label=\"field.verbose_name || ''\"\n                                :hint=\"field.hint || ''\"\n                                :required=\"fieldIsRequired(field)\"\n                                :rules=\"getRules(field)\"\n                                v-model=\"models[field.name]\"\n                                ></v-text-field>\n                            </template>\n                            <template v-else>\n                                <v-select\n                                :label=\"field.verbose_name || ''\"\n                                :hint=\"field.hint || ''\"\n                                :items=\"items[field.name]\"\n                                :required=\"fieldIsRequired(field)\"\n                                :rules=\"getRules(field)\"\n                                v-model=\"models[field.name]\"\n                                item-value=\"text\"\n                                autocomplete\n                                light\n                                ></v-select>\n                            </template>\n                        </v-col>\n                    </v-row>\n                <!--</template>-->\n            </v-container>\n            <small>* Campos requeridos.</small>\n            <br>\n        </v-card-text>\n        <v-card-row actions>\n            <v-btn flat @click.native=\"submitForm()\">\n                {{ !selected ? 'Crear': 'Editar' }}\n                <v-icon>check_circle</v-icon>\n            </v-btn>\n        </v-card-row>\n    </v-card>\n";
-
-/***/ }),
-/* 110 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n            <v-toolbar-side-icon @click.native.stop=\"sidebar = !sidebar\"></v-toolbar-side-icon>\n            <v-toolbar-title>Dasalud</v-toolbar-title>\n        </v-toolbar>\n        <main>\n            <v-sidebar v-model=\"sidebar\" drawer class=\"mt-0 scroll-y\" :mobile-break-point=\"576\">\n                <v-list dense>\n                    <v-list-item>\n                        <v-list-tile href=\"/\">\n                            <v-list-tile-avatar>\n                                <v-icon>accessibility</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Dashboard</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>people</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Pacientes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/pacientes/page/1/\">\n                                <v-list-tile-title>Lista Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/add/paciente/\">\n                                <v-list-tile-title>Crear Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>today</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Agendas</v-list-tile-title>\n                                </v-list-tile-content>\n                                    <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/\">\n                                <v-list-tile-title>Agenda del Dia</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/doctor/\">\n                                <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>open_in_browser</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenes/\">\n                                <v-list-tile-title>Lista de Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenesReporte/\">\n                                <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/portal_empresas/\">\n                            <v-list-tile-avatar>\n                                <v-icon>search</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Buscar Orden</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-divider light></v-divider>\n                    <v-subheader>Utilidades</v-subheader>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/medicos/\">\n                                <v-list-tile-title>Medicos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/instituciones/\">\n                                <v-list-tile-title>Instituciones</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>business_center</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Empresas y Planes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/empresas/\">\n                                <v-list-tile-title>Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/planes/\">\n                                <v-list-tile-title>Planes de Salud</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/procedimientos/\">\n                                <v-list-tile-title>Procedimientos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/plantillas/\">\n                                <v-list-tile-title>Plantillas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/servicios/\">\n                                <v-list-tile-title>Servicios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Usuarios</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuarios/\">\n                                <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuariosEmpresa/\">\n                                <v-list-tile-title>Usuarios Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-divider light></v-divider>\n                    <v-subheader>Laboratorio</v-subheader>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"#/ordenes_laboratorios/\">\n                            <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Administración</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/laboratorios/\">\n                              <v-list-tile-title>Laboratorios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/equipos/\">\n                                <v-list-tile-title>Equipos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/tecnicas/\">\n                                <v-list-tile-title>Tecnicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/secciones_trabajo/\">\n                                <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/reactivos/\">\n                                <v-list-tile-title>Reactivos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/caracteristicas/\">\n                                <v-list-tile-title>Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/especificacion_caracteristicas/\">\n                                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                </v-list>\n            </v-sidebar>\n            <div class=\"main\">\n                <v-content class=\"grey lighten-4\">\n                    <v-container fluid>\n                        <br>\n                        <v-spacer></v-spacer>\n                        <slot></slot>\n                    </v-container>\n                </v-content>\n            </div>\n        </main>\n    </div>\n";
-
-/***/ }),
-/* 111 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <!-- v-bind:headers=\"headers\" -->\n        <v-data-table\n            v-bind:headers=\"headers\"\n            v-model=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            :rowsPerPage=\"10\"\n            :filter=\"filter\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"headers\" scope=\"props\">\n                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n            </template>\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                    <td class=\"text-xs-center\" v-else>\n                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                            <v-icon>mode_edit</v-icon>\n                        </v-btn>\n                    </td>\n                </template>\n            </template>\n        </v-data-table>\n    </v-card>\n";
-
-/***/ }),
-/* 112 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Caracteristicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
-
-/***/ }),
-/* 113 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Equipos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
-
-/***/ }),
-/* 114 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Especificacion Caracteristica\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['nombre', 'caracteristica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
-
-/***/ }),
-/* 115 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div v-if=\"formato\">\n        <v-container>\n            <v-row>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-row>\n            <v-row>\n                <v-col md6 xs12 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand>\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        persistent-hint\n                                        light\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Texto de ayuda\"\n                                        v-model=\"item.help\"\n                                        hint=\"Ayuda textual que acompaña el campo\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia\"\n                                        v-model=\"item.referencia\"\n                                        hint=\"Texto de referencia para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Unidades\"\n                                        v-model=\"item.unidades\"\n                                        hint=\"Medida en unidades de el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                        :multi-line=\"item.tipo.name == 'textarea'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model_text\"\n                                        persistent-hint\n                                    ></v-text-field>\n                                    <div v-else-if=\"item.tipo.name == 'select'\">\n                                        <v-row>\n                                            <v-col md10 xs10>\n                                                <v-select\n                                                    :label=\"item.nombre\"\n                                                    :hint=\"item.help\"\n                                                    v-model=\"item.model_text\"\n                                                    :items=\"item.choices_select\"\n                                                    :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                    item-value=\"text\"\n                                                    persistent-hint\n                                                ></v-select>\n                                            </v-col>\n                                            <v-col md2 xs2>\n                                                <v-btn\n                                                    v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                    class=\"green--text darken-1\" icon=\"icon\"\n                                                    @click.native.stop=\"dialog = true; lastItem = item\">\n                                                    <v-icon>add</v-icon>\n                                                </v-btn>\n                                            </v-col>\n                                        </v-row>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-col xs7 md7>\n                                                <v-checkbox\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_check\"\n                                                  :value=\"choice\"\n                                                  primary\n                                                ></v-checkbox>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-col>\n                                            <v-col xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-col>\n                                        </v-row>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-col xs7 md7>\n                                                <v-radio\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_text\"\n                                                  :value=\"choice.name\"\n                                                  primary\n                                                ></v-radio>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-col>\n                                            <v-col xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-col>\n                                        </v-row>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-col>\n            </v-row>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon>close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title>Settings</v-toolbar-title>\n                        <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn>\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
-
-/***/ }),
-/* 116 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]\"\n              @selectedrow=\"customEventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
-
-/***/ }),
-/* 117 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Ordenes con Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n    </div>\n";
-
-/***/ }),
-/* 118 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Reactivos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'laboratorio.codigo', 'costos']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
-
-/***/ }),
-/* 119 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Secciones de Trabajo\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
-
-/***/ }),
-/* 120 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Tecnicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
-
-/***/ }),
 /* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __vue_script__, __vue_template__
-__webpack_require__(101)
-__vue_script__ = __webpack_require__(40)
-__vue_template__ = __webpack_require__(112)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/caracteristicas.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 122 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(104)
-__vue_script__ = __webpack_require__(41)
-__vue_template__ = __webpack_require__(113)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/equipos.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 123 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(97)
-__vue_script__ = __webpack_require__(42)
-__vue_template__ = __webpack_require__(114)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/especificacion_caracteristica.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 124 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(107)
-__vue_script__ = __webpack_require__(43)
-__vue_template__ = __webpack_require__(115)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/formatos.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 125 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(105)
-__vue_script__ = __webpack_require__(44)
-__vue_template__ = __webpack_require__(116)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/laboratorios.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 126 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(98)
-__vue_script__ = __webpack_require__(45)
-__vue_template__ = __webpack_require__(117)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/ordenes_laboratorios.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 127 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(100)
-__vue_script__ = __webpack_require__(46)
-__vue_template__ = __webpack_require__(118)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/reactivos.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 128 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(102)
-__vue_script__ = __webpack_require__(47)
-__vue_template__ = __webpack_require__(119)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/secciones_trabajo.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 129 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(99)
-__vue_script__ = __webpack_require__(48)
-__vue_template__ = __webpack_require__(120)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/tecnicas.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 130 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 131 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _toConsumableArray2 = __webpack_require__(137);
-
-var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
-
-var _getIterator2 = __webpack_require__(17);
-
-var _getIterator3 = _interopRequireDefault(_getIterator2);
-
-var _vue = __webpack_require__(4);
-
-var _vue2 = _interopRequireDefault(_vue);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-    name: 'floating-button',
-    data: function data() {
-        return {
-            animated: false
-        };
-    },
-    created: function created() {
-        // console.log(this.$slots.default);
-    },
-    computed: {
-        classesMain: function classesMain() {
-            return {
-                animated: true,
-                // fadeIn: this.animated,
-                // fadeOut: !this.animated,
-                'ig-floating-button-main': true
-            };
-        },
-        classesChildren: function classesChildren() {
-            return {
-                animated: true,
-                fadeInUp: this.animated,
-                fadeOutDown: !this.animated,
-                'ig-floating-button': true
-            };
-        }
-    },
-    methods: {
-        genButtons: function genButtons() {
-            var children = [];
-            var index = 1;
-            var margin = 0;
-            var base = 80;
-            if (this.animated) {
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
-
-                try {
-                    for (var _iterator = (0, _getIterator3.default)(this.$slots.child), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var node = _step.value;
-
-                        if (node.tag) {
-                            children.push(this.$createElement('div', {
-                                'class': this.classesChildren,
-                                style: {
-                                    'margin-bottom': (base + margin * index).toString() + 'px'
-                                }
-                            }, [node]));
-                            margin += 45;
-                        }
-                    }
-                } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion && _iterator.return) {
-                            _iterator.return();
-                        }
-                    } finally {
-                        if (_didIteratorError) {
-                            throw _iteratorError;
-                        }
-                    }
-                }
-            }
-            return children;
-        }
-    },
-    render: function render() {
-        var _this = this;
-
-        return this.$createElement('div', {
-            on: {
-                mouseover: function mouseover() {
-                    _this.animated = true;
-                },
-                mouseleave: function mouseleave() {
-                    _this.animated = false;
-                }
-            }
-        }, [this.$createElement('div', {
-            'class': this.classesMain
-        }, [this.$slots.default]), this.$createElement('div', { class: { 'ig-floating-button-container': this.animated } }, [].concat((0, _toConsumableArray3.default)(this.genButtons())))]);
-    }
-};
-// </script>
-//
-// <style lang="css">
-// .ig-floating-button {
-//     position: fixed;
-//     bottom: 0;
-//     right: 0;
-//     margin-right: 22px;
-//     /*margin-bottom: 90px;*/
-//     transition-duration: 50ms !important;
-//     animation-duration: 500ms;
-// }
-//
-// .ig-floating-button-main {
-//     position: fixed;
-//     bottom: 0;
-//     right: 0;
-//     margin: 15px;
-//     transition-duration: 500ms;
-//     z-index: 10;
-// }
-//
-// .ig-floating-button-main:hover {
-//     transform: rotate(360deg);
-//     transition-duration: 500ms;
-// }
-//
-// .ig-floating-button-container {
-//     position: fixed;
-//     background-color: transparent;
-//     /*background-color: #323213;*/
-//     padding: 40px;
-//     right: 0;
-//     top: 0;
-//     z-index: 0;
-//     height: 100%;
-// }
-//
-// /*.ig-rotator {
-//     transform: rotate(360deg);
-//     transition-duration: 500ms;
-// }*/
-// </style>
-//
-// <script>
-
-/***/ }),
-/* 132 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.ig-floating-button {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin-right: 22px;\n    /*margin-bottom: 90px;*/\n    transition-duration: 50ms !important;\n    -webkit-animation-duration: 500ms;\n            animation-duration: 500ms;\n}\n\n.ig-floating-button-main {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin: 15px;\n    transition-duration: 500ms;\n    z-index: 10;\n}\n\n.ig-floating-button-main:hover {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg);\n    transition-duration: 500ms;\n}\n\n.ig-floating-button-container {\n    position: fixed;\n    background-color: transparent;\n    /*background-color: #323213;*/\n    padding: 40px;\n    right: 0;\n    top: 0;\n    z-index: 0;\n    height: 100%;\n}\n\n/*.ig-rotator {\n    transform: rotate(360deg);\n    transition-duration: 500ms;\n}*/\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 133 */
-/***/ (function(module, exports, __webpack_require__) {
-
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(132);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-fe4394ee&file=floating-button.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-fe4394ee&file=floating-button.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 134 */,
-/* 135 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(133)
-__vue_script__ = __webpack_require__(131)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/components/floating-button.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 136 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(138), __esModule: true };
-
-/***/ }),
-/* 137 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _from = __webpack_require__(136);
-
-var _from2 = _interopRequireDefault(_from);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = function (arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
-      arr2[i] = arr[i];
-    }
-
-    return arr2;
-  } else {
-    return (0, _from2.default)(arr);
-  }
-};
-
-/***/ }),
-/* 138 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(76);
-__webpack_require__(143);
-module.exports = __webpack_require__(12).Array.from;
-
-/***/ }),
-/* 139 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// check on default Array iterator
-var Iterators  = __webpack_require__(15)
-  , ITERATOR   = __webpack_require__(13)('iterator')
-  , ArrayProto = Array.prototype;
-
-module.exports = function(it){
-  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
-};
-
-/***/ }),
-/* 140 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// call something on iterator step with safe closing on error
-var anObject = __webpack_require__(27);
-module.exports = function(iterator, fn, value, entries){
-  try {
-    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
-  // 7.4.6 IteratorClose(iterator, completion)
-  } catch(e){
-    var ret = iterator['return'];
-    if(ret !== undefined)anObject(ret.call(iterator));
-    throw e;
-  }
-};
-
-/***/ }),
-/* 141 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ITERATOR     = __webpack_require__(13)('iterator')
-  , SAFE_CLOSING = false;
-
-try {
-  var riter = [7][ITERATOR]();
-  riter['return'] = function(){ SAFE_CLOSING = true; };
-  Array.from(riter, function(){ throw 2; });
-} catch(e){ /* empty */ }
-
-module.exports = function(exec, skipClosing){
-  if(!skipClosing && !SAFE_CLOSING)return false;
-  var safe = false;
-  try {
-    var arr  = [7]
-      , iter = arr[ITERATOR]();
-    iter.next = function(){ return {done: safe = true}; };
-    arr[ITERATOR] = function(){ return iter; };
-    exec(arr);
-  } catch(e){ /* empty */ }
-  return safe;
-};
-
-/***/ }),
-/* 142 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.15 ToLength
-var toInteger = __webpack_require__(69)
-  , min       = Math.min;
-module.exports = function(it){
-  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
-};
-
-/***/ }),
-/* 143 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var ctx         = __webpack_require__(58)
-  , $export     = __webpack_require__(20)
-  , toObject    = __webpack_require__(70)
-  , call        = __webpack_require__(140)
-  , isArrayIter = __webpack_require__(139)
-  , toLength    = __webpack_require__(142)
-  , getIterFn   = __webpack_require__(71);
-$export($export.S + $export.F * !__webpack_require__(141)(function(iter){ Array.from(iter); }), 'Array', {
-  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
-  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
-    var O       = toObject(arrayLike)
-      , C       = typeof this == 'function' ? this : Array
-      , $$      = arguments
-      , $$len   = $$.length
-      , mapfn   = $$len > 1 ? $$[1] : undefined
-      , mapping = mapfn !== undefined
-      , index   = 0
-      , iterFn  = getIterFn(O)
-      , length, result, step, iterator;
-    if(mapping)mapfn = ctx(mapfn, $$len > 2 ? $$[2] : undefined, 2);
-    // if object isn't iterable or it's array with default iterator - use simple case
-    if(iterFn != undefined && !(C == Array && isArrayIter(iterFn))){
-      for(iterator = iterFn.call(O), result = new C; !(step = iterator.next()).done; index++){
-        result[index] = mapping ? call(iterator, mapfn, [step.value, index], true) : step.value;
-      }
-    } else {
-      length = toLength(O.length);
-      for(result = new C(length); length > index; index++){
-        result[index] = mapping ? mapfn(O[index], index) : O[index];
-      }
-    }
-    result.length = index;
-    return result;
-  }
-});
-
-
-/***/ }),
-/* 144 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-// <template lang="html">
-//     <div>
-//         <v-container>
-//             <v-row>
-//                 <h1 class="title">Formulario de Resultado</h1>
-//             </v-row>
-//             <v-row v-for="(item, id) of value.items" :key="id">
-//                 <v-col md8>
-//                     <v-text-field
-//                         v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea'"
-//                         :multi-line="item.tipo.name == 'textarea'"
-//                         :label="item.nombre"
-//                         :hint="item.help"
-//                         v-model="item.model_text"
-//                         :disabled="disabled"
-//                         persistent-hint
-//                     ></v-text-field>
-//                     <v-select
-//                         v-else-if="item.tipo.name == 'select'"
-//                         :label="item.nombre"
-//                         :hint="item.help"
-//                         v-model="item.model_text"
-//                         :items="item.choices_select"
-//                         item-value="text"
-//                         :disabled="disabled"
-//                         persistent-hint
-//                     ></v-select>
-//                     <div v-else-if="item.tipo.name == 'checkbox'">
-//                         <dl class="section-text section-text--def">
-//                             <dt>{{ item.nombre }}</dt>
-//                             <dd>{{ item.help }}</dd>
-//                         </dl>
-//                         <v-row v-for="(choice, choiceId) of item.choices" :key="choiceId">
-//                             <v-col xs7 md7>
-//                                 <v-checkbox
-//                                     v-if="!choice.edit"
-//                                     :label="choice.name"
-//                                     v-model="item.model_check"
-//                                     :value="choice"
-//                                     :disabled="disabled"
-//                                     primary
-//                                 ></v-checkbox>
-//                             </v-col>
-//                         </v-row>
-//                     </div>
-//                     <div v-else-if="item.tipo.name == 'radio'">
-//                         <dl class="section-text section-text--def">
-//                             <dt>{{ item.nombre }}</dt>
-//                             <dd>{{ item.help }}</dd>
-//                         </dl>
-//                         <v-row v-for="(choice, choiceId) of item.choices" :key="choiceId">
-//                             <v-col xs7 md7>
-//                                 <v-radio
-//                                     v-if="!choice.edit"
-//                                     :label="choice.name"
-//                                     v-model="item.model_text"
-//                                     :value="choice.name"
-//                                     :disabled="disabled"
-//                                     primary
-//                                 ></v-radio>
-//                             </v-col>
-//                         </v-row>
-//                     </div>
-//                 </v-col>
-//                 <v-col md2 v-if="Boolean(item.referencia)">
-//                   <h6 class="title">Referencia:</h6> {{ item.referencia }}
-//                 </v-col>
-//                 <v-col md2 v-if="Boolean(item.unidades)">
-//                   <h6 class="title">Unidades:</h6> {{ item.unidades }}
-//                 </v-col>
-//             </v-row>
-//         </v-container>
-//     </div>
-// </template>
-//
-// <script>
-exports.default = {
-    name: 'formulario-resultado',
-    data: function data() {
-        return {};
-    },
-    props: {
-        value: {},
-        disabled: {
-            type: Boolean,
-            default: true
-        }
-    },
-    methods: {}
-};
-// </script>
-//
-// <style lang="css">
-// </style>
-//
-
-/***/ }),
-/* 145 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 146 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(145);
+var content = __webpack_require__(102);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -31156,19 +31194,399 @@ if(false) {
 }
 
 /***/ }),
-/* 147 */
+/* 122 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(103);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4bfb5628&file=reactivos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4bfb5628&file=reactivos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(104);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4f578db2&file=caracteristicas.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4f578db2&file=caracteristicas.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 124 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(105);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5fd94188&file=secciones_trabajo.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5fd94188&file=secciones_trabajo.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 125 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(106);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6b65a878&file=form.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6b65a878&file=form.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 126 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(107);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6e288830&file=equipos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6e288830&file=equipos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 127 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(108);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-726f14db&file=laboratorios.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-726f14db&file=laboratorios.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 128 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(109);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-78b5f5be&file=bacteriologos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-78b5f5be&file=bacteriologos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 129 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(110);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-c0d89404&file=table.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-c0d89404&file=table.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(111);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-cfa827a2&file=formatos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-cfa827a2&file=formatos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 131 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(112);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ebd72242&file=menu.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ebd72242&file=menu.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 132 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(113);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-fe4394ee&file=floating-button.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-fe4394ee&file=floating-button.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 133 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-container>\n            <v-row>\n                <h1 class=\"title\">Formulario de Resultado</h1>\n            </v-row>\n            <v-row v-for=\"(item, id) of value.items\" :key=\"id\">\n                <v-col md8>\n                    <v-text-field\n                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                        :multi-line=\"item.tipo.name == 'textarea'\"\n                        :label=\"item.nombre\"\n                        :hint=\"item.help\"\n                        v-model=\"item.model_text\"\n                        :disabled=\"disabled\"\n                        persistent-hint\n                    ></v-text-field>\n                    <v-select\n                        v-else-if=\"item.tipo.name == 'select'\"\n                        :label=\"item.nombre\"\n                        :hint=\"item.help\"\n                        v-model=\"item.model_text\"\n                        :items=\"item.choices_select\"\n                        item-value=\"text\"\n                        :disabled=\"disabled\"\n                        persistent-hint\n                    ></v-select>\n                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                        <dl class=\"section-text section-text--def\">\n                            <dt>{{ item.nombre }}</dt>\n                            <dd>{{ item.help }}</dd>\n                        </dl>\n                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                            <v-col xs7 md7>\n                                <v-checkbox\n                                    v-if=\"!choice.edit\"\n                                    :label=\"choice.name\"\n                                    v-model=\"item.model_check\"\n                                    :value=\"choice\"\n                                    :disabled=\"disabled\"\n                                    primary\n                                ></v-checkbox>\n                            </v-col>\n                        </v-row>\n                    </div>\n                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                        <dl class=\"section-text section-text--def\">\n                            <dt>{{ item.nombre }}</dt>\n                            <dd>{{ item.help }}</dd>\n                        </dl>\n                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                            <v-col xs7 md7>\n                                <v-radio\n                                    v-if=\"!choice.edit\"\n                                    :label=\"choice.name\"\n                                    v-model=\"item.model_text\"\n                                    :value=\"choice.name\"\n                                    :disabled=\"disabled\"\n                                    primary\n                                ></v-radio>\n                            </v-col>\n                        </v-row>\n                    </div>\n                </v-col>\n                <v-col md2 v-if=\"Boolean(item.referencia)\">\n                  <h6 class=\"title\">Referencia:</h6> {{ item.referencia }}\n                </v-col>\n                <v-col md2 v-if=\"Boolean(item.unidades)\">\n                  <h6 class=\"title\">Unidades:</h6> {{ item.unidades }}\n                </v-col>\n            </v-row>\n        </v-container>\n    </div>\n";
 
 /***/ }),
-/* 148 */
+/* 134 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n            <v-toolbar-side-icon @click.native.stop=\"sidebar = !sidebar\"></v-toolbar-side-icon>\n            <v-toolbar-title>Dasalud</v-toolbar-title>\n        </v-toolbar>\n        <main>\n            <v-sidebar v-model=\"sidebar\" drawer class=\"mt-0 scroll-y\" :mobile-break-point=\"576\">\n                <v-list dense>\n                    <v-list-item>\n                        <v-list-tile href=\"/\">\n                            <v-list-tile-avatar>\n                                <v-icon>accessibility</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Dashboard</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>people</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Pacientes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/pacientes/page/1/\">\n                                <v-list-tile-title>Lista Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/add/paciente/\">\n                                <v-list-tile-title>Crear Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>today</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Agendas</v-list-tile-title>\n                                </v-list-tile-content>\n                                    <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/\">\n                                <v-list-tile-title>Agenda del Dia</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/doctor/\">\n                                <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>open_in_browser</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenes/\">\n                                <v-list-tile-title>Lista de Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenesReporte/\">\n                                <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/portal_empresas/\">\n                            <v-list-tile-avatar>\n                                <v-icon>search</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Buscar Orden</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-divider light></v-divider>\n                    <v-subheader>Utilidades</v-subheader>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/medicos/\">\n                                <v-list-tile-title>Medicos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/instituciones/\">\n                                <v-list-tile-title>Instituciones</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>business_center</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Empresas y Planes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/empresas/\">\n                                <v-list-tile-title>Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/planes/\">\n                                <v-list-tile-title>Planes de Salud</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/procedimientos/\">\n                                <v-list-tile-title>Procedimientos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/plantillas/\">\n                                <v-list-tile-title>Plantillas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/servicios/\">\n                                <v-list-tile-title>Servicios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Usuarios</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuarios/\">\n                                <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuariosEmpresa/\">\n                                <v-list-tile-title>Usuarios Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-divider light></v-divider>\n                    <v-subheader>Laboratorio</v-subheader>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"#/ordenes_laboratorios/\">\n                            <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Administración</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/bacteriologos/\">\n                              <v-list-tile-title>Bacteriologos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/laboratorios/\">\n                              <v-list-tile-title>Laboratorios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/equipos/\">\n                                <v-list-tile-title>Equipos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/tecnicas/\">\n                                <v-list-tile-title>Tecnicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/secciones_trabajo/\">\n                                <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/reactivos/\">\n                                <v-list-tile-title>Reactivos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/caracteristicas/\">\n                                <v-list-tile-title>Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/especificacion_caracteristicas/\">\n                                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                </v-list>\n            </v-sidebar>\n            <div class=\"main\">\n                <v-content class=\"grey lighten-4\">\n                    <v-container fluid>\n                        <br>\n                        <v-spacer></v-spacer>\n                        <slot></slot>\n                    </v-container>\n                </v-content>\n            </div>\n        </main>\n    </div>\n";
+
+/***/ }),
+/* 135 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <!-- v-bind:headers=\"headers\" -->\n        <v-data-table\n            v-bind:headers=\"headers\"\n            v-model=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            :rowsPerPage=\"10\"\n            :filter=\"filter\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"headers\" scope=\"props\">\n                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n            </template>\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                    <td class=\"text-xs-center\" v-else>\n                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                            <v-icon>mode_edit</v-icon>\n                        </v-btn>\n                    </td>\n                </template>\n            </template>\n        </v-data-table>\n    </v-card>\n";
+
+/***/ }),
+/* 136 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Bacteriologos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 137 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Caracteristicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 138 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Equipos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 139 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Especificacion Caracteristica\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['nombre', 'caracteristica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 140 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div v-if=\"formato\">\n        <v-container>\n            <v-row>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-row>\n            <v-row>\n                <v-col md6 xs12 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand>\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        persistent-hint\n                                        light\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Texto de ayuda\"\n                                        v-model=\"item.help\"\n                                        hint=\"Ayuda textual que acompaña el campo\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia\"\n                                        v-model=\"item.referencia\"\n                                        hint=\"Texto de referencia para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Unidades\"\n                                        v-model=\"item.unidades\"\n                                        hint=\"Medida en unidades de el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                        :multi-line=\"item.tipo.name == 'textarea'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model_text\"\n                                        persistent-hint\n                                    ></v-text-field>\n                                    <div v-else-if=\"item.tipo.name == 'select'\">\n                                        <v-row>\n                                            <v-col md10 xs10>\n                                                <v-select\n                                                    :label=\"item.nombre\"\n                                                    :hint=\"item.help\"\n                                                    v-model=\"item.model_text\"\n                                                    :items=\"item.choices_select\"\n                                                    :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                    item-value=\"text\"\n                                                    persistent-hint\n                                                ></v-select>\n                                            </v-col>\n                                            <v-col md2 xs2>\n                                                <v-btn\n                                                    v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                    class=\"green--text darken-1\" icon=\"icon\"\n                                                    @click.native.stop=\"dialog = true; lastItem = item\">\n                                                    <v-icon>add</v-icon>\n                                                </v-btn>\n                                            </v-col>\n                                        </v-row>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-col xs7 md7>\n                                                <v-checkbox\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_check\"\n                                                  :value=\"choice\"\n                                                  primary\n                                                ></v-checkbox>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-col>\n                                            <v-col xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-col>\n                                        </v-row>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-col xs7 md7>\n                                                <v-radio\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_text\"\n                                                  :value=\"choice.name\"\n                                                  primary\n                                                ></v-radio>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-col>\n                                            <v-col xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-col>\n                                        </v-row>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-col>\n            </v-row>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon>close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title>Settings</v-toolbar-title>\n                        <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn>\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+
+/***/ }),
+/* 141 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]\"\n              @selectedrow=\"customEventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 142 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Ordenes con Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n    </div>\n";
+
+/***/ }),
+/* 143 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Reactivos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'laboratorio.codigo', 'costos']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 144 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Secciones de Trabajo\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 145 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Tecnicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(146)
-__vue_script__ = __webpack_require__(144)
-__vue_template__ = __webpack_require__(147)
+__webpack_require__(132)
+__vue_script__ = __webpack_require__(45)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/components/floating-button.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 147 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(121)
+__vue_script__ = __webpack_require__(47)
+__vue_template__ = __webpack_require__(133)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -31185,78 +31603,240 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
+/* 148 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(128)
+__vue_script__ = __webpack_require__(50)
+__vue_template__ = __webpack_require__(136)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/bacteriologos.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
 /* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(150), __esModule: true };
+var __vue_script__, __vue_template__
+__webpack_require__(123)
+__vue_script__ = __webpack_require__(51)
+__vue_template__ = __webpack_require__(137)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/caracteristicas.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
 /***/ }),
 /* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var core = __webpack_require__(12);
-module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
-  return (core.JSON && core.JSON.stringify || JSON.stringify).apply(JSON, arguments);
-};
+var __vue_script__, __vue_template__
+__webpack_require__(126)
+__vue_script__ = __webpack_require__(52)
+__vue_template__ = __webpack_require__(138)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/equipos.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
 /***/ }),
 /* 151 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
+var __vue_script__, __vue_template__
+__webpack_require__(118)
+__vue_script__ = __webpack_require__(53)
+__vue_template__ = __webpack_require__(139)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/especificacion_caracteristica.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
+/***/ }),
+/* 152 */
+/***/ (function(module, exports, __webpack_require__) {
 
-/* harmony default export */ __webpack_exports__["default"] = ({
-    data: function () {
-        return {
-            validations: [],
-            _validated: false,
-            errors: [],
-        }
-    },
-    methods: {
-        addValidation: function (error) {
-            if (!'validations' in error) {
-                throw new Error ('No hay validaciones por hacer.');
-            }
-            // validations ever will evalue false for errors
-            this.validations.push(error);
-        },
-        removeValidation: function (error) {
-            this.validations.slice(this.validations.indexOf(error), 1);
-        },
-        hasError: function (obj) {
-            if (obj !== undefined) {
-                let validate = this.validations.find(i => i.target == obj);
-                validate.validations.forEach(error => {
-                    const valid = typeof error === 'function' ? error(validate): error;
-                    if (!valid) {
-                        return true;
-                    }
-                })
-                return false;
-            }
-            return this.validate();
-        },
-        validate: function () {
-            this._validated = true;
-            this.errors = []
-            this.validations.forEach(error => {
-                error.validations.forEach(validation => {
-                    const _error = typeof validation === 'function' ? validation(error.target): validation;
-                    if (_error) {
-                        this.errors.push(error)
-                    }
-                });
-            });
-            return this.errors.length >= 1;
-        }
-    }
-});
+var __vue_script__, __vue_template__
+__webpack_require__(130)
+__vue_script__ = __webpack_require__(54)
+__vue_template__ = __webpack_require__(140)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/formatos.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
+/***/ }),
+/* 153 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(127)
+__vue_script__ = __webpack_require__(55)
+__vue_template__ = __webpack_require__(141)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/laboratorios.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(119)
+__vue_script__ = __webpack_require__(56)
+__vue_template__ = __webpack_require__(142)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/ordenes_laboratorios.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 155 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(122)
+__vue_script__ = __webpack_require__(57)
+__vue_template__ = __webpack_require__(143)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/reactivos.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 156 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(124)
+__vue_script__ = __webpack_require__(58)
+__vue_template__ = __webpack_require__(144)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/secciones_trabajo.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 157 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(120)
+__vue_script__ = __webpack_require__(59)
+__vue_template__ = __webpack_require__(145)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/tecnicas.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 158 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
 
 /***/ })
 /******/ ]);

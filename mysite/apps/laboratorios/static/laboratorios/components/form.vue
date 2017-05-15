@@ -1,63 +1,16 @@
-<template lang="html">
-    <v-card>
-        <v-card-title>
-            <!-- <span>{[ selected ? 'Editar Laboratorio '.concat(codigo.toUpperCase()): 'Crear Laboratorio' ]}</span> -->
-            <v-spacer></v-spacer>
-            <v-btn flat @click.native="cleanFields()" v-show="selected"><v-icon>clear_all</v-icon>Limpiar</v-btn>
-        </v-card-title>
-        <v-card-text>
-          <br>
-            <v-container>
-                <!--<template v-for="f in fields.length">-->
-                    <v-row>
-                        <v-col md6 xs12 v-for="field in fields" :key="field.name">
-                            <template v-if="field.type == String"><!---->
-                                <v-text-field
-                                :label="field.verbose_name || ''"
-                                :hint="field.hint || ''"
-                                :required="fieldIsRequired(field)"
-                                :rules="getRules(field)"
-                                v-model="models[field.name]"
-                                ></v-text-field>
-                            </template>
-                            <template v-else>
-                                <v-select
-                                :label="field.verbose_name || ''"
-                                :hint="field.hint || ''"
-                                :items="items[field.name]"
-                                :required="fieldIsRequired(field)"
-                                :rules="getRules(field)"
-                                v-model="models[field.name]"
-                                item-value="text"
-                                autocomplete
-                                light
-                                ></v-select>
-                            </template>
-                        </v-col>
-                    </v-row>
-                <!--</template>-->
-            </v-container>
-            <small>* Campos requeridos.</small>
-            <br>
-        </v-card-text>
-        <v-card-row actions>
-            <v-btn flat @click.native="submitForm()">
-                {{ !selected ? 'Crear': 'Editar' }}
-                <v-icon>check_circle</v-icon>
-            </v-btn>
-        </v-card-row>
-    </v-card>
-</template>
-
 <script>
 import Vue from 'vue/dist/vue.js';
 import VueResource from 'vue-resource';
+import ErrorMixin from './../mixins/errormixin.js';
 import _ from 'underscore';
 
 Vue.use(VueResource);
-
+/* TODO:
+  -Corregir el método getRules();
+*/
 export default {
     name: 'igForm',
+    mixins: [ErrorMixin],
     props: {
         fields: {
             type: Array,
@@ -84,34 +37,105 @@ export default {
         selected: function () {
             if (this.selected) {
                 for (let attr in this.selected) {
-                    if (attr in this.models) {  // si esta en los campos
-                        if (attr in this.items) {  // si esta en los items que ya fueron fetched
-                            let key;
-                            for (let obj of this.items[attr]) {
-                                if (obj.id == this.selected[attr].id) {
-                                    key = obj;
-                                    break;
-                                }
-                            }
-                            if (key) {
-                                this.models[attr] = key;
-                            } else {
-                                key = this.fields.find(x => x.name == attr);
-                                if (key) {
-                                    this.selected[attr].text = this.selected[attr][key.key];
-                                    if (attr in this.appended && this.appended[attr]) {
-                                        this.items[attr].pop();
-                                        this.appended[attr] = false;
+                    if (attr in this.models) {  // si está en los campos
+                        if (this._isGroupField(attr)) {
+                            for (let subattr in this.models[attr]) {
+                                if (attr in this.items) {
+                                    let key;
+                                    if (this.selected[attr][subattr] instanceof Array) {
+                                        let field = this.fields.find(field => field.name == subattr && field.group == attr)
+                                        if (field && field.kwargs && field.type == Array && field.kwargs.multiple) {
+                                            key = [];
+                                            for (let obj of this.selected[attr][subattr]) {
+                                                let found = this.items[attr].find(object => object.id == obj.id);
+                                                if (found) {
+                                                    key.push(found);
+                                                }
+                                            }
+                                            if (!_.isEmpty(key)) {
+                                                this.models[attr][subattr] = key;
+                                            } else {
+                                                this.$emit('showsnack', 'No se encontró el campo múltiple ' + subattr.toString() + ' del grupo ' + attr.toString())
+                                                this.models[attr][subattr] = [];
+                                            }
+                                        }
+                                    } else {
+                                        for (let obj of this.items[attr]) {
+                                            if (obj.id == this.selected[attr][subattr].id) {
+                                                key = obj;
+                                                break;
+                                            }
+                                        }
+                                        if (key) {
+                                            this.models[attr][subattr] = key;
+                                        } else {  // support for OneToOneField and GroupField forms (models)
+                                            key = this.fields.find(x => x.group == attr && x.name == subattr);
+                                            if (key) {
+                                                this.selected[attr][subattr].text = this.selected[attr][subattr][key.key];
+                                                if (attr in this.appended && this.appended[attr]) {
+                                                    this.items[attr].pop();
+                                                    this.appended[attr] = false;
+                                                }
+                                                this.items[attr].push(this.selected[attr][subattr]);
+                                                this.appended[attr] = true;
+                                                this.models[attr][subattr] = this.selected[attr][subattr];
+                                            } else {
+                                                this.$emit('showsnack', `No se encuentra el campo "${subattr}" de el grupo "${attr}" deseado.`)
+                                            }
+                                        }
                                     }
-                                    this.items[attr].push(this.selected[attr]);
-                                    this.appended[attr] = true;
-                                    this.models[attr] = this.selected[attr];
-                                } else {
-                                    this.$emit('showsnack', 'No se encuentra el ' + attr.toString() + ' deseado.');
                                 }
+                                this.models[attr][subattr] = this.selected[attr][subattr];
                             }
                         } else {
-                            this.models[attr] = this.selected[attr];
+                            if (attr in this.items) {  // si esta en los items que ya fueron fetched
+                                let key;
+                                if (this.selected[attr] instanceof Array) {  // support for ManyToManyField
+                                    let field = this.fields.find(field => field.name == attr);
+                                    if (field && field.kwargs && field.type == Array && field.kwargs.multiple) {
+                                        key = [];
+                                        for (let obj of this.selected[attr]) {
+                                            let found = this.items[attr].find(object => object.id == obj.id);
+                                            if (found) {
+                                                key.push(found);
+                                            }
+                                        }
+                                        if (!_.isEmpty(key)) {
+                                            this.models[attr] = key;
+                                        } else {
+                                            this.$emit('showsnack', 'No se encontró el campo múltiple ' + attr.toString());
+                                            this.models[attr] = [];
+                                        }
+                                    }
+                                } else {
+                                    for (let obj of this.items[attr]) {
+                                        if (obj.id == this.selected[attr].id) {
+                                            key = obj;
+                                            break;
+                                        }
+                                    }
+                                    if (key) {
+                                        this.models[attr] = key;
+                                    } else {  // support for OneToOneField
+                                        key = this.fields.find(x => x.name == attr);
+                                        if (key) {
+                                            this.selected[attr].text = this.selected[attr][key.key];
+                                            if (attr in this.appended && this.appended[attr]) {
+                                                this.items[attr].pop();
+                                                this.appended[attr] = false;
+                                            }
+                                            this.items[attr].push(this.selected[attr]);
+                                            this.appended[attr] = true;
+                                            this.models[attr] = this.selected[attr];
+                                        } else {
+                                            this.$emit('showsnack', 'No se encuentra el ' + attr.toString() + ' deseado.');
+                                            this.models[attr] = '';
+                                        }
+                                    }
+                                }
+                            } else {
+                                this.models[attr] = this.selected[attr];
+                            }
                         }
                     }
                 }
@@ -121,7 +145,20 @@ export default {
     methods: {
         cleanFields: function () {
             for (let field of this.fields) {
-                this.models[field.name] = '';
+                if (field.group) {
+                    if (this.models[field.group][field.name] instanceof Array) {
+                        this.models[field.group][field.name] = new Array();
+                    } else {
+                        this.models[field.group][field.name] = '';
+                    }
+                } else {
+                    if (this.models[field.name] instanceof Array) {
+                        this.models[field.name] = new Array();
+                    } else {
+                        this.models[field.name] = '';
+                    }
+                }
+
                 if (field.name in this.appended) {
                     this.appended[field.name] = false;
                     this.items[field.name].pop();
@@ -136,7 +173,7 @@ export default {
         },
         _getFetchData: function () {
             for (let field of this.fields) {
-                if ('url' in field) {
+                if ('url' in field) {  // si tiene una url donde hacer la consulta
                     Vue.set(this.items, field.name, []);  // Se setean las propiedades de acuerdo a la documentacion, de forma reactiva
                     this.$http.get(field.url)
                         .then(response => {
@@ -154,25 +191,42 @@ export default {
                             }
                         });
                 }
-                Vue.set(this.models, field.name, field.type == String ? '': {});
+                let fieldType = {};
+                if (field.type == String || field.type == Number) {
+                    fieldType = '';
+                } else if (field.type == Array) {
+                    if ('kwargs' in field) {
+                        fieldType = field.kwargs.multiple ? []: {};
+                    }
+                }
+                if (field.group) {
+                    if (!this.models[field.group]) {
+                        Vue.set(this.models, field.group, {});
+                    }
+                    Vue.set(this.models[field.group], field.name, fieldType)
+                    // this.models[field.group][field.name] = fieldType;
+                } else {
+                    Vue.set(this.models, field.name, fieldType);
+                }
             }
         },
         getRules: function (field) {
             let rules = new Array();
-            if ('rules' in field) {
-                let customRules = field.rules();
-                if (typeof customRules === 'boolean' || typeof customRules === 'string') {
-                    rules.push(customRules);
-                } else {
-                    for (let rule of customRules) {
-                        rules.push(rule);
-                    }
-                }
-            } else {
-                if (this.fieldIsRequired(field)) {
-                    rules.push(!this._validated || !_.isEmpty(this.models[field.name]) || 'Este campo es obligatorio');
-                }
+            if (this.fieldIsRequired(field)) {
+                rules.push(_field => !_.isEmpty(this.models[_field.name]) || 'Este campo es obligatorio')
             }
+            if ('rules' in field) {
+                if (!field.rules instanceof Array) {
+                    console.error('Las reglas de los campos, deben ser un array [' + field.name.toString() + ']');
+                }
+                rules.push.apply(rules, field.rules);
+            }
+            // this.addValidation({
+            //     target: field,
+            //     validations: rules.map(function (obj) {
+            //         // return typeof obj == 'function' ? _field => !obj(_field): obj;
+            //     })
+            // })
             return rules
         },
         submitForm: function () {
@@ -188,8 +242,6 @@ export default {
             this.$http[method](url, this.models, {headers: {'X-CSRFToken': token.value}})
                 .then(response => {
                     if (response.status == 201) {
-                        // this.selected_before = response.body;
-                        // this.laboratorios.push(this.selected_before);
                         message = 'Laboratorio Creado Correctamente';
                         this.$emit('objectcreated', response.body);
                     } else {
@@ -213,7 +265,121 @@ export default {
                         this.$emit('showsnack', message);
                     }
                 });
-        }
+        },
+        _isGroupField: function (item) {
+            if (!_.isArray(this.models[item]) && !_.isObject(this.models[item])) {
+                for (let field of this.fields) {
+                    if (field.group == item) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        },
+        _genCardHeader: function () {
+            let childs = [this.$createElement('v-spacer', [])]
+            if (this.selected) {
+                childs.push(
+                  this.$createElement('v-btn', {
+                      nativeOn: {
+                        click: () => {
+                          this.cleanFields()
+                        }
+                      },
+                      props: {flat: true}
+                    },
+                    [
+                      this.$createElement('v-icon', ['clear_all']),
+                      'Limpiar'
+                  ])
+                )
+            }
+            return this.$createElement('v-card-title', childs)
+        },
+        _genCardBody: function() {
+            let match = {};
+            match[typeof String()] = 'v-text-field';
+            match[typeof Number()] = 'v-text-field';
+            match[typeof Array()] = 'v-select';
+
+            let childs = [];
+            for (let field of this.fields) {
+                let defaultProps = {
+                    label: field.verbose_name || '',
+                    hint: field.hint || '',
+                    required: this.fieldIsRequired(field),
+                    rules: this.getRules(field),
+                }
+                if (match[typeof field.type()] == 'v-text-field') {
+                    defaultProps.type = _.isEmpty(field.kwargs)? 'text': _.isEmpty(field.kwargs.type)? 'text': field.kwargs.type;
+                } else if (match[typeof field.type()] == 'v-select') {
+                    defaultProps.items = this.items[field.name];
+                    defaultProps['item-value'] = 'text';
+                    defaultProps.autocomplete = true;
+                    defaultProps.light = true;
+                    if ('kwargs' in field) {
+                        defaultProps.multiple = field.kwargs.multiple ? true: false;
+                    }
+                }
+
+                childs.push(this.$createElement('v-col', {attrs: {'md6': true, 'xs12': true}}, [
+                    this.$createElement(match[typeof field.type()], {
+                        props: Object.assign({
+
+                        }, defaultProps),
+                        domProps: {
+                          value: field.group ? this.models[field.group][field.name]: this.models[field.name]
+                        },
+                        on: {
+                          input: (event) => {
+                            if (field.group) {
+                                this.models[field.group][field.name] = event;
+                            } else {
+                                this.models[field.name] = event;
+                            }
+                            this.$emit('input', event);
+                          }
+                        }
+                    }, [])
+                ]));
+            }
+            return this.$createElement('v-card-text', [
+                this.$createElement('br', []),
+                this.$createElement('v-container', [
+                    this.$createElement('v-row', childs)
+                ]),
+                this.$createElement('small', ['*Campos requeridos.']),
+                this.$createElement('br', [])
+            ]);
+        },
+        _genCardFooter: function () {
+            return this.$createElement('v-card-row', {
+              props: {
+                actions: true
+              }
+            }, [
+                this.$createElement('v-btn', {
+                  props: {
+                    flat: true,
+                  },
+                  nativeOn: {
+                    click: (event) => {
+                        this.submitForm(event.target.value);
+                    }
+                  }
+                }, [
+                  !this.selected ? 'Crear': 'Editar',
+                  this.$createElement('v-icon', ['check_circle'])
+                ])
+            ])
+        },
+    },
+    render: function () {
+      return this.$createElement('v-card', [
+          this._genCardHeader(),
+          this._genCardBody(),
+          this._genCardFooter(),
+      ]);
     }
 }
 </script>

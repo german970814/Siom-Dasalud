@@ -9,7 +9,8 @@ from rest_framework.parsers import JSONParser
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo,
     Tecnica, Reactivo, Caracteristica,
-    EspecificacionCaracteristica, Bacteriologo, Formato
+    EspecificacionCaracteristica, Bacteriologo,
+    Formato, Resultado
 )
 from .mixins import IGModelSerializer, IGSerializer
 from mysite.apps.parametros.serializers import ServicioSerializer
@@ -98,6 +99,7 @@ class BacteriologoSerializer(IGModelSerializer, serializers.ModelSerializer):
     save_in_nested = ('usuario', )  # permite crear usuarios a partir de el serializer padre.
 
     usuario = UsuarioSerializer(fields=('username', 'email', 'password', ))
+    areas = SeccionTrabajoSerializer(fields=('codigo', 'descripcion', ), many=True)
 
     class Meta:
         model = Bacteriologo
@@ -119,3 +121,12 @@ class FormatoSerializer(IGSerializer):
             stream = BytesIO(formato_string.encode('utf-8'))
             data["formato"] = JSONParser().parse(stream)
         return data
+
+
+class ResultadoSerializer(IGSerializer):
+    laboratorio = LaboratorioSerializer(fields=('codigo', 'nombre', ))
+    # orden = OrdenSerializer(fields=)
+
+    class Meta:
+        model = Resultado
+        fields = ('id', 'laboratorio', 'bacteriologo', 'fecha', 'resultado', )

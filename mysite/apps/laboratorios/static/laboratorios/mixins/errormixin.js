@@ -4,7 +4,7 @@ export default {
     data: function () {
         return {
             validations: [],
-            _validated: false,
+            // _validated: false,
             errors: [],
         }
     },
@@ -22,9 +22,9 @@ export default {
         hasError: function (obj) {
             if (obj !== undefined) {
                 let validate = this.validations.find(i => i.target == obj);
-                validate.validations.forEach(error => {
-                    const valid = typeof error === 'function' ? error(validate): error;
-                    if (!valid) {
+                validate.validations.forEach(validation => {
+                    const error = typeof validation === 'function' ? validation(validate): validation;
+                    if (error) {
                         return true;
                     }
                 })
@@ -33,17 +33,17 @@ export default {
             return this.validate();
         },
         validate: function () {
-            this._validated = true;
-            this.errors = []
+            // this._validated = true;
+            let errors = []
             this.validations.forEach(error => {
                 error.validations.forEach(validation => {
                     const _error = typeof validation === 'function' ? validation(error.target): validation;
                     if (_error) {
-                        this.errors.push(error)
+                        errors.push(error)
                     }
                 });
             });
-            return this.errors.length >= 1;
+            return errors.length >= 1;
         }
     }
 }

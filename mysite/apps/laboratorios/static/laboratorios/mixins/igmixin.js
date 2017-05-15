@@ -20,7 +20,7 @@ export default {
                         this.elements.push(object);
                     }
                 }, response => {
-                    showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
+                    this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
                 });
         },
         __getParent__: function () {

@@ -231,6 +231,11 @@
                             </v-list-tile>
                         </v-list-item>
                         <v-list-item>
+                            <v-list-tile ripple href="#/bacteriologos/">
+                              <v-list-tile-title>Bacteriologos</v-list-tile-title>
+                            </v-list-tile>
+                        </v-list-item>
+                        <v-list-item>
                             <v-list-tile ripple href="#/laboratorios/">
                               <v-list-tile-title>Laboratorios</v-list-tile-title>
                             </v-list-tile>

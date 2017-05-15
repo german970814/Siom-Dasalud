@@ -7,7 +7,7 @@
               table-title="Bacteriologos"
               :headers="headers"
               :data="elements"
-              :fields="['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas']"
+              :fields="['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']"
               @selectedrow="eventUpdatedForm"
               ></ig-table>
             </v-col>
@@ -36,9 +36,15 @@
 <script>
 import _ from 'underscore';
 import IgMixin from './../mixins/igmixin.js';
+import TableComponent from './../components/table.vue';
+import FormComponent from './../components/form.vue';
 import URL from './../urls.js';
 
 export default {
+    components: {
+        igTable: TableComponent,
+        igForm: FormComponent,
+    },
     mixins: [IgMixin],
     data: function () {
           return {
@@ -72,19 +78,27 @@ export default {
                   left: true,
                   sortable: false,
                 },
+                {
+                  text: 'Areas',
+                  value: 'areas-nombre',
+                  left: true,
+                  sortable: false,
+                },
               ],
               fields: [
                 {
                   name: 'username',
                   verbose_name: 'Usuario',
                   type: String,
-                  hint: 'Este es el nombre de usuario de el bacteriologo.'
+                  hint: 'Este es el nombre de usuario de el bacteriologo.',
+                  group: 'usuario',
                 },
                 {
                   name: 'password',
                   verbose_name: 'Contraseña',
                   type: String,
                   hint: 'Esta es la contraseña de el bacteriologo.',
+                  group: 'usuario',
                   kwargs: {
                     type: 'password'
                   }
@@ -94,6 +108,7 @@ export default {
                   verbose_name: 'Email',
                   type: String,
                   hint: 'Este es el email de el bacteriologo.',
+                  group: 'usuario',
                   kwargs: {
                     type: 'email'
                   }
@@ -111,7 +126,7 @@ export default {
                   hint: 'Código de el bacteriologo.',
                 },
                 {
-                  name: 'regisro',
+                  name: 'registro',
                   verbose_name: 'Registro',
                   type: Number,
                   hint: 'Registro de el bacteriologo.',
