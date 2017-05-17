@@ -7,7 +7,7 @@
               table-title="Ordenes con Laboratorios"
               :headers="headers"
               :data="elements"
-              :fields="['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']"
+              :fields="['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha', {href: '/resultados/:id/', patrons: [{identifier: 'id', replace: item => item.id}]}]"
               @selectedrow="eventUpdatedForm"
               ></ig-table>
             </v-col>
@@ -83,6 +83,9 @@ export default {
                     text: 'Fecha Atención',
                     value: 'paciente-pnombre',
                     left: true,
+                },
+                {
+                  text: 'Accion', left: true, sortable: false
                 },
             ],
         }

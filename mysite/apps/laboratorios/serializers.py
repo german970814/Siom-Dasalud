@@ -15,6 +15,7 @@ from .models import (
 from .mixins import IGModelSerializer, IGSerializer
 from mysite.apps.parametros.serializers import ServicioSerializer
 from mysite.apps.datos.serializers import UsuarioSerializer
+from mysite.apps.historias.serializers import OrdenSerializer
 
 
 class TecnicaSerializer(IGModelSerializer, serializers.ModelSerializer):
@@ -125,8 +126,17 @@ class FormatoSerializer(IGSerializer):
 
 class ResultadoSerializer(IGSerializer):
     laboratorio = LaboratorioSerializer(fields=('codigo', 'nombre', ))
-    # orden = OrdenSerializer(fields=)
+    orden = OrdenSerializer(fields=('id', ))
 
     class Meta:
         model = Resultado
-        fields = ('id', 'laboratorio', 'bacteriologo', 'fecha', 'resultado', )
+        fields = ('id', 'laboratorio', 'bacteriologo', 'fecha', 'resultado', 'orden', )
+        extra_kwargs = {'fecha': {'read_only': True}, 'bacteriologo': {'read_only': True}}
+
+    def to_representation(self, instance):
+        data = super(ResultadoSerializer, self).to_representation(instance)
+        if instance.resultado:
+            resultado_string = instance.resultado
+            stream = BytesIO(resultado_string.encode('utf-8'))
+            data["resultado"] = JSONParser().parse(stream)
+        return data

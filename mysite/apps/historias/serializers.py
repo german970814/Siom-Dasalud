@@ -27,7 +27,7 @@ class OrdenSerializer(IGModelSerializer, serializers.ModelSerializer):
         fields = ('id', 'paciente', 'fecha', 'empresa', 'institucion', 'empresa_cliente', 'laboratorios', )
 
     def get_laboratorios(self, obj):
-        servicios = Orden.objects.servicios()
+        servicios = Orden.objects.filter(id=obj.id).servicios()
         laboratorios = Laboratorio.objects.filter(servicio__in=servicios).distinct()
         return [{
             'id': laboratorio.id,

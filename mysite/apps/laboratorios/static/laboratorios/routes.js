@@ -10,6 +10,7 @@ import EspecificacionCaracteristica from './pages/especificacion_caracteristica.
 import OrdenesLaboratorios from './pages/ordenes_laboratorios.vue';
 import Formatos from './pages/formatos.vue';
 import Bacteriologos from './pages/bacteriologos.vue';
+import Resultados from './pages/resultados.vue';
 
 const routes = [
     {path: '/laboratorios/', component: Laboratorios},
@@ -22,6 +23,7 @@ const routes = [
     {path: '/ordenes_laboratorios/', component: OrdenesLaboratorios},
     {path: '/formatos/:id/', component: Formatos},
     {path: '/bacteriologos/', component: Bacteriologos},
+    {path: '/resultados/:id/', component: Resultados},
 ]
 
 // router.beforeEach((to, from, next) => {

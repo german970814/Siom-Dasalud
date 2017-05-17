@@ -170,14 +170,39 @@ def resultado_api_view(request, pk):
     orden = get_object_or_404(Orden, pk=pk)
     args = tuple()
     kwargs = dict()
+    try:
+        bacteriologo = request.user.bacteriologo
+    except:
+        kwargs['status'] = status.HTTP_403_FORBIDDEN
+        return Response(**kwargs)
 
     if request.method == 'GET':
+        data = {}
+        resultados = orden.resultados_laboratorio.all()
+        serializer_resultados = ResultadoSerializer(resultados, many=True)
+        data['resultados'] = serializer_resultados.data
+
         laboratorios = Laboratorio.objects.filter(id__in=list(filter(lambda x: x is not None,
-            Orden.objects.filter(id=orden.id).servicios().values_list('laboratorio__id', flat=True))))
+            Orden.objects.filter(id=orden.id).servicios().values_list('laboratorio__id', flat=True)))).exclude(
+                id__in=resultados.values_list('laboratorio__id', flat=True)
+            )
         formatos = Formato.objects.filter(id__in=laboratorios.values_list('formato__id', flat=True))
         serializer = FormatoSerializer(formatos, many=True)
-        args = (serializer.data, )
-    # if request.method == 'POST':
+        data['formatos'] = serializer.data
+        args = (data, )
+    if request.method == 'POST':
+        kwargs_serializer = {'data': request.data}
+        if 'id' in request.data:
+            kwargs_serializer['instance'] = get_object_or_404(Resultado, pk=request.data['id'])
+        serializer = ResultadoSerializer(**kwargs_serializer)
+        if serializer.is_valid():
+            serializer.save(bacteriologo=bacteriologo)
+            args = (serializer.data, )
+            kwargs['status'] = status.HTTP_201_CREATED
+        else:
+            args = (serializer.errors, )
+            kwargs['status'] = status.HTTP_400_BAD_REQUEST
+        # Resultado.objects.update_or_create(**request.data)
 
     return Response(*args, **kwargs)
 
@@ -234,7 +259,7 @@ def ordenes_laboratorios(request):
 
         ordenes = Orden.objects.filter(
             id__in=OrdenProducto.objects.filter(
-                servicio__in=servicios
+                servicio__nombre__id__in=servicios
             ).values_list('orden_id', flat=True).distinct()
         )
         serializer = OrdenSerializer(ordenes, many=True)

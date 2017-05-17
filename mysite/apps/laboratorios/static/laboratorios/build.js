@@ -11406,6 +11406,7 @@ const reactivos = BASE.concat('reactivos/');
 const secciones_trabajo = BASE.concat('seccion_trabajo/');
 const tecnicas = BASE.concat('tecnicas/');
 const servicios = BASE.concat('servicios/');
+const resultados = BASE.concat('resultado/');
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     BASE,
@@ -11421,6 +11422,7 @@ const servicios = BASE.concat('servicios/');
     especificaciones_por_carateristica,
     formatos,
     bacteriologos,
+    resultados,
 });
 
 
@@ -24398,6 +24400,9 @@ module.exports = g;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__ = __webpack_require__(148);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__);
+
 
 
 
@@ -24422,6 +24427,7 @@ const routes = [
     {path: '/ordenes_laboratorios/', component: __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue___default.a},
     {path: '/formatos/:id/', component: __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue___default.a},
     {path: '/bacteriologos/', component: __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue___default.a},
+    {path: '/resultados/:id/', component: __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue___default.a},
 ]
 
 // router.beforeEach((to, from, next) => {
@@ -24531,6 +24537,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    name: 'errorMixin',
     data: function () {
         return {
             validations: [],
@@ -24552,13 +24559,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         hasError: function (obj) {
             if (obj !== undefined) {
                 let validate = this.validations.find(i => i.target == obj);
-                validate.validations.forEach(validation => {
-                    const error = typeof validation === 'function' ? validation(validate): validation;
+                let validations = validate.validations;
+                for (let validation of validations) {
+                    const error = typeof validation === 'function' ? validation(validate.target): validation;
                     if (error) {
                         return true;
                     }
-                })
-                return false;
+                }
+                return false
             }
             return this.validate();
         },
@@ -24638,7 +24646,7 @@ exports.default = {
             var index = 1;
             var margin = 0;
             var base = 80;
-            if (this.animated) {
+            if (this.animated && this.$slots.child) {
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
@@ -25413,6 +25421,7 @@ Object.defineProperty(exports, "__esModule", {
 //                         v-model="item.model_text"
 //                         :disabled="disabled"
 //                         persistent-hint
+//                         @input="$emit('input', $event)"
 //                     ></v-text-field>
 //                     <v-select
 //                         v-else-if="item.tipo.name == 'select'"
@@ -25423,6 +25432,7 @@ Object.defineProperty(exports, "__esModule", {
 //                         item-value="text"
 //                         :disabled="disabled"
 //                         persistent-hint
+//                         @input="$emit('input', $event)"
 //                     ></v-select>
 //                     <div v-else-if="item.tipo.name == 'checkbox'">
 //                         <dl class="section-text section-text--def">
@@ -25438,6 +25448,7 @@ Object.defineProperty(exports, "__esModule", {
 //                                     :value="choice"
 //                                     :disabled="disabled"
 //                                     primary
+//                                     @input="$emit('input', $event)"
 //                                 ></v-checkbox>
 //                             </v-col>
 //                         </v-row>
@@ -25456,6 +25467,7 @@ Object.defineProperty(exports, "__esModule", {
 //                                     :value="choice.name"
 //                                     :disabled="disabled"
 //                                     primary
+//                                     @input="$emit('input', $event)"
 //                                 ></v-radio>
 //                             </v-col>
 //                         </v-row>
@@ -25818,10 +25830,6 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(16);
-
-var _getIterator3 = _interopRequireDefault(_getIterator2);
-
 var _keys = __webpack_require__(63);
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -25829,6 +25837,10 @@ var _keys2 = _interopRequireDefault(_keys);
 var _typeof2 = __webpack_require__(20);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _getIterator2 = __webpack_require__(16);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25904,6 +25916,39 @@ exports.default = {
         // this.$refs.dataTable.rowsPerPage = 10;
     },
     methods: {
+        getHrefField: function getHrefField(field, item) {
+            var href = void 0;
+            if (!'patrons' in field) {
+                href = field.href.replace(/\/\:[a-zA-Z]*\//g, '/' + item.id + '/');
+            } else {
+                href = field.href;
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = (0, _getIterator3.default)(field.patrons), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var patron = _step.value;
+
+                        href = href.replace(':'.concat(patron.identifier), typeof patron.replace == 'function' ? patron(item) : patron);
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            }
+            return href;
+        },
         _validValue: function _validValue(val) {
             return val !== null && ['undefined', 'boolean'].indexOf(typeof val === 'undefined' ? 'undefined' : (0, _typeof3.default)(val)) === -1;
         },
@@ -25926,26 +25971,26 @@ exports.default = {
         },
         getattr: function getattr(obj, attr) {
             var attrs = attr.split('.');
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
 
             try {
-                for (var _iterator = (0, _getIterator3.default)(attrs), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var at = _step.value;
+                for (var _iterator2 = (0, _getIterator3.default)(attrs), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var at = _step2.value;
 
                     if (at in obj) {
                         obj = obj[at];
                     }
                     if (obj instanceof Array) {
                         var mix = '';
-                        var _iteratorNormalCompletion2 = true;
-                        var _didIteratorError2 = false;
-                        var _iteratorError2 = undefined;
+                        var _iteratorNormalCompletion3 = true;
+                        var _didIteratorError3 = false;
+                        var _iteratorError3 = undefined;
 
                         try {
-                            for (var _iterator2 = (0, _getIterator3.default)(obj), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                                var elem = _step2.value;
+                            for (var _iterator3 = (0, _getIterator3.default)(obj), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                                var elem = _step3.value;
 
                                 attr = attrs[attrs.length - 1];
                                 if (mix) {
@@ -25954,16 +25999,16 @@ exports.default = {
                                 mix += elem[attr];
                             }
                         } catch (err) {
-                            _didIteratorError2 = true;
-                            _iteratorError2 = err;
+                            _didIteratorError3 = true;
+                            _iteratorError3 = err;
                         } finally {
                             try {
-                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                                    _iterator2.return();
+                                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                                    _iterator3.return();
                                 }
                             } finally {
-                                if (_didIteratorError2) {
-                                    throw _iteratorError2;
+                                if (_didIteratorError3) {
+                                    throw _iteratorError3;
                                 }
                             }
                         }
@@ -25972,16 +26017,16 @@ exports.default = {
                     }
                 }
             } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
                     }
                 } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
                     }
                 }
             }
@@ -27330,7 +27375,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //               table-title="Ordenes con Laboratorios"
 //               :headers="headers"
 //               :data="elements"
-//               :fields="['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']"
+//               :fields="['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha', {href: '/resultados/:id/', patrons: [{identifier: 'id', replace: item => item.id}]}]"
 //               @selectedrow="eventUpdatedForm"
 //               ></ig-table>
 //             </v-col>
@@ -27382,6 +27427,8 @@ exports.default = {
                 text: 'Fecha Atención',
                 value: 'paciente-pnombre',
                 left: true
+            }, {
+                text: 'Accion', left: true, sortable: false
             }]
         };
     },
@@ -31483,7 +31530,7 @@ if(false) {
 /* 133 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n            <v-row>\n                <h1 class=\"title\">Formulario de Resultado</h1>\n            </v-row>\n            <v-row v-for=\"(item, id) of value.items\" :key=\"id\">\n                <v-col md8>\n                    <v-text-field\n                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                        :multi-line=\"item.tipo.name == 'textarea'\"\n                        :label=\"item.nombre\"\n                        :hint=\"item.help\"\n                        v-model=\"item.model_text\"\n                        :disabled=\"disabled\"\n                        persistent-hint\n                    ></v-text-field>\n                    <v-select\n                        v-else-if=\"item.tipo.name == 'select'\"\n                        :label=\"item.nombre\"\n                        :hint=\"item.help\"\n                        v-model=\"item.model_text\"\n                        :items=\"item.choices_select\"\n                        item-value=\"text\"\n                        :disabled=\"disabled\"\n                        persistent-hint\n                    ></v-select>\n                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                        <dl class=\"section-text section-text--def\">\n                            <dt>{{ item.nombre }}</dt>\n                            <dd>{{ item.help }}</dd>\n                        </dl>\n                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                            <v-col xs7 md7>\n                                <v-checkbox\n                                    v-if=\"!choice.edit\"\n                                    :label=\"choice.name\"\n                                    v-model=\"item.model_check\"\n                                    :value=\"choice\"\n                                    :disabled=\"disabled\"\n                                    primary\n                                ></v-checkbox>\n                            </v-col>\n                        </v-row>\n                    </div>\n                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                        <dl class=\"section-text section-text--def\">\n                            <dt>{{ item.nombre }}</dt>\n                            <dd>{{ item.help }}</dd>\n                        </dl>\n                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                            <v-col xs7 md7>\n                                <v-radio\n                                    v-if=\"!choice.edit\"\n                                    :label=\"choice.name\"\n                                    v-model=\"item.model_text\"\n                                    :value=\"choice.name\"\n                                    :disabled=\"disabled\"\n                                    primary\n                                ></v-radio>\n                            </v-col>\n                        </v-row>\n                    </div>\n                </v-col>\n                <v-col md2 v-if=\"Boolean(item.referencia)\">\n                  <h6 class=\"title\">Referencia:</h6> {{ item.referencia }}\n                </v-col>\n                <v-col md2 v-if=\"Boolean(item.unidades)\">\n                  <h6 class=\"title\">Unidades:</h6> {{ item.unidades }}\n                </v-col>\n            </v-row>\n        </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n            <v-row>\n                <h1 class=\"title\">Formulario de Resultado</h1>\n            </v-row>\n            <v-row v-for=\"(item, id) of value.items\" :key=\"id\">\n                <v-col md8>\n                    <v-text-field\n                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                        :multi-line=\"item.tipo.name == 'textarea'\"\n                        :label=\"item.nombre\"\n                        :hint=\"item.help\"\n                        v-model=\"item.model_text\"\n                        :disabled=\"disabled\"\n                        persistent-hint\n                        @input=\"$emit('input', $event)\"\n                    ></v-text-field>\n                    <v-select\n                        v-else-if=\"item.tipo.name == 'select'\"\n                        :label=\"item.nombre\"\n                        :hint=\"item.help\"\n                        v-model=\"item.model_text\"\n                        :items=\"item.choices_select\"\n                        item-value=\"text\"\n                        :disabled=\"disabled\"\n                        persistent-hint\n                        @input=\"$emit('input', $event)\"\n                    ></v-select>\n                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                        <dl class=\"section-text section-text--def\">\n                            <dt>{{ item.nombre }}</dt>\n                            <dd>{{ item.help }}</dd>\n                        </dl>\n                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                            <v-col xs7 md7>\n                                <v-checkbox\n                                    v-if=\"!choice.edit\"\n                                    :label=\"choice.name\"\n                                    v-model=\"item.model_check\"\n                                    :value=\"choice\"\n                                    :disabled=\"disabled\"\n                                    primary\n                                    @input=\"$emit('input', $event)\"\n                                ></v-checkbox>\n                            </v-col>\n                        </v-row>\n                    </div>\n                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                        <dl class=\"section-text section-text--def\">\n                            <dt>{{ item.nombre }}</dt>\n                            <dd>{{ item.help }}</dd>\n                        </dl>\n                        <v-row v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                            <v-col xs7 md7>\n                                <v-radio\n                                    v-if=\"!choice.edit\"\n                                    :label=\"choice.name\"\n                                    v-model=\"item.model_text\"\n                                    :value=\"choice.name\"\n                                    :disabled=\"disabled\"\n                                    primary\n                                    @input=\"$emit('input', $event)\"\n                                ></v-radio>\n                            </v-col>\n                        </v-row>\n                    </div>\n                </v-col>\n                <v-col md2 v-if=\"Boolean(item.referencia)\">\n                  <h6 class=\"title\">Referencia:</h6> {{ item.referencia }}\n                </v-col>\n                <v-col md2 v-if=\"Boolean(item.unidades)\">\n                  <h6 class=\"title\">Unidades:</h6> {{ item.unidades }}\n                </v-col>\n            </v-row>\n        </v-container>\n    </div>\n";
 
 /***/ }),
 /* 134 */
@@ -31537,7 +31584,7 @@ module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n       
 /* 142 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Ordenes con Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Ordenes con Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha', {href: '/resultados/:id/', patrons: [{identifier: 'id', replace: item => item.id}]}]\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n    </div>\n";
 
 /***/ }),
 /* 143 */
@@ -31837,6 +31884,395 @@ if (false) {(function () {  module.hot.accept()
 /***/ (function(module, exports) {
 
 /* (ignored) */
+
+/***/ }),
+/* 159 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _stringify = __webpack_require__(61);
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+var _getIterator2 = __webpack_require__(16);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _vue = __webpack_require__(4);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _formularioResultado = __webpack_require__(147);
+
+var _formularioResultado2 = _interopRequireDefault(_formularioResultado);
+
+var _floatingButton = __webpack_require__(146);
+
+var _floatingButton2 = _interopRequireDefault(_floatingButton);
+
+var _errormixin = __webpack_require__(44);
+
+var _errormixin2 = _interopRequireDefault(_errormixin);
+
+var _urls = __webpack_require__(5);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import FormComponent from './../components/form.vue';
+// <template lang="html">
+//     <div class="">
+//         <v-container>
+//             <v-row></v-row>
+//             <div v-for="(item, id) of items" :key="item">
+//                 <v-row>
+//                     <v-col md12 xs12>
+//                         <v-card>
+//                             <v-card-title>
+//                             </v-card-title>
+//                             <v-card-text class="grey lighten-5">
+//                                 <!-- <v-alert error hide-icon :value="['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1">
+//                                 Asegurate de crear varias opciones.
+//                               </v-alert> -->
+//                                 <formulario-resultado @input="error = hasError()" :value="{item, items: 'formato' in item ? item.formato: item.resultado}" :disabled="false"></formulario-resultado>
+//                             </v-card-text>
+//                             <v-card-row actions>
+//                               <v-btn :class="{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}" flat @click.native="someError(item) ? () => undefined: saveItem(item)">Guardar</v-btn>
+//                             </v-card-row>
+//                         </v-card>
+//                     </v-col>
+//                 </v-row>
+//                 <br>
+//             </div>
+//         </v-container>
+//         <floating-button>
+//             <v-btn
+//               floating
+//               :error="error"
+//               :success="!error"
+//               v-tooltip:left="{html: Boolean(error) ? 'Aun hay errores': 'Confirmar y Guardar'}"
+//               @click.native="saveAll">
+//                 <v-icon>{{ Boolean(error) ? 'clear': 'done' }}</v-icon>
+//             </v-btn>
+//         </floating-button>
+//     </div>
+// </template>
+//
+// <script>
+exports.default = {
+    components: {
+        formularioResultado: _formularioResultado2.default,
+        floatingButton: _floatingButton2.default
+    },
+    mixins: [_errormixin2.default],
+    created: function created() {
+        this._fetchData();
+        this.error = this.hasError();
+    },
+    data: function data() {
+        return {
+            items: [],
+            error: true
+        };
+    },
+    watch: {
+        '$route': '_fetchData'
+    },
+    props: {},
+    methods: {
+        someError: function someError(item) {
+            var formato = 'formato' in item ? item.formato : item.resultado;
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = (0, _getIterator3.default)(formato), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var field = _step.value;
+
+                    if (this.hasError(field)) {
+                        return true;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            return false;
+        },
+        genValidationsForItem: function genValidationsForItem(item) {
+            var formato = 'formato' in item ? item.formato : item.resultado;
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = (0, _getIterator3.default)(formato), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var field = _step2.value;
+
+                    this.addValidation({
+                        target: field,
+                        validations: [function (i) {
+                            return ['select', 'radio', 'textarea', 'text'].indexOf(i.tipo.name) !== -1 ? i.model_text === '' : false;
+                        }, function (i) {
+                            return ['checkbox'].indexOf(i.tipo.name) !== -1 ? i.model_check.length <= 0 : false;
+                        }]
+                    });
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
+        },
+        _fetchData: function _fetchData() {
+            var _this = this;
+
+            this.$http.get(_urls2.default.resultados.concat(this.$route.params.id.toString() + '/')).then(function (response) {
+                _this.items = [];
+                if ('resultados' in response.body && response.body.resultados) {
+                    _this.items.push.apply(_this.items, response.body.resultados);
+                    var _iteratorNormalCompletion3 = true;
+                    var _didIteratorError3 = false;
+                    var _iteratorError3 = undefined;
+
+                    try {
+                        for (var _iterator3 = (0, _getIterator3.default)(response.body.resultados), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                            var items = _step3.value;
+
+                            // this.items(items)
+                            _this.genValidationsForItem(items);
+                        }
+                    } catch (err) {
+                        _didIteratorError3 = true;
+                        _iteratorError3 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                                _iterator3.return();
+                            }
+                        } finally {
+                            if (_didIteratorError3) {
+                                throw _iteratorError3;
+                            }
+                        }
+                    }
+                }
+                if ('formatos' in response.body && response.body.formatos) {
+                    _this.items.push.apply(_this.items, response.body.formatos);
+                    var _iteratorNormalCompletion4 = true;
+                    var _didIteratorError4 = false;
+                    var _iteratorError4 = undefined;
+
+                    try {
+                        for (var _iterator4 = (0, _getIterator3.default)(response.body.formatos), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                            var _items = _step4.value;
+
+                            // this.items(items)
+                            _this.genValidationsForItem(_items);
+                        }
+                    } catch (err) {
+                        _didIteratorError4 = true;
+                        _iteratorError4 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                                _iterator4.return();
+                            }
+                        } finally {
+                            if (_didIteratorError4) {
+                                throw _iteratorError4;
+                            }
+                        }
+                    }
+                }
+            }, function (response) {
+                console.error(response);
+            });
+        },
+        saveItem: function saveItem(item) {
+            var _this2 = this;
+
+            var showsnack = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+            var token = document.getElementsByName('csrfmiddlewaretoken')[0];
+            var data = {
+                laboratorio: item.laboratorio,
+                orden: { id: this.$route.params.id },
+                resultado: (0, _stringify2.default)('formato' in item ? item.formato : item.resultado)
+            };
+            if ('resultado' in item) {
+                data.id = item.id;
+            }
+            var error = void 0;
+            if (!this.someError(item)) {
+                this.$http.post(_urls2.default.resultados.concat(this.$route.params.id.toString() + '/'), data, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
+                    if (showsnack) {
+                        _this2.$emit('mostrarsnackbar', 'Se ha guardado el resultado de el laboratorio '.concat(item.laboratorio.nombre.toString()));
+                        error = false;
+                    }
+                }, function (response) {
+                    if (showsnack) {
+                        _this2.$emit('mostrarsnackbar', 'Ha ocurrido un error al guardar el resultado');
+                        error = true;
+                    }
+                });
+            } else {
+                error = true;
+                if (showsnack) {
+                    this.$emit('mostrarsnackbar', 'No se puede guardar el resultado con campos vacios');
+                }
+            }
+            if (error) {
+                return error;
+            }
+        },
+        saveAll: function saveAll() {
+            if (this.error) {
+                return undefined;
+            } else {
+                var error = void 0;
+                var _iteratorNormalCompletion5 = true;
+                var _didIteratorError5 = false;
+                var _iteratorError5 = undefined;
+
+                try {
+                    for (var _iterator5 = (0, _getIterator3.default)(this.items), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                        var item = _step5.value;
+
+                        error = this.saveItem(item, false);
+                        if (error) {
+                            this.$emit('mostrarsnackbar', 'Ha ocurrido un error al guardar los resultados.');
+                            break;
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError5 = true;
+                    _iteratorError5 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                            _iterator5.return();
+                        }
+                    } finally {
+                        if (_didIteratorError5) {
+                            throw _iteratorError5;
+                        }
+                    }
+                }
+
+                if (!error) {
+                    this.$emit('mostrarsnackbar', 'Se han guardado los resultados con exito.');
+                }
+            }
+        }
+    }
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+
+/***/ }),
+/* 160 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 161 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(160);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-56fabb78&file=resultados.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-56fabb78&file=resultados.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"\">\n        <v-container>\n            <v-row></v-row>\n            <div v-for=\"(item, id) of items\" :key=\"item\">\n                <v-row>\n                    <v-col md12 xs12>\n                        <v-card>\n                            <v-card-title>\n                            </v-card-title>\n                            <v-card-text class=\"grey lighten-5\">\n                                <!-- <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                Asegurate de crear varias opciones.\n                              </v-alert> -->\n                                <formulario-resultado @input=\"error = hasError()\" :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\" :disabled=\"false\"></formulario-resultado>\n                            </v-card-text>\n                            <v-card-row actions>\n                              <v-btn :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\" flat @click.native=\"someError(item) ? () => undefined: saveItem(item)\">Guardar</v-btn>\n                            </v-card-row>\n                        </v-card>\n                    </v-col>\n                </v-row>\n                <br>\n            </div>\n        </v-container>\n        <floating-button>\n            <v-btn\n              floating\n              :error=\"error\"\n              :success=\"!error\"\n              v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Confirmar y Guardar'}\"\n              @click.native=\"saveAll\">\n                <v-icon>{{ Boolean(error) ? 'clear': 'done' }}</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+
+/***/ }),
+/* 163 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(161)
+__vue_script__ = __webpack_require__(159)
+__vue_template__ = __webpack_require__(162)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/apps/laboratorios/static/laboratorios/pages/resultados.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
 /***/ })
 /******/ ]);

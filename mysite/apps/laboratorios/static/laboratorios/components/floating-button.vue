@@ -35,7 +35,7 @@ export default {
             let index = 1;
             let margin = 0;
             let base = 80;
-            if (this.animated) {
+            if (this.animated && this.$slots.child) {
                 for (let node of this.$slots.child) {
                     if (node.tag) {
                         children.push(

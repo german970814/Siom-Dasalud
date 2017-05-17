@@ -12,6 +12,7 @@ const reactivos = BASE.concat('reactivos/');
 const secciones_trabajo = BASE.concat('seccion_trabajo/');
 const tecnicas = BASE.concat('tecnicas/');
 const servicios = BASE.concat('servicios/');
+const resultados = BASE.concat('resultado/');
 
 export default {
     BASE,
@@ -27,4 +28,5 @@ export default {
     especificaciones_por_carateristica,
     formatos,
     bacteriologos,
+    resultados,
 }

@@ -68,6 +68,18 @@ export default {
         // this.$refs.dataTable.rowsPerPage = 10;
     },
     methods: {
+        getHrefField: function (field, item) {
+            let href;
+            if (!'patrons' in field) {
+                href = field.href.replace(/\/\:[a-zA-Z]*\//g, '/' + item.id + '/');
+            } else {
+                href = field.href;
+                for (let patron of field.patrons) {
+                    href = href.replace(':'.concat(patron.identifier), typeof patron.replace == 'function' ? patron(item): patron);
+                }
+            }
+            return href;
+        },
         _validValue: function (val) {
             return val !== null && ['undefined', 'boolean'].indexOf(typeof val) === -1
         },

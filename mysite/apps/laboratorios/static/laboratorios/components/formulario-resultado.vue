@@ -14,6 +14,7 @@
                         v-model="item.model_text"
                         :disabled="disabled"
                         persistent-hint
+                        @input="$emit('input', $event)"
                     ></v-text-field>
                     <v-select
                         v-else-if="item.tipo.name == 'select'"
@@ -24,6 +25,7 @@
                         item-value="text"
                         :disabled="disabled"
                         persistent-hint
+                        @input="$emit('input', $event)"
                     ></v-select>
                     <div v-else-if="item.tipo.name == 'checkbox'">
                         <dl class="section-text section-text--def">
@@ -39,6 +41,7 @@
                                     :value="choice"
                                     :disabled="disabled"
                                     primary
+                                    @input="$emit('input', $event)"
                                 ></v-checkbox>
                             </v-col>
                         </v-row>
@@ -57,6 +60,7 @@
                                     :value="choice.name"
                                     :disabled="disabled"
                                     primary
+                                    @input="$emit('input', $event)"
                                 ></v-radio>
                             </v-col>
                         </v-row>

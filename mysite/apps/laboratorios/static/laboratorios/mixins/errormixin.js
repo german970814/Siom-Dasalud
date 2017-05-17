@@ -1,6 +1,7 @@
 import _ from 'underscore';
 
 export default {
+    name: 'errorMixin',
     data: function () {
         return {
             validations: [],
@@ -22,13 +23,14 @@ export default {
         hasError: function (obj) {
             if (obj !== undefined) {
                 let validate = this.validations.find(i => i.target == obj);
-                validate.validations.forEach(validation => {
-                    const error = typeof validation === 'function' ? validation(validate): validation;
+                let validations = validate.validations;
+                for (let validation of validations) {
+                    const error = typeof validation === 'function' ? validation(validate.target): validation;
                     if (error) {
                         return true;
                     }
-                })
-                return false;
+                }
+                return false
             }
             return this.validate();
         },
