@@ -288,10 +288,10 @@ export default {
             return {
                 target: item,
                 validations: [
-                    i => ['checkbox', 'radio'].indexOf(i.tipo.name) !== -1 && i.choices.length <= 1,
-                    i => i.tipo === '',
-                    i => i.nombre === '',
-                    i => ['select'].indexOf(i.tipo.name) !== -1 && i.choices_select.length <= 1
+                    i => ['checkbox', 'radio'].indexOf(i.tipo.name) === -1 || i.choices.length > 1,
+                    i => i.tipo !== '',
+                    i => i.nombre !== '',
+                    i => ['select'].indexOf(i.tipo.name) === -1 || i.choices_select.length > 1
                 ]
             }
         },

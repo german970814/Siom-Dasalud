@@ -5,7 +5,6 @@
             <v-spacer></v-spacer>
             <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
         </v-card-title>
-        <!-- v-bind:headers="headers" -->
         <v-data-table
             v-bind:headers="headers"
             v-model="data"
@@ -33,6 +32,7 @@
                 </template>
             </template>
         </v-data-table>
+        <v-progress-linear indeterminate class="red--text" height="3" :active="loading"></v-progress-linear>
     </v-card>
 </template>
 
@@ -57,7 +57,8 @@ export default {
         fields: {
             type: Array,
             required: true
-        }
+        },
+        loading: true,
     },
     data: function () {
         return {

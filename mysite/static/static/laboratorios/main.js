@@ -25,7 +25,8 @@ const app = new Vue({
     delimiters: ['{[', ']}'],
     data: {
         snackbar: false,
-        snackbarText: 'soy el campeon',
+        snackbarText: '',
+        sidebar: false,
     },
     components: {
         igMenu: MenuComponent,

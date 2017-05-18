@@ -9,6 +9,7 @@
               :data="elements"
               :fields="['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha', {href: '/resultados/:id/', patrons: [{identifier: 'id', replace: item => item.id}]}]"
               @selectedrow="eventUpdatedForm"
+              :loading="loading"
               ></ig-table>
             </v-col>
           </v-row>

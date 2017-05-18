@@ -296,7 +296,7 @@
             return {
                 sidebar: false
             };
-        }
+        },
     }
 </script>
 

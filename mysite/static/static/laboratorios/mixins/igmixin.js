@@ -5,10 +5,16 @@ export default {
         return {
           elements: [],
           __parent_: undefined,
+          loading: false,
         }
     },
     methods: {
         getElements: function () {
+            if ('loading' in this) {
+                if (!this.loading) {
+                  this.toggleLoading()
+                }
+            }
             let url = this.url || arguments[0];
             if (!url) {
                 throw new Error('URL no provehida para hacer consula de elementos');
@@ -19,8 +25,10 @@ export default {
                         object.selected = false;
                         this.elements.push(object);
                     }
+                    this.toggleLoading()
                 }, response => {
                     this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
+                    this.toggleLoading()
                 });
         },
         __getParent__: function () {
@@ -50,5 +58,10 @@ export default {
         eventUpdatedForm: function (value) {
             this.selected = value;
         },
+        toggleLoading: function () {
+            if ('loading' in this) {
+                this.loading = !this.loading;
+            }
+        }
     }
 }

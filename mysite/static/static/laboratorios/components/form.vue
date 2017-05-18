@@ -29,7 +29,7 @@ export default {
         return {
             models: {},  // los modelos
             items: {},  // los items de los selects
-            _validated: false,
+            validateFields: false,
             appended: {},
         }
     },
@@ -166,7 +166,7 @@ export default {
             }
             // this.selected = false;
             this.$emit('clearselected');
-            this._validated = false;
+            this.validateFields = false;
         },
         fieldIsRequired: function (field) {
             return field.required === undefined || field.required;
@@ -212,8 +212,10 @@ export default {
         },
         getRules: function (field) {
             let rules = new Array();
-            if (this.fieldIsRequired(field)) {
-                rules.push(_field => !_.isEmpty(this.models[_field.name]) || 'Este campo es obligatorio')
+            if ('group' in field && field.group && this.fieldIsRequired(field)) {
+                rules.push(_field => this.validateFields ? !_.isEmpty(this.models[field.group][field.name]) || 'Este campo es obligatorio': true)
+            } else if (this.fieldIsRequired(field)) {
+                rules.push(_field => this.validateFields ? !_.isEmpty(this.models[field.name]) || 'Este campo es obligatorio': true)
             }
             if ('rules' in field) {
                 if (!field.rules instanceof Array) {
@@ -221,16 +223,22 @@ export default {
                 }
                 rules.push.apply(rules, field.rules);
             }
-            // this.addValidation({
-            //     target: field,
-            //     validations: rules.map(function (obj) {
-            //         // return typeof obj == 'function' ? _field => !obj(_field): obj;
-            //     })
-            // })
             return rules
         },
+        isValid: function () {
+            this.validateFields = true;
+            for (let field of this.fields) {
+                let rules = this.getRules(field);
+                for (let rule of rules) {
+                    const valid = typeof rule === 'function' ? rule(field): rule;
+                    if (!valid || typeof valid == 'string') {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        },
         submitForm: function () {
-            this._validated = true;
             let url = this.url;
             let method = 'post';
             let message;
@@ -239,32 +247,36 @@ export default {
                 url += this.selected.id + '/';
                 method = 'put';
             }
-            this.$http[method](url, this.models, {headers: {'X-CSRFToken': token.value}})
-                .then(response => {
-                    if (response.status == 201) {
-                        message = 'Laboratorio Creado Correctamente';
-                        this.$emit('objectcreated', response.body);
-                    } else {
-                        message = 'Laboratorio Editado Correctamente';
-                    }
-                    if (message) {
-                        this.$emit('showsnack', message);
-                    }
-                }, response => {
-                    if (response.status == 400) {
-                        message = 'Han ocurrido Errores';
-                        for (let res in response.body) {
-
+            if (this.isValid()) {
+                this.$http[method](url, this.models, {headers: {'X-CSRFToken': token.value}})
+                    .then(response => {
+                        if (response.status == 201) {
+                            message = 'Laboratorio Creado Correctamente';
+                            this.$emit('objectcreated', response.body);
+                        } else {
+                            message = 'Laboratorio Editado Correctamente';
                         }
-                    } else if ('detail' in response.body) {
-                        message = response.body.detail;
-                    } else {
-                        console.error(response);
-                    }
-                    if (message) {
-                        this.$emit('showsnack', message);
-                    }
-                });
+                        if (message) {
+                            this.$emit('showsnack', message);
+                        }
+                    }, response => {
+                        if (response.status == 400) {
+                            message = 'Han ocurrido Errores';
+                            for (let res in response.body) {
+
+                            }
+                        } else if ('detail' in response.body) {
+                            message = response.body.detail;
+                        } else {
+                            console.error(response);
+                        }
+                        if (message) {
+                            this.$emit('showsnack', message);
+                        }
+                    });
+            } else {
+                this.$emit('showsnack', 'El formulario aún tiene errores, verifica antes de enviar.');
+            }
         },
         _isGroupField: function (item) {
             if (!_.isArray(this.models[item]) && !_.isObject(this.models[item])) {

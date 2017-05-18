@@ -19,15 +19,32 @@
         {% csrf_token %}
         <div id="app" class="grey lighten-4">
             <v-app>
-                <ig-menu>
-                    <v-container fluid>
-                        <br>
-                        <v-spacer></v-spacer>
-                        <!--Start-->
-                        <router-view @mostrarsnackbar="mostrarSnackBar"></router-view>
-                        <!--End-->
-                    </v-container>
-                </ig-menu>
+                <div>
+                    <v-toolbar class="cyan darken-1">
+                        <v-toolbar-side-icon @click.native.stop="sidebar = !sidebar"></v-toolbar-side-icon>
+                        <v-toolbar-title>Dasalud</v-toolbar-title>
+                    </v-toolbar>
+                    <main>
+                        <v-sidebar v-model="sidebar" drawer class="mt-0 scroll-y" :mobile-break-point="576">
+                            <v-list dense>
+                                {% include 'menu.html' %}
+                            </v-list>
+                        </v-sidebar>
+                        <div class="main">
+                            <v-content class="grey lighten-4">
+                                <br>
+                                <v-spacer></v-spacer>
+                                <v-container fluid>
+                                    <br>
+                                    <v-spacer></v-spacer>
+                                    <!--Start-->
+                                    <router-view @mostrarsnackbar="mostrarSnackBar"></router-view>
+                                    <!--End-->
+                                </v-container>
+                            </v-content>
+                        </div>
+                    </main>
+                </div>
                 <v-snackbar v-model="snackbar">
                     {[ snackbarText ]}
                     <v-btn flat class="pink--text" @click.native="snackbar = false">Cerrar</v-btn>

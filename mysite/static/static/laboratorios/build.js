@@ -63,11 +63,87 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 46);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuetify__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue_resource__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_router__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_menu_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_table_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__components_form_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__mixins_igmixin_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__routes__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__urls_js__ = __webpack_require__(5);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default.a.use(__WEBPACK_IMPORTED_MODULE_4_vue_router__["a" /* default */]);
+__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default.a.use(__WEBPACK_IMPORTED_MODULE_3_vue_resource__["default"]);
+__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vuetify___default.a);
+
+const BASE_URL = __WEBPACK_IMPORTED_MODULE_10__urls_js__["default"].BASE;
+
+const app = new __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default.a({
+    el: '#app',
+    delimiters: ['{[', ']}'],
+    data: {
+        snackbar: false,
+        snackbarText: '',
+        sidebar: false,
+    },
+    components: {
+        igMenu: __WEBPACK_IMPORTED_MODULE_5__components_menu_vue___default.a,
+        igTable: __WEBPACK_IMPORTED_MODULE_6__components_table_vue___default.a,
+        igForm: __WEBPACK_IMPORTED_MODULE_7__components_form_vue___default.a,
+    },
+    methods: {
+        mostrarSnackBar: function (value) {
+            this.snackbarText = value;
+            this.snackbar = true;
+        },
+        eventoObjetoCreado: function (value) {
+            value.selected = false;
+            this.elements.push(value);
+            this.selected = value;
+        },
+        eventoFormularioActualizado: function (value) {
+            this.selected = value;
+        },
+    },
+    router: __WEBPACK_IMPORTED_MODULE_9__routes__["a" /* default */]
+})//.$mount();
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports) {
 
 /*
@@ -149,7 +225,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -445,7 +521,7 @@ function updateLink(linkElement, options, obj) {
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -2000,7 +2076,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -11323,7 +11399,7 @@ return Vue$3;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(158)))
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11363,12 +11439,12 @@ const resultados = BASE.concat('resultado/');
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
 
 
@@ -11377,10 +11453,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
           elements: [],
           __parent_: undefined,
+          loading: false,
         }
     },
     methods: {
         getElements: function () {
+            if ('loading' in this) {
+                if (!this.loading) {
+                  this.toggleLoading()
+                }
+            }
             let url = this.url || arguments[0];
             if (!url) {
                 throw new Error('URL no provehida para hacer consula de elementos');
@@ -11391,8 +11473,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         object.selected = false;
                         this.elements.push(object);
                     }
+                    this.toggleLoading()
                 }, response => {
                     this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
+                    this.toggleLoading()
                 });
         },
         __getParent__: function () {
@@ -11422,12 +11506,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         eventUpdatedForm: function (value) {
             this.selected = value;
         },
+        toggleLoading: function () {
+            if ('loading' in this) {
+                this.loading = !this.loading;
+            }
+        }
     }
 });
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
@@ -11449,7 +11538,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
@@ -11472,7 +11561,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13026,7 +13115,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
@@ -13049,7 +13138,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -21508,14 +21597,14 @@ if (typeof window !== 'undefined' && window.Vue) {
 //# sourceMappingURL=vuetify.js.map
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 var core = module.exports = {version: '1.2.6'};
 if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 var $Object = Object;
@@ -21533,30 +21622,30 @@ module.exports = {
 };
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store  = __webpack_require__(38)('wks')
-  , uid    = __webpack_require__(40)
-  , Symbol = __webpack_require__(18).Symbol;
+var store  = __webpack_require__(39)('wks')
+  , uid    = __webpack_require__(41)
+  , Symbol = __webpack_require__(19).Symbol;
 module.exports = function(name){
   return store[name] || (store[name] =
     Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
 };
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = { "default": __webpack_require__(69), __esModule: true };
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global    = __webpack_require__(18)
-  , core      = __webpack_require__(11)
-  , ctx       = __webpack_require__(32)
+var global    = __webpack_require__(19)
+  , core      = __webpack_require__(12)
+  , ctx       = __webpack_require__(33)
   , PROTOTYPE = 'prototype';
 
 var $export = function(type, name, source){
@@ -21602,13 +21691,13 @@ $export.W = 32; // wrap
 module.exports = $export;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 module.exports = {};
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports) {
 
 module.exports = function(exec){
@@ -21620,7 +21709,7 @@ module.exports = function(exec){
 };
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
@@ -21629,24 +21718,42 @@ var global = module.exports = typeof window != 'undefined' && window.Math == Mat
 if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(34)
-  , defined = __webpack_require__(24);
+var IObject = __webpack_require__(35)
+  , defined = __webpack_require__(25);
 module.exports = function(it){
   return IObject(defined(it));
 };
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
+/*
+
+ErrorMixin
+
+Mixin usado para manejar los errores de cada componente,
+el cual valida a un elemento 'x' que cumpla una serie de
+condiciones y recibe objetos como parametros, de la siguiente
+forma:
+
+var x = {
+  target: document.getElementById('test'),
+  validations: [
+    x => true,
+    false,
+    0 === false,
+  ]
+}
+*/
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -21659,6 +21766,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     methods: {
+        addValidationIfNotExists: function (obj) {
+            if (!'target' in obj) {
+                throw new Error ('No hay un objetivo definido a partir de el cual buscar validaciones.')
+            }
+            let exists = this.validations.find(x => x.target == obj)
+            if (!exists) {
+                this.addValidation(obj)
+            }
+        },
         addValidation: function (error) {
             if (!'validations' in error) {
                 throw new Error ('No hay validaciones por hacer.');
@@ -21672,11 +21788,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         hasError: function (obj) {
             if (obj !== undefined) {
                 let validate = this.validations.find(i => i.target == obj);
-                let validations = validate.validations;
-                for (let validation of validations) {
-                    const error = typeof validation === 'function' ? validation(validate.target): validation;
-                    if (error) {
-                        return true;
+                if (validate) {
+                    let validations = validate.validations;
+                    for (let validation of validations) {
+                        const valid = typeof validation === 'function' ? validation(validate.target): validation;
+                            if (!valid || typeof valid == 'string') {
+                                return true;
+                            }
                     }
                 }
                 return false
@@ -21688,8 +21806,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             let errors = []
             this.validations.forEach(error => {
                 error.validations.forEach(validation => {
-                    const _error = typeof validation === 'function' ? validation(error.target): validation;
-                    if (_error) {
+                    const valid = typeof validation === 'function' ? validation(error.target): validation;
+                    if (!valid || typeof valid == 'string') {
                         errors.push(error)
                     }
                 });
@@ -21701,7 +21819,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21716,7 +21834,7 @@ exports["default"] = function (obj) {
 exports.__esModule = true;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(81);
@@ -21726,7 +21844,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -21736,7 +21854,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 // 7.2.1 RequireObjectCoercible(argument)
@@ -21746,7 +21864,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 var hasOwnProperty = {}.hasOwnProperty;
@@ -21755,12 +21873,12 @@ module.exports = function(it, key){
 };
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var $          = __webpack_require__(12)
-  , createDesc = __webpack_require__(27);
-module.exports = __webpack_require__(33) ? function(object, key, value){
+var $          = __webpack_require__(13)
+  , createDesc = __webpack_require__(28);
+module.exports = __webpack_require__(34) ? function(object, key, value){
   return $.setDesc(object, key, createDesc(1, value));
 } : function(object, key, value){
   object[key] = value;
@@ -21768,7 +21886,7 @@ module.exports = __webpack_require__(33) ? function(object, key, value){
 };
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 module.exports = function(bitmap, value){
@@ -21781,29 +21899,29 @@ module.exports = function(bitmap, value){
 };
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var def = __webpack_require__(12).setDesc
-  , has = __webpack_require__(25)
-  , TAG = __webpack_require__(13)('toStringTag');
+var def = __webpack_require__(13).setDesc
+  , has = __webpack_require__(26)
+  , TAG = __webpack_require__(14)('toStringTag');
 
 module.exports = function(it, tag, stat){
   if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
 };
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.13 ToObject(argument)
-var defined = __webpack_require__(24);
+var defined = __webpack_require__(25);
 module.exports = function(it){
   return Object(defined(it));
 };
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24275,13 +24393,13 @@ if (inBrowser && window.Vue) {
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(115)))
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = { "default": __webpack_require__(70), __esModule: true };
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
@@ -24306,40 +24424,40 @@ module.exports = function(fn, that, length){
 };
 
 /***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(17)(function(){
-  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
-});
-
-/***/ }),
 /* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(23);
-module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
-  return cof(it) == 'String' ? it.split('') : Object(it);
-};
+// Thank's IE8 for his funny defineProperty
+module.exports = !__webpack_require__(18)(function(){
+  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
+});
 
 /***/ }),
 /* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
+// fallback for non-array-like ES3 and non-enumerable old V8 strings
+var cof = __webpack_require__(24);
+module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
+  return cof(it) == 'String' ? it.split('') : Object(it);
+};
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
-var LIBRARY        = __webpack_require__(36)
-  , $export        = __webpack_require__(15)
-  , redefine       = __webpack_require__(37)
-  , hide           = __webpack_require__(26)
-  , has            = __webpack_require__(25)
-  , Iterators      = __webpack_require__(16)
+var LIBRARY        = __webpack_require__(37)
+  , $export        = __webpack_require__(16)
+  , redefine       = __webpack_require__(38)
+  , hide           = __webpack_require__(27)
+  , has            = __webpack_require__(26)
+  , Iterators      = __webpack_require__(17)
   , $iterCreate    = __webpack_require__(83)
-  , setToStringTag = __webpack_require__(28)
-  , getProto       = __webpack_require__(12).getProto
-  , ITERATOR       = __webpack_require__(13)('iterator')
+  , setToStringTag = __webpack_require__(29)
+  , getProto       = __webpack_require__(13).getProto
+  , ITERATOR       = __webpack_require__(14)('iterator')
   , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
   , FF_ITERATOR    = '@@iterator'
   , KEYS           = 'keys'
@@ -24397,22 +24515,22 @@ module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED
 };
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 module.exports = true;
 
 /***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(26);
-
-/***/ }),
 /* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(18)
+module.exports = __webpack_require__(27);
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var global = __webpack_require__(19)
   , SHARED = '__core-js_shared__'
   , store  = global[SHARED] || (global[SHARED] = {});
 module.exports = function(key){
@@ -24420,7 +24538,7 @@ module.exports = function(key){
 };
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports) {
 
 // 7.1.4 ToInteger
@@ -24431,7 +24549,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 var id = 0
@@ -24441,20 +24559,20 @@ module.exports = function(key){
 };
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var classof   = __webpack_require__(76)
-  , ITERATOR  = __webpack_require__(13)('iterator')
-  , Iterators = __webpack_require__(16);
-module.exports = __webpack_require__(11).getIteratorMethod = function(it){
+  , ITERATOR  = __webpack_require__(14)('iterator')
+  , Iterators = __webpack_require__(17);
+module.exports = __webpack_require__(12).getIteratorMethod = function(it){
   if(it != undefined)return it[ITERATOR]
     || it['@@iterator']
     || Iterators[classof(it)];
 };
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24462,7 +24580,7 @@ module.exports = __webpack_require__(11).getIteratorMethod = function(it){
 var $at  = __webpack_require__(89)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
-__webpack_require__(35)(String, 'String', function(iterated){
+__webpack_require__(36)(String, 'String', function(iterated){
   this._t = String(iterated); // target
   this._i = 0;                // next index
 // 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -24477,7 +24595,7 @@ __webpack_require__(35)(String, 'String', function(iterated){
 });
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
@@ -24499,7 +24617,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
@@ -24522,11 +24640,11 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__ = __webpack_require__(152);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__ = __webpack_require__(149);
@@ -24599,81 +24717,6 @@ const router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({
 
 
 /***/ }),
-/* 46 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuetify__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue_resource__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_router__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_menu_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_table_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__components_form_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__mixins_igmixin_js__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__routes__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__urls_js__ = __webpack_require__(4);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default.a.use(__WEBPACK_IMPORTED_MODULE_4_vue_router__["a" /* default */]);
-__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default.a.use(__WEBPACK_IMPORTED_MODULE_3_vue_resource__["default"]);
-__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default.a.use(__WEBPACK_IMPORTED_MODULE_2_vuetify___default.a);
-
-const BASE_URL = __WEBPACK_IMPORTED_MODULE_10__urls_js__["default"].BASE;
-
-const app = new __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default.a({
-    el: '#app',
-    delimiters: ['{[', ']}'],
-    data: {
-        snackbar: false,
-        snackbarText: 'soy el campeon',
-    },
-    components: {
-        igMenu: __WEBPACK_IMPORTED_MODULE_5__components_menu_vue___default.a,
-        igTable: __WEBPACK_IMPORTED_MODULE_6__components_table_vue___default.a,
-        igForm: __WEBPACK_IMPORTED_MODULE_7__components_form_vue___default.a,
-    },
-    methods: {
-        mostrarSnackBar: function (value) {
-            this.snackbarText = value;
-            this.snackbar = true;
-        },
-        eventoObjetoCreado: function (value) {
-            value.selected = false;
-            this.elements.push(value);
-            this.selected = value;
-        },
-        eventoFormularioActualizado: function (value) {
-            this.selected = value;
-        },
-    },
-    router: __WEBPACK_IMPORTED_MODULE_9__routes__["a" /* default */]
-})//.$mount();
-
-
-/***/ }),
 /* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -24688,11 +24731,11 @@ var _toConsumableArray2 = __webpack_require__(67);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
-var _getIterator2 = __webpack_require__(14);
+var _getIterator2 = __webpack_require__(15);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vue = __webpack_require__(3);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -24847,27 +24890,27 @@ var _assign = __webpack_require__(64);
 
 var _assign2 = _interopRequireDefault(_assign);
 
-var _typeof2 = __webpack_require__(21);
+var _typeof2 = __webpack_require__(22);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _getIterator2 = __webpack_require__(14);
+var _getIterator2 = __webpack_require__(15);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vue = __webpack_require__(3);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vueResource = __webpack_require__(8);
+var _vueResource = __webpack_require__(9);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _errormixin = __webpack_require__(20);
+var _errormixin = __webpack_require__(21);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -24899,7 +24942,7 @@ exports.default = {
         return {
             models: {}, // los modelos
             items: {}, // los items de los selects
-            _validated: false,
+            validateFields: false,
             appended: {}
         };
     },
@@ -25181,7 +25224,7 @@ exports.default = {
             }
 
             this.$emit('clearselected');
-            this._validated = false;
+            this.validateFields = false;
         },
         fieldIsRequired: function fieldIsRequired(field) {
             return field.required === undefined || field.required;
@@ -25277,9 +25320,13 @@ exports.default = {
             var _this3 = this;
 
             var rules = new Array();
-            if (this.fieldIsRequired(field)) {
+            if ('group' in field && field.group && this.fieldIsRequired(field)) {
                 rules.push(function (_field) {
-                    return !_underscore2.default.isEmpty(_this3.models[_field.name]) || 'Este campo es obligatorio';
+                    return _this3.validateFields ? !_underscore2.default.isEmpty(_this3.models[field.group][field.name]) || 'Este campo es obligatorio' : true;
+                });
+            } else if (this.fieldIsRequired(field)) {
+                rules.push(function (_field) {
+                    return _this3.validateFields ? !_underscore2.default.isEmpty(_this3.models[field.name]) || 'Este campo es obligatorio' : true;
                 });
             }
             if ('rules' in field) {
@@ -25288,18 +25335,67 @@ exports.default = {
                 }
                 rules.push.apply(rules, field.rules);
             }
-            // this.addValidation({
-            //     target: field,
-            //     validations: rules.map(function (obj) {
-            //         // return typeof obj == 'function' ? _field => !obj(_field): obj;
-            //     })
-            // })
             return rules;
+        },
+        isValid: function isValid() {
+            this.validateFields = true;
+            var _iteratorNormalCompletion8 = true;
+            var _didIteratorError8 = false;
+            var _iteratorError8 = undefined;
+
+            try {
+                for (var _iterator8 = (0, _getIterator3.default)(this.fields), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+                    var _field2 = _step8.value;
+
+                    var rules = this.getRules(_field2);
+                    var _iteratorNormalCompletion9 = true;
+                    var _didIteratorError9 = false;
+                    var _iteratorError9 = undefined;
+
+                    try {
+                        for (var _iterator9 = (0, _getIterator3.default)(rules), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+                            var rule = _step9.value;
+
+                            var valid = typeof rule === 'function' ? rule(_field2) : rule;
+                            if (!valid || typeof valid == 'string') {
+                                return false;
+                            }
+                        }
+                    } catch (err) {
+                        _didIteratorError9 = true;
+                        _iteratorError9 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion9 && _iterator9.return) {
+                                _iterator9.return();
+                            }
+                        } finally {
+                            if (_didIteratorError9) {
+                                throw _iteratorError9;
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                _didIteratorError8 = true;
+                _iteratorError8 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion8 && _iterator8.return) {
+                        _iterator8.return();
+                    }
+                } finally {
+                    if (_didIteratorError8) {
+                        throw _iteratorError8;
+                    }
+                }
+            }
+
+            return true;
         },
         submitForm: function submitForm() {
             var _this4 = this;
 
-            this._validated = true;
             var url = this.url;
             var method = 'post';
             var message = void 0;
@@ -25308,55 +25404,59 @@ exports.default = {
                 url += this.selected.id + '/';
                 method = 'put';
             }
-            this.$http[method](url, this.models, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
-                if (response.status == 201) {
-                    message = 'Laboratorio Creado Correctamente';
-                    _this4.$emit('objectcreated', response.body);
-                } else {
-                    message = 'Laboratorio Editado Correctamente';
-                }
-                if (message) {
-                    _this4.$emit('showsnack', message);
-                }
-            }, function (response) {
-                if (response.status == 400) {
-                    message = 'Han ocurrido Errores';
-                    for (var res in response.body) {}
-                } else if ('detail' in response.body) {
-                    message = response.body.detail;
-                } else {
-                    console.error(response);
-                }
-                if (message) {
-                    _this4.$emit('showsnack', message);
-                }
-            });
+            if (this.isValid()) {
+                this.$http[method](url, this.models, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
+                    if (response.status == 201) {
+                        message = 'Laboratorio Creado Correctamente';
+                        _this4.$emit('objectcreated', response.body);
+                    } else {
+                        message = 'Laboratorio Editado Correctamente';
+                    }
+                    if (message) {
+                        _this4.$emit('showsnack', message);
+                    }
+                }, function (response) {
+                    if (response.status == 400) {
+                        message = 'Han ocurrido Errores';
+                        for (var res in response.body) {}
+                    } else if ('detail' in response.body) {
+                        message = response.body.detail;
+                    } else {
+                        console.error(response);
+                    }
+                    if (message) {
+                        _this4.$emit('showsnack', message);
+                    }
+                });
+            } else {
+                this.$emit('showsnack', 'El formulario aún tiene errores, verifica antes de enviar.');
+            }
         },
         _isGroupField: function _isGroupField(item) {
             if (!_underscore2.default.isArray(this.models[item]) && !_underscore2.default.isObject(this.models[item])) {
-                var _iteratorNormalCompletion8 = true;
-                var _didIteratorError8 = false;
-                var _iteratorError8 = undefined;
+                var _iteratorNormalCompletion10 = true;
+                var _didIteratorError10 = false;
+                var _iteratorError10 = undefined;
 
                 try {
-                    for (var _iterator8 = (0, _getIterator3.default)(this.fields), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
-                        var _field2 = _step8.value;
+                    for (var _iterator10 = (0, _getIterator3.default)(this.fields), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+                        var _field3 = _step10.value;
 
-                        if (_field2.group == item) {
+                        if (_field3.group == item) {
                             return true;
                         }
                     }
                 } catch (err) {
-                    _didIteratorError8 = true;
-                    _iteratorError8 = err;
+                    _didIteratorError10 = true;
+                    _iteratorError10 = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion8 && _iterator8.return) {
-                            _iterator8.return();
+                        if (!_iteratorNormalCompletion10 && _iterator10.return) {
+                            _iterator10.return();
                         }
                     } finally {
-                        if (_didIteratorError8) {
-                            throw _iteratorError8;
+                        if (_didIteratorError10) {
+                            throw _iteratorError10;
                         }
                     }
                 }
@@ -25388,13 +25488,13 @@ exports.default = {
             match[(0, _typeof3.default)(Array())] = 'v-select';
 
             var childs = [];
-            var _iteratorNormalCompletion9 = true;
-            var _didIteratorError9 = false;
-            var _iteratorError9 = undefined;
+            var _iteratorNormalCompletion11 = true;
+            var _didIteratorError11 = false;
+            var _iteratorError11 = undefined;
 
             try {
                 var _loop6 = function _loop6() {
-                    var field = _step9.value;
+                    var field = _step11.value;
 
                     var defaultProps = {
                         label: field.verbose_name || '',
@@ -25432,20 +25532,20 @@ exports.default = {
                     }, [])]));
                 };
 
-                for (var _iterator9 = (0, _getIterator3.default)(this.fields), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+                for (var _iterator11 = (0, _getIterator3.default)(this.fields), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
                     _loop6();
                 }
             } catch (err) {
-                _didIteratorError9 = true;
-                _iteratorError9 = err;
+                _didIteratorError11 = true;
+                _iteratorError11 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion9 && _iterator9.return) {
-                        _iterator9.return();
+                    if (!_iteratorNormalCompletion11 && _iterator11.return) {
+                        _iterator11.return();
                     }
                 } finally {
-                    if (_didIteratorError9) {
-                        throw _iteratorError9;
+                    if (_didIteratorError11) {
+                        throw _iteratorError11;
                     }
                 }
             }
@@ -25920,11 +26020,11 @@ var _keys = __webpack_require__(65);
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _typeof2 = __webpack_require__(21);
+var _typeof2 = __webpack_require__(22);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _getIterator2 = __webpack_require__(14);
+var _getIterator2 = __webpack_require__(15);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -25937,7 +26037,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //             <v-spacer></v-spacer>
 //             <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
 //         </v-card-title>
-//         <!-- v-bind:headers="headers" -->
 //         <v-data-table
 //             v-bind:headers="headers"
 //             v-model="data"
@@ -25965,6 +26064,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                 </template>
 //             </template>
 //         </v-data-table>
+//         <v-progress-linear indeterminate class="red--text" height="3" :active="loading"></v-progress-linear>
 //     </v-card>
 // </template>
 //
@@ -25991,7 +26091,8 @@ exports.default = {
         fields: {
             type: Array,
             required: true
-        }
+        },
+        loading: true
     },
     data: function data() {
         return {
@@ -26144,23 +26245,23 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(6);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _table = __webpack_require__(7);
+var _table = __webpack_require__(8);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(6);
+var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _urls = __webpack_require__(4);
+var _urls = __webpack_require__(5);
 
 var _urls2 = _interopRequireDefault(_urls);
 
@@ -26276,6 +26377,7 @@ exports.default = {
 //               :data="elements"
 //               :fields="['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']"
 //               @selectedrow="eventUpdatedForm"
+//               :loading="loading"
 //               ></ig-table>
 //             </v-col>
 //           </v-row>
@@ -26313,39 +26415,39 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(3);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuetify = __webpack_require__(10);
+var _vuetify = __webpack_require__(11);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(8);
+var _vueResource = __webpack_require__(9);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(9);
+var _menu = __webpack_require__(10);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(7);
+var _table = __webpack_require__(8);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(6);
+var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(6);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _urls = __webpack_require__(4);
+var _urls = __webpack_require__(5);
 
 var _urls2 = _interopRequireDefault(_urls);
 
@@ -26363,6 +26465,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //               :data="elements"
 //               :fields="['codigo', 'descripcion']"
 //               @selectedrow="eventUpdatedForm"
+//               :loading="loading"
 //               ></ig-table>
 //             </v-col>
 //           </v-row>
@@ -26445,39 +26548,39 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(3);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuetify = __webpack_require__(10);
+var _vuetify = __webpack_require__(11);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(8);
+var _vueResource = __webpack_require__(9);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(9);
+var _menu = __webpack_require__(10);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(7);
+var _table = __webpack_require__(8);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(6);
+var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(6);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _urls = __webpack_require__(4);
+var _urls = __webpack_require__(5);
 
 var _urls2 = _interopRequireDefault(_urls);
 
@@ -26495,6 +26598,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //               :data="elements"
 //               :fields="['codigo', 'nombre', 'tecnica.codigo']"
 //               @selectedrow="eventUpdatedForm"
+//               :loading="loading"
 //               ></ig-table>
 //             </v-col>
 //           </v-row>
@@ -26590,39 +26694,39 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(3);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuetify = __webpack_require__(10);
+var _vuetify = __webpack_require__(11);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(8);
+var _vueResource = __webpack_require__(9);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(9);
+var _menu = __webpack_require__(10);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(7);
+var _table = __webpack_require__(8);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(6);
+var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(6);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _urls = __webpack_require__(4);
+var _urls = __webpack_require__(5);
 
 var _urls2 = _interopRequireDefault(_urls);
 
@@ -26640,6 +26744,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //               :data="elements"
 //               :fields="['nombre', 'caracteristica.codigo']"
 //               @selectedrow="eventUpdatedForm"
+//               :loading="loading"
 //               ></ig-table>
 //             </v-col>
 //           </v-row>
@@ -26726,39 +26831,39 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _typeof2 = __webpack_require__(21);
+var _typeof2 = __webpack_require__(22);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _stringify = __webpack_require__(31);
+var _stringify = __webpack_require__(32);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _getIterator2 = __webpack_require__(14);
+var _getIterator2 = __webpack_require__(15);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _urls = __webpack_require__(4);
+var _urls = __webpack_require__(5);
 
 var _urls2 = _interopRequireDefault(_urls);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(6);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _errormixin = __webpack_require__(20);
+var _errormixin = __webpack_require__(21);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
 
-var _floatingButton = __webpack_require__(43);
+var _floatingButton = __webpack_require__(44);
 
 var _floatingButton2 = _interopRequireDefault(_floatingButton);
 
-var _formularioResultado = __webpack_require__(44);
+var _formularioResultado = __webpack_require__(45);
 
 var _formularioResultado2 = _interopRequireDefault(_formularioResultado);
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -27042,13 +27147,13 @@ exports.default = {
             return {
                 target: item,
                 validations: [function (i) {
-                    return ['checkbox', 'radio'].indexOf(i.tipo.name) !== -1 && i.choices.length <= 1;
+                    return ['checkbox', 'radio'].indexOf(i.tipo.name) === -1 || i.choices.length > 1;
                 }, function (i) {
-                    return i.tipo === '';
+                    return i.tipo !== '';
                 }, function (i) {
-                    return i.nombre === '';
+                    return i.nombre !== '';
                 }, function (i) {
-                    return ['select'].indexOf(i.tipo.name) !== -1 && i.choices_select.length <= 1;
+                    return ['select'].indexOf(i.tipo.name) === -1 || i.choices_select.length > 1;
                 }]
             };
         },
@@ -27233,39 +27338,39 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(3);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuetify = __webpack_require__(10);
+var _vuetify = __webpack_require__(11);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(8);
+var _vueResource = __webpack_require__(9);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(9);
+var _menu = __webpack_require__(10);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(7);
+var _table = __webpack_require__(8);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(6);
+var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(6);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _urls = __webpack_require__(4);
+var _urls = __webpack_require__(5);
 
 var _urls2 = _interopRequireDefault(_urls);
 
@@ -27283,6 +27388,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //               :data="elements"
 //               :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]"
 //               @selectedrow="customEventUpdatedForm"
+//               :loading="loading"
 //               ></ig-table>
 //             </v-col>
 //           </v-row>
@@ -27413,39 +27519,39 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(3);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuetify = __webpack_require__(10);
+var _vuetify = __webpack_require__(11);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(8);
+var _vueResource = __webpack_require__(9);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(9);
+var _menu = __webpack_require__(10);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(7);
+var _table = __webpack_require__(8);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(6);
+var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(6);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _urls = __webpack_require__(4);
+var _urls = __webpack_require__(5);
 
 var _urls2 = _interopRequireDefault(_urls);
 
@@ -27463,6 +27569,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //               :data="elements"
 //               :fields="['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha', {href: '/resultados/:id/', patrons: [{identifier: 'id', replace: item => item.id}]}]"
 //               @selectedrow="eventUpdatedForm"
+//               :loading="loading"
 //               ></ig-table>
 //             </v-col>
 //           </v-row>
@@ -27544,39 +27651,39 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(3);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuetify = __webpack_require__(10);
+var _vuetify = __webpack_require__(11);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(8);
+var _vueResource = __webpack_require__(9);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(9);
+var _menu = __webpack_require__(10);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(7);
+var _table = __webpack_require__(8);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(6);
+var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(6);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _urls = __webpack_require__(4);
+var _urls = __webpack_require__(5);
 
 var _urls2 = _interopRequireDefault(_urls);
 
@@ -27594,6 +27701,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //               :data="elements"
 //               :fields="['codigo', 'nombre', 'laboratorio.codigo', 'costos']"
 //               @selectedrow="eventUpdatedForm"
+//               :loading="loading"
 //               ></ig-table>
 //             </v-col>
 //           </v-row>
@@ -27706,35 +27814,35 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _stringify = __webpack_require__(31);
+var _stringify = __webpack_require__(32);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _getIterator2 = __webpack_require__(14);
+var _getIterator2 = __webpack_require__(15);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(3);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _formularioResultado = __webpack_require__(44);
+var _formularioResultado = __webpack_require__(45);
 
 var _formularioResultado2 = _interopRequireDefault(_formularioResultado);
 
-var _floatingButton = __webpack_require__(43);
+var _floatingButton = __webpack_require__(44);
 
 var _floatingButton2 = _interopRequireDefault(_floatingButton);
 
-var _errormixin = __webpack_require__(20);
+var _errormixin = __webpack_require__(21);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
 
-var _urls = __webpack_require__(4);
+var _urls = __webpack_require__(5);
 
 var _urls2 = _interopRequireDefault(_urls);
 
@@ -27845,9 +27953,9 @@ exports.default = {
                     this.addValidation({
                         target: field,
                         validations: [function (i) {
-                            return ['select', 'radio', 'textarea', 'text'].indexOf(i.tipo.name) !== -1 ? i.model_text === '' : false;
+                            return ['select', 'radio', 'textarea', 'text'].indexOf(i.tipo.name) !== -1 ? i.model_text !== '' : true;
                         }, function (i) {
-                            return ['checkbox'].indexOf(i.tipo.name) !== -1 ? i.model_check.length <= 0 : false;
+                            return ['checkbox'].indexOf(i.tipo.name) !== -1 ? i.model_check.length > 1 : true;
                         }]
                     });
                 }
@@ -28026,39 +28134,39 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(3);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuetify = __webpack_require__(10);
+var _vuetify = __webpack_require__(11);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(8);
+var _vueResource = __webpack_require__(9);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(9);
+var _menu = __webpack_require__(10);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(7);
+var _table = __webpack_require__(8);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(6);
+var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(6);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _urls = __webpack_require__(4);
+var _urls = __webpack_require__(5);
 
 var _urls2 = _interopRequireDefault(_urls);
 
@@ -28076,6 +28184,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //               :data="elements"
 //               :fields="['codigo', 'descripcion']"
 //               @selectedrow="eventUpdatedForm"
+//               :loading="loading"
 //               ></ig-table>
 //             </v-col>
 //           </v-row>
@@ -28158,39 +28267,39 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(3);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuetify = __webpack_require__(10);
+var _vuetify = __webpack_require__(11);
 
 var _vuetify2 = _interopRequireDefault(_vuetify);
 
-var _vueResource = __webpack_require__(8);
+var _vueResource = __webpack_require__(9);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(9);
+var _menu = __webpack_require__(10);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(7);
+var _table = __webpack_require__(8);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(6);
+var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(6);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _urls = __webpack_require__(4);
+var _urls = __webpack_require__(5);
 
 var _urls2 = _interopRequireDefault(_urls);
 
@@ -28208,6 +28317,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //               :data="elements"
 //               :fields="['codigo', 'nombre']"
 //               @selectedrow="eventUpdatedForm"
+//               :loading="loading"
 //               ></ig-table>
 //             </v-col>
 //           </v-row>
@@ -28333,23 +28443,23 @@ exports.default = function (arr) {
 /* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(42);
+__webpack_require__(43);
 __webpack_require__(92);
-module.exports = __webpack_require__(11).Array.from;
+module.exports = __webpack_require__(12).Array.from;
 
 /***/ }),
 /* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(98);
-__webpack_require__(42);
+__webpack_require__(43);
 module.exports = __webpack_require__(91);
 
 /***/ }),
 /* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var core = __webpack_require__(11);
+var core = __webpack_require__(12);
 module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
   return (core.JSON && core.JSON.stringify || JSON.stringify).apply(JSON, arguments);
 };
@@ -28359,14 +28469,14 @@ module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(94);
-module.exports = __webpack_require__(11).Object.assign;
+module.exports = __webpack_require__(12).Object.assign;
 
 /***/ }),
 /* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(95);
-module.exports = __webpack_require__(11).Object.keys;
+module.exports = __webpack_require__(12).Object.keys;
 
 /***/ }),
 /* 73 */
@@ -28374,7 +28484,7 @@ module.exports = __webpack_require__(11).Object.keys;
 
 __webpack_require__(97);
 __webpack_require__(96);
-module.exports = __webpack_require__(11).Symbol;
+module.exports = __webpack_require__(12).Symbol;
 
 /***/ }),
 /* 74 */
@@ -28396,8 +28506,8 @@ module.exports = function(){ /* empty */ };
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(23)
-  , TAG = __webpack_require__(13)('toStringTag')
+var cof = __webpack_require__(24)
+  , TAG = __webpack_require__(14)('toStringTag')
   // ES3 wrong here
   , ARG = cof(function(){ return arguments; }()) == 'Arguments';
 
@@ -28417,7 +28527,7 @@ module.exports = function(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 // all enumerable object keys, includes symbols
-var $ = __webpack_require__(12);
+var $ = __webpack_require__(13);
 module.exports = function(it){
   var keys       = $.getKeys(it)
     , getSymbols = $.getSymbols;
@@ -28436,8 +28546,8 @@ module.exports = function(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-var toIObject = __webpack_require__(19)
-  , getNames  = __webpack_require__(12).getNames
+var toIObject = __webpack_require__(20)
+  , getNames  = __webpack_require__(13).getNames
   , toString  = {}.toString;
 
 var windowNames = typeof window == 'object' && Object.getOwnPropertyNames
@@ -28461,8 +28571,8 @@ module.exports.get = function getOwnPropertyNames(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 // check on default Array iterator
-var Iterators  = __webpack_require__(16)
-  , ITERATOR   = __webpack_require__(13)('iterator')
+var Iterators  = __webpack_require__(17)
+  , ITERATOR   = __webpack_require__(14)('iterator')
   , ArrayProto = Array.prototype;
 
 module.exports = function(it){
@@ -28474,7 +28584,7 @@ module.exports = function(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
-var cof = __webpack_require__(23);
+var cof = __webpack_require__(24);
 module.exports = Array.isArray || function(arg){
   return cof(arg) == 'Array';
 };
@@ -28492,7 +28602,7 @@ module.exports = function(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 // call something on iterator step with safe closing on error
-var anObject = __webpack_require__(22);
+var anObject = __webpack_require__(23);
 module.exports = function(iterator, fn, value, entries){
   try {
     return entries ? fn(anObject(value)[0], value[1]) : fn(value);
@@ -28510,13 +28620,13 @@ module.exports = function(iterator, fn, value, entries){
 
 "use strict";
 
-var $              = __webpack_require__(12)
-  , descriptor     = __webpack_require__(27)
-  , setToStringTag = __webpack_require__(28)
+var $              = __webpack_require__(13)
+  , descriptor     = __webpack_require__(28)
+  , setToStringTag = __webpack_require__(29)
   , IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(26)(IteratorPrototype, __webpack_require__(13)('iterator'), function(){ return this; });
+__webpack_require__(27)(IteratorPrototype, __webpack_require__(14)('iterator'), function(){ return this; });
 
 module.exports = function(Constructor, NAME, next){
   Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
@@ -28527,7 +28637,7 @@ module.exports = function(Constructor, NAME, next){
 /* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ITERATOR     = __webpack_require__(13)('iterator')
+var ITERATOR     = __webpack_require__(14)('iterator')
   , SAFE_CLOSING = false;
 
 try {
@@ -28561,8 +28671,8 @@ module.exports = function(done, value){
 /* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var $         = __webpack_require__(12)
-  , toIObject = __webpack_require__(19);
+var $         = __webpack_require__(13)
+  , toIObject = __webpack_require__(20);
 module.exports = function(object, el){
   var O      = toIObject(object)
     , keys   = $.getKeys(O)
@@ -28577,12 +28687,12 @@ module.exports = function(object, el){
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.1 Object.assign(target, source, ...)
-var $        = __webpack_require__(12)
-  , toObject = __webpack_require__(29)
-  , IObject  = __webpack_require__(34);
+var $        = __webpack_require__(13)
+  , toObject = __webpack_require__(30)
+  , IObject  = __webpack_require__(35);
 
 // should work with symbols and should have deterministic property order (V8 bug)
-module.exports = __webpack_require__(17)(function(){
+module.exports = __webpack_require__(18)(function(){
   var a = Object.assign
     , A = {}
     , B = {}
@@ -28615,9 +28725,9 @@ module.exports = __webpack_require__(17)(function(){
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
-var $export = __webpack_require__(15)
-  , core    = __webpack_require__(11)
-  , fails   = __webpack_require__(17);
+var $export = __webpack_require__(16)
+  , core    = __webpack_require__(12)
+  , fails   = __webpack_require__(18);
 module.exports = function(KEY, exec){
   var fn  = (core.Object || {})[KEY] || Object[KEY]
     , exp = {};
@@ -28629,8 +28739,8 @@ module.exports = function(KEY, exec){
 /* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toInteger = __webpack_require__(39)
-  , defined   = __webpack_require__(24);
+var toInteger = __webpack_require__(40)
+  , defined   = __webpack_require__(25);
 // true  -> String#at
 // false -> String#codePointAt
 module.exports = function(TO_STRING){
@@ -28652,7 +28762,7 @@ module.exports = function(TO_STRING){
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
-var toInteger = __webpack_require__(39)
+var toInteger = __webpack_require__(40)
   , min       = Math.min;
 module.exports = function(it){
   return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
@@ -28662,9 +28772,9 @@ module.exports = function(it){
 /* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(22)
-  , get      = __webpack_require__(41);
-module.exports = __webpack_require__(11).getIterator = function(it){
+var anObject = __webpack_require__(23)
+  , get      = __webpack_require__(42);
+module.exports = __webpack_require__(12).getIterator = function(it){
   var iterFn = get(it);
   if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
   return anObject(iterFn.call(it));
@@ -28676,13 +28786,13 @@ module.exports = __webpack_require__(11).getIterator = function(it){
 
 "use strict";
 
-var ctx         = __webpack_require__(32)
-  , $export     = __webpack_require__(15)
-  , toObject    = __webpack_require__(29)
+var ctx         = __webpack_require__(33)
+  , $export     = __webpack_require__(16)
+  , toObject    = __webpack_require__(30)
   , call        = __webpack_require__(82)
   , isArrayIter = __webpack_require__(79)
   , toLength    = __webpack_require__(90)
-  , getIterFn   = __webpack_require__(41);
+  , getIterFn   = __webpack_require__(42);
 $export($export.S + $export.F * !__webpack_require__(84)(function(iter){ Array.from(iter); }), 'Array', {
   // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
   from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
@@ -28721,14 +28831,14 @@ $export($export.S + $export.F * !__webpack_require__(84)(function(iter){ Array.f
 
 var addToUnscopables = __webpack_require__(75)
   , step             = __webpack_require__(85)
-  , Iterators        = __webpack_require__(16)
-  , toIObject        = __webpack_require__(19);
+  , Iterators        = __webpack_require__(17)
+  , toIObject        = __webpack_require__(20);
 
 // 22.1.3.4 Array.prototype.entries()
 // 22.1.3.13 Array.prototype.keys()
 // 22.1.3.29 Array.prototype.values()
 // 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(35)(Array, 'Array', function(iterated, kind){
+module.exports = __webpack_require__(36)(Array, 'Array', function(iterated, kind){
   this._t = toIObject(iterated); // target
   this._i = 0;                   // next index
   this._k = kind;                // kind
@@ -28758,7 +28868,7 @@ addToUnscopables('entries');
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.1 Object.assign(target, source)
-var $export = __webpack_require__(15);
+var $export = __webpack_require__(16);
 
 $export($export.S + $export.F, 'Object', {assign: __webpack_require__(87)});
 
@@ -28767,7 +28877,7 @@ $export($export.S + $export.F, 'Object', {assign: __webpack_require__(87)});
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
-var toObject = __webpack_require__(29);
+var toObject = __webpack_require__(30);
 
 __webpack_require__(88)('keys', function($keys){
   return function keys(it){
@@ -28788,24 +28898,24 @@ __webpack_require__(88)('keys', function($keys){
 "use strict";
 
 // ECMAScript 6 symbols shim
-var $              = __webpack_require__(12)
-  , global         = __webpack_require__(18)
-  , has            = __webpack_require__(25)
-  , DESCRIPTORS    = __webpack_require__(33)
-  , $export        = __webpack_require__(15)
-  , redefine       = __webpack_require__(37)
-  , $fails         = __webpack_require__(17)
-  , shared         = __webpack_require__(38)
-  , setToStringTag = __webpack_require__(28)
-  , uid            = __webpack_require__(40)
-  , wks            = __webpack_require__(13)
+var $              = __webpack_require__(13)
+  , global         = __webpack_require__(19)
+  , has            = __webpack_require__(26)
+  , DESCRIPTORS    = __webpack_require__(34)
+  , $export        = __webpack_require__(16)
+  , redefine       = __webpack_require__(38)
+  , $fails         = __webpack_require__(18)
+  , shared         = __webpack_require__(39)
+  , setToStringTag = __webpack_require__(29)
+  , uid            = __webpack_require__(41)
+  , wks            = __webpack_require__(14)
   , keyOf          = __webpack_require__(86)
   , $names         = __webpack_require__(78)
   , enumKeys       = __webpack_require__(77)
   , isArray        = __webpack_require__(80)
-  , anObject       = __webpack_require__(22)
-  , toIObject      = __webpack_require__(19)
-  , createDesc     = __webpack_require__(27)
+  , anObject       = __webpack_require__(23)
+  , toIObject      = __webpack_require__(20)
+  , createDesc     = __webpack_require__(28)
   , getDesc        = $.getDesc
   , setDesc        = $.setDesc
   , _create        = $.create
@@ -28945,7 +29055,7 @@ if(!useNative){
   $.getNames   = $names.get = $getOwnPropertyNames;
   $.getSymbols = $getOwnPropertySymbols;
 
-  if(DESCRIPTORS && !__webpack_require__(36)){
+  if(DESCRIPTORS && !__webpack_require__(37)){
     redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
   }
 }
@@ -29019,14 +29129,14 @@ setToStringTag(global.JSON, 'JSON', true);
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(93);
-var Iterators = __webpack_require__(16);
+var Iterators = __webpack_require__(17);
 Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
 
 /***/ }),
 /* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29040,7 +29150,7 @@ exports.push([module.i, "\n", ""]);
 /* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29054,7 +29164,7 @@ exports.push([module.i, "\n", ""]);
 /* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29068,7 +29178,7 @@ exports.push([module.i, "\n", ""]);
 /* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29082,7 +29192,7 @@ exports.push([module.i, "\n", ""]);
 /* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29096,7 +29206,7 @@ exports.push([module.i, "\n", ""]);
 /* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29110,7 +29220,7 @@ exports.push([module.i, "\n", ""]);
 /* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29124,7 +29234,7 @@ exports.push([module.i, "\n.ig-floating-button {\n    position: fixed;\n    bott
 /* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29138,7 +29248,7 @@ exports.push([module.i, "\n", ""]);
 /* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29152,7 +29262,7 @@ exports.push([module.i, "\n", ""]);
 /* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29166,7 +29276,7 @@ exports.push([module.i, "\n", ""]);
 /* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29180,7 +29290,7 @@ exports.push([module.i, "\n", ""]);
 /* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29194,7 +29304,7 @@ exports.push([module.i, "\n", ""]);
 /* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29208,7 +29318,7 @@ exports.push([module.i, "\n.text-xs-left {\n    text-align: center !important;\n
 /* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29222,7 +29332,7 @@ exports.push([module.i, "\n", ""]);
 /* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29236,7 +29346,7 @@ exports.push([module.i, "\n", ""]);
 /* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -29541,7 +29651,7 @@ module.exports = function (css) {
 var content = __webpack_require__(99);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29567,7 +29677,7 @@ if(false) {
 var content = __webpack_require__(100);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29593,7 +29703,7 @@ if(false) {
 var content = __webpack_require__(101);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29619,7 +29729,7 @@ if(false) {
 var content = __webpack_require__(102);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29645,7 +29755,7 @@ if(false) {
 var content = __webpack_require__(103);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29671,7 +29781,7 @@ if(false) {
 var content = __webpack_require__(104);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29697,7 +29807,7 @@ if(false) {
 var content = __webpack_require__(105);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29723,7 +29833,7 @@ if(false) {
 var content = __webpack_require__(106);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29749,7 +29859,7 @@ if(false) {
 var content = __webpack_require__(107);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29775,7 +29885,7 @@ if(false) {
 var content = __webpack_require__(108);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29801,7 +29911,7 @@ if(false) {
 var content = __webpack_require__(109);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29827,7 +29937,7 @@ if(false) {
 var content = __webpack_require__(110);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29853,7 +29963,7 @@ if(false) {
 var content = __webpack_require__(111);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29879,7 +29989,7 @@ if(false) {
 var content = __webpack_require__(112);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29905,7 +30015,7 @@ if(false) {
 var content = __webpack_require__(113);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29931,7 +30041,7 @@ if(false) {
 var content = __webpack_require__(114);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -29963,31 +30073,31 @@ module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n    
 /* 135 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <!-- v-bind:headers=\"headers\" -->\n        <v-data-table\n            v-bind:headers=\"headers\"\n            v-model=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            :rowsPerPage=\"10\"\n            :filter=\"filter\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"headers\" scope=\"props\">\n                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n            </template>\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                    <td class=\"text-xs-center\" v-else>\n                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                            <v-icon>mode_edit</v-icon>\n                        </v-btn>\n                    </td>\n                </template>\n            </template>\n        </v-data-table>\n    </v-card>\n";
+module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <v-data-table\n            v-bind:headers=\"headers\"\n            v-model=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            :rowsPerPage=\"10\"\n            :filter=\"filter\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"headers\" scope=\"props\">\n                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n            </template>\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                    <td class=\"text-xs-center\" v-else>\n                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                            <v-icon>mode_edit</v-icon>\n                        </v-btn>\n                    </td>\n                </template>\n            </template>\n        </v-data-table>\n        <v-progress-linear indeterminate class=\"red--text\" height=\"3\" :active=\"loading\"></v-progress-linear>\n    </v-card>\n";
 
 /***/ }),
 /* 136 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Bacteriologos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Bacteriologos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 137 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Caracteristicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Caracteristicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 138 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Equipos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Equipos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 139 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Especificacion Caracteristica\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['nombre', 'caracteristica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Especificacion Caracteristica\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['nombre', 'caracteristica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 140 */
@@ -29999,19 +30109,19 @@ module.exports = "\n    <div v-if=\"formato\">\n        <v-container>\n         
 /* 141 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]\"\n              @selectedrow=\"customEventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]\"\n              @selectedrow=\"customEventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 142 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Ordenes con Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha', {href: '/resultados/:id/', patrons: [{identifier: 'id', replace: item => item.id}]}]\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Ordenes con Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha', {href: '/resultados/:id/', patrons: [{identifier: 'id', replace: item => item.id}]}]\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n    </div>\n";
 
 /***/ }),
 /* 143 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Reactivos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'laboratorio.codigo', 'costos']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Reactivos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'laboratorio.codigo', 'costos']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 144 */
@@ -30023,13 +30133,13 @@ module.exports = "\n    <div class=\"\">\n        <v-container>\n            <v-
 /* 145 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Secciones de Trabajo\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Secciones de Trabajo\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 146 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Tecnicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre']\"\n              @selectedrow=\"eventUpdatedForm\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-table\n              table-title=\"Tecnicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-col>\n          </v-row>\n        </v-container>\n        <br>\n        <v-container>\n          <v-row>\n            <v-col xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-col>\n        </v-row>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 147 */

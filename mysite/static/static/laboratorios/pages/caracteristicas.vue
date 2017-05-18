@@ -9,6 +9,7 @@
               :data="elements"
               :fields="['codigo', 'descripcion']"
               @selectedrow="eventUpdatedForm"
+              :loading="loading"
               ></ig-table>
             </v-col>
           </v-row>

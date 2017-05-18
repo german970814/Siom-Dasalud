@@ -86,8 +86,8 @@ export default {
                 this.addValidation({
                     target: field,
                     validations: [
-                        i => ['select', 'radio', 'textarea', 'text'].indexOf(i.tipo.name) !== -1 ? i.model_text === '': false,
-                        i => ['checkbox'].indexOf(i.tipo.name) !== -1 ? i.model_check.length <= 0: false,
+                        i => ['select', 'radio', 'textarea', 'text'].indexOf(i.tipo.name) !== -1 ? i.model_text !== '': true,
+                        i => ['checkbox'].indexOf(i.tipo.name) !== -1 ? i.model_check.length > 1: true,
                     ]
                 })
             }

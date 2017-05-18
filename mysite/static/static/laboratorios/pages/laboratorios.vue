@@ -9,6 +9,7 @@
               :data="elements"
               :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]"
               @selectedrow="customEventUpdatedForm"
+              :loading="loading"
               ></ig-table>
             </v-col>
           </v-row>
