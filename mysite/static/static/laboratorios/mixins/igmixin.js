@@ -52,7 +52,14 @@ export default {
         },
         eventCreatedObject: function (value) {
             value.selected = false;
-            this.elements.push(value);
+            let exists = this.elements.find(x => x.id == value.id);
+            if (exists) {
+                for (let attr in exists) {
+                    this.elements[this.elements.indexOf(exists)][attr] = value[attr] || exists[attr];
+                }
+            } else {
+                this.elements.push(value);
+            }
             this.selected = value;
         },
         eventUpdatedForm: function (value) {

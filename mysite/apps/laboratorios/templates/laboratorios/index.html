@@ -12,6 +12,25 @@
             .sidebar .material-icons.icon {
                 line-height: inherit !important;
             }
+
+            .wrap__all {
+              background-color: #fff;
+              width: 100%;
+              height: 100%;
+              top: 0;
+              left: 0;
+              display: block;
+              position: fixed;
+              z-index: 100000;
+            }
+
+            .preloader {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                margin-left: -25px;
+                margin-top: -55px;
+            }
         </style>
     </head>
 
@@ -20,9 +39,23 @@
         <div id="app" class="grey lighten-4">
             <v-app>
                 <div>
-                    <v-toolbar class="cyan darken-1">
+                    <v-toolbar class="cyan darken-1" fixed>
                         <v-toolbar-side-icon @click.native.stop="sidebar = !sidebar"></v-toolbar-side-icon>
                         <v-toolbar-title>Dasalud</v-toolbar-title>
+                        <v-toolbar-items>
+                          <v-menu bottom origin="top right" transition="v-scale-transition">
+                              <v-btn dark icon slot="activator">
+                                  <v-icon>more_vert</v-icon>
+                              </v-btn>
+                              <v-list>
+                                  <v-list-item>
+                                      <v-list-tile>
+                                          <v-list-tile-title>Desconexión</v-list-tile-title>
+                                      </v-list-tile>
+                                  </v-list-item>
+                              </v-list>
+                            </v-menu>
+                        </v-toolbar-items>
                     </v-toolbar>
                     <main>
                         <v-sidebar v-model="sidebar" drawer class="mt-0 scroll-y" :mobile-break-point="576">
@@ -30,7 +63,7 @@
                                 {% include 'menu.html' %}
                             </v-list>
                         </v-sidebar>
-                        <div class="main">
+                        <div class="main mt-5">
                             <v-content class="grey lighten-4">
                                 <br>
                                 <v-spacer></v-spacer>
@@ -49,6 +82,11 @@
                     {[ snackbarText ]}
                     <v-btn flat class="pink--text" @click.native="snackbar = false">Cerrar</v-btn>
                 </v-snackbar>
+                <div class="wrap__all" v-if="!contentLoaded">
+                    <div class="preloader">
+                        <v-progress-circular indeterminate class="blue--text" :size="50"></v-progress-circular>
+                    </div>
+                </div>
             </v-app>
         </div>
         <script type="text/javascript" src="{% static 'laboratorios/build.js' %}"></script>

@@ -27,6 +27,10 @@ const app = new Vue({
         snackbar: false,
         snackbarText: '',
         sidebar: false,
+        contentLoaded: false,
+    },
+    mounted: function () {
+        this.contentLoaded = true;
     },
     components: {
         igMenu: MenuComponent,

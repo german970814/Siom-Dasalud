@@ -118,6 +118,10 @@ const app = new __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default.a({
         snackbar: false,
         snackbarText: '',
         sidebar: false,
+        contentLoaded: false,
+    },
+    mounted: function () {
+        this.contentLoaded = true;
     },
     components: {
         igMenu: __WEBPACK_IMPORTED_MODULE_5__components_menu_vue___default.a,
@@ -11500,7 +11504,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         eventCreatedObject: function (value) {
             value.selected = false;
-            this.elements.push(value);
+            let exists = this.elements.find(x => x.id == value.id);
+            if (exists) {
+                for (let attr in exists) {
+                    this.elements[this.elements.indexOf(exists)][attr] = value[attr] || exists[attr];
+                }
+            } else {
+                this.elements.push(value);
+            }
             this.selected = value;
         },
         eventUpdatedForm: function (value) {
@@ -25407,11 +25418,11 @@ exports.default = {
             if (this.isValid()) {
                 this.$http[method](url, this.models, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
                     if (response.status == 201) {
-                        message = 'Laboratorio Creado Correctamente';
-                        _this4.$emit('objectcreated', response.body);
+                        message = 'Elemento Creado Correctamente';
                     } else {
-                        message = 'Laboratorio Editado Correctamente';
+                        message = 'Elemento Editado Correctamente';
                     }
+                    _this4.$emit('objectcreated', response.body);
                     if (message) {
                         _this4.$emit('showsnack', message);
                     }

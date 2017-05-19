@@ -251,11 +251,11 @@ export default {
                 this.$http[method](url, this.models, {headers: {'X-CSRFToken': token.value}})
                     .then(response => {
                         if (response.status == 201) {
-                            message = 'Laboratorio Creado Correctamente';
-                            this.$emit('objectcreated', response.body);
+                            message = 'Elemento Creado Correctamente';
                         } else {
-                            message = 'Laboratorio Editado Correctamente';
+                            message = 'Elemento Editado Correctamente';
                         }
+                        this.$emit('objectcreated', response.body);
                         if (message) {
                             this.$emit('showsnack', message);
                         }
