@@ -43,17 +43,17 @@
                         <v-toolbar-side-icon @click.native.stop="sidebar = !sidebar"></v-toolbar-side-icon>
                         <v-toolbar-title>Dasalud</v-toolbar-title>
                         <v-toolbar-items>
-                          <v-menu bottom origin="top right" transition="v-scale-transition">
-                              <v-btn dark icon slot="activator">
-                                  <v-icon>more_vert</v-icon>
-                              </v-btn>
-                              <v-list>
-                                  <v-list-item>
-                                      <v-list-tile>
-                                          <v-list-tile-title>Desconexión</v-list-tile-title>
-                                      </v-list-tile>
-                                  </v-list-item>
-                              </v-list>
+                            <v-menu bottom origin="top right" transition="v-scale-transition">
+                                <v-btn dark icon slot="activator">
+                                    <v-icon>more_vert</v-icon>
+                                </v-btn>
+                                <v-list>
+                                    <v-list-item>
+                                        <v-list-tile href="/logout/">
+                                            <v-list-tile-title>Desconexión</v-list-tile-title>
+                                        </v-list-tile>
+                                    </v-list-item>
+                                </v-list>
                             </v-menu>
                         </v-toolbar-items>
                     </v-toolbar>
