@@ -88,7 +88,7 @@ DATABASES = {
         #'HOST': '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
         #'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'siom',
+        'NAME': 'siom2',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '/var/run/mysqld/mysqld.sock',

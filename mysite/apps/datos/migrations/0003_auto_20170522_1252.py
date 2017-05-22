@@ -8,7 +8,7 @@ import mysite.apps.datos.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datos', '0004_auto_20170503_1608'),
+        ('datos', '0002_auto_20170329_1809'),
     ]
 
     operations = [
