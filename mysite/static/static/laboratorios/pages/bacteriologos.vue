@@ -131,6 +131,9 @@ export default {
                   verbose_name: 'Registro',
                   type: Number,
                   hint: 'Registro de el bacteriologo.',
+                  kwargs: {
+                      type: 'number',
+                  }
                 },
                 {
                   name: 'areas',

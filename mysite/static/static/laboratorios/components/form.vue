@@ -24,6 +24,7 @@ export default {
     },
     created: function () {
         this._getFetchData();
+        // en mounted this.$vuetify.load(this.init)
     },
     data: function () {
         return {

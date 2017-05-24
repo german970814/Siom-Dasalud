@@ -81,18 +81,20 @@ TEMPLATE_DIRS = (
 
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        #'NAME': 'dasalud_postgres',                      # Or path to database file if using sqlite3.
-        #'USER': 'german1234',                      # Not used with sqlite3.
-        #'PASSWORD': '1234',                  # Not used with sqlite3.
-        #'HOST': '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
-        #'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'siom2',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '/var/run/mysqld/mysqld.sock',
         'PORT': '',
+    },
+    'postgres': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'siom',
+        'USER': 'german1234',
+        'PASSWORD': '1234',
+        'HOST': '127.0.0.1',
+        'PORT': '5432', 
     }
 }
 
