@@ -5,17 +5,17 @@ from fabric.api import env, local, run
 REPO_URL = 'https://german970814@bitbucket.org/ingeniarte/ipsiom.git'
 FOLDER_ROOT = 'dasaludsiom'
 STRUCTURE_PROJECT = ('static', 'source', 'media', )
-ACTUAL_BRANCH = 'feature/laboratorio'
+ACTUAL_BRANCH = 'feature/laboratorios'
 
 env.user = 'tecno'
 env.hosts = 'dasaludsiom.tecno.webfactional.com'
 
 def deploy():
-    site_folder = 'home/%s/webapps/%s' % (env.user, FOLDER_ROOT)
+    site_folder = '/home/%s/webapps/%s' % (env.user, FOLDER_ROOT)
     source_folder = site_folder + '/source'
     _create_directory_structure_if_necessary(site_folder)
     _get_latest_source(source_folder)
-    _update_virtualenv(env.user, env.host, source_folder)
+    # _update_virtualenv(env.user, env.host, source_folder)
     # _update_static_files(source_folder, env.user, env.host)
     # update_database_info(source_folder)
 
