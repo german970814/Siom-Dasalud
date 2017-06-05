@@ -80,21 +80,21 @@ TEMPLATE_DIRS = (
 )
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'siom',
+    #     'USER': 'root',
+    #     'PASSWORD': '',
+    #     'HOST': '/var/run/mysqld/mysqld.sock',
+    #     'PORT': '',
+    # },
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'siom2',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '/var/run/mysqld/mysqld.sock',
-        'PORT': '',
-    },
-    'postgres': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'siom',
         'USER': 'german1234',
         'PASSWORD': '1234',
         'HOST': '127.0.0.1',
-        'PORT': '5432', 
+        'PORT': '5432',
     }
 }
 

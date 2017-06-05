@@ -1,9 +1,9 @@
 {% if perms.home.es_administrador or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %}
 <v-list-item>
     <v-list-tile ripple href="/">
-        <v-list-tile-avatar>
-            <v-icon>accessibility</v-icon>
-        </v-list-tile-avatar>
+        <v-list-tile-action>
+            <v-icon light>accessibility</v-icon>
+        </v-list-tile-action>
         <v-list-tile-content>
             <v-list-tile-title>Dashboard</v-list-tile-title>
         </v-list-tile-content>
@@ -12,15 +12,12 @@
 <v-list-group>
     <v-list-item slot="item">
         <v-list-tile ripple>
-            <v-list-tile-avatar>
-                <v-icon>people</v-icon>
-            </v-list-tile-avatar>
+            <v-list-tile-action>
+                <v-icon light>people</v-icon>
+            </v-list-tile-action>
             <v-list-tile-content>
                 <v-list-tile-title>Pacientes</v-list-tile-title>
             </v-list-tile-content>
-            <v-list-tile-action>
-                <v-icon>keyboard_arrow_down</v-icon>
-            </v-list-tile-action>
         </v-list-tile>
     </v-list-item>
     <v-list-item>
@@ -39,15 +36,12 @@
 <v-list-group>
     <v-list-item slot="item">
         <v-list-tile ripple>
-            <v-list-tile-avatar>
-                <v-icon>today</v-icon>
-            </v-list-tile-avatar>
+            <v-list-tile-action>
+                <v-icon light>today</v-icon>
+            </v-list-tile-action>
             <v-list-tile-content>
                 <v-list-tile-title>Agendas</v-list-tile-title>
             </v-list-tile-content>
-                <v-list-tile-action>
-                <v-icon>keyboard_arrow_down</v-icon>
-            </v-list-tile-action>
         </v-list-tile>
     </v-list-item>
     {% if perms.home.es_doctor %}
@@ -70,15 +64,12 @@
 <v-list-group>
     <v-list-item slot="item">
         <v-list-tile ripple>
-            <v-list-tile-avatar>
-                <v-icon>open_in_browser</v-icon>
-            </v-list-tile-avatar>
+            <v-list-tile-action>
+                <v-icon light>open_in_browser</v-icon>
+            </v-list-tile-action>
             <v-list-tile-content>
                 <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>
             </v-list-tile-content>
-            <v-list-tile-action>
-                <v-icon>keyboard_arrow_down</v-icon>
-            </v-list-tile-action>
         </v-list-tile>
     </v-list-item>
     <v-list-item>
@@ -96,9 +87,9 @@
 {% if perms.home.es_coordinador_general or perms.home.es_auxiliar_contabilidad %}
 <v-list-item>
     <v-list-tile ripple href="{% if perms.home.es_coordinador_general %}/portal_empresas/{% else %}/buscar_orden/{% endif %}">
-        <v-list-tile-avatar>
-            <v-icon>search</v-icon>
-        </v-list-tile-avatar>
+        <v-list-tile-action>
+            <v-icon light>search</v-icon>
+        </v-list-tile-action>
         <v-list-tile-content>
             <v-list-tile-title>Buscar Orden</v-list-tile-title>
         </v-list-tile-content>
@@ -107,19 +98,16 @@
 {% endif %}
 {% if user.is_staff or perms.home.es_administrador %}
 <v-divider light></v-divider>
-<v-subheader>Utilidades</v-subheader>
+<v-subheader light>Utilidades</v-subheader>
 <v-list-group>
     <v-list-item slot="item">
         <v-list-tile ripple>
-            <v-list-tile-avatar>
-                <v-icon>local_hospital</v-icon>
-            </v-list-tile-avatar>
+            <v-list-tile-action>
+                <v-icon light>local_hospital</v-icon>
+            </v-list-tile-action>
             <v-list-tile-content>
                 <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>
             </v-list-tile-content>
-            <v-list-tile-action>
-                <v-icon>keyboard_arrow_down</v-icon>
-            </v-list-tile-action>
         </v-list-tile>
     </v-list-item>
     <v-list-item>
@@ -136,15 +124,12 @@
 <v-list-group>
     <v-list-item slot="item">
         <v-list-tile ripple>
-            <v-list-tile-avatar>
-                <v-icon>business_center</v-icon>
-            </v-list-tile-avatar>
+            <v-list-tile-action>
+                <v-icon light>business_center</v-icon>
+            </v-list-tile-action>
             <v-list-tile-content>
                 <v-list-tile-title>Empresas y Planes</v-list-tile-title>
             </v-list-tile-content>
-            <v-list-tile-action>
-                <v-icon>keyboard_arrow_down</v-icon>
-            </v-list-tile-action>
         </v-list-tile>
     </v-list-item>
     <v-list-item>
@@ -161,15 +146,12 @@
 <v-list-group>
     <v-list-item slot="item">
         <v-list-tile ripple>
-            <v-list-tile-avatar>
-                <v-icon>featured_play_list</v-icon>
-            </v-list-tile-avatar>
+            <v-list-tile-action>
+                <v-icon light>featured_play_list</v-icon>
+            </v-list-tile-action>
             <v-list-tile-content>
                 <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>
             </v-list-tile-content>
-            <v-list-tile-action>
-                <v-icon>keyboard_arrow_down</v-icon>
-            </v-list-tile-action>
         </v-list-tile>
     </v-list-item>
     <v-list-item>
@@ -191,15 +173,12 @@
 <v-list-group>
     <v-list-item slot="item">
         <v-list-tile ripple>
-            <v-list-tile-avatar>
-                <v-icon>featured_play_list</v-icon>
-            </v-list-tile-avatar>
+            <v-list-tile-action>
+                <v-icon light>featured_play_list</v-icon>
+            </v-list-tile-action>
             <v-list-tile-content>
                 <v-list-tile-title>Usuarios</v-list-tile-title>
             </v-list-tile-content>
-            <v-list-tile-action>
-                <v-icon>keyboard_arrow_down</v-icon>
-            </v-list-tile-action>
         </v-list-tile>
     </v-list-item>
     <v-list-item>
@@ -215,7 +194,7 @@
 </v-list-group>
 <v-divider light></v-divider>
 {% endif %}
-<v-subheader>Laboratorio</v-subheader>
+<v-subheader light>Laboratorio</v-subheader>
 <v-list-item>
     <v-list-tile ripple href="{% url 'laboratorios:index' %}#/ordenes_laboratorios/">
         <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>
@@ -224,15 +203,12 @@
 <v-list-group>
     <v-list-item slot="item">
         <v-list-tile ripple>
-            <v-list-tile-avatar>
-                <v-icon>local_hospital</v-icon>
-            </v-list-tile-avatar>
+            <v-list-tile-action>
+                <v-icon light>local_hospital</v-icon>
+            </v-list-tile-action>
             <v-list-tile-content>
                 <v-list-tile-title>Administración</v-list-tile-title>
             </v-list-tile-content>
-            <v-list-tile-action>
-                <v-icon>keyboard_arrow_down</v-icon>
-            </v-list-tile-action>
         </v-list-tile>
     </v-list-item>
     <v-list-item>

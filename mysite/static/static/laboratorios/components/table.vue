@@ -7,7 +7,7 @@
         </v-card-title>
         <v-data-table
             v-bind:headers="headers"
-            v-model="data"
+            :items="data"
             v-bind:search="buscador"
             :rows-per-page-items="[10]"
             :rowsPerPage="10"
@@ -26,7 +26,7 @@
                     <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
                     <td class="text-xs-center" v-else>
                         <v-btn floating small router class="cyan darken-1" :href="field.href.replace(':id', props.item.id)">
-                            <v-icon>mode_edit</v-icon>
+                            <v-icon light>mode_edit</v-icon>
                         </v-btn>
                     </td>
                 </template>

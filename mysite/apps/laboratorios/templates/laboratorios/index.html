@@ -13,6 +13,10 @@
                 line-height: inherit !important;
             }
 
+            body {
+              background-color: #f5f5f5;
+            }
+
             .wrap__all {
               background-color: #fff;
               width: 100%;
@@ -39,13 +43,22 @@
         <div id="app" class="grey lighten-4">
             <v-app>
                 <div>
+                    <v-navigation-drawer
+                        v-model="sidebar"
+                        persistent
+                        enable-resize-watcher
+                        class="mt-0 scroll-y" :mobile-break-point="576">
+                        <v-list dense>
+                            {% include 'menu.html' %}
+                        </v-list>
+                    </v-navigation-drawer>
                     <v-toolbar class="cyan darken-1" fixed>
-                        <v-toolbar-side-icon @click.native.stop="sidebar = !sidebar"></v-toolbar-side-icon>
-                        <v-toolbar-title>Dasalud</v-toolbar-title>
+                        <v-toolbar-side-icon @click.native.stop="sidebar = !sidebar" class="white--text"></v-toolbar-side-icon>
+                        <v-toolbar-title class="white--text">Dasalud</v-toolbar-title>
                         <v-toolbar-items>
                             <v-menu bottom origin="top right" transition="v-scale-transition">
                                 <v-btn dark icon slot="activator">
-                                    <v-icon>more_vert</v-icon>
+                                    <v-icon class="white--text">more_vert</v-icon>
                                 </v-btn>
                                 <v-list>
                                     <v-list-item>
@@ -58,13 +71,8 @@
                         </v-toolbar-items>
                     </v-toolbar>
                     <main>
-                        <v-sidebar v-model="sidebar" drawer class="mt-0 scroll-y" :mobile-break-point="576">
-                            <v-list dense>
-                                {% include 'menu.html' %}
-                            </v-list>
-                        </v-sidebar>
-                        <div class="main mt-5">
-                            <v-content class="grey lighten-4">
+                        <div class="main">
+                            <div class="grey lighten-4">
                                 <br>
                                 <v-spacer></v-spacer>
                                 <v-container fluid>
@@ -74,7 +82,7 @@
                                     <router-view @mostrarsnackbar="mostrarSnackBar"></router-view>
                                     <!--End-->
                                 </v-container>
-                            </v-content>
+                            </div>
                         </div>
                     </main>
                 </div>

@@ -1,8 +1,8 @@
 <template lang="html">
     <div>
         <v-container>
-          <v-row>
-            <v-col xs12 md12>
+          <v-layout>
+            <v-flex xs12 md12>
               <ig-table
               table-title="Laboratorios"
               :headers="headers"
@@ -11,13 +11,13 @@
               @selectedrow="customEventUpdatedForm"
               :loading="loading"
               ></ig-table>
-            </v-col>
-          </v-row>
+            </v-flex>
+          </v-layout>
         </v-container>
         <br>
         <v-container>
-          <v-row>
-            <v-col xs12 md12>
+          <v-layout>
+            <v-flex xs12 md12>
               <ig-form
               :fields="fields"
               :url="urlForm"
@@ -27,8 +27,8 @@
               :selected="selected"
               >
             </ig-form>
-          </v-col>
-        </v-row>
+          </v-flex>
+        </v-layout>
         <br>
       </v-container>
     </div>
@@ -65,20 +65,20 @@ export default {
                 {
                   text: 'Código',
                   left: true,
+                  value: 'codigo'
+                },
+                {
+                  text: 'Nombre', value: 'nombre', left: true,
+                },
+                {
+                  text: 'Código Internacional', value: 'codigo_internacional', left: true,
+                },
+                {
+                  text: 'Equipo', value: 'equipo', left: true,
+                },
+                {
+                  text: 'Sección de Trabajo', value: 'seccion_trabajo', left: true,
                   sortable: false,
-                  value: 'tabla-codigo'
-                },
-                {
-                  text: 'Nombre', value: 'tabla-nombre', left: true,
-                },
-                {
-                  text: 'Código Internacional', value: 'tabla-codigo-internacional', left: true,
-                },
-                {
-                  text: 'Equipo', value: 'table-equipo', left: true,
-                },
-                {
-                  text: 'Sección de Trabajo', value: 'tabla-seccion-trabajo', left: true,
                 },
                 {
                   text: 'Accion', left: true, sortable: false

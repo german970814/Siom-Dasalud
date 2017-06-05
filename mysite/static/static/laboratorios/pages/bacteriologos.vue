@@ -1,8 +1,8 @@
 <template lang="html">
     <div>
         <v-container>
-          <v-row>
-            <v-col xs12 md12>
+          <v-layout>
+            <v-flex xs12 md12>
               <ig-table
               table-title="Bacteriologos"
               :headers="headers"
@@ -11,13 +11,13 @@
               @selectedrow="eventUpdatedForm"
               :loading="loading"
               ></ig-table>
-            </v-col>
-          </v-row>
+            </v-flex>
+          </v-layout>
         </v-container>
         <br>
         <v-container>
-          <v-row>
-            <v-col xs12 md12>
+          <v-layout>
+            <v-flex xs12 md12>
               <ig-form
               :fields="fields"
               :url="urlForm"
@@ -27,8 +27,8 @@
               :selected="selected"
               >
             </ig-form>
-          </v-col>
-        </v-row>
+          </v-flex>
+        </v-layout>
         <br>
       </v-container>
     </div>
@@ -81,7 +81,7 @@ export default {
                 },
                 {
                   text: 'Areas',
-                  value: 'areas-nombre',
+                  value: 'areas',
                   left: true,
                   sortable: false,
                 },
@@ -99,6 +99,7 @@ export default {
                   verbose_name: 'Contraseña',
                   type: String,
                   hint: 'Esta es la contraseña de el bacteriologo.',
+                  required: false,
                   group: 'usuario',
                   kwargs: {
                     type: 'password'

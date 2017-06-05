@@ -1,12 +1,12 @@
 <template lang="html">
     <div v-if="formato">
         <v-container>
-            <v-row>
+            <v-layout>
                 <h1 class="title">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>
-            </v-row>
-            <v-row>
-                <v-col md6 xs12 class="mb-5" v-for="(item, id) of items" :key="id">
-                    <v-expansion-panel expand>
+            </v-layout>
+            <v-layout wrap>
+                <v-flex md6 class="mb-5" v-for="(item, id) of items" :key="id">
+                    <v-expansion-panel expand class="white">
                         <v-expansion-panel-content>
                             <div slot="header">{{ item.nombre }}</div>
                             <v-card>
@@ -24,8 +24,9 @@
                                         item-value="text"
                                         :rules="[item.tipo !== '' || 'Este campo es obligatorio']"
                                         required
+                                        return-object
                                         persistent-hint
-                                        light
+                                        dark
                                     ></v-select>
                                     <br>
                                     <v-text-field
@@ -63,8 +64,8 @@
                                         persistent-hint
                                     ></v-text-field>
                                     <div v-else-if="item.tipo.name == 'select'">
-                                        <v-row>
-                                            <v-col md10 xs10>
+                                        <v-layout>
+                                            <v-flex md10 xs10>
                                                 <v-select
                                                     :label="item.nombre"
                                                     :hint="item.help"
@@ -74,25 +75,25 @@
                                                     item-value="text"
                                                     persistent-hint
                                                 ></v-select>
-                                            </v-col>
-                                            <v-col md2 xs2>
+                                            </v-flex>
+                                            <v-flex md2 xs2>
                                                 <v-btn
                                                     v-tooltip:top="{html: 'Agregar Opciones'}"
                                                     class="green--text darken-1" icon="icon"
                                                     @click.native.stop="dialog = true; lastItem = item">
                                                     <v-icon>add</v-icon>
                                                 </v-btn>
-                                            </v-col>
-                                        </v-row>
+                                            </v-flex>
+                                        </v-layout>
                                     </div>
                                     <div v-else-if="item.tipo.name == 'checkbox'">
-                                        <v-row v-for="(choice, choiceId) of item.choices" :key="choiceId">
-                                            <v-col xs7 md7>
+                                        <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
+                                            <v-flex xs7 md7>
                                                 <v-checkbox
                                                   v-if="!choice.edit"
                                                   :label="choice.name"
                                                   v-model="item.model_check"
-                                                  :value="choice"
+                                                  :value="choice.id"
                                                   primary
                                                 ></v-checkbox>
                                                 <v-text-field
@@ -100,8 +101,8 @@
                                                   label="Texto para mostrar"
                                                   v-model="choice.name"
                                                 ></v-text-field>
-                                            </v-col>
-                                            <v-col xs5 md5>
+                                            </v-flex>
+                                            <v-flex xs5 md5>
                                               <v-btn v-tooltip:top="{html: 'Editar opción'}" icon="icon" class="indigo--text" @click.native="toggleValueEditCheckBox(choice)">
                                                   <v-icon>mode_edit</v-icon>
                                               </v-btn>
@@ -111,12 +112,12 @@
                                               <v-btn v-tooltip:top="{html: 'Agregar opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
                                                   <v-icon>add</v-icon>
                                               </v-btn>
-                                            </v-col>
-                                        </v-row>
+                                            </v-flex>
+                                        </v-layout>
                                     </div>
                                     <div v-else-if="item.tipo.name == 'radio'">
-                                        <v-row v-for="(choice, choiceId) of item.choices" :key="choiceId">
-                                            <v-col xs7 md7>
+                                        <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
+                                            <v-flex xs7 md7>
                                                 <v-radio
                                                   v-if="!choice.edit"
                                                   :label="choice.name"
@@ -129,8 +130,8 @@
                                                   label="Texto para mostrar"
                                                   v-model="choice.name"
                                                 ></v-text-field>
-                                            </v-col>
-                                            <v-col xs5 md5>
+                                            </v-flex>
+                                            <v-flex xs5 md5>
                                               <v-btn v-tooltip:top="{html: 'Editar opción'}" icon="icon" class="indigo--text" @click.native="toggleValueEditCheckBox(choice)">
                                                   <v-icon>mode_edit</v-icon>
                                               </v-btn>
@@ -140,8 +141,8 @@
                                               <v-btn v-tooltip:top="{html: 'Agregar una nueva opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
                                                   <v-icon>add</v-icon>
                                               </v-btn>
-                                            </v-col>
-                                        </v-row>
+                                            </v-flex>
+                                        </v-layout>
                                     </div>
                                 </v-card-text>
                                 <v-card-row actions>
@@ -156,34 +157,34 @@
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                     <br>
-                </v-col>
-            </v-row>
+                </v-flex>
+            </v-layout>
         </v-container>
         <floating-button>
             <template slot="child">
                 <v-btn floating warning small @click.native="addItem" v-tooltip:left="{html: 'Agregar Campo'}">
-                    <v-icon>add</v-icon>
+                    <v-icon light>add</v-icon>
                 </v-btn>
                 <v-btn floating success small @click.native="saveFormato" v-tooltip:left="{html: 'Guardar Formato'}">
-                    <v-icon>save</v-icon>
+                    <v-icon light>save</v-icon>
                 </v-btn>
                 <v-btn floating info small @click.native.stop="preview = true" v-tooltip:left="{html: 'Previsualizar el Formulario'}">
-                    <v-icon>photo</v-icon>
+                    <v-icon light>photo</v-icon>
                 </v-btn>
             </template>
             <v-btn floating error v-tooltip:left="{html: 'Opciones'}">
-                <v-icon>settings</v-icon>
+                <v-icon light>settings</v-icon>
             </v-btn>
         </floating-button>
         <v-dialog v-model="preview" fullscreen transition="v-dialog-bottom-transition" :overlay="false">
             <v-card>
                 <v-card-row>
-                    <v-toolbar class="orange">
+                    <v-toolbar class="orange darken-2">
                         <v-btn icon="icon" @click.native="preview = false">
-                            <v-icon>close</v-icon>
+                            <v-icon class="white--text">close</v-icon>
                         </v-btn>
-                        <v-toolbar-title>Settings</v-toolbar-title>
-                        <v-btn class="white--text" flat="flat" @click.native="preview = false">Save</v-btn>
+                        <v-toolbar-title class="white--text">Settings</v-toolbar-title>
+                        <!-- <v-btn class="white--text" flat="flat" @click.native="preview = false">Save</v-btn> -->
                     </v-toolbar>
                 </v-card-row>
                 <formulario-resultado :value="$data"></formulario-resultado>
@@ -300,7 +301,7 @@ export default {
             let item = {
                 nombre: 'Campo ' + length,
                 help: '',
-                choices: [{edit: false, name: 'Option 1', checked: false, id: 0}],
+                choices: [{edit: false, name: 'Option 1', id: 0}],
                 choices_select: [],
                 choices_count: 0,
                 model_text: '',

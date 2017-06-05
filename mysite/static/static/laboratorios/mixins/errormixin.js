@@ -54,9 +54,9 @@ export default {
                     let validations = validate.validations;
                     for (let validation of validations) {
                         const valid = typeof validation === 'function' ? validation(validate.target): validation;
-                            if (!valid || typeof valid == 'string') {
-                                return true;
-                            }
+                        if (!valid || typeof valid == 'string') {
+                            return true;
+                        }
                     }
                 }
                 return false

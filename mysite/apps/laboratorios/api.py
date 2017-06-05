@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
+from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 
@@ -12,6 +13,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.response import Response
 from rest_framework import permissions, generics
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.pagination import PageNumberPagination
 
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo, Tecnica, Reactivo, Caracteristica,
@@ -165,6 +167,31 @@ class BacteriologoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BacteriologoSerializer
 
 
+@api_view(['GET'])
+def search_resultado_api_view(request):
+    """"""
+
+    param = request.GET.get('param', '')
+    pagination = PageNumberPagination()
+    pagination.page_size = 10
+    querys = (
+        Q(paciente__pnombre__icontains=param) | Q(paciente__papellido__icontains=param) |
+        Q(paciente__cedula__icontains=param) | Q(id__icontains=param) | Q(institucion__razon__icontains=param) |
+        Q(empresa__razon__icontains=param) | Q(empresa_cliente__icontains=param)
+    )
+
+    servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
+
+    ordenes = Orden.objects.filter(
+        id__in=OrdenProducto.objects.filter(
+            servicio__nombre__id__in=servicios
+        ).values_list('orden_id', flat=True).distinct(),
+    ).filter(querys)
+    result_pagination = pagination.paginate_queryset(ordenes, request)
+    serializer = OrdenSerializer(result_pagination, many=True)
+    return pagination.get_paginated_response(serializer.data)
+
+
 @api_view(['POST', 'GET'])
 def resultado_api_view(request, pk):
     orden = get_object_or_404(Orden, pk=pk)
@@ -246,24 +273,27 @@ def ordenes_laboratorios(request):
 
     args = tuple()
     kwargs = dict()
-    try:
-        bacteriologo = request.user.bacteriologo
-    except:
-        kwargs['status'] = status.HTTP_403_FORBIDDEN
-        return Response(**kwargs)
+    # try:
+    #     bacteriologo = request.user.bacteriologo
+    # except:
+    #     kwargs['status'] = status.HTTP_403_FORBIDDEN
+    #     return Response(**kwargs)
 
     if request.method == 'GET':
-        servicios = Laboratorio.objects.filter(
-            seccion_trabajo__in=bacteriologo.areas.all()
-        ).values_list('servicio_id', flat=True)
+        pagination = PageNumberPagination()
+        pagination.page_size = 10
+
+        servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
 
         ordenes = Orden.objects.filter(
             id__in=OrdenProducto.objects.filter(
                 servicio__nombre__id__in=servicios
             ).values_list('orden_id', flat=True).distinct()
         )
-        serializer = OrdenSerializer(ordenes, many=True)
-        args = (serializer.data, )
+        result_pagination = pagination.paginate_queryset(ordenes, request)
+        serializer = OrdenSerializer(result_pagination, many=True)
+        # args = (serializer.data, )
+        return pagination.get_paginated_response(serializer.data)
 
     return Response(*args, **kwargs)
 

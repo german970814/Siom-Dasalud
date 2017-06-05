@@ -1,8 +1,8 @@
 <template lang="html">
     <div>
         <v-container>
-          <v-row>
-            <v-col xs12 md12>
+          <v-layout>
+            <v-flex xs12 md12>
               <ig-table
               table-title="Tecnicas"
               :headers="headers"
@@ -11,13 +11,13 @@
               @selectedrow="eventUpdatedForm"
               :loading="loading"
               ></ig-table>
-            </v-col>
-          </v-row>
+            </v-flex>
+          </v-layout>
         </v-container>
         <br>
         <v-container>
-          <v-row>
-            <v-col xs12 md12>
+          <v-layout>
+            <v-flex xs12 md12>
               <ig-form
               :fields="fields"
               :url="urlForm"
@@ -27,8 +27,8 @@
               :selected="selected"
               >
             </ig-form>
-          </v-col>
-        </v-row>
+          </v-flex>
+        </v-layout>
         <br>
       </v-container>
     </div>
@@ -62,11 +62,11 @@ export default {
               headers: [
                 {
                   text: 'Código',
-                  value: 'tabla-codigo',
+                  value: 'codigo',
                   left: true,
                 },
                 {
-                  text: 'Nombre', value: 'tabla-nombre',
+                  text: 'Nombre', value: 'nombre',
                   left: true,
                 },
               ],

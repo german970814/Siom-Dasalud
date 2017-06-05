@@ -13,6 +13,7 @@ const secciones_trabajo = BASE.concat('seccion_trabajo/');
 const tecnicas = BASE.concat('tecnicas/');
 const servicios = BASE.concat('servicios/');
 const resultados = BASE.concat('resultado/');
+const ordenes_busqueda = BASE.concat('ordenes/buscar/');
 
 export default {
     BASE,
@@ -29,4 +30,5 @@ export default {
     formatos,
     bacteriologos,
     resultados,
+    ordenes_busqueda,
 }

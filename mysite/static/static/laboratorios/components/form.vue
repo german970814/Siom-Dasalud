@@ -32,6 +32,7 @@ export default {
             items: {},  // los items de los selects
             validateFields: false,
             appended: {},
+            isValid: true,
         }
     },
     watch: {
@@ -214,9 +215,17 @@ export default {
         getRules: function (field) {
             let rules = new Array();
             if ('group' in field && field.group && this.fieldIsRequired(field)) {
-                rules.push(_field => this.validateFields ? !_.isEmpty(this.models[field.group][field.name]) || 'Este campo es obligatorio': true)
+                if (field.type == Number) {
+                    rules.push(_field => this.validateFields ? _.isNumber(this.models[field.group][field.name]) || 'Este campo es obligatorio': true)
+                } else {
+                    rules.push(_field => this.validateFields ? !_.isEmpty(this.models[field.group][field.name]) || 'Este campo es obligatorio': true)
+                }
             } else if (this.fieldIsRequired(field)) {
-                rules.push(_field => this.validateFields ? !_.isEmpty(this.models[field.name]) || 'Este campo es obligatorio': true)
+                if (field.type == Number) {
+                    rules.push(_field => this.validateFields ? _.isNumber(Number(this.models[field.name])) || 'Este campo es obligatorio': true)
+                } else {
+                    rules.push(_field => this.validateFields ? !_.isEmpty(this.models[field.name]) || 'Este campo es obligatorio': true)
+                }
             }
             if ('rules' in field) {
                 if (!field.rules instanceof Array) {
@@ -226,18 +235,20 @@ export default {
             }
             return rules
         },
-        isValid: function () {
+        _isValid: function () {
             this.validateFields = true;
             for (let field of this.fields) {
                 let rules = this.getRules(field);
                 for (let rule of rules) {
                     const valid = typeof rule === 'function' ? rule(field): rule;
                     if (!valid || typeof valid == 'string') {
-                        return false;
+                        this.isValid = false;
+                        return this.isValid;
                     }
                 }
             }
-            return true;
+            this.isValid = true;
+            return this.isValid;
         },
         submitForm: function () {
             let url = this.url;
@@ -248,7 +259,7 @@ export default {
                 url += this.selected.id + '/';
                 method = 'put';
             }
-            if (this.isValid()) {
+            if (this._isValid()) {
                 this.$http[method](url, this.models, {headers: {'X-CSRFToken': token.value}})
                     .then(response => {
                         if (response.status == 201) {
@@ -263,8 +274,21 @@ export default {
                     }, response => {
                         if (response.status == 400) {
                             message = 'Han ocurrido Errores';
-                            for (let res in response.body) {
-
+                            if ('usuario' in response.body) {
+                                for (let field in response.body.usuario) {
+                                    let found = this.fields.find(f => f.name == field);
+                                    if (found) {
+                                        if (!('rules' in found)) {
+                                            found.rules = [];
+                                        }
+                                        if (found.rules.indexOf(response.body.usuario[field]) == -1) {
+                                            for (let error of response.body.usuario[field]) {
+                                                found.rules.push(error);
+                                            }
+                                        }
+                                        this.models.usuario[field] = '';
+                                    }
+                                }
                             }
                         } else if ('detail' in response.body) {
                             message = response.body.detail;
@@ -329,16 +353,17 @@ export default {
                     defaultProps.items = this.items[field.name];
                     defaultProps['item-value'] = 'text';
                     defaultProps.autocomplete = true;
-                    defaultProps.light = true;
+                    defaultProps.returnObject = true;
+                    // defaultProps.light = true;
                     if ('kwargs' in field) {
                         defaultProps.multiple = field.kwargs.multiple ? true: false;
                     }
                 }
 
-                childs.push(this.$createElement('v-col', {attrs: {'md6': true, 'xs12': true}}, [
+                childs.push(this.$createElement('v-flex', {attrs: {'md6': true, 'xs12': true}}, [
                     this.$createElement(match[typeof field.type()], {
                         props: Object.assign({
-
+                            dark: true,
                         }, defaultProps),
                         domProps: {
                           value: field.group ? this.models[field.group][field.name]: this.models[field.name]
@@ -351,15 +376,25 @@ export default {
                                 this.models[field.name] = event;
                             }
                             this.$emit('input', event);
+                          },
+                          blur: (event) => {
+                              // this.removeServerErrors()
+                              field.rules = [];
+                              let value = field.group ? this.models[field.group][field.name]: this.models[field.name];
+                              if ('group' in field) {
+                                  this.models[field.group][field.name] = value;
+                              } else {
+                                  this.models[field.name] = value;
+                              }
                           }
-                        }
+                        },
                     }, [])
                 ]));
             }
             return this.$createElement('v-card-text', [
                 this.$createElement('br', []),
                 this.$createElement('v-container', [
-                    this.$createElement('v-row', childs)
+                    this.$createElement('v-layout', {attrs: {'row': true, 'wrap': true}}, childs)
                 ]),
                 this.$createElement('small', ['*Campos requeridos.']),
                 this.$createElement('br', [])
@@ -374,6 +409,9 @@ export default {
                 this.$createElement('v-btn', {
                   props: {
                     flat: true,
+                    outline: true,
+                    error: !this.isValid,
+                    info: this.isValid
                   },
                   nativeOn: {
                     click: (event) => {
@@ -382,7 +420,13 @@ export default {
                   }
                 }, [
                   !this.selected ? 'Crear': 'Editar',
-                  this.$createElement('v-icon', ['check_circle'])
+                  this.$createElement('v-spacer', []),
+                  this.$createElement('v-icon', {
+                    'class': {
+                        'blue--text': this.isValid,
+                        'red--text': !this.isValid
+                    }
+                  }, ['check_circle'])
                 ])
             ])
         },
