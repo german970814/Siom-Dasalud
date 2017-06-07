@@ -32,4 +32,5 @@ urlpatterns += [
     url(r'^api/ordenes/buscar/', api.search_resultado_api_view, name='busqueda_ordenes'),
     url(r'^api/especificacion_caracteristicas/caracteristica/(?P<pk>\d+)/$',
         api.especificacion_caracteristica_por_caracteristica, name='especificaciones_por_carateristica'),
+    url(r'^prueba/', views.prueba_impresion, name='imprier'),
 ]

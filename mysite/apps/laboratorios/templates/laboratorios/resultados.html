@@ -1,0 +1,259 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Laboratorios</title>
+        <link href="{% static 'laboratorios/fonts.css' %}" rel="stylesheet" type="text/css">
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="all">
+
+        <style>
+            @page {
+                size: letter portrait;
+                margin: 0.5cm 0.05cm 3.5cm 0.05cm;
+            }
+
+            @media print {
+                .row {
+                    width: 100% !important;
+                }
+
+                .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+                    float: left;
+                }
+
+                .col-md-12 {
+                    width: 100%;
+                }
+
+                .col-md-11 {
+                    width: 91.66666667%;
+                }
+
+                .col-md-10 {
+                    width: 83.33333333%;
+                }
+
+                .col-md-9 {
+                    width: 75%;
+                }
+
+                .col-md-8 {
+                    width: 66.66666667%;
+                }
+
+                .col-md-7 {
+                    width: 58.33333333%;
+                }
+
+                .col-md-6 {
+                    width: 50%;
+                }
+
+                .col-md-5 {
+                    width: 41.66666667%;
+                }
+
+                .col-md-4 {
+                    width: 33.33333333%;
+                }
+
+                .col-md-3 {
+                    width: 25%;
+                }
+
+                .col-md-2 {
+                    width: 16.66666667%;
+                }
+
+                .col-md-1 {
+                    width: 8.33333333%;
+                }
+
+                *, :after, :before {
+                    background: 0 0 !important;
+                    color: #000 !important;
+                    box-shadow: none !important;
+                    text-shadow: none !important;
+                }
+
+                .invoice .card-header {
+                    padding: 20px;
+                    margin: -60px -30px 25px;
+                    background: #eee !important;
+                }
+
+                .container-header {
+                    border: 1px solid #000;
+                    border-radius: 4px;
+                    padding-top: 20px;
+                    display: inline-block;
+                }
+            }
+
+            .sidebar .material-icons.icon {
+                line-height: inherit !important;
+            }
+
+            .container-header {
+                border: 1px solid #000;
+                border-radius: 4px;
+                padding-top: 20px
+            }
+
+            body {
+              background-color: #f5f5f5;
+            }
+
+            .wrap__all {
+              background-color: #fff;
+              width: 100%;
+              height: 100%;
+              top: 0;
+              left: 0;
+              display: block;
+              position: fixed;
+              z-index: 100000;
+            }
+
+            .preloader {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                margin-left: -25px;
+                margin-top: -55px;
+            }
+
+            .card {
+                position: relative;
+                background: #fff;
+                margin-bottom: 30px;
+                border-radius: 2px;
+            }
+
+            .card, .mini-charts-item {
+                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+            }
+
+            .card .card-header.ch-alt:not([class*="bgm-"]) {
+                background-color: #f7f7f7;
+            }
+
+            .card .card-header {
+                position: relative;
+                display: block;
+                padding: 26px 30px;
+                border-radius: 2px 2px 0 0;
+            }
+
+            .card .card-body.card-padding {
+                padding: 26px 30px;
+            }
+
+            .text-center {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row invoice">
+                <div class="card">
+                    <div class="card-body card-padding">
+                        <div class="row container-header">
+                            <div class="">
+                                <div class="col-md-3">
+                                    <dl class="section-text section-text--def">
+                                        <dt>Paciente</dt>
+                                        <dd>Geovanni Berdugo</dd>
+                                    </dl>
+                                    <dl class="section-text section-text--def">
+                                        <dt>Telefonos</dt>
+                                        <dd>335636</dd>
+                                    </dl>
+                                    <dl class="section-text section-text--def">
+                                        <dt>Fecha RPC</dt>
+                                        <dd>01-06-2017 4:48:26 p.m.</dd>
+                                    </dl>
+                                </div>
+                                <div class="col-md-3">
+                                    <dl class="section-text section-text--def">
+                                        <dt>Identificación</dt>
+                                        <dd>72270273</dd>
+                                    </dl>
+                                    <dl class="section-text section-text--def">
+                                        <dt>Empresa</dt>
+                                        <dd>SIOM INTERNOS</dd>
+                                    </dl>
+                                    <dl class="section-text section-text--def">
+                                        <dt>Medico</dt>
+                                        <dd>NO ASIGNADO</dd>
+                                    </dl>
+                                </div>
+                                <div class="col-md-3">
+                                    <dl class="section-text section-text--def">
+                                        <dt>Edad</dt>
+                                        <dd>35 Años</dd>
+                                    </dl>
+                                    <dl class="section-text section-text--def">
+                                        <dt>Fecha Recepción</dt>
+                                        <dd>01-06-2017 4:48:26 p.m.</dd>
+                                    </dl>
+                                    <dl class="section-text section-text--def">
+                                        <dt>Sede</dt>
+                                        <dd>PRINCIPAL</dd>
+                                    </dl>
+                                </div>
+                                <div class="col-md-3">
+                                    <dl class="section-text section-text--def">
+                                        <dt>Sexo</dt>
+                                        <dd>Masculino</dd>
+                                    </dl>
+                                    <dl class="section-text section-text--def">
+                                        <dt>Recepcion</dt>
+                                        <dd>4401</dd>
+                                    </dl>
+                                    <dl class="section-text section-text--def">
+                                        <dt>Fecha</dt>
+                                        <dd>01-06-2017</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <h4>Resultados</h4>
+                            <br>
+                            <table class="table table-responsive table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Química</th>
+                                        <th>Resultado</th>
+                                        <th>Valores de Referencia</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Colesterol total sérico</td>
+                                        <td>89 mg/dl</td>
+                                        <td>MENOR DE 200</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Glucosa Sanguínea</td>
+                                        <td>89 mg/dl</td>
+                                        <td>70 A 105 mg/dl</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Triglicéridos sérico</td>
+                                        <td>412 mg/dl</td>
+                                        <td>MENOR DE 150</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -25449,6 +25449,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _toConsumableArray2 = __webpack_require__(67);
+
+var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+
 var _assign = __webpack_require__(64);
 
 var _assign2 = _interopRequireDefault(_assign);
@@ -26189,6 +26193,7 @@ exports.default = {
         _genCardFooter: function _genCardFooter() {
             var _this7 = this;
 
+            var slots = this.$slots.default ? this.$slots.default : [];
             return this.$createElement('v-card-row', {
                 props: {
                     actions: true
@@ -26210,7 +26215,7 @@ exports.default = {
                     'blue--text': this.isValid,
                     'red--text': !this.isValid
                 }
-            }, ['check_circle'])])]);
+            }, ['check_circle'])])].concat((0, _toConsumableArray3.default)(slots)));
         }
     },
     render: function render() {
@@ -27984,7 +27989,7 @@ exports.default = {
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _underscore = __webpack_require__(2);
@@ -28015,6 +28020,10 @@ var _form = __webpack_require__(6);
 
 var _form2 = _interopRequireDefault(_form);
 
+var _formato = __webpack_require__(164);
+
+var _formato2 = _interopRequireDefault(_formato);
+
 var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
@@ -28026,7 +28035,7 @@ var _urls2 = _interopRequireDefault(_urls);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Vue.use(VueRouter);
-_vue2.default.use(_vueResource2.default); // <template lang="html">
+// <template lang="html">
 //     <div>
 //         <v-container>
 //           <v-layout>
@@ -28043,7 +28052,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //           </v-layout>
 //         </v-container>
 //         <br>
-//         <v-container>
+//         <!--<v-container>
 //           <v-layout>
 //             <v-flex xs12 md12>
 //               <ig-form
@@ -28058,102 +28067,191 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //           </v-flex>
 //         </v-layout>
 //         <br>
+//       </v-container>-->
+//       <v-container>
+//           <v-stepper v-model="stepper">
+//               <v-stepper-header class="white">
+//                   <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Laboratorio</v-stepper-step>
+//                   <v-divider></v-divider>
+//                   <v-stepper-step step="2" @click.native="secondStepClick" :complete="stepper > 2">Formato</v-stepper-step>
+//                   <v-divider></v-divider>
+//                   <v-stepper-step step="3" @click.native="stepper = 3">Reactivos</v-stepper-step>
+//               </v-stepper-header>
+//               <v-stepper-content step="1" class="white">
+//                   <ig-form
+//                   :fields="fields"
+//                   :url="urlForm"
+//                   @showsnack="showSnackBar"
+//                   @objectcreated="_eventCreatedObject"
+//                   @clearselected="selected = false"
+//                   :selected="selected"
+//                   >
+//                       <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
+//                           Continuar
+//                       </v-btn>
+//                   </ig-form>
+//               </v-stepper-content>
+//               <v-stepper-content step="2" class="white">
+//                   <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
+//               </v-stepper-content>
+//               <v-stepper-content step="3" class="white">
+//                   <v-card class="grey lighten-1 z-depth-1 mb-5">
+//                       <v-card-text>
+//
+//                       </v-card-text>
+//                       <v-card-row actions>
+//                           <v-btn primary @click.native="stepper = 1" light>Continue</v-btn>
+//                           <v-btn flat dark>Cancel</v-btn>
+//                       </v-card-row>
+//                   </v-card>
+//               </v-stepper-content>
+//           </v-stepper>
 //       </v-container>
 //     </div>
 // </template>
 //
 // <script>
-
+_vue2.default.use(_vueResource2.default);
 _vue2.default.use(_vuetify2.default);
 
 var BASE_URL = _urls2.default.BASE;
 
 exports.default = {
-  mixins: [_igmixin2.default],
-  data: function data() {
-    return {
-      urlForm: _urls2.default.laboratorios,
-      selected: false,
-      headers: [{
-        text: 'Código',
-        left: true,
-        value: 'codigo'
-      }, {
-        text: 'Nombre', value: 'nombre', left: true
-      }, {
-        text: 'Código Internacional', value: 'codigo_internacional', left: true
-      }, {
-        text: 'Equipo', value: 'equipo', left: true
-      }, {
-        text: 'Sección de Trabajo', value: 'seccion_trabajo', left: true,
-        sortable: false
-      }, {
-        text: 'Accion', left: true, sortable: false
-      }],
-      fields: [{
-        name: 'codigo',
-        verbose_name: 'Código',
-        type: String,
-        hint: 'Este es el código que identifica a cada laboratorio.'
-      }, {
-        name: 'nombre',
-        verbose_name: 'Nombre',
-        type: String,
-        hint: 'Este es el nombre del equipo.'
-      }, {
-        name: 'codigo_internacional',
-        verbose_name: 'Código Internacional',
-        type: String,
-        hint: 'Este es el código de representacion internacional del laboratorio.'
-      }, {
-        name: 'equipo',
-        verbose_name: 'Equipo',
-        type: Array,
-        url: _urls2.default.equipos,
-        hint: 'Este es el equipo que sera usado en este laboratorio.',
-        key: 'nombre'
-      }, {
-        name: 'seccion_trabajo',
-        verbose_name: 'Sección de Trabajo',
-        type: Array,
-        url: _urls2.default.secciones_trabajo,
-        hint: 'Este es el area o sección de trabajo de este laboratorio.',
-        key: 'codigo'
-      }, {
-        name: 'servicio',
-        verbose_name: 'Servicio',
-        type: Array,
-        url: _urls2.default.servicios,
-        hint: 'Este es el servicio asociado, con el cual se hará la relación en la orden.',
-        key: 'nombre'
-      }]
-    };
-  },
-  components: {
-    igMenu: _menu2.default,
-    igTable: _table2.default,
-    igForm: _form2.default
-  },
-  methods: {
-    customEventUpdatedForm: function customEventUpdatedForm(value) {
-      var _this = this;
+    mixins: [_igmixin2.default],
+    data: function data() {
+        return {
+            laboratorio: {},
+            stepper: 1,
+            urlForm: _urls2.default.laboratorios,
+            selected: false,
+            headers: [{
+                text: 'Código',
+                left: true,
+                value: 'codigo'
+            }, {
+                text: 'Nombre', value: 'nombre', left: true
+            }, {
+                text: 'Código Internacional', value: 'codigo_internacional', left: true
+            }, {
+                text: 'Equipo', value: 'equipo', left: true
+            }, {
+                text: 'Sección de Trabajo', value: 'seccion_trabajo', left: true,
+                sortable: false
+            }, {
+                text: 'Accion', left: true, sortable: false
+            }],
+            fields: [{
+                name: 'codigo',
+                verbose_name: 'Código',
+                type: String,
+                hint: 'Este es el código que identifica a cada laboratorio.'
+            }, {
+                name: 'nombre',
+                verbose_name: 'Nombre',
+                type: String,
+                hint: 'Este es el nombre del equipo.'
+            }, {
+                name: 'codigo_internacional',
+                verbose_name: 'Código Internacional',
+                type: String,
+                hint: 'Este es el código de representacion internacional del laboratorio.'
+            }, {
+                name: 'equipo',
+                verbose_name: 'Equipo',
+                type: Array,
+                url: _urls2.default.equipos,
+                hint: 'Este es el equipo que sera usado en este laboratorio.',
+                key: 'nombre'
+            }, {
+                name: 'seccion_trabajo',
+                verbose_name: 'Sección de Trabajo',
+                type: Array,
+                url: _urls2.default.secciones_trabajo,
+                hint: 'Este es el area o sección de trabajo de este laboratorio.',
+                key: 'codigo'
+            }, {
+                name: 'servicio',
+                verbose_name: 'Servicio',
+                type: Array,
+                url: _urls2.default.servicios,
+                hint: 'Este es el servicio asociado, con el cual se hará la relación en la orden.',
+                key: 'nombre'
+            }]
+        };
+    },
+    components: {
+        igMenu: _menu2.default,
+        igTable: _table2.default,
+        igForm: _form2.default,
+        igFormato: _formato2.default
+    },
+    watch: {
+        selected: function selected() {
+            if (!this.selected) {
+                this.laboratorio = {};
+            }
+        }
+    },
+    methods: {
+        validateFirstStep: function validateFirstStep() {
+            return !_underscore2.default.isEmpty(this.laboratorio);
+        },
+        secondStepClick: function secondStepClick() {
+            if (this.validateFirstStep()) {
+                this.stepper = 2;
+            }
+        },
+        customEventUpdatedForm: function customEventUpdatedForm(value) {
+            var _this = this;
 
-      this.$http.get(_urls2.default.servicios.concat(value.servicio.id.toString() + '/')).then(function (response) {
-        value.servicio = response.body;
-        _this.eventUpdatedForm(value);
-      }, function (response) {
-        console.error(response);
-        _this.showSnackBar(response.detail || 'Ha ocurrido un error');
-      });
+            this.laboratorio = value;
+            this.$http.get(_urls2.default.servicios.concat(value.servicio.id.toString() + '/')).then(function (response) {
+                value.servicio = response.body;
+                _this.eventUpdatedForm(value);
+            }, function (response) {
+                console.error(response);
+                _this.showSnackBar(response.detail || 'Ha ocurrido un error');
+            });
+        },
+        _eventCreatedObject: function _eventCreatedObject(value) {
+            this.laboratorio = value;
+            value.selected = false;
+            var exists = this.elements.find(function (x) {
+                return x.id == value.id;
+            });
+            if (exists) {
+                for (var attr in exists) {
+                    this.elements[this.elements.indexOf(exists)][attr] = value[attr] || exists[attr];
+                }
+            } else {
+                this.elements.push(value);
+            }
+            this.selected = value;
+            this.stepper = 2;
+        }
+    },
+    mounted: function mounted() {
+        this.getElements(_urls2.default.laboratorios);
     }
-  },
-  mounted: function mounted() {
-    this.getElements(_urls2.default.laboratorios);
-  }
 };
 // </script>
 //
 // <style lang="css">
+// .stepper__wrapper .card {
+//     box-shadow: inherit;
+// }
+//
+// .stepper__step--active, .stepper__step--complete {
+//     cursor: pointer !important;
+//     transition: ease 1s all;
+// }
+//
+// .stepper__step--active:hover, .stepper__step--complete:hover {
+//     background-color: #f0f0f0;
+// }
+// /*.stepper__wrapper .card .card__title{
+//     display: none;
+// }*/
 // </style>
 //
 
@@ -30007,7 +30105,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n", ""]);
+exports.push([module.i, "\n.stepper__wrapper .card {\n    box-shadow: inherit;\n}\n\n.stepper__step--active, .stepper__step--complete {\n    cursor: pointer !important;\n    transition: ease 1s all;\n}\n\n.stepper__step--active:hover, .stepper__step--complete:hover {\n    background-color: #f0f0f0;\n}\n/*.stepper__wrapper .card .card__title{\n    display: none;\n}*/\n", ""]);
 
 // exports
 
@@ -30975,7 +31073,7 @@ module.exports = "\n    <div v-if=\"formato\">\n        <v-container>\n         
 /* 141 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]\"\n              @selectedrow=\"customEventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]\"\n              @selectedrow=\"customEventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <!--<v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>-->\n      <v-container>\n          <v-stepper v-model=\"stepper\">\n              <v-stepper-header class=\"white\">\n                  <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"2\" @click.native=\"secondStepClick\" :complete=\"stepper > 2\">Formato</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"3\" @click.native=\"stepper = 3\">Reactivos</v-stepper-step>\n              </v-stepper-header>\n              <v-stepper-content step=\"1\" class=\"white\">\n                  <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"_eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  >\n                      <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                          Continuar\n                      </v-btn>\n                  </ig-form>\n              </v-stepper-content>\n              <v-stepper-content step=\"2\" class=\"white\">\n                  <ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>\n              </v-stepper-content>\n              <v-stepper-content step=\"3\" class=\"white\">\n                  <v-card class=\"grey lighten-1 z-depth-1 mb-5\">\n                      <v-card-text>\n\n                      </v-card-text>\n                      <v-card-row actions>\n                          <v-btn primary @click.native=\"stepper = 1\" light>Continue</v-btn>\n                          <v-btn flat dark>Cancel</v-btn>\n                      </v-card-row>\n                  </v-card>\n              </v-stepper-content>\n          </v-stepper>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 142 */
@@ -31292,6 +31390,606 @@ module.exports = g;
 /***/ (function(module, exports) {
 
 /* (ignored) */
+
+/***/ }),
+/* 160 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof2 = __webpack_require__(21);
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _stringify = __webpack_require__(31);
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+var _getIterator2 = __webpack_require__(14);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _urls = __webpack_require__(4);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+var _igmixin = __webpack_require__(5);
+
+var _igmixin2 = _interopRequireDefault(_igmixin);
+
+var _errormixin = __webpack_require__(20);
+
+var _errormixin2 = _interopRequireDefault(_errormixin);
+
+var _floatingButton = __webpack_require__(43);
+
+var _floatingButton2 = _interopRequireDefault(_floatingButton);
+
+var _formularioResultado = __webpack_require__(44);
+
+var _formularioResultado2 = _interopRequireDefault(_formularioResultado);
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// <template lang="html">
+//     <div v-if="formato">
+//         <v-container class="white">
+//             <v-layout>
+//                 <h1 class="title">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>
+//             </v-layout>
+//             <v-layout wrap>
+//                 <v-flex md6 class="mb-5" v-for="(item, id) of items" :key="id">
+//                     <v-expansion-panel expand class="white">
+//                         <v-expansion-panel-content>
+//                             <div slot="header">{{ item.nombre }}</div>
+//                             <v-card>
+//                                 <v-card-title>
+//                                 </v-card-title>
+//                                 <v-card-text class="grey lighten-5">
+//                                     <v-alert error hide-icon :value="['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1">
+//                                         Asegurate de crear varias opciones.
+//                                     </v-alert>
+//                                     <v-select
+//                                         label="Tipo"
+//                                         :hint="item.tipo.help"
+//                                         :items="tipoOpciones"
+//                                         v-model="item.tipo"
+//                                         item-value="text"
+//                                         :rules="[item.tipo !== '' || 'Este campo es obligatorio']"
+//                                         required
+//                                         return-object
+//                                         persistent-hint
+//                                         dark
+//                                     ></v-select>
+//                                     <br>
+//                                     <v-text-field
+//                                         label="Nombre del Campo"
+//                                         v-model="item.nombre"
+//                                         hint="Con este nombre se identificará el campo"
+//                                         :rules="[item.nombre !== '' || 'Este campo es obligatorio']"
+//                                         required
+//                                     ></v-text-field>
+//                                     <br>
+//                                     <v-text-field
+//                                         label="Texto de ayuda"
+//                                         v-model="item.help"
+//                                         hint="Ayuda textual que acompaña el campo"
+//                                     ></v-text-field>
+//                                     <br>
+//                                     <v-text-field
+//                                         label="Valores de referencia mínima"
+//                                         v-model="item.referencia_minima"
+//                                         hint="Texto de referencia minima para el momento de poner el resultado"
+//                                     ></v-text-field>
+//                                     <br>
+//                                     <v-text-field
+//                                         label="Valores de referencia máxima"
+//                                         v-model="item.referencia_maxima"
+//                                         hint="Texto de referencia máxima para el momento de poner el resultado"
+//                                     ></v-text-field>
+//                                     <br>
+//                                     <v-text-field
+//                                         label="Unidades"
+//                                         v-model="item.unidades"
+//                                         hint="Medida en unidades de el resultado"
+//                                     ></v-text-field>
+//                                     <br>
+//                                     <v-text-field
+//                                         v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'"
+//                                         :multi-line="item.tipo.name == 'textarea'"
+//                                         :label="item.nombre"
+//                                         :hint="item.help"
+//                                         v-model="item.model_text"
+//                                         :type="item.tipo.name == 'number' ? 'number': 'text'"
+//                                         persistent-hint
+//                                     ></v-text-field>
+//                                     <div v-else-if="item.tipo.name == 'select'">
+//                                         <v-layout>
+//                                             <v-flex md10 xs10>
+//                                                 <v-select
+//                                                     :label="item.nombre"
+//                                                     :hint="item.help"
+//                                                     v-model="item.model_text"
+//                                                     :items="item.choices_select"
+//                                                     :rules="[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]"
+//                                                     item-value="text"
+//                                                     persistent-hint
+//                                                 ></v-select>
+//                                             </v-flex>
+//                                             <v-flex md2 xs2>
+//                                                 <v-btn
+//                                                     v-tooltip:top="{html: 'Agregar Opciones'}"
+//                                                     class="green--text darken-1" icon="icon"
+//                                                     @click.native.stop="dialog = true; lastItem = item">
+//                                                     <v-icon>add</v-icon>
+//                                                 </v-btn>
+//                                             </v-flex>
+//                                         </v-layout>
+//                                     </div>
+//                                     <div v-else-if="item.tipo.name == 'checkbox'">
+//                                         <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
+//                                             <v-flex xs7 md7>
+//                                                 <v-checkbox
+//                                                   v-if="!choice.edit"
+//                                                   :label="choice.name"
+//                                                   v-model="item.model_check"
+//                                                   :value="choice.id"
+//                                                   primary
+//                                                 ></v-checkbox>
+//                                                 <v-text-field
+//                                                   v-else
+//                                                   label="Texto para mostrar"
+//                                                   v-model="choice.name"
+//                                                 ></v-text-field>
+//                                             </v-flex>
+//                                             <v-flex xs5 md5>
+//                                               <v-btn v-tooltip:top="{html: 'Editar opción'}" icon="icon" class="indigo--text" @click.native="toggleValueEditCheckBox(choice)">
+//                                                   <v-icon>mode_edit</v-icon>
+//                                               </v-btn>
+//                                               <v-btn v-tooltip:top="{html: 'Remover opción'}" icon="icon" class="red--text" @click.native="deleteChoiceItem(item, choiceId)" v-show="item.choices.length != 1">
+//                                                   <v-icon>delete</v-icon>
+//                                               </v-btn>
+//                                               <v-btn v-tooltip:top="{html: 'Agregar opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
+//                                                   <v-icon>add</v-icon>
+//                                               </v-btn>
+//                                             </v-flex>
+//                                         </v-layout>
+//                                     </div>
+//                                     <div v-else-if="item.tipo.name == 'radio'">
+//                                         <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
+//                                             <v-flex xs7 md7>
+//                                                 <v-radio
+//                                                   v-if="!choice.edit"
+//                                                   :label="choice.name"
+//                                                   v-model="item.model_text"
+//                                                   :value="choice.name"
+//                                                   primary
+//                                                 ></v-radio>
+//                                                 <v-text-field
+//                                                   v-else
+//                                                   label="Texto para mostrar"
+//                                                   v-model="choice.name"
+//                                                 ></v-text-field>
+//                                             </v-flex>
+//                                             <v-flex xs5 md5>
+//                                               <v-btn v-tooltip:top="{html: 'Editar opción'}" icon="icon" class="indigo--text" @click.native="toggleValueEditCheckBox(choice)">
+//                                                   <v-icon>mode_edit</v-icon>
+//                                               </v-btn>
+//                                               <v-btn v-tooltip:top="{html: 'Remover opción'}" icon="icon" class="red--text" @click.native="deleteChoiceItem(item, choiceId)" v-show="item.choices.length != 1">
+//                                                   <v-icon>delete</v-icon>
+//                                               </v-btn>
+//                                               <v-btn v-tooltip:top="{html: 'Agregar una nueva opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
+//                                                   <v-icon>add</v-icon>
+//                                               </v-btn>
+//                                             </v-flex>
+//                                         </v-layout>
+//                                     </div>
+//                                 </v-card-text>
+//                                 <v-card-row actions>
+//                                     <v-btn
+//                                       v-show="items.length > 1"
+//                                       flat
+//                                       class="red--text darken-1"
+//                                       @click.native="removeItem(id)"
+//                                     >Eliminar Campo</v-btn>
+//                                 </v-card-row>
+//                             </v-card>
+//                         </v-expansion-panel-content>
+//                     </v-expansion-panel>
+//                     <br>
+//                 </v-flex>
+//             </v-layout>
+//         </v-container>
+//         <floating-button>
+//             <template slot="child">
+//                 <v-btn floating warning small @click.native="addItem" v-tooltip:left="{html: 'Agregar Campo'}">
+//                     <v-icon light>add</v-icon>
+//                 </v-btn>
+//                 <v-btn floating success small @click.native="saveFormato" v-tooltip:left="{html: 'Guardar Formato'}">
+//                     <v-icon light>save</v-icon>
+//                 </v-btn>
+//                 <v-btn floating info small @click.native.stop="preview = true" v-tooltip:left="{html: 'Previsualizar el Formulario'}">
+//                     <v-icon light>photo</v-icon>
+//                 </v-btn>
+//             </template>
+//             <v-btn floating error v-tooltip:left="{html: 'Opciones'}">
+//                 <v-icon light>settings</v-icon>
+//             </v-btn>
+//         </floating-button>
+//         <v-dialog v-model="preview" fullscreen transition="v-dialog-bottom-transition" :overlay="false">
+//             <v-card>
+//                 <v-card-row>
+//                     <v-toolbar class="orange darken-2">
+//                         <v-btn icon="icon" @click.native="preview = false">
+//                             <v-icon class="white--text">close</v-icon>
+//                         </v-btn>
+//                         <v-toolbar-title class="white--text">Settings</v-toolbar-title>
+//                         <!-- <v-btn class="white--text" flat="flat" @click.native="preview = false">Save</v-btn> -->
+//                     </v-toolbar>
+//                 </v-card-row>
+//                 <formulario-resultado :value="$data"></formulario-resultado>
+//             </v-card>
+//         </v-dialog>
+//         <v-dialog v-model="dialog" scrollable>
+//             <v-card>
+//                 <v-card-title>Selecciona una Caracteristica</v-card-title>
+//                 <v-divider></v-divider>
+//                 <v-card-row height="300px">
+//                     <v-card-text>
+//                       <v-radio
+//                       v-for="(caracteristica, caracteristicaId) of caracteristicas"
+//                       :key="caracteristica.id"
+//                       :label="caracteristica.codigo.toUpperCase()"
+//                       v-model="modalchoice"
+//                       :value="caracteristica.id"
+//                       primary></v-radio>
+//                     </v-card-text>
+//                 </v-card-row>
+//                 <v-divider></v-divider>
+//                 <v-card-row actions>
+//                     <v-btn class="blue--text darken-1" flat @click.native="dialog = false">Cerrar</v-btn>
+//                     <v-btn class="blue--text darken-1" flat @click.native="llenarCaracteristicas">Escoger</v-btn>
+//                 </v-card-row>
+//             </v-card>
+//         </v-dialog>
+//     </div>
+// </template>
+//
+// <script>
+exports.default = {
+    mixins: [_igmixin2.default, _errormixin2.default],
+    props: {
+        laboratorio: {
+            required: true
+        }
+    },
+    components: {
+        floatingButton: _floatingButton2.default,
+        formularioResultado: _formularioResultado2.default
+    },
+    created: function created() {
+        // this.getFormato()
+    },
+    data: function data() {
+        return {
+            formato: { laboratorio: { nombre: '', codigo: '', id: '' } },
+            dialog: false,
+            preview: false,
+            caracteristicas: [],
+            modalchoice: '',
+            items: [],
+            lastItem: {},
+            tipoHelpText: 'Escoja un tipo de campo para los resultados.',
+            tipoOpciones: [{
+                text: 'Texto',
+                name: 'text',
+                help: 'Con este campo se puede dar un resultado libre corto y conciso.'
+            }, {
+                text: 'Números',
+                name: 'number',
+                help: 'Con este campo se puede dar un resultado numérico.'
+            }, {
+                text: 'Selección Unica',
+                name: 'radio',
+                help: 'Con este campo se proveen varias opciones y solo podrá ser escogida 1.'
+            }, {
+                text: 'Multiple Selección',
+                name: 'checkbox',
+                help: 'Con este campo se proveen varias opciones y podrán ser escogidas 1 o todas.'
+            }, {
+                text: 'Caracteristicas',
+                name: 'select',
+                help: 'Con este campo se muestran solo las opciones a partir de una caracteristica escogida.'
+            }, {
+                text: 'Libre',
+                name: 'textarea',
+                help: 'Con este campo se puede escribir libremente, bajo ciertos formatos.'
+            }]
+        };
+    },
+    watch: {
+        dialog: function dialog() {
+            var _this = this;
+
+            if (this.dialog) {
+                this.$http.get(_urls2.default.caracteristicas).then(function (response) {
+                    _this.caracteristicas = response.body;
+                }, function (response) {
+                    _this.showSnackBar('No se pueden mostrar las caracteristicas, vuelva a intentarlo.');
+                });
+            }
+        },
+        laboratorio: function laboratorio() {
+            this.getFormato();
+        }
+        // '$route': 'getFormato',
+    },
+    methods: {
+        genValidationsForItem: function genValidationsForItem(item) {
+            return {
+                target: item,
+                validations: [function (i) {
+                    return ['checkbox', 'radio'].indexOf(i.tipo.name) === -1 || i.choices.length > 1;
+                }, function (i) {
+                    return i.tipo !== '';
+                }, function (i) {
+                    return i.nombre !== '';
+                }, function (i) {
+                    return ['select'].indexOf(i.tipo.name) === -1 || i.choices_select.length > 1;
+                }]
+            };
+        },
+        addItem: function addItem() {
+            var length = (this.items.length + 1).toString();
+            var item = {
+                nombre: 'Campo ' + length,
+                help: '',
+                choices: [{ edit: false, name: 'Option 1', id: 0 }],
+                choices_select: [],
+                choices_count: 0,
+                model_text: '',
+                model_check: [],
+                unidades: '',
+                tipo: '',
+                referencia_minima: '',
+                referencia_maxima: ''
+            };
+            this.items.push(item);
+            this.addValidation(this.genValidationsForItem(item));
+        },
+        deleteChoiceItem: function deleteChoiceItem(item, choice) {
+            item.choices.splice(choice, 1);
+        },
+        addChoiceItem: function addChoiceItem(item) {
+            var length = (item.choices.length + 1).toString();
+            item.choices_count++;
+            item.choices.push({ edit: false, name: 'Option ' + length, id: item.choices_count });
+        },
+        toggleValueEditCheckBox: function toggleValueEditCheckBox(item) {
+            // item es un choice
+            if (!'edit' in item) {
+                console.warning('No hay una propiedad ¨edit¨ de la opcion, por lo que no sera reactiva.');
+            }
+            item.edit = !item.edit;
+        },
+        removeItem: function removeItem(item) {
+            var deleted = this.items.splice(item, 1);
+            var error = this.validations.find(function (i) {
+                return i.target == deleted;
+            });
+            this.removeValidation(error);
+        },
+        llenarCaracteristicas: function llenarCaracteristicas() {
+            var _this2 = this;
+
+            var item = this.lastItem;
+            if (this.modalchoice) {
+                this.$http.get(_urls2.default.especificaciones_por_carateristica + this.modalchoice.toString() + '/').then(function (response) {
+                    item.choices_select = [];
+                    var _iteratorNormalCompletion = true;
+                    var _didIteratorError = false;
+                    var _iteratorError = undefined;
+
+                    try {
+                        for (var _iterator = (0, _getIterator3.default)(response.body), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                            var choice = _step.value;
+
+                            choice.text = choice.nombre;
+                            item.choices_select.push(choice);
+                        }
+                    } catch (err) {
+                        _didIteratorError = true;
+                        _iteratorError = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion && _iterator.return) {
+                                _iterator.return();
+                            }
+                        } finally {
+                            if (_didIteratorError) {
+                                throw _iteratorError;
+                            }
+                        }
+                    }
+                }, function (response) {
+                    _this2.showSnackBar('Ha ocurrido un error al intentar obtener las caracteristicas, por favor vuelva a intentarlo mas tarde.');
+                });
+            }
+            this.dialog = false;
+        },
+        getFormato: function getFormato() {
+            var _this3 = this;
+
+            // let idLaboratorio = this.$route.params.id;
+            var idLaboratorio = 'id' in this.laboratorio ? this.laboratorio.id : undefined;
+            if (idLaboratorio) {
+                this.$http.get(_urls2.default.formatos.concat(idLaboratorio.toString()).concat('/')).then(function (response) {
+                    _this3.formato = response.body;
+                    _this3.items = !_underscore2.default.isEmpty(_this3.formato.formato) ? _this3.formato.formato : [];
+                    if (_this3.items.length === 0) {
+                        _this3.addItem();
+                    } else {
+                        _this3.validateNewPossibleErrors();
+                    }
+                }, function (response) {
+                    _this3.showSnackBar('Formato Solicitado no encontrado.');
+                    _this3.formato = undefined;
+                });
+            }
+        },
+        saveFormato: function saveFormato() {
+            var _this4 = this;
+
+            this._validated = true;
+            var idLaboratorio = this.laboratorio.id;
+            var token = document.getElementsByName('csrfmiddlewaretoken')[0];
+            var data = { formato: (0, _stringify2.default)(this.items), laboratorio: this.formato.laboratorio };
+            if (!this.hasError()) {
+                this.$http.post(_urls2.default.formatos.concat(idLaboratorio.toString()).concat('/'), data, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
+                    _this4.showSnackBar('Se ha guardado el formato con exito.');
+                }, function (response) {
+                    if ((typeof response === 'undefined' ? 'undefined' : (0, _typeof3.default)(response)) == 'object' && 'detail' in response) {
+                        _this4.showSnackBar(response.detail);
+                    } else {
+                        _this4.showSnackBar('Ha ocurrido un error al guardar el formato, por favor vuelva a intentarlo.');
+                    }
+                });
+            } else {
+                this.showSnackBar('Aun hay campo con errores, verifique antes de guardar');
+            }
+        },
+        validateNewPossibleErrors: function validateNewPossibleErrors() {
+            var _this5 = this;
+
+            var toDelete = [];
+            this.validations.forEach(function (item) {
+                var find = _this5.items.find(function (i) {
+                    return i == item.target;
+                });
+                if (!find) {
+                    toDelete.push(item);
+                }
+            });
+            if (toDelete.length) {
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
+
+                try {
+                    for (var _iterator2 = (0, _getIterator3.default)(toDelete), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var index = _step2.value;
+
+                        this.validations.splice(this.validations.indexOf(index), 1);
+                    }
+                } catch (err) {
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                            _iterator2.return();
+                        }
+                    } finally {
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
+                        }
+                    }
+                }
+            }
+            this.items.forEach(function (item) {
+                var inValidations = _this5.validations.find(function (i) {
+                    return i.target === item;
+                });
+                if (!inValidations) {
+                    _this5.addValidation(_this5.genValidationsForItem(item));
+                }
+            });
+        }
+    }
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+
+/***/ }),
+/* 161 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(161);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1e094a00&file=formato.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1e094a00&file=formato.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 163 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div v-if=\"formato\">\n        <v-container class=\"white\">\n            <v-layout>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-layout>\n            <v-layout wrap>\n                <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand class=\"white\">\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        return-object\n                                        persistent-hint\n                                        dark\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Texto de ayuda\"\n                                        v-model=\"item.help\"\n                                        hint=\"Ayuda textual que acompaña el campo\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia mínima\"\n                                        v-model=\"item.referencia_minima\"\n                                        hint=\"Texto de referencia minima para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia máxima\"\n                                        v-model=\"item.referencia_maxima\"\n                                        hint=\"Texto de referencia máxima para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Unidades\"\n                                        v-model=\"item.unidades\"\n                                        hint=\"Medida en unidades de el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'\"\n                                        :multi-line=\"item.tipo.name == 'textarea'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model_text\"\n                                        :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                        persistent-hint\n                                    ></v-text-field>\n                                    <div v-else-if=\"item.tipo.name == 'select'\">\n                                        <v-layout>\n                                            <v-flex md10 xs10>\n                                                <v-select\n                                                    :label=\"item.nombre\"\n                                                    :hint=\"item.help\"\n                                                    v-model=\"item.model_text\"\n                                                    :items=\"item.choices_select\"\n                                                    :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                    item-value=\"text\"\n                                                    persistent-hint\n                                                ></v-select>\n                                            </v-flex>\n                                            <v-flex md2 xs2>\n                                                <v-btn\n                                                    v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                    class=\"green--text darken-1\" icon=\"icon\"\n                                                    @click.native.stop=\"dialog = true; lastItem = item\">\n                                                    <v-icon>add</v-icon>\n                                                </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-checkbox\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_check\"\n                                                  :value=\"choice.id\"\n                                                  primary\n                                                ></v-checkbox>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-radio\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_text\"\n                                                  :value=\"choice.name\"\n                                                  primary\n                                                ></v-radio>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+
+/***/ }),
+/* 164 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(162)
+__vue_script__ = __webpack_require__(160)
+__vue_template__ = __webpack_require__(163)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/static/static/laboratorios/components/formato.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
 /***/ })
 /******/ ]);

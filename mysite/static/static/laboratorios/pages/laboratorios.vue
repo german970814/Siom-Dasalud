@@ -15,7 +15,7 @@
           </v-layout>
         </v-container>
         <br>
-        <v-container>
+        <!--<v-container>
           <v-layout>
             <v-flex xs12 md12>
               <ig-form
@@ -30,6 +30,45 @@
           </v-flex>
         </v-layout>
         <br>
+      </v-container>-->
+      <v-container>
+          <v-stepper v-model="stepper">
+              <v-stepper-header class="white">
+                  <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Laboratorio</v-stepper-step>
+                  <v-divider></v-divider>
+                  <v-stepper-step step="2" @click.native="secondStepClick" :complete="stepper > 2">Formato</v-stepper-step>
+                  <v-divider></v-divider>
+                  <v-stepper-step step="3" @click.native="stepper = 3">Reactivos</v-stepper-step>
+              </v-stepper-header>
+              <v-stepper-content step="1" class="white">
+                  <ig-form
+                  :fields="fields"
+                  :url="urlForm"
+                  @showsnack="showSnackBar"
+                  @objectcreated="_eventCreatedObject"
+                  @clearselected="selected = false"
+                  :selected="selected"
+                  >
+                      <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
+                          Continuar
+                      </v-btn>
+                  </ig-form>
+              </v-stepper-content>
+              <v-stepper-content step="2" class="white">
+                  <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
+              </v-stepper-content>
+              <v-stepper-content step="3" class="white">
+                  <v-card class="grey lighten-1 z-depth-1 mb-5">
+                      <v-card-text>
+
+                      </v-card-text>
+                      <v-card-row actions>
+                          <v-btn primary @click.native="stepper = 1" light>Continue</v-btn>
+                          <v-btn flat dark>Cancel</v-btn>
+                      </v-card-row>
+                  </v-card>
+              </v-stepper-content>
+          </v-stepper>
       </v-container>
     </div>
 </template>
@@ -44,6 +83,7 @@ import VueResource from 'vue-resource';
 import MenuComponent from './../components/menu.vue';
 import TableComponent from './../components/table.vue';
 import FormComponent from './../components/form.vue';
+import Formato from './../components/formato.vue';
 
 import IgMixin from './../mixins/igmixin.js';
 
@@ -59,6 +99,8 @@ export default {
     mixins: [IgMixin],
     data: function () {
           return {
+              laboratorio: {},
+              stepper: 1,
               urlForm: URL.laboratorios,
               selected: false,
               headers: [
@@ -134,9 +176,26 @@ export default {
         igMenu: MenuComponent,
         igTable: TableComponent,
         igForm: FormComponent,
+        igFormato: Formato,
+    },
+    watch: {
+        selected: function () {
+            if (!this.selected) {
+                this.laboratorio = {};
+            }
+        }
     },
     methods: {
+        validateFirstStep: function () {
+            return !_.isEmpty(this.laboratorio);
+        },
+        secondStepClick: function () {
+            if (this.validateFirstStep()) {
+                this.stepper = 2;
+            }
+        },
         customEventUpdatedForm: function (value) {
+            this.laboratorio = value;
             this.$http.get(URL.servicios.concat(value.servicio.id.toString() + '/'))
                 .then(response => {
                     value.servicio = response.body;
@@ -146,6 +205,20 @@ export default {
                     this.showSnackBar(response.detail || 'Ha ocurrido un error');
                 })
         },
+        _eventCreatedObject: function (value) {
+            this.laboratorio = value;
+            value.selected = false;
+            let exists = this.elements.find(x => x.id == value.id);
+            if (exists) {
+                for (let attr in exists) {
+                    this.elements[this.elements.indexOf(exists)][attr] = value[attr] || exists[attr];
+                }
+            } else {
+                this.elements.push(value);
+            }
+            this.selected = value;
+            this.stepper = 2;
+        }
     },
     mounted: function () {
         this.getElements(URL.laboratorios);
@@ -154,4 +227,19 @@ export default {
 </script>
 
 <style lang="css">
+.stepper__wrapper .card {
+    box-shadow: inherit;
+}
+
+.stepper__step--active, .stepper__step--complete {
+    cursor: pointer !important;
+    transition: ease 1s all;
+}
+
+.stepper__step--active:hover, .stepper__step--complete:hover {
+    background-color: #f0f0f0;
+}
+/*.stepper__wrapper .card .card__title{
+    display: none;
+}*/
 </style>

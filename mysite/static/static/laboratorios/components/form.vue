@@ -401,33 +401,35 @@ export default {
             ]);
         },
         _genCardFooter: function () {
+            let slots = this.$slots.default ? this.$slots.default: []
             return this.$createElement('v-card-row', {
               props: {
                 actions: true
               }
             }, [
                 this.$createElement('v-btn', {
-                  props: {
-                    flat: true,
-                    outline: true,
-                    error: !this.isValid,
-                    info: this.isValid
-                  },
-                  nativeOn: {
-                    click: (event) => {
-                        this.submitForm(event.target.value);
+                    props: {
+                      flat: true,
+                      outline: true,
+                      error: !this.isValid,
+                      info: this.isValid
+                    },
+                    nativeOn: {
+                      click: (event) => {
+                          this.submitForm(event.target.value);
+                      }
                     }
-                  }
                 }, [
-                  !this.selected ? 'Crear': 'Editar',
-                  this.$createElement('v-spacer', []),
-                  this.$createElement('v-icon', {
+                    !this.selected ? 'Crear': 'Editar',
+                    this.$createElement('v-spacer', []),
+                    this.$createElement('v-icon', {
                     'class': {
                         'blue--text': this.isValid,
                         'red--text': !this.isValid
                     }
                   }, ['check_circle'])
-                ])
+                ]),
+                ...slots
             ])
         },
     },

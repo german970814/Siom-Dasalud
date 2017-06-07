@@ -21,3 +21,9 @@ urlpatterns = patterns('',
     url(r'^',include('mysite.apps.parametros.urls')),
     url(r'^__debug__/', include(debug_toolbar.urls)),
 )
+
+if settings.DEBUG:
+    urlpatterns += patterns(
+        '',
+        url(r'^static/(?P<path>.*)', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+    )

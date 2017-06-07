@@ -10,14 +10,33 @@ ACTUAL_BRANCH = 'feature/laboratorios'
 env.user = 'tecno'
 env.hosts = 'dasaludsiom.tecno.webfactional.com'
 
+DATABASE_PRODUCTION = {
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': 'siom',
+    'USER': 'siom',
+    'PASSWORD': '1234',
+    'HOST': '127.0.0.1',
+    'PORT': '5432',
+}
+
 def deploy():
     site_folder = '/home/%s/webapps/%s' % (env.user, FOLDER_ROOT)
     source_folder = site_folder + '/source'
     _create_directory_structure_if_necessary(site_folder)
     _get_latest_source(source_folder)
+    _set_database_production(source_folder)
     # _update_virtualenv(env.user, env.host, source_folder)
     # _update_static_files(source_folder, env.user, env.host)
     # update_database_info(source_folder)
+
+
+def _set_database_production(source_folder):
+    settings = '{}/mysite'.format(source_folder)
+    # sed(settings, "'USER':.+$", "'USER': ")
+    for conf in DATABASE_PRODUCTION:
+        sed(settings, "'{}':.+$".format(conf), "'{}': '{}',".format(conf, DATABASE_PRODUCTION[conf]))
+    # sed(settings_path, 'ALLOWED_HOSTS =.+$', 'ALLOWED_HOSTS = ["%s"]' % (site_name,))
+    sed(settings, "STATIC_ROOT =.+$", "STATIC_ROOT = os.path.join(BASE_DIR2, 'static', 'static')")
 
 
 def _create_directory_structure_if_necessary(site_folder):

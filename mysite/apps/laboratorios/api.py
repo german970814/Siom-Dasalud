@@ -289,7 +289,7 @@ def ordenes_laboratorios(request):
             id__in=OrdenProducto.objects.filter(
                 servicio__nombre__id__in=servicios
             ).values_list('orden_id', flat=True).distinct()
-        )
+        ).order_by('-fecha')
         result_pagination = pagination.paginate_queryset(ordenes, request)
         serializer = OrdenSerializer(result_pagination, many=True)
         # args = (serializer.data, )
