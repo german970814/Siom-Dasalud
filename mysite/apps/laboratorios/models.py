@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 from django.utils.six import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.forms.utils import flatatt
@@ -11,6 +11,9 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 
 from mysite.apps.historias.models import orden as Orden
 from mysite.apps.parametros.models import servicios as Servicio
+
+import reversion
+import copy
 
 
 def ruta_imagen_bacteriologo(self, filename):
@@ -73,44 +76,66 @@ class Laboratorio(models.Model):
 
 
 @python_2_unicode_compatible
-class Reactivo(models.Model):
+class Producto(models.Model):
     """
-    Modelo para guardar los reactivos de cada laboratorio.
+    Modelo para guardar los productos de cada laboratorio.
     """
+
+    REACTIVO = 'R'
+    INSUMO = 'I'
+
+    OPCIONES_TIPO = (
+        (REACTIVO, _('REACTIVO')),
+        (INSUMO, _('INSUMO'))
+    )
 
     codigo = models.CharField(max_length=50, verbose_name=_('Código'))
     nombre = models.CharField(max_length=255, verbose_name=_('Nombre'))
-    laboratorio = models.ForeignKey(Laboratorio, verbose_name=_('Laboratorio'), related_name='reactivos')
     alarma_inferior = models.IntegerField(verbose_name=_('Alarma inferior'), blank=True, null=True)
     alarma_media = models.IntegerField(verbose_name=_('Alarma media'), blank=True, null=True)
-    costos = models.IntegerField(verbose_name=_('Costo'))
+    tipo = models.CharField(max_length=1, choices=OPCIONES_TIPO, verbose_name=_('Tipo'))
+    cantidad = models.IntegerField(verbose_name=_('Cantidad'))
 
     __str__ = lambda self: '{self.nombre} ({self.codigo})'.format(self=self)
 
 
+@reversion.register()
 @python_2_unicode_compatible
 class Recarga(models.Model):
     """
     Modelo para contar el historial de las recargas que se hacen a un reactivo.
     """
 
-    reactivo = models.ForeignKey(Reactivo, verbose_name=_('Reactivo'), related_name='recargas')
+    producto = models.ForeignKey(Producto, verbose_name=_('Producto'), related_name='recargas')
     cantidad = models.IntegerField(verbose_name=_('Cantidad'))
     fecha = models.DateField(auto_now_add=True)
+    fecha_vencimiento = models.DateField(verbose_name=_('Fecha de vencimiento'), blank=True, null=True)
+    lote = models.CharField(max_length=100, verbose_name=_('Lote'), blank=True)
+    distribuidor = models.CharField(max_length=100, verbose_name=_('Distribuidor'), blank=True)
+    fabricante = models.CharField(max_length=100, verbose_name=_('Fabricante'), blank=True)
+    marca = models.CharField(max_length=100, verbose_name=_('Marca'), blank=True)
+    # fecha en la que se crea el producto.
+    fecha_distribucion =  models.DateField(verbose_name=_('Fecha de distribución'), blank=True, null=True)
+    presentacion = models.CharField(max_length=100, verbose_name=_('Presentación'), blank=True)
+    invima = models.CharField(max_length=100, verbose_name=_('Invima'), blank=True)
 
-    __str__ = lambda self: '{self.reactivo}: Recarga de {self.cantidad}'.format(self=self)
+    def __str__(self):
+        return '{self.reactivo}: Recarga de {self.cantidad}'.format(self=self)
 
-
-@python_2_unicode_compatible
-class BancoReactivo(models.Model):
-    """
-    Modelo de banco de reactivos, para llevar el inventariado de cada reactivo.
-    """
-
-    reactivo = models.OneToOneField(Reactivo, verbose_name=_('Reactivo'), related_name='banco_reactivo')
-    cantidad = models.IntegerField(verbose_name=_('Cantidad'))
-
-    __str__ = lambda self: '{self.reactivo}: {self.cantidad}'.format(self=self)
+    def save(self):
+        with transaction.atomic():
+            if not self.pk:
+                self.producto.cantidad += self.cantidad
+            else:
+                self_copy = copy.deepcopy(self)
+                self_copy.refresh_from_db()
+                if self.cantidad > self_copy.cantidad:  # si se ingresó más de lo que se había guardado
+                    self.producto.cantidad += self.cantidad - self_copy.cantidad
+                    self.producto.save()
+                if self.cantidad < self_copy.cantidad:  # se se ingresó menos de lo que se había guardado
+                    self.producto.cantidad -= self_copy.cantidad - self.cantidad
+                    self.producto.save()
+            super(Recarga, self).save()
 
 
 @python_2_unicode_compatible
@@ -163,6 +188,7 @@ class Formato(models.Model):
     __str__ = lambda self: '({self.id})'.format(self=self)
 
 
+@reversion.register()
 @python_2_unicode_compatible
 class Resultado(models.Model):
     """
@@ -178,3 +204,61 @@ class Resultado(models.Model):
     resultado = models.TextField(blank=True, null=True)
 
     __str__ = lambda self: 'Orden #{self.orden.id} ({self.laboratorio})'.format(self=self)
+
+
+@python_2_unicode_compatible
+class PlantillaLaboratorio(models.Model):
+    """
+    Modelo para guardar las plantillas por laboratorios de hojas de gastos.
+    """
+
+    laboratorio = models.ForeignKey(Laboratorio, verbose_name=_('Laboratorio'), related_name='plantillas')
+    producto = models.ForeignKey(Producto, verbose_name=_('Producto'), related_name='plantillas_laboratorio')
+    cantidad = models.IntegerField(default=1, verbose_name=_('Cantidad'))
+
+    def __str__(self):
+        return 'Plantilla Laboratorio #{}'.format(self.id)
+
+
+@python_2_unicode_compatible
+class PlantillaArea(models.Model):
+    """
+    Modelo para guardar las plantillas por laboratorios de hojas de gastos.
+    """
+
+    area = models.ForeignKey(SeccionTrabajo, verbose_name=_('Area'), related_name='plantillas')
+    producto = models.ForeignKey(Producto, verbose_name=_('Producto'), related_name='plantillas_area')
+    cantidad = models.IntegerField(default=1, verbose_name=_('Cantidad'))
+
+    def __str__(self):
+        return 'Plantilla Area #{}'.format(self.id)
+
+
+@reversion.register()
+@python_2_unicode_compatible
+class HojaGasto(models.Model):
+    """
+    Modelo para guardar la hoja de gasto de los productos con respecto a las ordenes.
+    """
+
+    producto = models.ForeignKey(Producto, verbose_name=_('Producto'))
+    orden = models.ForeignKey(Orden, verbose_name=_('Orden'), related_name='hojas_gasto')
+    cantidad = models.IntegerField(default=1, verbose_name=_('Cantidad'))
+
+    def __str__(self):
+        return 'Hoja de gasto para orden #{}'.format(self.orden.id)
+
+    def save(self):
+        with transaction.atomic():
+            if not self.pk:
+                self.producto.cantidad -= self.cantidad
+            else:
+                self_copy = copy.deepcopy(self)
+                self_copy.refresh_from_db()
+                if self.cantidad > self_copy.cantidad:  # si se gastó más de lo que se había guardado
+                    self.producto.cantidad -= self.cantidad - self_copy.cantidad
+                    self.producto.save()
+                if self.cantidad < self_copy.cantidad:  # se se gastó menos de lo que se había guardado
+                    self.producto.cantidad += self_copy.cantidad - self.cantidad
+                    self.producto.save()
+            super(HojaGasto, self).save()

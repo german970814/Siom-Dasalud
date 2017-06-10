@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'mysite.apps.parametros',
     'mysite.apps.facturacion',
     'mysite.apps.laboratorios',
+    'reversion',
     'rest_framework',
     # 'debug_toolbar',
     'autofixture',

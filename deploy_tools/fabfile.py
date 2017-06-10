@@ -31,7 +31,7 @@ def deploy():
 
 
 def _set_database_production(source_folder):
-    settings = '{}/mysite'.format(source_folder)
+    settings = '{}/mysite/settings.py'.format(source_folder)
     # sed(settings, "'USER':.+$", "'USER': ")
     for conf in DATABASE_PRODUCTION:
         sed(settings, "'{}':.+$".format(conf), "'{}': '{}',".format(conf, DATABASE_PRODUCTION[conf]))
