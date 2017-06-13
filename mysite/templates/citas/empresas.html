@@ -29,8 +29,10 @@
 				          <th>#</th>
 				          <th>Nit</th>
 				          <th>Razon Social</th>
-				          <th>Codigo</th>
-				          <th>Plan</th>
+				          <th>Ciudad</th>
+				          <th>Direccion</th>
+				          <th>Telefono</th>
+				          <th>Representante Legal</th>
 				          <th></th>
 				        </tr>
 			        </thead>
@@ -40,8 +42,10 @@
 						<td>{{ p.id}}</td>
 						<td>{{ p.nit }}</td>
 						<td>{{ p.razon }}</td>
-						<td>{{ p.codigo }}</td>
-						<td>{{ p.plan }}</td>
+						<td>{{ p.ciudad }}</td>
+						<td>{{ p.direccion }}</td>
+						<td>{{ p.telefono }}</td>
+						<td>{{ p.representante }}</td>
 						<td><a class="btn btn-primary btn-xs" href="/edit/empresas/{{p.id}}/"><i class="icon-pencil"></i>  Ver </a></td>
 					</tr>
 					{% endfor %}
