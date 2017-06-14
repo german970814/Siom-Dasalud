@@ -21,6 +21,33 @@ def ruta_imagen_bacteriologo(self, filename):
 
 
 @python_2_unicode_compatible
+class Recepcion(models.Model):
+    """
+    Modelo para manejar las recepciones de ordenes en el sistema.
+    """
+
+    TOMA_MUESTRA = 'TO'
+    EN_CURSO = 'EC'
+    RESULTADO_EMITIDO = 'RE'
+
+    ESTADO_OPCIONES = (
+        (TOMA_MUESTRA, 'TOMA DE MUESTRA'),
+        (EN_CURSO, 'EN CURSO'),
+        (RESULTADO_EMITIDO, 'RESULTADO EMITIDO'),
+    )
+
+    orden = models.OneToOneField(Orden, related_name='recepcion', verbose_name=_('Orden'))
+    estado = models.CharField(max_length=2, verbose_name=_('Estado'), choices=ESTADO_OPCIONES, default=TOMA_MUESTRA)
+
+    def __str__(self):
+        laboratorios = Laboratorio.objects.filter(
+            servicio__in=self.orden.OrdenProducto_orden.all().values_list('servicio__nombre__id', flat=True).distinct()
+        ).values_list('codigo', flat=True)
+        lab_str = list(laboratorios).join(' | ')
+        return 'Recepcion #{self.orden.id} | {lab_str}'.format(self=self, laboratorios=lab_str)
+
+
+@python_2_unicode_compatible
 class SeccionTrabajo(models.Model):
     """Modelo para guardar las areas o secciones de trabajo."""
 
@@ -122,7 +149,7 @@ class Recarga(models.Model):
     def __str__(self):
         return '{self.reactivo}: Recarga de {self.cantidad}'.format(self=self)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         with transaction.atomic():
             if not self.pk:
                 self.producto.cantidad += self.cantidad
@@ -135,7 +162,7 @@ class Recarga(models.Model):
                 if self.cantidad < self_copy.cantidad:  # se se ingresó menos de lo que se había guardado
                     self.producto.cantidad -= self_copy.cantidad - self.cantidad
                     self.producto.save()
-            super(Recarga, self).save()
+            super(Recarga, self).save(*args, **kwargs)
 
 
 @python_2_unicode_compatible
@@ -248,7 +275,7 @@ class HojaGasto(models.Model):
     def __str__(self):
         return 'Hoja de gasto para orden #{}'.format(self.orden.id)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         with transaction.atomic():
             if not self.pk:
                 self.producto.cantidad -= self.cantidad
@@ -261,4 +288,4 @@ class HojaGasto(models.Model):
                 if self.cantidad < self_copy.cantidad:  # se se gastó menos de lo que se había guardado
                     self.producto.cantidad += self_copy.cantidad - self.cantidad
                     self.producto.save()
-            super(HojaGasto, self).save()
+            super(HojaGasto, self).save(*args, **kwargs)

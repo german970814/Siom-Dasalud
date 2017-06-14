@@ -1,6 +1,8 @@
 module.exports = {
   // This is the "main" file which should include all other modules
-  entry: './main.js',
+  entry: {
+    main: './main.js',
+  },
   // Where should the compiled file go?
   output: {
     // To the `dist` folder

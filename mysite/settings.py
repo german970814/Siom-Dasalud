@@ -48,7 +48,8 @@ INSTALLED_APPS = (
     'mysite.apps.laboratorios',
     'reversion',
     'rest_framework',
-    # 'debug_toolbar',
+    'django_filters',
+    'debug_toolbar',
     'autofixture',
     'django_extensions',
 )
@@ -124,5 +125,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
         # 'rest_framework.permissions.AllowAny'
-    ]
+    ],
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', )
 }

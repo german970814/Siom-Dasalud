@@ -3,11 +3,41 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+
+from .models import Laboratorio
+from mysite.apps.historias.models import orden as Orden, ordenesProducto as OrdenProducto
+
+import datetime
 
 
 # @login_required
 def index(request):
     return render(request, 'laboratorios/index.html', {})
+
+
+@login_required
+def ordenes_toma_muestra(request):
+    """
+    Vista para ver las ordenes con el usuario de toma de muestra
+    """
+    data = {}
+
+    if request.method == 'POST':
+        pass
+    else:
+        hoy = timezone.now().date()
+        servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
+
+        ordenes = Orden.objects.filter(  # actuelmente solo se traen los ultimos 8 días.
+            id__in=OrdenProducto.objects.filter(
+                servicio__nombre__id__in=servicios
+            ).values_list('orden_id', flat=True).distinct(),
+            fecha__range=(hoy - datetime.timedelta(days=8), hoy)
+        ).order_by('-fecha')  # .select_related('paciente')
+        data['ordenes'] = ordenes
+
+    return render(request, 'laboratorios/toma_muestra.html', data)
 
 
 def prueba_impresion(request):

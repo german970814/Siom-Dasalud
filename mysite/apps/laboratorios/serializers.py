@@ -7,15 +7,31 @@ from rest_framework import serializers
 from rest_framework.parsers import JSONParser
 
 from .models import (
-    Laboratorio, Equipo, SeccionTrabajo,
-    Tecnica, Reactivo, Caracteristica,
-    EspecificacionCaracteristica, Bacteriologo,
-    Formato, Resultado
+    Laboratorio, Equipo, SeccionTrabajo, Tecnica, Caracteristica, Producto,
+    EspecificacionCaracteristica, Bacteriologo, Formato, Resultado, PlantillaArea, Recepcion,
+    HojaGasto,
 )
 from .mixins import IGModelSerializer, IGSerializer
 from mysite.apps.parametros.serializers import ServicioSerializer
 from mysite.apps.datos.serializers import UsuarioSerializer
 from mysite.apps.historias.serializers import OrdenSerializer
+
+
+class RecepcionSerializer(IGSerializer):
+    """
+    Serializer para Recepciones.
+    """
+
+    orden = OrdenSerializer(fields=('paciente', 'fecha', 'empresa', 'institucion', 'empresa_cliente', 'laboratorios', ))
+    estado_display = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Recepcion
+        fields = ('id', 'estado', 'orden', 'estado_display', )
+        extra_kwargs = {'estado_display': {'read_only': True}, 'estado': {'read_only': True}}
+
+    def get_estado_display(self, obj):
+        return obj.get_estado_display()
 
 
 class TecnicaSerializer(IGModelSerializer, serializers.ModelSerializer):
@@ -70,13 +86,19 @@ class LaboratorioSerializer(IGModelSerializer, serializers.ModelSerializer):
             'servicio', )
 
 
-class ReactivoSerializer(IGModelSerializer, serializers.ModelSerializer):
+class ProductoSerializer(IGModelSerializer, serializers.ModelSerializer):
+    """Serializer de productos."""
 
-    laboratorio = LaboratorioSerializer(fields=('codigo', 'nombre', ))
+    tipo_display = serializers.SerializerMethodField()
+
+    def get_tipo_display(sef, obj):
+        return obj.get_tipo_display()
 
     class Meta:
-        model = Reactivo
-        fields = ('id', 'codigo', 'nombre', 'laboratorio', 'alarma_media', 'alarma_inferior', 'costos', )
+        model = Producto
+        fields = (
+            'id', 'codigo', 'nombre', 'tipo_display',
+            'alarma_media', 'alarma_inferior', 'tipo', 'cantidad', )
 
 
 class CaracteristicaSerializer(IGModelSerializer, serializers.ModelSerializer):
@@ -140,3 +162,41 @@ class ResultadoSerializer(IGSerializer):
             stream = BytesIO(resultado_string.encode('utf-8'))
             data["resultado"] = JSONParser().parse(stream)
         return data
+
+
+class PlantillaAreaSerializer(IGSerializer):
+    """
+    Serializer para las plantillas
+    """
+
+    producto = ProductoSerializer(fields=('codigo', 'nombre'))
+    area = SeccionTrabajoSerializer(fields=('codigo', 'descripcion', ))
+
+    class Meta:
+        model = PlantillaArea
+        fields = (
+            'id', 'cantidad', 'producto', 'area'
+        )
+
+
+class PlantillaSerializer(serializers.Serializer):
+    """
+    Serializer para las plantillas
+    """
+
+    cantidad = serializers.IntegerField()
+    producto = ProductoSerializer(fields=('codigo', 'nombre', 'tipo_display', 'tipo'))
+    model = serializers.BooleanField()
+
+
+class HojaGastoSerializer(IGSerializer):
+    """
+    Serializer de hoja de gastos.
+    """
+
+    producto = ProductoSerializer(fields=('codigo', 'nombre', 'tipo', 'tipo_display'))
+    orden = OrdenSerializer(fields=('id', ))
+
+    class Meta:
+        model = HojaGasto
+        fields = ('id', 'cantidad', 'producto', 'orden', )

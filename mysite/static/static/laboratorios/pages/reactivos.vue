@@ -4,10 +4,10 @@
           <v-layout>
             <v-flex xs12 md12>
               <ig-table
-              table-title="Reactivos"
+              table-title="Productos"
               :headers="headers"
               :data="elements"
-              :fields="['codigo', 'nombre', 'laboratorio.codigo', 'costos']"
+              :fields="['codigo', 'nombre', 'tipo_display', 'cantidad']"
               @selectedrow="eventUpdatedForm"
               :loading="loading"
               ></ig-table>
@@ -72,12 +72,12 @@ export default {
                   left: true,
                 },
                 {
-                  text: 'Laboratorio',
+                  text: 'Tipo',
                   value: 'tabla-laboratorio',
                   left: true,
                 },
                 {
-                  text: 'Costo',
+                  text: 'Cantidad',
                   value: 'tabla-costo',
                   left: true,
                 },
@@ -87,39 +87,50 @@ export default {
                   name: 'codigo',
                   verbose_name: 'Código',
                   type: String,
-                  hint: 'Este es el código que identifica a cada equipo.'
+                  hint: 'Este es el código que identifica al producto.'
                 },
                 {
                   name: 'nombre',
                   verbose_name: 'Nombre',
                   type: String,
-                  hint: 'Este es el código que identifica a cada equipo.'
-                },
-                {
-                  name: 'laboratorio',
-                  verbose_name: 'Laboratorio',
-                  type: Array,
-                  url: URL.laboratorios,
-                  hint: 'Este es el equipo que sera usado en este laboratorio.',
-                  key: 'codigo'
+                  hint: 'Este es el nombre del producto.'
                 },
                 {
                   name: 'alarma_media',
                   verbose_name: 'Alarma Media',
-                  type: String,
+                  type: Number,
+                  kwargs: {
+                    type: 'number'
+                  },
                   hint: 'Este es el código que identifica a cada equipo.'
                 },
                 {
                   name: 'alarma_inferior',
                   verbose_name: 'Alarma Inferior',
-                  type: String,
+                  type: Number,
+                  kwargs: {
+                    type: 'number'
+                  },
                   hint: 'Este es el código que identifica a cada equipo.'
                 },
                 {
-                  name: 'costos',
-                  verbose_name: 'Costo',
-                  type: String,
-                  hint: 'Este es el código que identifica a cada equipo.'
+                  name: 'cantidad',
+                  verbose_name: 'Cantidad',
+                  type: Number,
+                  kwargs: {
+                      type: 'number'
+                  },
+                  hint: 'Este es cantidad de unidades que se tienen para este producto.'
+                },
+                {
+                  name: 'tipo',
+                  verbose_name: 'Tipo',
+                  type: Array,
+                  hint: 'Este es el tipo de el producto.',
+                  choices: [
+                      {text: 'INSUMO', value: 'I'},
+                      {text: 'REACTIVO', value: 'R'}
+                  ]
                 },
             ]
           }

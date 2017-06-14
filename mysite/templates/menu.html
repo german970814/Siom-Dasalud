@@ -197,7 +197,12 @@
 <v-subheader light>Laboratorio</v-subheader>
 <v-list-item>
     <v-list-tile ripple href="{% url 'laboratorios:index' %}#/ordenes_laboratorios/">
-        <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>
+        <v-list-tile-title>Laboratorios Sin Resultado</v-list-tile-title>
+    </v-list-tile>
+</v-list-item>
+<v-list-item>
+    <v-list-tile ripple href="{% url 'laboratorios:index' %}#/toma_muestra/">
+        <v-list-tile-title>Ordenes Toma Muestra</v-list-tile-title>
     </v-list-tile>
 </v-list-item>
 <v-list-group>
@@ -233,7 +238,7 @@
     </v-list-item>
     <v-list-item>
         <v-list-tile ripple href="{% url 'laboratorios:index' %}#/secciones_trabajo/">
-            <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>
+            <v-list-tile-title>Areas</v-list-tile-title>
         </v-list-tile>
     </v-list-item>
     <v-list-item>

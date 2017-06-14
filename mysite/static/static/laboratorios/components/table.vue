@@ -6,6 +6,7 @@
             <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
         </v-card-title>
         <v-data-table
+            :pagination.sync="pagination"
             v-bind:headers="headers"
             :items="data"
             v-bind:search="buscador"
@@ -62,7 +63,13 @@ export default {
     },
     data: function () {
         return {
-            buscador: ''
+            buscador: '',
+            pagination: {
+                page: 1,
+                rowsPerPage: 10,
+                descending: false,
+                totalItems: 0
+            }
         }
     },
     mounted: function () {

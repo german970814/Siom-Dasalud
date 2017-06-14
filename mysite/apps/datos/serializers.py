@@ -13,12 +13,17 @@ class PacienteSerializer(IGModelSerializer, serializers.ModelSerializer):
     Serializer para los pacientes
     """
 
+    unidad_edad = serializers.SerializerMethodField()
+
     class Meta:
         model = Paciente
-        fields = ('id', 'pnombre', 'snombre', 'papellido', 'sapellido', 'cedula')
+        fields = ('id', 'pnombre', 'snombre', 'papellido', 'sapellido', 'cedula', 'foto', 'edad', 'unidad_edad')
 
     def get_nombre_completo(self, obj):
         return '{} {} {} {}'.format(obj.pnombre, obj.snombre or '', obj.papellido, obj.sapellido or '').title()
+
+    def get_unidad_edad(self, obj):
+        return obj.get_unidad_display()
 
     def to_representation(self, obj):
         representation = super(PacienteSerializer, self).to_representation(obj)

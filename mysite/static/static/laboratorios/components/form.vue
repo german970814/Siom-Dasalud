@@ -254,13 +254,21 @@ export default {
             let url = this.url;
             let method = 'post';
             let message;
+            let data = {};
             let token = document.getElementsByName('csrfmiddlewaretoken')[0];
             if (this.selected) {
                 url += this.selected.id + '/';
                 method = 'put';
             }
+            for (let field of this.fields) {  // do no support groups yet
+                // TODO: support for groups
+                if (field.type == Array && !Boolean(field.url)) {
+                    // let choices = 'choices' in field ? field.choices: field.kwargs.choices;
+                    data[field.name] = this.models[field.name].value;
+                }
+            }
             if (this._isValid()) {
-                this.$http[method](url, this.models, {headers: {'X-CSRFToken': token.value}})
+                this.$http[method](url, Object.assign({}, this.models, data), {headers: {'X-CSRFToken': token.value}})
                     .then(response => {
                         if (response.status == 201) {
                             message = 'Elemento Creado Correctamente';
@@ -350,7 +358,7 @@ export default {
                 if (match[typeof field.type()] == 'v-text-field') {
                     defaultProps.type = _.isEmpty(field.kwargs)? 'text': _.isEmpty(field.kwargs.type)? 'text': field.kwargs.type;
                 } else if (match[typeof field.type()] == 'v-select') {
-                    defaultProps.items = this.items[field.name];
+                    defaultProps.items = field.url ? this.items[field.name]: 'choices' in field ? field.choices: field.kwargs.choices;
                     defaultProps['item-value'] = 'text';
                     defaultProps.autocomplete = true;
                     defaultProps.returnObject = true;

@@ -1,5 +1,6 @@
 const BASE = '/laboratorios/api/';
 
+const recepciones = BASE.concat('recepciones/');
 const bacteriologos = BASE.concat('bacteriologos/');
 const caracteristicas = BASE.concat('caracteristicas/');
 const equipos = BASE.concat('equipos/');
@@ -8,12 +9,16 @@ const especificaciones_por_carateristica = BASE.concat('especificacion_caracteri
 const formatos = BASE.concat('formatos/');
 const laboratorios = BASE.concat('laboratorios/');
 const ordenes_laboratorios = BASE.concat('ordenes_laboratorios/');
-const reactivos = BASE.concat('reactivos/');
+const reactivos = BASE.concat('productos/');
 const secciones_trabajo = BASE.concat('seccion_trabajo/');
+const plantillaArea = BASE.concat('seccion_trabajo/plantillas/');
 const tecnicas = BASE.concat('tecnicas/');
 const servicios = BASE.concat('servicios/');
 const resultados = BASE.concat('resultado/');
 const ordenes_busqueda = BASE.concat('ordenes/buscar/');
+const laboratoriosTomaMuestra = BASE.concat('ordenes/toma_muestra/');
+const plantillasOrdenes = BASE.concat('laboratorios/plantilla/');
+
 
 export default {
     BASE,
@@ -31,4 +36,8 @@ export default {
     bacteriologos,
     resultados,
     ordenes_busqueda,
+    laboratoriosTomaMuestra,
+    plantillaArea,
+    plantillasOrdenes,
+    recepciones,
 }
