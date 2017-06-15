@@ -60,7 +60,7 @@
                                             <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>
                                         </v-flex>
                                         <v-flex md6>
-                                            <ig-producto :plantillas="plantillas" ref="hojaGasto"></ig-producto>
+                                            <ig-producto :plantillas="plantillas" ref="hojaGasto" filter></ig-producto>
                                         </v-flex>
                                       </v-layout>
                                     </v-card-text>
@@ -167,7 +167,7 @@ export default {
         selectRecepcion (item) {
             this.modalTomaMuestra = true;
             this.recepcion = item;
-            this.$http.get(URL.plantillasOrdenes.concat(this.recepcion.id.toString() + '/'))
+            this.$http.get(URL.plantillasOrdenes.concat(this.recepcion.id.toString() + '/?tipo=i'))
               .then(response => {
                   this.plantillas = response.body;
               }, response => {

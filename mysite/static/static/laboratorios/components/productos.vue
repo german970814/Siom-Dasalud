@@ -19,7 +19,8 @@ export default {
         area: {},
         tipo: {
           default: 'i',
-        }
+        },
+        filter: false,
     },
     watch: {
         plantillas: function () {
@@ -35,6 +36,8 @@ export default {
         url: function () {
             if (_.isEmpty(this.laboratorio) && !_.isEmpty(this.area)) {
                 return URL.plantillaArea;
+            } else if (_.isEmpty(this.area) && !_.isEmpty(this.laboratorio)) {
+                return URL.plantillaLaboratorio;
             }
             return false;
         }
@@ -95,7 +98,7 @@ export default {
             }
         },
         _fetchProductos () {
-            this.$http.get(URL.reactivos, {tipo: this.tipo})
+            this.$http.get(URL.reactivos.concat(`?tipo=${this.tipo.toUpperCase()}`))
               .then(response => {
                   this.productos = response.body;
               }, response => {

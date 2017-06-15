@@ -2019,6 +2019,7 @@ const ordenes_laboratorios = BASE.concat('ordenes_laboratorios/');
 const reactivos = BASE.concat('productos/');
 const secciones_trabajo = BASE.concat('seccion_trabajo/');
 const plantillaArea = BASE.concat('seccion_trabajo/plantillas/');
+const plantillaLaboratorio = BASE.concat('laboratorios/plantilla_laboratorios/');
 const tecnicas = BASE.concat('tecnicas/');
 const servicios = BASE.concat('servicios/');
 const resultados = BASE.concat('resultado/');
@@ -2047,6 +2048,7 @@ const plantillasOrdenes = BASE.concat('laboratorios/plantilla/');
     plantillaArea,
     plantillasOrdenes,
     recepciones,
+    plantillaLaboratorio
 });
 
 
@@ -27333,7 +27335,8 @@ exports.default = {
         area: {},
         tipo: {
             default: 'i'
-        }
+        },
+        filter: false
     },
     watch: {
         plantillas: function plantillas() {
@@ -27349,6 +27352,8 @@ exports.default = {
         url: function url() {
             if (_underscore2.default.isEmpty(this.laboratorio) && !_underscore2.default.isEmpty(this.area)) {
                 return _urls2.default.plantillaArea;
+            } else if (_underscore2.default.isEmpty(this.area) && !_underscore2.default.isEmpty(this.laboratorio)) {
+                return _urls2.default.plantillaLaboratorio;
             }
             return false;
         }
@@ -27409,7 +27414,7 @@ exports.default = {
         _fetchProductos: function _fetchProductos() {
             var _this2 = this;
 
-            this.$http.get(_urls2.default.reactivos, { tipo: this.tipo }).then(function (response) {
+            this.$http.get(_urls2.default.reactivos.concat('?tipo=' + this.tipo.toUpperCase())).then(function (response) {
                 _this2.productos = response.body;
             }, function (response) {});
         },
@@ -28891,6 +28896,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _getIterator2 = __webpack_require__(11);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
 var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
@@ -28923,6 +28932,10 @@ var _formato = __webpack_require__(160);
 
 var _formato2 = _interopRequireDefault(_formato);
 
+var _productos = __webpack_require__(47);
+
+var _productos2 = _interopRequireDefault(_productos);
+
 var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
@@ -28934,7 +28947,7 @@ var _urls2 = _interopRequireDefault(_urls);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Vue.use(VueRouter);
-// <template lang="html">
+_vue2.default.use(_vueResource2.default); // <template lang="html">
 //     <div>
 //         <v-container>
 //           <v-layout>
@@ -28951,30 +28964,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //           </v-layout>
 //         </v-container>
 //         <br>
-//         <!--<v-container>
-//           <v-layout>
-//             <v-flex xs12 md12>
-//               <ig-form
-//               :fields="fields"
-//               :url="urlForm"
-//               @showsnack="showSnackBar"
-//               @objectcreated="eventCreatedObject"
-//               @clearselected="selected = false"
-//               :selected="selected"
-//               >
-//             </ig-form>
-//           </v-flex>
-//         </v-layout>
-//         <br>
-//       </v-container>-->
 //       <v-container>
-//           <v-stepper v-model="stepper">
+//           <v-stepper v-model="stepper" non-linear>
 //               <v-stepper-header class="white">
 //                   <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Laboratorio</v-stepper-step>
 //                   <v-divider></v-divider>
-//                   <v-stepper-step step="2" @click.native="secondStepClick" :complete="stepper > 2">Formato</v-stepper-step>
+//                   <v-stepper-step step="2" :rules="[() => false]" @click.native="" :complete="false">Formato</v-stepper-step>
 //                   <v-divider></v-divider>
-//                   <v-stepper-step step="3" @click.native="stepper = 3">Reactivos</v-stepper-step>
+//                   <v-stepper-step step="3" @click.native="thirdStepClick">Insumos y Reactivos</v-stepper-step>
 //               </v-stepper-header>
 //               <v-stepper-content step="1" class="white">
 //                   <ig-form
@@ -28994,14 +28991,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                   <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
 //               </v-stepper-content>
 //               <v-stepper-content step="3" class="white">
-//                   <v-card class="grey lighten-1 z-depth-1 mb-5">
+//                   <v-card>
 //                       <v-card-text>
-//
+//                           <v-layout>
+//                               <v-flex md6 xs12>
+//                                 <v-subheader>Insumos</v-subheader>
+//                                 <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_insumos" tipo="i"></ig-producto>
+//                               </v-flex>
+//                               <v-flex md6 xs12>
+//                                 <v-subheader>Reactivos</v-subheader>
+//                                 <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_reactivos" tipo="r"></ig-producto>
+//                               </v-flex>
+//                           </v-layout>
 //                       </v-card-text>
-//                       <v-card-row actions>
+//                       <!-- <v-card-row actions>
 //                           <v-btn primary @click.native="stepper = 1" light>Continue</v-btn>
 //                           <v-btn flat dark>Cancel</v-btn>
-//                       </v-card-row>
+//                       </v-card-row> -->
 //                   </v-card>
 //               </v-stepper-content>
 //           </v-stepper>
@@ -29010,7 +29016,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // </template>
 //
 // <script>
-_vue2.default.use(_vueResource2.default);
+
 _vue2.default.use(_vuetify2.default);
 
 var BASE_URL = _urls2.default.BASE;
@@ -29023,6 +29029,8 @@ exports.default = {
             stepper: 1,
             urlForm: _urls2.default.laboratorios,
             selected: false,
+            plantillas_insumos: [],
+            plantillas_reactivos: [],
             headers: [{
                 text: 'Código',
                 left: true,
@@ -29082,12 +29090,51 @@ exports.default = {
         igMenu: _menu2.default,
         igTable: _table2.default,
         igForm: _form2.default,
-        igFormato: _formato2.default
+        igFormato: _formato2.default,
+        igProducto: _productos2.default
     },
     watch: {
         selected: function selected() {
+            var _this = this;
+
+            this.plantillas_insumos = [];
+            this.plantillas_reactivos = [];
             if (!this.selected) {
                 this.laboratorio = {};
+            } else {
+                this.laboratorios = this.selected;
+                this.$http.get(_urls2.default.plantillaLaboratorio.concat('?laboratorio=' + this.laboratorio.id.toString())).then(function (response) {
+                    if (response.body instanceof Array) {
+                        var _iteratorNormalCompletion = true;
+                        var _didIteratorError = false;
+                        var _iteratorError = undefined;
+
+                        try {
+                            for (var _iterator = (0, _getIterator3.default)(response.body), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                var plantilla = _step.value;
+
+                                if (plantilla.producto.tipo.toLowerCase() == 'i') {
+                                    _this.plantillas_insumos.push(plantilla);
+                                } else {
+                                    _this.plantillas_reactivos.push(plantilla);
+                                }
+                            }
+                        } catch (err) {
+                            _didIteratorError = true;
+                            _iteratorError = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion && _iterator.return) {
+                                    _iterator.return();
+                                }
+                            } finally {
+                                if (_didIteratorError) {
+                                    throw _iteratorError;
+                                }
+                            }
+                        }
+                    }
+                }, function (response) {});
             }
         }
     },
@@ -29095,21 +29142,21 @@ exports.default = {
         validateFirstStep: function validateFirstStep() {
             return !_underscore2.default.isEmpty(this.laboratorio);
         },
-        secondStepClick: function secondStepClick() {
+        thirdStepClick: function thirdStepClick() {
             if (this.validateFirstStep()) {
-                this.stepper = 2;
+                this.stepper = 3;
             }
         },
         customEventUpdatedForm: function customEventUpdatedForm(value) {
-            var _this = this;
+            var _this2 = this;
 
             this.laboratorio = value;
             this.$http.get(_urls2.default.servicios.concat(value.servicio.id.toString() + '/')).then(function (response) {
                 value.servicio = response.body;
-                _this.eventUpdatedForm(value);
+                _this2.eventUpdatedForm(value);
             }, function (response) {
                 console.error(response);
-                _this.showSnackBar(response.detail || 'Ha ocurrido un error');
+                _this2.showSnackBar(response.detail || 'Ha ocurrido un error');
             });
         },
         _eventCreatedObject: function _eventCreatedObject(value) {
@@ -29126,7 +29173,7 @@ exports.default = {
                 this.elements.push(value);
             }
             this.selected = value;
-            this.stepper = 2;
+            this.stepper = 3;
         }
     },
     mounted: function mounted() {
@@ -30435,7 +30482,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //                                             <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>
 //                                         </v-flex>
 //                                         <v-flex md6>
-//                                             <ig-producto :plantillas="plantillas" ref="hojaGasto"></ig-producto>
+//                                             <ig-producto :plantillas="plantillas" ref="hojaGasto" filter></ig-producto>
 //                                         </v-flex>
 //                                       </v-layout>
 //                                     </v-card-text>
@@ -30569,7 +30616,7 @@ exports.default = {
 
             this.modalTomaMuestra = true;
             this.recepcion = item;
-            this.$http.get(_urls2.default.plantillasOrdenes.concat(this.recepcion.id.toString() + '/')).then(function (response) {
+            this.$http.get(_urls2.default.plantillasOrdenes.concat(this.recepcion.id.toString() + '/?tipo=i')).then(function (response) {
                 _this.plantillas = response.body;
             }, function (response) {});
         }
@@ -32404,7 +32451,7 @@ module.exports = "\n    <div v-if=\"formato\">\n        <v-container>\n         
 /* 153 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]\"\n              @selectedrow=\"customEventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <!--<v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>-->\n      <v-container>\n          <v-stepper v-model=\"stepper\">\n              <v-stepper-header class=\"white\">\n                  <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"2\" @click.native=\"secondStepClick\" :complete=\"stepper > 2\">Formato</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"3\" @click.native=\"stepper = 3\">Reactivos</v-stepper-step>\n              </v-stepper-header>\n              <v-stepper-content step=\"1\" class=\"white\">\n                  <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"_eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  >\n                      <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                          Continuar\n                      </v-btn>\n                  </ig-form>\n              </v-stepper-content>\n              <v-stepper-content step=\"2\" class=\"white\">\n                  <ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>\n              </v-stepper-content>\n              <v-stepper-content step=\"3\" class=\"white\">\n                  <v-card class=\"grey lighten-1 z-depth-1 mb-5\">\n                      <v-card-text>\n\n                      </v-card-text>\n                      <v-card-row actions>\n                          <v-btn primary @click.native=\"stepper = 1\" light>Continue</v-btn>\n                          <v-btn flat dark>Cancel</v-btn>\n                      </v-card-row>\n                  </v-card>\n              </v-stepper-content>\n          </v-stepper>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]\"\n              @selectedrow=\"customEventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n      <v-container>\n          <v-stepper v-model=\"stepper\" non-linear>\n              <v-stepper-header class=\"white\">\n                  <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"2\" :rules=\"[() => false]\" @click.native=\"\" :complete=\"false\">Formato</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"3\" @click.native=\"thirdStepClick\">Insumos y Reactivos</v-stepper-step>\n              </v-stepper-header>\n              <v-stepper-content step=\"1\" class=\"white\">\n                  <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"_eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  >\n                      <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                          Continuar\n                      </v-btn>\n                  </ig-form>\n              </v-stepper-content>\n              <v-stepper-content step=\"2\" class=\"white\">\n                  <ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>\n              </v-stepper-content>\n              <v-stepper-content step=\"3\" class=\"white\">\n                  <v-card>\n                      <v-card-text>\n                          <v-layout>\n                              <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                              </v-flex>\n                              <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                              </v-flex>\n                          </v-layout>\n                      </v-card-text>\n                      <!-- <v-card-row actions>\n                          <v-btn primary @click.native=\"stepper = 1\" light>Continue</v-btn>\n                          <v-btn flat dark>Cancel</v-btn>\n                      </v-card-row> -->\n                  </v-card>\n              </v-stepper-content>\n          </v-stepper>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 154 */
@@ -32440,7 +32487,7 @@ module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n    
 /* 159 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes en Recepción\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo, ' | ') }}</td>\n                                <td>\n                                    <v-btn floating small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-row>\n                    <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                </v-card-row>\n                <v-card-row v-if=\"hasRecepcion\">\n                    <v-card-text>\n                        <v-card horizontal flat>\n                            <v-card-row :img=\"recepcion.paciente.foto\" height=\"325px\"></v-card-row>\n                            <v-card-column>\n                                <v-card-row height=\"100px\" class=\"\">\n                                    <v-card-text>\n                                      <v-layout>\n                                        <v-flex md6>\n                                            <strong>Nombre del paciente</strong>\n                                            <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                            <br>\n                                            <strong>Identificación</strong>\n                                            <div>{{ recepcion.paciente.cedula }}</div>\n                                            <br>\n                                            <strong>Edad del paciente</strong>\n                                            <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                        </v-flex>\n                                        <v-flex md6>\n                                            <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\"></ig-producto>\n                                        </v-flex>\n                                      </v-layout>\n                                    </v-card-text>\n                                </v-card-row>\n                                <v-card-row actions class=\"cyan darken-1\">\n                                    <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                        <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                    </v-btn>\n                                </v-card-row>\n                            </v-card-column>\n                        </v-card>\n                    </v-card-text>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes en Recepción\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo, ' | ') }}</td>\n                                <td>\n                                    <v-btn floating small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-row>\n                    <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                </v-card-row>\n                <v-card-row v-if=\"hasRecepcion\">\n                    <v-card-text>\n                        <v-card horizontal flat>\n                            <v-card-row :img=\"recepcion.paciente.foto\" height=\"325px\"></v-card-row>\n                            <v-card-column>\n                                <v-card-row height=\"100px\" class=\"\">\n                                    <v-card-text>\n                                      <v-layout>\n                                        <v-flex md6>\n                                            <strong>Nombre del paciente</strong>\n                                            <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                            <br>\n                                            <strong>Identificación</strong>\n                                            <div>{{ recepcion.paciente.cedula }}</div>\n                                            <br>\n                                            <strong>Edad del paciente</strong>\n                                            <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                        </v-flex>\n                                        <v-flex md6>\n                                            <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                        </v-flex>\n                                      </v-layout>\n                                    </v-card-text>\n                                </v-card-row>\n                                <v-card-row actions class=\"cyan darken-1\">\n                                    <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                        <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                    </v-btn>\n                                </v-card-row>\n                            </v-card-column>\n                        </v-card>\n                    </v-card-text>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ }),
 /* 160 */

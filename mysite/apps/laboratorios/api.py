@@ -19,14 +19,14 @@ from rest_framework.pagination import PageNumberPagination
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo, Tecnica, Caracteristica, Producto,
     EspecificacionCaracteristica, Formato, Bacteriologo, Resultado,
-    PlantillaArea, Recepcion, HojaGasto
+    PlantillaArea, Recepcion, HojaGasto, PlantillaLaboratorio
 )
 from .serializers import (
     LaboratorioSerializer, EquipoSerializer, SeccionTrabajoSerializer,
     TecnicaSerializer, CaracteristicaSerializer, ProductoSerializer,
     EspecificacionCaracteristicaSerializer, FormatoSerializer, BacteriologoSerializer,
     ResultadoSerializer, PlantillaAreaSerializer, PlantillaSerializer,
-    RecepcionSerializer, HojaGastoSerializer
+    RecepcionSerializer, HojaGastoSerializer, PlantillaLaboratorioSerializer
 )
 from .utils import get_object_or_404_api
 from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
@@ -134,6 +134,24 @@ class PlantillaAreaListAPI(generics.ListCreateAPIView):
 class PlantillaAreaDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = PlantillaArea.objects.all()
     serializer_class = PlantillaAreaSerializer
+
+
+class PlantillaLaboratorioAPI(generics.ListCreateAPIView):
+    queryset = PlantillaLaboratorio.objects.all()
+    serializer_class = PlantillaLaboratorioSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super(PlantillaLaboratorioAPI, self).get_queryset(*args, **kwargs)
+        laboratorio = self.request.GET.get('laboratorio', None)
+        if laboratorio:
+            laboratorio = get_object_or_404(Laboratorio, pk=laboratorio)
+            queryset = laboratorio.plantillas.all()
+        return queryset
+
+
+class PlantillaLaboratorioDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PlantillaLaboratorio.objects.all()
+    serializer_class = PlantillaLaboratorioSerializer
 
 
 @api_view(['GET'])
@@ -407,6 +425,10 @@ def plantillas_orden(request, pk):
     data = []
     orden = get_object_or_404(Orden, pk=pk)
 
+    _filter = {}
+    if request.GET.get('tipo', None):
+        _filter['producto__tipo'] = str(request.GET.get('tipo')).upper()
+
     servicios = orden.OrdenProducto_orden.all().values_list('servicio__nombre__laboratorio__id', flat=True)
     laboratorios = Laboratorio.objects.filter(id__in=servicios).select_related('seccion_trabajo').prefetch_related('plantillas')
 
@@ -415,13 +437,13 @@ def plantillas_orden(request, pk):
         id__in=laboratorios.values_list('seccion_trabajo', flat=True)).prefetch_related('plantillas')
 
     for area in areas:
-        for plantilla in area.plantillas.all():
+        for plantilla in area.plantillas.filter(**_filter):
             if not (plantilla.producto in _plantilla) or (
                plantilla.producto in _plantilla and plantilla.cantidad > _plantilla[plantilla.producto]):
                 _plantilla[plantilla.producto] = plantilla.cantidad
 
     for laboratorio in laboratorios:
-        for plantilla in laboratorio.plantillas.all():
+        for plantilla in laboratorio.plantillas.filter(**_filter):
             if not (plantilla.producto in _plantilla) or (
                plantilla.producto in _plantilla and plantilla.cantidad > _plantilla[plantilla.producto]):
                 _plantilla[plantilla.producto] = plantilla.cantidad

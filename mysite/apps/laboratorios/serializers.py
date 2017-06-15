@@ -9,7 +9,7 @@ from rest_framework.parsers import JSONParser
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo, Tecnica, Caracteristica, Producto,
     EspecificacionCaracteristica, Bacteriologo, Formato, Resultado, PlantillaArea, Recepcion,
-    HojaGasto,
+    HojaGasto, PlantillaLaboratorio
 )
 from .mixins import IGModelSerializer, IGSerializer
 from mysite.apps.parametros.serializers import ServicioSerializer
@@ -166,7 +166,7 @@ class ResultadoSerializer(IGSerializer):
 
 class PlantillaAreaSerializer(IGSerializer):
     """
-    Serializer para las plantillas
+    Serializer para las plantillas de areas
     """
 
     producto = ProductoSerializer(fields=('codigo', 'nombre'))
@@ -176,6 +176,21 @@ class PlantillaAreaSerializer(IGSerializer):
         model = PlantillaArea
         fields = (
             'id', 'cantidad', 'producto', 'area'
+        )
+
+
+class PlantillaLaboratorioSerializer(IGSerializer):
+    """
+    Serializer para las plantillas de laboratorios
+    """
+
+    producto = ProductoSerializer(fields=('codigo', 'nombre', 'tipo', 'tipo_display'))
+    laboratorio = LaboratorioSerializer(fields=('codigo', 'codigo_internacional', 'nombre'))
+
+    class Meta:
+        model = PlantillaLaboratorio
+        fields = (
+            'id', 'cantidad', 'producto', 'laboratorio'
         )
 
 
