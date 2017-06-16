@@ -8,13 +8,13 @@
                 light>
                 <v-tabs-bar slot="activators">
                     <v-tabs-item
-                        class="teal darken-1"
+                        class="cyan darken-2"
                         v-for="(item, id) of items" :key="id"
                         :href="'#tabs-' + id"
                         ripple>
                         {{ item.laboratorio.nombre }}
                     </v-tabs-item>
-                    <v-tabs-slider class="teal lighten-2"></v-tabs-slider>
+                    <v-tabs-slider class="cyan accent-4"></v-tabs-slider>
                 </v-tabs-bar>
                 <v-tabs-content
                     v-for="(item, id) of items" :key="id" :id="'tabs-' + id">

@@ -10,7 +10,7 @@ urlpatterns = [
 # api
 urlpatterns += [
     url(r'^api/recepciones/$', api.recepcion_api, name='recepciones'),
-    url(r'^api/laboratorios/$', api.lista_laboratorio, name='laboratorios'),
+    url(r'^api/laboratorios/$', api.LaboratoriosListAPI.as_view(), name='laboratorios'),
     url(r'^api/laboratorios/(?P<pk>\d+)/$', api.detalle_laboratorio, name='detalle_laboratorio'),
     url(r'^api/laboratorios/plantilla/(?P<pk>\d+)/$', api.plantillas_orden, name='plantilla_laboratorios'),
     url(r'^api/laboratorios/plantilla_laboratorios/$', api.PlantillaLaboratorioAPI.as_view(), name='plantillas_laboratorio'),

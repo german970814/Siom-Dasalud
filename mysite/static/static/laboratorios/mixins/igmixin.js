@@ -21,12 +21,17 @@ export default {
             }
             this.$http.get(url)
                 .then(response => {
+                    this.$emit('http403', false);
+                    this.elements = [];
                     for (let object of response.body) {
                         object.selected = false;
                         this.elements.push(object);
                     }
                     this.toggleLoading()
                 }, response => {
+                    if (response.status == 403) {
+                        this.$emit('http403', true);
+                    }
                     this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
                     this.toggleLoading()
                 });

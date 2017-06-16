@@ -36,6 +36,7 @@ class IGModelSerializer(object):
 
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
+        read_only_fields = kwargs.pop('read_only_fields', [])
         self.save_in_nested = kwargs.pop('save_in_nested', False) or self.save_in_nested
         super(IGModelSerializer, self).__init__(*args, **kwargs)
         if fields is not None:
@@ -43,6 +44,9 @@ class IGModelSerializer(object):
             for field in self.fields:
                 if field not in fields and field != 'id':
                     self.fields.pop(field)
+                    continue
+                if field in read_only_fields:
+                    self.fields[field].read_only = True
 
     def get_extra_kwargs(self):
         extra_kwargs = super(IGModelSerializer, self).get_extra_kwargs()

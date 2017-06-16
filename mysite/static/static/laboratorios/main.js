@@ -28,6 +28,7 @@ const app = new Vue({
         snackbarText: '',
         sidebar: false,
         contentLoaded: false,
+        http403: false,
     },
     mounted: function () {
         this.contentLoaded = true;

@@ -11406,12 +11406,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
             this.$http.get(url)
                 .then(response => {
+                    this.$emit('http403', false);
+                    this.elements = [];
                     for (let object of response.body) {
                         object.selected = false;
                         this.elements.push(object);
                     }
                     this.toggleLoading()
                 }, response => {
+                    if (response.status == 403) {
+                        this.$emit('http403', true);
+                    }
                     this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
                     this.toggleLoading()
                 });
@@ -22449,7 +22454,6 @@ if (false) {(function () {  module.hot.accept()
 var __vue_script__, __vue_template__
 __webpack_require__(135)
 __vue_script__ = __webpack_require__(53)
-__vue_template__ = __webpack_require__(144)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -25323,6 +25327,7 @@ const app = new __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default.a({
         snackbarText: '',
         sidebar: false,
         contentLoaded: false,
+        http403: false,
     },
     mounted: function () {
         this.contentLoaded = true;
@@ -26870,7 +26875,200 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-// <template lang="html">
+
+var _toConsumableArray2 = __webpack_require__(35);
+
+var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    name: 'formulario-resultado',
+    mounted: function mounted() {},
+    data: function data() {
+        return {
+            headers: [{
+                text: 'Concepto', value: 'id', left: true
+            }, {
+                text: 'Valor Resultado', value: 'tabla-cedula', left: true
+            }, {
+                text: 'Medida', value: 'paciente-pnombre', left: true
+            }, {
+                text: 'Abreviatura', value: 'tipo', left: true
+            }, {
+                text: 'Referencia Minima', value: 'paciente-pnombre', left: true
+            }, {
+                text: 'Referencia Maxima', value: 'paciente-pnombre', left: true
+            }]
+        };
+    },
+    props: {
+        value: {},
+        disabled: {
+            type: Boolean,
+            default: true
+        }
+    },
+    methods: {
+        validateErrorItem: function validateErrorItem(item) {
+            var gender = 'M';
+            if (item.tipo.name == 'number' && 'referencias' in item) {
+                var refMin = item.referencias[gender].minima;
+                var refMax = item.referencias[gender].maxima;
+                return Boolean(item.model_text.toString()) ? !(parseInt(item.model_text) >= refMin && parseInt(item.model_text) <= refMax) : false;
+            }
+            return false;
+        },
+        _genTd: function _genTd(item, slot) {
+            return this.$createElement('td', { 'class': { 'text-xs-center': true, 'yellow lighten-1': this.validateErrorItem(item) } }, [slot]);
+        },
+        _genHeader: function _genHeader() {
+            return this.$createElement('v-layout', [this.$createElement('h1', { 'class': 'title' }, ['Formulario de Resultado'])]);
+        },
+        _genBody: function _genBody() {
+            var _this = this;
+
+            var childs = this.$createElement('v-data-table', {
+                props: { headers: this.headers, items: this.value.items },
+                scopedSlots: {
+                    items: function items(props) {
+                        var tds = [];
+                        return [_this._genTd(props.item, props.item.nombre), _this._genTd(props.item, _this.createTdWithProp(props.item)), _this._genTd(props.item, props.item.unidades), _this._genTd(props.item, props.item.nombre)].concat((0, _toConsumableArray3.default)(_this.calculaReferencias(props.item)));
+                    }
+                }
+            }, []);
+            // console.log(this.$refs.select)
+            return childs;
+        },
+        calculaReferencias: function calculaReferencias(item) {
+            /*
+             * Calcula las referencias del modo
+             * referencias {
+             *   M: {
+             *     minima: 12,
+             *     maxima: 15,
+             *   },
+             *   F: {
+             *     minima: 12,
+             *     maxima: 15,
+             *   }
+             * }
+            */
+            var childs = [];
+            var gender = 'M';
+            var unidades = item.unidades;
+            if (item.tipo.name != 'number') {
+                unidades = '';
+            }
+            if ('referencias' in item) {
+                childs.push(this._genTd(item, item.referencias[gender].minima.toString().concat(' ') + unidades));
+                childs.push(this._genTd(item, item.referencias[gender].maxima.toString().concat(' ') + unidades));
+            } else {
+                childs.push(this._genTd(item, 'undefined'));
+                childs.push(this._genTd(item, 'undefined'));
+            }
+            return childs;
+        },
+        createTdWithProp: function createTdWithProp(item) {
+            var _this2 = this;
+
+            var MATCH = {
+                'text': 'v-text-field',
+                'textarea': 'v-text-field',
+                'select': 'v-select',
+                'checkbox': 'v-checkbox',
+                'radio': 'v-radio',
+                'number': 'v-text-field',
+                'title': ''
+            };
+
+            var dialog = 'v-edit-dialog';
+
+            if (MATCH[item.tipo.name] == 'v-text-field') {
+                var unidades = '';
+                if (item.tipo.name == 'number') {
+                    unidades = ' '.concat(item.unidades);
+                }
+                return this.$createElement(dialog, {
+                    'class': 'text-xs-center',
+                    on: {
+                        open: function open() {
+                            item._model_text = item.model_text;
+                        },
+                        cancel: function cancel() {
+                            item.model_text = item._model_text || item.model_text;
+                        }
+                    },
+                    props: { large: true, 'cancel-text': 'Cancelar', 'save-text': 'Guardar' }
+                }, [Boolean(item.model_text) ? item.model_text + unidades : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Resultado']), this.$createElement(MATCH[item.tipo.name], {
+                    slot: 'input',
+                    props: {
+                        label: 'Resultado', 'multi-line': item.tipo.name == 'textarea',
+                        type: item.tipo.name == 'number' ? 'number' : 'text',
+                        hint: item.help, 'persistent-hint': true
+                    },
+                    on: {
+                        input: function input(event) {
+                            item.model_text = event;
+                            _this2.$emit('input', event);
+                        },
+                        blur: function blur(event) {
+                            item.model_text = item.model_text;
+                            _this2.$emit('blur', event);
+                        }
+                    }
+                }, [])]);
+            } else if (MATCH[item.tipo.name] == 'v-select') {
+                return this.$createElement(dialog, {
+                    'class': 'text-xs-center',
+                    on: {
+                        open: function open() {
+                            item._model_text = item.model_text;
+                        },
+                        cancel: function cancel() {
+                            item.model_text = item._model_text || item.model_text;
+                        }
+                    }
+                }, [!_underscore2.default.isEmpty(item.model_text) ? item.model_text.text : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Resultado']), this.$createElement(MATCH[item.tipo.name], {
+                    slot: 'input',
+                    ref: 'select',
+                    props: {
+                        label: 'Resultado', 'item-value': 'text',
+                        hint: item.help, 'persistent-hint': true,
+                        items: item.choices_select
+                    },
+                    on: {
+                        input: function input(event) {
+                            item.model_text = event;
+                            _this2.$emit('input', event);
+                        },
+                        blur: function blur(event) {
+                            item.model_text = item.model_text;
+                            _this2.$emit('blur', event);
+                        }
+                    }
+                }, [])]);
+            }
+            return 'hola';
+        }
+    },
+    render: function render() {
+        return this.$createElement('v-container', [this._genHeader(), this._genBody()]);
+    }
+};
+// </script>
+//
+// <style lang="css">
+// ul.list:parent {
+//     z-index: 14!important;
+// }
+// </style>
+//
+// <!-- <template lang="html">
 //     <div>
 //         <v-container>
 //             <v-layout>
@@ -26907,7 +27105,7 @@ Object.defineProperty(exports, "__esModule", {
 //                         </dl>
 //                         <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
 //                             <v-flex xs7 md7>
-//                                 <!--v-if="!choice.edit"-->
+//                                 <!--v-if="!choice.edit"-- !> esto esta comentado
 //                                 <v-checkbox
 //                                     :label="choice.name"
 //                                     v-model="item.model_check"
@@ -26948,29 +27146,9 @@ Object.defineProperty(exports, "__esModule", {
 //             </v-layout>
 //         </v-container>
 //     </div>
-// </template>
+// </template> -->
 //
 // <script>
-exports.default = {
-    name: 'formulario-resultado',
-    mounted: function mounted() {},
-    data: function data() {
-        return {};
-    },
-    props: {
-        value: {},
-        disabled: {
-            type: Boolean,
-            default: true
-        }
-    },
-    methods: {}
-};
-// </script>
-//
-// <style lang="css">
-// </style>
-//
 
 /***/ }),
 /* 54 */
@@ -29266,50 +29444,42 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 _vue2.default.use(_vueResource2.default); // <template lang="html">
 //     <div>
 //         <v-container>
-//           <v-layout>
-//             <v-flex xs12 md12>
-//               <v-card>
-//                   <v-card-title>
-//                       Ordenes con laboratorios
-//                       <v-spacer></v-spacer>
-//                       <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
-//                   </v-card-title>
-//                   <v-data-table
-//                       :pagination.sync="pagination"
-//                       :total-items="totalItems"
-//                       :loading="loading"
-//                       v-bind:headers="headers"
-//                       :items="elements"
-//                       v-bind:search="buscador"
-//                       :rows-per-page-items="[10]"
-//                       :filter="filter"
-//                       rows-per-page-text="Filas por Página"
-//                       no-results-text="No se encontraron resultados">
-//                       <template slot="headers" scope="props">
-//                           <span style="text-align:before: center !important">{{ props.item.text }}</span>
-//                       </template>
-//                       <template slot="items" scope="props">
-//                           <template v-for="field of fields">
-//                               <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
-//                               <td class="text-xs-center" v-else>
-//                                   <v-btn floating small router class="cyan darken-1" :href="field.href.replace(':id', props.item.id)">
-//                                       <v-icon light>mode_edit</v-icon>
-//                                   </v-btn>
-//                               </td>
-//                           </template>
-//                       </template>
-//                   </v-data-table>
-//               </v-card>
-//               <!--<ig-table
-//               table-title="Ordenes con Laboratorios"
-//               :headers="headers"
-//               :data="elements"
-//               :fields="['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha', {href: '/resultados/:id/', patrons: [{identifier: 'id', replace: item => item.id}]}]"
-//               @selectedrow="eventUpdatedForm"
-//               :loading="loading"
-//               ></ig-table>-->
-//             </v-flex>
-//           </v-layout>
+//             <v-layout>
+//                 <v-flex xs12 md12>
+//                     <v-card>
+//                         <v-card-title>
+//                             Ordenes con laboratorios
+//                             <v-spacer></v-spacer>
+//                             <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
+//                         </v-card-title>
+//                         <v-data-table
+//                             :pagination.sync="pagination"
+//                             :total-items="totalItems"
+//                             :loading="loading"
+//                             v-bind:headers="headers"
+//                             :items="elements"
+//                             v-bind:search="buscador"
+//                             :rows-per-page-items="[10]"
+//                             :filter="filter"
+//                             rows-per-page-text="Filas por Página"
+//                             no-results-text="No se encontraron resultados">
+//                             <template slot="headers" scope="props">
+//                                 <span style="text-align:before: center !important">{{ props.item.text }}</span>
+//                             </template>
+//                             <template slot="items" scope="props">
+//                                 <template v-for="field of fields">
+//                                     <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
+//                                     <td class="text-xs-center" v-else>
+//                                         <v-btn floating small router class="cyan darken-1" :href="field.href.replace(':id', props.item.orden.id)">
+//                                             <v-icon light>mode_edit</v-icon>
+//                                         </v-btn>
+//                                     </td>
+//                                 </template>
+//                             </template>
+//                         </v-data-table>
+//                     </v-card>
+//                 </v-flex>
+//             </v-layout>
 //         </v-container>
 //         <br>
 //     </div>
@@ -29748,13 +29918,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                 light>
 //                 <v-tabs-bar slot="activators">
 //                     <v-tabs-item
-//                         class="teal darken-1"
+//                         class="cyan darken-2"
 //                         v-for="(item, id) of items" :key="id"
 //                         :href="'#tabs-' + id"
 //                         ripple>
 //                         {{ item.laboratorio.nombre }}
 //                     </v-tabs-item>
-//                     <v-tabs-slider class="teal lighten-2"></v-tabs-slider>
+//                     <v-tabs-slider class="cyan accent-4"></v-tabs-slider>
 //                 </v-tabs-bar>
 //                 <v-tabs-content
 //                     v-for="(item, id) of items" :key="id" :id="'tabs-' + id">
@@ -30544,6 +30714,8 @@ exports.default = {
     watch: {},
     methods: {
         saveRecepcion: function saveRecepcion($event) {
+            var _this = this;
+
             var token = document.getElementsByName('csrfmiddlewaretoken')[0];
             var plantillas = this.$refs.hojaGasto.self_plantillas;
             var orden = this.recepcion;
@@ -30574,6 +30746,13 @@ exports.default = {
 
             this.$http.post(_urls2.default.recepciones, { orden: orden, hoja_gasto: plantillas }, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
                 // console.log(response);
+                var item = _this.elements.find(function (x) {
+                    return x.id == _this.recepcion.id;
+                });
+                if (item) {
+                    _this.elements.splice(_this.elements.indexOf(item), 1);
+                }
+                _this.modalTomaMuestra = false;
             }, function (response) {
                 // console.log(response)
             });
@@ -30612,12 +30791,12 @@ exports.default = {
             return string;
         },
         selectRecepcion: function selectRecepcion(item) {
-            var _this = this;
+            var _this2 = this;
 
             this.modalTomaMuestra = true;
             this.recepcion = item;
             this.$http.get(_urls2.default.plantillasOrdenes.concat(this.recepcion.id.toString() + '/?tipo=i')).then(function (response) {
-                _this.plantillas = response.body;
+                _this2.plantillas = response.body;
             }, function (response) {});
         }
     },
@@ -31505,7 +31684,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n", ""]);
+exports.push([module.i, "\nul.list:parent {\n    z-index: 14!important;\n}\n", ""]);
 
 // exports
 
@@ -32394,12 +32573,7 @@ if(false) {
 module.exports = "\n    <div v-if=\"formato\">\n        <v-container class=\"white\">\n            <v-layout>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-layout>\n            <v-layout wrap>\n                <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand class=\"white\">\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        return-object\n                                        persistent-hint\n                                        dark\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Texto de ayuda\"\n                                        v-model=\"item.help\"\n                                        hint=\"Ayuda textual que acompaña el campo\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia mínima\"\n                                        v-model=\"item.referencia_minima\"\n                                        hint=\"Texto de referencia minima para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia máxima\"\n                                        v-model=\"item.referencia_maxima\"\n                                        hint=\"Texto de referencia máxima para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Unidades\"\n                                        v-model=\"item.unidades\"\n                                        hint=\"Medida en unidades de el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'\"\n                                        :multi-line=\"item.tipo.name == 'textarea'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model_text\"\n                                        :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                        persistent-hint\n                                    ></v-text-field>\n                                    <div v-else-if=\"item.tipo.name == 'select'\">\n                                        <v-layout>\n                                            <v-flex md10 xs10>\n                                                <v-select\n                                                    :label=\"item.nombre\"\n                                                    :hint=\"item.help\"\n                                                    v-model=\"item.model_text\"\n                                                    :items=\"item.choices_select\"\n                                                    :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                    item-value=\"text\"\n                                                    persistent-hint\n                                                ></v-select>\n                                            </v-flex>\n                                            <v-flex md2 xs2>\n                                                <v-btn\n                                                    v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                    class=\"green--text darken-1\" icon=\"icon\"\n                                                    @click.native.stop=\"dialog = true; lastItem = item\">\n                                                    <v-icon>add</v-icon>\n                                                </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-checkbox\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_check\"\n                                                  :value=\"choice.id\"\n                                                  primary\n                                                ></v-checkbox>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-radio\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_text\"\n                                                  :value=\"choice.name\"\n                                                  primary\n                                                ></v-radio>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ }),
-/* 144 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <h1 class=\"title\">Formulario de Resultado</h1>\n            </v-layout>\n            <v-layout v-for=\"(item, id) of value.items\" :key=\"id\">\n                <v-flex md8>\n                    <v-text-field\n                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                        :multi-line=\"item.tipo.name == 'textarea'\"\n                        :label=\"item.nombre\"\n                        :hint=\"item.help\"\n                        v-model=\"item.model_text\"\n                        :disabled=\"disabled\"\n                        persistent-hint\n                        @input=\"$emit('input', $event)\"\n                    ></v-text-field>\n                    <v-select\n                        v-else-if=\"item.tipo.name == 'select'\"\n                        dark\n                        :label=\"item.nombre\"\n                        :hint=\"item.help\"\n                        v-model=\"item.model_text\"\n                        :items=\"item.choices_select\"\n                        item-value=\"text\"\n                        :disabled=\"disabled\"\n                        persistent-hint\n                        @input=\"$emit('input', $event)\"\n                    ></v-select>\n                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                        <dl class=\"section-text section-text--def\">\n                            <dt>{{ item.nombre }}</dt>\n                            <dd>{{ item.help }}</dd>\n                        </dl>\n                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                            <v-flex xs7 md7>\n                                <!--v-if=\"!choice.edit\"-->\n                                <v-checkbox\n                                    :label=\"choice.name\"\n                                    v-model=\"item.model_check\"\n                                    :value=\"choice.id\"\n                                    :disabled=\"disabled\"\n                                    primary\n                                    @input=\"$emit('input', $event)\"\n                                ></v-checkbox>\n                            </v-flex>\n                        </v-layout>\n                    </div>\n                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                        <dl class=\"section-text section-text--def\">\n                            <dt>{{ item.nombre }}</dt>\n                            <dd>{{ item.help }}</dd>\n                        </dl>\n                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                            <v-flex xs7 md7>\n                                <v-radio\n                                    v-if=\"!choice.edit\"\n                                    :label=\"choice.name\"\n                                    v-model=\"item.model_text\"\n                                    :value=\"choice.name\"\n                                    :disabled=\"disabled\"\n                                    primary\n                                    @input=\"$emit('input', $event)\"\n                                ></v-radio>\n                            </v-flex>\n                        </v-layout>\n                    </div>\n                </v-flex>\n                <v-flex md2 v-if=\"Boolean(item.referencia)\">\n                  <h6 class=\"title\">Referencia:</h6> {{ item.referencia }}\n                </v-flex>\n                <v-flex md2 v-if=\"Boolean(item.unidades)\">\n                  <h6 class=\"title\">Unidades:</h6> {{ item.unidades }}\n                </v-flex>\n            </v-layout>\n        </v-container>\n    </div>\n";
-
-/***/ }),
+/* 144 */,
 /* 145 */
 /***/ (function(module, exports) {
 
@@ -32457,7 +32631,7 @@ module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n    
 /* 154 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <v-card>\n                  <v-card-title>\n                      Ordenes con laboratorios\n                      <v-spacer></v-spacer>\n                      <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                  </v-card-title>\n                  <v-data-table\n                      :pagination.sync=\"pagination\"\n                      :total-items=\"totalItems\"\n                      :loading=\"loading\"\n                      v-bind:headers=\"headers\"\n                      :items=\"elements\"\n                      v-bind:search=\"buscador\"\n                      :rows-per-page-items=\"[10]\"\n                      :filter=\"filter\"\n                      rows-per-page-text=\"Filas por Página\"\n                      no-results-text=\"No se encontraron resultados\">\n                      <template slot=\"headers\" scope=\"props\">\n                          <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                      </template>\n                      <template slot=\"items\" scope=\"props\">\n                          <template v-for=\"field of fields\">\n                              <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                              <td class=\"text-xs-center\" v-else>\n                                  <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                                      <v-icon light>mode_edit</v-icon>\n                                  </v-btn>\n                              </td>\n                          </template>\n                      </template>\n                  </v-data-table>\n              </v-card>\n              <!--<ig-table\n              table-title=\"Ordenes con Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['id', 'paciente.cedula', 'paciente.nombre_completo', 'laboratorios.nombre', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha', {href: '/resultados/:id/', patrons: [{identifier: 'id', replace: item => item.id}]}]\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>-->\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes con laboratorios\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                            :pagination.sync=\"pagination\"\n                            :total-items=\"totalItems\"\n                            :loading=\"loading\"\n                            v-bind:headers=\"headers\"\n                            :items=\"elements\"\n                            v-bind:search=\"buscador\"\n                            :rows-per-page-items=\"[10]\"\n                            :filter=\"filter\"\n                            rows-per-page-text=\"Filas por Página\"\n                            no-results-text=\"No se encontraron resultados\">\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <template v-for=\"field of fields\">\n                                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                    <td class=\"text-xs-center\" v-else>\n                                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                            <v-icon light>mode_edit</v-icon>\n                                        </v-btn>\n                                    </td>\n                                </template>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <br>\n    </div>\n";
 
 /***/ }),
 /* 155 */
@@ -32469,7 +32643,7 @@ module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n    
 /* 156 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"\">\n        <v-container v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                light>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"teal darken-1\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"teal lighten-2\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado @input=\"error = hasError()\" :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\" :disabled=\"'resultado' in item\"></formulario-resultado>\n                        </v-card-text>\n                        <v-card-row actions v-if=\"'formato' in item\">\n                          <v-btn :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\" flat @click.native=\"someError(item) ? () => undefined: saveItem(item)\">Guardar</v-btn>\n                        </v-card-row>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n        </v-container>\n        <v-container v-else>\n           <h5>403 Forbidden</h5>\n           <br>\n           <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items\">\n            <v-btn\n              floating\n              :error=\"error\"\n              :success=\"!error\"\n              v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Confirmar y Guardar'}\"\n              @click.native=\"saveAll\">\n                <v-icon light>{{ Boolean(error) ? 'clear': 'done' }}</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+module.exports = "\n    <div class=\"\">\n        <v-container v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                light>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado @input=\"error = hasError()\" :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\" :disabled=\"'resultado' in item\"></formulario-resultado>\n                        </v-card-text>\n                        <v-card-row actions v-if=\"'formato' in item\">\n                          <v-btn :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\" flat @click.native=\"someError(item) ? () => undefined: saveItem(item)\">Guardar</v-btn>\n                        </v-card-row>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n        </v-container>\n        <v-container v-else>\n           <h5>403 Forbidden</h5>\n           <br>\n           <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items\">\n            <v-btn\n              floating\n              :error=\"error\"\n              :success=\"!error\"\n              v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Confirmar y Guardar'}\"\n              @click.native=\"saveAll\">\n                <v-icon light>{{ Boolean(error) ? 'clear': 'done' }}</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
 
 /***/ }),
 /* 157 */

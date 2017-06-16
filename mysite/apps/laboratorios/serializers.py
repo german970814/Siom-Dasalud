@@ -22,7 +22,7 @@ class RecepcionSerializer(IGSerializer):
     Serializer para Recepciones.
     """
 
-    orden = OrdenSerializer(fields=('paciente', 'fecha', 'empresa', 'institucion', 'empresa_cliente', 'laboratorios', ))
+    orden = OrdenSerializer(fields=('paciente', 'fecha', 'empresa', 'institucion', 'empresa_cliente', 'laboratorios', ), read_only_fields=['paciente', 'fecha'])
     estado_display = serializers.SerializerMethodField()
 
     class Meta:

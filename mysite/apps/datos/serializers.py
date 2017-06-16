@@ -18,6 +18,7 @@ class PacienteSerializer(IGModelSerializer, serializers.ModelSerializer):
     class Meta:
         model = Paciente
         fields = ('id', 'pnombre', 'snombre', 'papellido', 'sapellido', 'cedula', 'foto', 'edad', 'unidad_edad')
+        extra_kwargs = {'foto': {'read_only': True}}
 
     def get_nombre_completo(self, obj):
         return '{} {} {} {}'.format(obj.pnombre, obj.snombre or '', obj.papellido, obj.sapellido or '').title()

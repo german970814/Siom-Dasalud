@@ -149,6 +149,11 @@ export default {
             this.$http.post(URL.recepciones, {orden: orden, hoja_gasto: plantillas}, {headers: {'X-CSRFToken': token.value}})
               .then(response => {
                   // console.log(response);
+                  let item = this.elements.find(x => {return x.id == this.recepcion.id});
+                  if (item) {
+                      this.elements.splice(this.elements.indexOf(item), 1);
+                  }
+                  this.modalTomaMuestra = false;
               }, response => {
                   // console.log(response)
               })
