@@ -131,7 +131,7 @@ class BacteriologoSerializer(IGModelSerializer, serializers.ModelSerializer):
 
 class FormatoSerializer(IGSerializer):
 
-    laboratorio = LaboratorioSerializer(fields=('codigo', 'nombre', ))
+    laboratorio = LaboratorioSerializer(fields=('codigo', 'nombre', 'seccion_trabajo'))
 
     class Meta:
         model = Formato
@@ -147,12 +147,12 @@ class FormatoSerializer(IGSerializer):
 
 
 class ResultadoSerializer(IGSerializer):
-    laboratorio = LaboratorioSerializer(fields=('codigo', 'nombre', ))
+    laboratorio = LaboratorioSerializer(fields=('codigo', 'nombre', 'seccion_trabajo'))
     orden = OrdenSerializer(fields=('id', ))
 
     class Meta:
         model = Resultado
-        fields = ('id', 'laboratorio', 'bacteriologo', 'fecha', 'resultado', 'orden', )
+        fields = ('id', 'laboratorio', 'bacteriologo', 'fecha', 'resultado', 'orden', 'cerrado')
         extra_kwargs = {'fecha': {'read_only': True}, 'bacteriologo': {'read_only': True}}
 
     def to_representation(self, instance):

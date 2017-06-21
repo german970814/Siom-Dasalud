@@ -68,384 +68,6 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-var stylesInDom = {},
-	memoize = function(fn) {
-		var memo;
-		return function () {
-			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-			return memo;
-		};
-	},
-	isOldIE = memoize(function() {
-		// Test for IE <= 9 as proposed by Browserhacks
-		// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
-		// Tests for existence of standard globals is to allow style-loader 
-		// to operate correctly into non-standard environments
-		// @see https://github.com/webpack-contrib/style-loader/issues/177
-		return window && document && document.all && !window.atob;
-	}),
-	getElement = (function(fn) {
-		var memo = {};
-		return function(selector) {
-			if (typeof memo[selector] === "undefined") {
-				memo[selector] = fn.call(this, selector);
-			}
-			return memo[selector]
-		};
-	})(function (styleTarget) {
-		return document.querySelector(styleTarget)
-	}),
-	singletonElement = null,
-	singletonCounter = 0,
-	styleElementsInsertedAtTop = [],
-	fixUrls = __webpack_require__(123);
-
-module.exports = function(list, options) {
-	if(typeof DEBUG !== "undefined" && DEBUG) {
-		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-	}
-
-	options = options || {};
-	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
-
-	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-	// tags it will allow on a page
-	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-	// By default, add <style> tags to the <head> element
-	if (typeof options.insertInto === "undefined") options.insertInto = "head";
-
-	// By default, add <style> tags to the bottom of the target
-	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-	var styles = listToStyles(list);
-	addStylesToDom(styles, options);
-
-	return function update(newList) {
-		var mayRemove = [];
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			domStyle.refs--;
-			mayRemove.push(domStyle);
-		}
-		if(newList) {
-			var newStyles = listToStyles(newList);
-			addStylesToDom(newStyles, options);
-		}
-		for(var i = 0; i < mayRemove.length; i++) {
-			var domStyle = mayRemove[i];
-			if(domStyle.refs === 0) {
-				for(var j = 0; j < domStyle.parts.length; j++)
-					domStyle.parts[j]();
-				delete stylesInDom[domStyle.id];
-			}
-		}
-	};
-};
-
-function addStylesToDom(styles, options) {
-	for(var i = 0; i < styles.length; i++) {
-		var item = styles[i];
-		var domStyle = stylesInDom[item.id];
-		if(domStyle) {
-			domStyle.refs++;
-			for(var j = 0; j < domStyle.parts.length; j++) {
-				domStyle.parts[j](item.parts[j]);
-			}
-			for(; j < item.parts.length; j++) {
-				domStyle.parts.push(addStyle(item.parts[j], options));
-			}
-		} else {
-			var parts = [];
-			for(var j = 0; j < item.parts.length; j++) {
-				parts.push(addStyle(item.parts[j], options));
-			}
-			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-		}
-	}
-}
-
-function listToStyles(list) {
-	var styles = [];
-	var newStyles = {};
-	for(var i = 0; i < list.length; i++) {
-		var item = list[i];
-		var id = item[0];
-		var css = item[1];
-		var media = item[2];
-		var sourceMap = item[3];
-		var part = {css: css, media: media, sourceMap: sourceMap};
-		if(!newStyles[id])
-			styles.push(newStyles[id] = {id: id, parts: [part]});
-		else
-			newStyles[id].parts.push(part);
-	}
-	return styles;
-}
-
-function insertStyleElement(options, styleElement) {
-	var styleTarget = getElement(options.insertInto)
-	if (!styleTarget) {
-		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
-	}
-	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-	if (options.insertAt === "top") {
-		if(!lastStyleElementInsertedAtTop) {
-			styleTarget.insertBefore(styleElement, styleTarget.firstChild);
-		} else if(lastStyleElementInsertedAtTop.nextSibling) {
-			styleTarget.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-		} else {
-			styleTarget.appendChild(styleElement);
-		}
-		styleElementsInsertedAtTop.push(styleElement);
-	} else if (options.insertAt === "bottom") {
-		styleTarget.appendChild(styleElement);
-	} else {
-		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-	}
-}
-
-function removeStyleElement(styleElement) {
-	styleElement.parentNode.removeChild(styleElement);
-	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-	if(idx >= 0) {
-		styleElementsInsertedAtTop.splice(idx, 1);
-	}
-}
-
-function createStyleElement(options) {
-	var styleElement = document.createElement("style");
-	options.attrs.type = "text/css";
-
-	attachTagAttrs(styleElement, options.attrs);
-	insertStyleElement(options, styleElement);
-	return styleElement;
-}
-
-function createLinkElement(options) {
-	var linkElement = document.createElement("link");
-	options.attrs.type = "text/css";
-	options.attrs.rel = "stylesheet";
-
-	attachTagAttrs(linkElement, options.attrs);
-	insertStyleElement(options, linkElement);
-	return linkElement;
-}
-
-function attachTagAttrs(element, attrs) {
-	Object.keys(attrs).forEach(function (key) {
-		element.setAttribute(key, attrs[key]);
-	});
-}
-
-function addStyle(obj, options) {
-	var styleElement, update, remove;
-
-	if (options.singleton) {
-		var styleIndex = singletonCounter++;
-		styleElement = singletonElement || (singletonElement = createStyleElement(options));
-		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-	} else if(obj.sourceMap &&
-		typeof URL === "function" &&
-		typeof URL.createObjectURL === "function" &&
-		typeof URL.revokeObjectURL === "function" &&
-		typeof Blob === "function" &&
-		typeof btoa === "function") {
-		styleElement = createLinkElement(options);
-		update = updateLink.bind(null, styleElement, options);
-		remove = function() {
-			removeStyleElement(styleElement);
-			if(styleElement.href)
-				URL.revokeObjectURL(styleElement.href);
-		};
-	} else {
-		styleElement = createStyleElement(options);
-		update = applyToTag.bind(null, styleElement);
-		remove = function() {
-			removeStyleElement(styleElement);
-		};
-	}
-
-	update(obj);
-
-	return function updateStyle(newObj) {
-		if(newObj) {
-			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-				return;
-			update(obj = newObj);
-		} else {
-			remove();
-		}
-	};
-}
-
-var replaceText = (function () {
-	var textStore = [];
-
-	return function (index, replacement) {
-		textStore[index] = replacement;
-		return textStore.filter(Boolean).join('\n');
-	};
-})();
-
-function applyToSingletonTag(styleElement, index, remove, obj) {
-	var css = remove ? "" : obj.css;
-
-	if (styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = replaceText(index, css);
-	} else {
-		var cssNode = document.createTextNode(css);
-		var childNodes = styleElement.childNodes;
-		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-		if (childNodes.length) {
-			styleElement.insertBefore(cssNode, childNodes[index]);
-		} else {
-			styleElement.appendChild(cssNode);
-		}
-	}
-}
-
-function applyToTag(styleElement, obj) {
-	var css = obj.css;
-	var media = obj.media;
-
-	if(media) {
-		styleElement.setAttribute("media", media)
-	}
-
-	if(styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = css;
-	} else {
-		while(styleElement.firstChild) {
-			styleElement.removeChild(styleElement.firstChild);
-		}
-		styleElement.appendChild(document.createTextNode(css));
-	}
-}
-
-function updateLink(linkElement, options, obj) {
-	var css = obj.css;
-	var sourceMap = obj.sourceMap;
-
-	/* If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
-	and there is no publicPath defined then lets turn convertToAbsoluteUrls
-	on by default.  Otherwise default to the convertToAbsoluteUrls option
-	directly
-	*/
-	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
-
-	if (options.convertToAbsoluteUrls || autoFixUrls){
-		css = fixUrls(css);
-	}
-
-	if(sourceMap) {
-		// http://stackoverflow.com/a/26603875
-		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-	}
-
-	var blob = new Blob([css], { type: "text/css" });
-
-	var oldSrc = linkElement.href;
-
-	linkElement.href = URL.createObjectURL(blob);
-
-	if(oldSrc)
-		URL.revokeObjectURL(oldSrc);
-}
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -1997,6 +1619,384 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   }
 }.call(this));
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+var stylesInDom = {},
+	memoize = function(fn) {
+		var memo;
+		return function () {
+			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+			return memo;
+		};
+	},
+	isOldIE = memoize(function() {
+		// Test for IE <= 9 as proposed by Browserhacks
+		// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+		// Tests for existence of standard globals is to allow style-loader 
+		// to operate correctly into non-standard environments
+		// @see https://github.com/webpack-contrib/style-loader/issues/177
+		return window && document && document.all && !window.atob;
+	}),
+	getElement = (function(fn) {
+		var memo = {};
+		return function(selector) {
+			if (typeof memo[selector] === "undefined") {
+				memo[selector] = fn.call(this, selector);
+			}
+			return memo[selector]
+		};
+	})(function (styleTarget) {
+		return document.querySelector(styleTarget)
+	}),
+	singletonElement = null,
+	singletonCounter = 0,
+	styleElementsInsertedAtTop = [],
+	fixUrls = __webpack_require__(123);
+
+module.exports = function(list, options) {
+	if(typeof DEBUG !== "undefined" && DEBUG) {
+		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the <head> element
+	if (typeof options.insertInto === "undefined") options.insertInto = "head";
+
+	// By default, add <style> tags to the bottom of the target
+	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+	var styles = listToStyles(list);
+	addStylesToDom(styles, options);
+
+	return function update(newList) {
+		var mayRemove = [];
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+		if(newList) {
+			var newStyles = listToStyles(newList);
+			addStylesToDom(newStyles, options);
+		}
+		for(var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+			if(domStyle.refs === 0) {
+				for(var j = 0; j < domStyle.parts.length; j++)
+					domStyle.parts[j]();
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+};
+
+function addStylesToDom(styles, options) {
+	for(var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+		if(domStyle) {
+			domStyle.refs++;
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles(list) {
+	var styles = [];
+	var newStyles = {};
+	for(var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+		if(!newStyles[id])
+			styles.push(newStyles[id] = {id: id, parts: [part]});
+		else
+			newStyles[id].parts.push(part);
+	}
+	return styles;
+}
+
+function insertStyleElement(options, styleElement) {
+	var styleTarget = getElement(options.insertInto)
+	if (!styleTarget) {
+		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+	}
+	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+	if (options.insertAt === "top") {
+		if(!lastStyleElementInsertedAtTop) {
+			styleTarget.insertBefore(styleElement, styleTarget.firstChild);
+		} else if(lastStyleElementInsertedAtTop.nextSibling) {
+			styleTarget.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			styleTarget.appendChild(styleElement);
+		}
+		styleElementsInsertedAtTop.push(styleElement);
+	} else if (options.insertAt === "bottom") {
+		styleTarget.appendChild(styleElement);
+	} else {
+		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+	}
+}
+
+function removeStyleElement(styleElement) {
+	styleElement.parentNode.removeChild(styleElement);
+	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+	if(idx >= 0) {
+		styleElementsInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement(options) {
+	var styleElement = document.createElement("style");
+	options.attrs.type = "text/css";
+
+	attachTagAttrs(styleElement, options.attrs);
+	insertStyleElement(options, styleElement);
+	return styleElement;
+}
+
+function createLinkElement(options) {
+	var linkElement = document.createElement("link");
+	options.attrs.type = "text/css";
+	options.attrs.rel = "stylesheet";
+
+	attachTagAttrs(linkElement, options.attrs);
+	insertStyleElement(options, linkElement);
+	return linkElement;
+}
+
+function attachTagAttrs(element, attrs) {
+	Object.keys(attrs).forEach(function (key) {
+		element.setAttribute(key, attrs[key]);
+	});
+}
+
+function addStyle(obj, options) {
+	var styleElement, update, remove;
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+		styleElement = singletonElement || (singletonElement = createStyleElement(options));
+		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+	} else if(obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function") {
+		styleElement = createLinkElement(options);
+		update = updateLink.bind(null, styleElement, options);
+		remove = function() {
+			removeStyleElement(styleElement);
+			if(styleElement.href)
+				URL.revokeObjectURL(styleElement.href);
+		};
+	} else {
+		styleElement = createStyleElement(options);
+		update = applyToTag.bind(null, styleElement);
+		remove = function() {
+			removeStyleElement(styleElement);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle(newObj) {
+		if(newObj) {
+			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+				return;
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag(styleElement, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = styleElement.childNodes;
+		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+		if (childNodes.length) {
+			styleElement.insertBefore(cssNode, childNodes[index]);
+		} else {
+			styleElement.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag(styleElement, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		styleElement.setAttribute("media", media)
+	}
+
+	if(styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = css;
+	} else {
+		while(styleElement.firstChild) {
+			styleElement.removeChild(styleElement.firstChild);
+		}
+		styleElement.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink(linkElement, options, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	/* If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+	and there is no publicPath defined then lets turn convertToAbsoluteUrls
+	on by default.  Otherwise default to the convertToAbsoluteUrls option
+	directly
+	*/
+	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+
+	if (options.convertToAbsoluteUrls || autoFixUrls){
+		css = fixUrls(css);
+	}
+
+	if(sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = linkElement.href;
+
+	linkElement.href = URL.createObjectURL(blob);
+
+	if(oldSrc)
+		URL.revokeObjectURL(oldSrc);
+}
 
 
 /***/ }),
@@ -11373,7 +11373,7 @@ return Vue$3;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(173)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(172)))
 
 /***/ }),
 /* 5 */
@@ -11381,7 +11381,7 @@ return Vue$3;
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
 
 
@@ -12555,7 +12555,7 @@ var xhrClient = function (request) {
 
 var nodeClient = function (request) {
 
-    var client = __webpack_require__(174);
+    var client = __webpack_require__(173);
 
     return new PromiseObj(function (resolve) {
 
@@ -13047,7 +13047,7 @@ if (false) {(function () {  module.hot.accept()
 var __vue_script__, __vue_template__
 __webpack_require__(139)
 __vue_script__ = __webpack_require__(56)
-__vue_template__ = __webpack_require__(147)
+__vue_template__ = __webpack_require__(146)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -13068,7 +13068,7 @@ if (false) {(function () {  module.hot.accept()
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
-* Vuetify v0.12.6
+* Vuetify v0.12.7
 * Forged by John Leider
 * Released under the MIT License.
 */   
@@ -13487,7 +13487,7 @@ module.exports = function normalizeComponent (
 
   data: function data () {
     return {
-      errors: [],
+      errorBucket: [],
       focused: false,
       tabFocused: false,
       lazyValue: this.value
@@ -13498,10 +13498,16 @@ module.exports = function normalizeComponent (
     appendIcon: String,
     appendIconCb: Function,
     disabled: Boolean,
+    error: Boolean,
+    errors: {
+      type: [String, Array],
+      default: function () { return []; }
+    },
     hint: String,
     hideDetails: Boolean,
-    persistentHint: Boolean,
     label: String,
+    persistentHint: Boolean,
+    placeholder: String,
     prependIcon: String,
     prependIconCb: Function,
     required: Boolean,
@@ -13514,13 +13520,12 @@ module.exports = function normalizeComponent (
     },
     value: {
       required: false
-    },
-    placeholder: String
+    }
   },
 
   computed: {
     hasError: function hasError () {
-      return this.errors.length !== 0
+      return this.validations.length || this.error
     },
     inputGroupClasses: function inputGroupClasses () {
       return Object.assign({
@@ -13531,7 +13536,7 @@ module.exports = function normalizeComponent (
         'input-group--disabled': this.disabled,
         'input-group--light': this.light || !this.dark,
         'input-group--dark': !this.light && this.dark,
-        'input-group--error': this.hasError || this.errors.length > 0,
+        'input-group--error': this.hasError,
         'input-group--append-icon': this.appendIcon,
         'input-group--prepend-icon': this.prependIcon,
         'input-group--required': this.required,
@@ -13560,6 +13565,11 @@ module.exports = function normalizeComponent (
       }
 
       return Object.assign(modifiers, model.modifiers)
+    },
+    validations: function validations () {
+      return (!Array.isArray(this.errors)
+        ? [this.errors]
+        : this.errors).concat(this.errorBucket)
     }
   },
 
@@ -13591,11 +13601,11 @@ module.exports = function normalizeComponent (
             this.focused ||
             this.hint &&
             this.persistentHint) &&
-          this.errors.length === 0
+          this.validations.length === 0
       ) {
         messages = [this.genHint()]
-      } else if (this.errors.length) {
-        messages = this.errors.map(function (i) { return this$1.genError(i); })
+      } else if (this.validations.length) {
+        messages = this.validations.map(function (i) { return this$1.genError(i); })
       }
 
       return this.$createElement(
@@ -13709,7 +13719,7 @@ module.exports = function normalizeComponent (
     validate: function validate () {
       var this$1 = this;
 
-      this.errors = []
+      this.errorBucket = []
 
       this.rules.forEach(function (rule) {
         var valid = typeof rule === 'function'
@@ -13717,7 +13727,7 @@ module.exports = function normalizeComponent (
           : rule
 
         if (valid !== true) {
-          this$1.errors.push(valid)
+          this$1.errorBucket.push(valid)
         }
       })
     }
@@ -15495,9 +15505,10 @@ var Footer = {
       }
     },
     hasError: function hasError () {
-      return this.errors.length !== 0 ||
+      return this.errors.length > 0 ||
         !this.counterIsValid() ||
-        !this.validateIsValid()
+        !this.validateIsValid() ||
+        this.error
     },
     count: function count () {
       var inputLength = (this.inputValue && this.inputValue.toString() || '').length
@@ -19101,7 +19112,7 @@ var Subheader = {
       return this.totalItems || this.items.length
     },
     indeterminate: function indeterminate () {
-      return this.selectAll && this.someItems && !this.everyItem
+      return this.selectAll !== false && this.someItems && !this.everyItem
     },
     everyItem: function everyItem () {
       var this$1 = this;
@@ -19212,7 +19223,7 @@ var Subheader = {
       h('table', {
         'class': {
           'datatable table': true,
-          'datatable--select-all': this.selectAll
+          'datatable--select-all': this.selectAll !== false
         }
       }, [
         this.genTHead(),
@@ -19528,7 +19539,7 @@ var TableOverflow = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__util_help
         on: { change: this.toggle }
       })
 
-      this.selectAll && children.unshift(this.$createElement('th', [checkbox]))
+      this.selectAll !== false && children.unshift(this.$createElement('th', [checkbox]))
 
       return this.$createElement('thead', [this.genTR(children)])
     },
@@ -22076,10 +22087,16 @@ if (typeof window !== 'undefined' && window.Vue) {
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = { "default": __webpack_require__(73), __esModule: true };
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var __vue_script__, __vue_template__
 __webpack_require__(142)
 __vue_script__ = __webpack_require__(54)
-__vue_template__ = __webpack_require__(145)
+__vue_template__ = __webpack_require__(144)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22094,12 +22111,6 @@ if (false) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, __vue_template__)
   }
 })()}
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(73), __esModule: true };
 
 /***/ }),
 /* 12 */
@@ -22130,8 +22141,8 @@ module.exports = {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store  = __webpack_require__(42)('wks')
-  , uid    = __webpack_require__(44)
+var store  = __webpack_require__(43)('wks')
+  , uid    = __webpack_require__(45)
   , Symbol = __webpack_require__(20).Symbol;
 module.exports = function(name){
   return store[name] || (store[name] =
@@ -22159,7 +22170,7 @@ exports.__esModule = true;
 
 var global    = __webpack_require__(20)
   , core      = __webpack_require__(12)
-  , ctx       = __webpack_require__(36)
+  , ctx       = __webpack_require__(37)
   , PROTOTYPE = 'prototype';
 
 var $export = function(type, name, source){
@@ -22216,7 +22227,7 @@ module.exports = {};
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
 /*
 
@@ -22326,8 +22337,8 @@ if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(38)
-  , defined = __webpack_require__(25);
+var IObject = __webpack_require__(39)
+  , defined = __webpack_require__(26);
 module.exports = function(it){
   return IObject(defined(it));
 };
@@ -22342,6 +22353,33 @@ module.exports = { "default": __webpack_require__(74), __esModule: true };
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+exports.__esModule = true;
+
+var _from = __webpack_require__(69);
+
+var _from2 = _interopRequireDefault(_from);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  } else {
+    return (0, _from2.default)(arr);
+  }
+};
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var isObject = __webpack_require__(85);
 module.exports = function(it){
   if(!isObject(it))throw TypeError(it + ' is not an object!');
@@ -22349,7 +22387,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -22359,7 +22397,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 // 7.2.1 RequireObjectCoercible(argument)
@@ -22369,7 +22407,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 var hasOwnProperty = {}.hasOwnProperty;
@@ -22378,12 +22416,12 @@ module.exports = function(it, key){
 };
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $          = __webpack_require__(13)
-  , createDesc = __webpack_require__(28);
-module.exports = __webpack_require__(37) ? function(object, key, value){
+  , createDesc = __webpack_require__(29);
+module.exports = __webpack_require__(38) ? function(object, key, value){
   return $.setDesc(object, key, createDesc(1, value));
 } : function(object, key, value){
   object[key] = value;
@@ -22391,7 +22429,7 @@ module.exports = __webpack_require__(37) ? function(object, key, value){
 };
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 module.exports = function(bitmap, value){
@@ -22404,11 +22442,11 @@ module.exports = function(bitmap, value){
 };
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var def = __webpack_require__(13).setDesc
-  , has = __webpack_require__(26)
+  , has = __webpack_require__(27)
   , TAG = __webpack_require__(14)('toStringTag');
 
 module.exports = function(it, tag, stat){
@@ -22416,17 +22454,17 @@ module.exports = function(it, tag, stat){
 };
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.13 ToObject(argument)
-var defined = __webpack_require__(25);
+var defined = __webpack_require__(26);
 module.exports = function(it){
   return Object(defined(it));
 };
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
@@ -22448,7 +22486,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
@@ -22470,7 +22508,30 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 33 */
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(126)
+__vue_script__ = __webpack_require__(55)
+__vue_template__ = __webpack_require__(145)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/static/static/laboratorios/components/productos.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -24942,40 +25003,13 @@ if (inBrowser && window.Vue) {
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(122)))
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = { "default": __webpack_require__(76), __esModule: true };
 
 /***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _from = __webpack_require__(69);
-
-var _from2 = _interopRequireDefault(_from);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = function (arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
-      arr2[i] = arr[i];
-    }
-
-    return arr2;
-  } else {
-    return (0, _from2.default)(arr);
-  }
-};
-
-/***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
@@ -25000,7 +25034,7 @@ module.exports = function(fn, that, length){
 };
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Thank's IE8 for his funny defineProperty
@@ -25009,29 +25043,29 @@ module.exports = !__webpack_require__(19)(function(){
 });
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(24);
+var cof = __webpack_require__(25);
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
   return cof(it) == 'String' ? it.split('') : Object(it);
 };
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var LIBRARY        = __webpack_require__(40)
+var LIBRARY        = __webpack_require__(41)
   , $export        = __webpack_require__(16)
-  , redefine       = __webpack_require__(41)
-  , hide           = __webpack_require__(27)
-  , has            = __webpack_require__(26)
+  , redefine       = __webpack_require__(42)
+  , hide           = __webpack_require__(28)
+  , has            = __webpack_require__(27)
   , Iterators      = __webpack_require__(17)
   , $iterCreate    = __webpack_require__(87)
-  , setToStringTag = __webpack_require__(29)
+  , setToStringTag = __webpack_require__(30)
   , getProto       = __webpack_require__(13).getProto
   , ITERATOR       = __webpack_require__(14)('iterator')
   , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
@@ -25091,19 +25125,19 @@ module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED
 };
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 module.exports = true;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(27);
+module.exports = __webpack_require__(28);
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(20)
@@ -25114,7 +25148,7 @@ module.exports = function(key){
 };
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports) {
 
 // 7.1.4 ToInteger
@@ -25125,7 +25159,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
 var id = 0
@@ -25135,7 +25169,7 @@ module.exports = function(key){
 };
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var classof   = __webpack_require__(80)
@@ -25148,7 +25182,7 @@ module.exports = __webpack_require__(12).getIteratorMethod = function(it){
 };
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25156,7 +25190,7 @@ module.exports = __webpack_require__(12).getIteratorMethod = function(it){
 var $at  = __webpack_require__(93)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
-__webpack_require__(39)(String, 'String', function(iterated){
+__webpack_require__(40)(String, 'String', function(iterated){
   this._t = String(iterated); // target
   this._i = 0;                // next index
 // 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -25171,57 +25205,34 @@ __webpack_require__(39)(String, 'String', function(iterated){
 });
 
 /***/ }),
-/* 47 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(126)
-__vue_script__ = __webpack_require__(55)
-__vue_template__ = __webpack_require__(146)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/static/static/laboratorios/components/productos.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
 /* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__ = __webpack_require__(165);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__ = __webpack_require__(162);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__ = __webpack_require__(170);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__ = __webpack_require__(170);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__ = __webpack_require__(169);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__ = __webpack_require__(168);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__ = __webpack_require__(167);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__ = __webpack_require__(162);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__ = __webpack_require__(161);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__ = __webpack_require__(163);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__ = __webpack_require__(166);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__ = __webpack_require__(164);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__ = __webpack_require__(161);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__ = __webpack_require__(160);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__ = __webpack_require__(169);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__ = __webpack_require__(168);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__ = __webpack_require__(172);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__ = __webpack_require__(171);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__);
 
 
@@ -25280,15 +25291,15 @@ const router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuetify__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vue_resource__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_router__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_router__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_menu_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_table_vue__);
@@ -25366,11 +25377,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _toConsumableArray2 = __webpack_require__(35);
+var _toConsumableArray2 = __webpack_require__(23);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
-var _getIterator2 = __webpack_require__(11);
+var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -25525,7 +25536,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _toConsumableArray2 = __webpack_require__(35);
+var _toConsumableArray2 = __webpack_require__(23);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
@@ -25537,7 +25548,7 @@ var _assign = __webpack_require__(70);
 
 var _assign2 = _interopRequireDefault(_assign);
 
-var _getIterator2 = __webpack_require__(11);
+var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -25553,7 +25564,7 @@ var _errormixin = __webpack_require__(18);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -26353,7 +26364,7 @@ var _stringify = __webpack_require__(22);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _getIterator2 = __webpack_require__(11);
+var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -26369,15 +26380,15 @@ var _errormixin = __webpack_require__(18);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
 
-var _floatingButton = __webpack_require__(31);
+var _floatingButton = __webpack_require__(32);
 
 var _floatingButton2 = _interopRequireDefault(_floatingButton);
 
-var _formularioResultado = __webpack_require__(32);
+var _formularioResultado = __webpack_require__(33);
 
 var _formularioResultado2 = _interopRequireDefault(_formularioResultado);
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -26876,18 +26887,24 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _toConsumableArray2 = __webpack_require__(35);
+var _toConsumableArray2 = __webpack_require__(23);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
+var _slotInput = __webpack_require__(178);
+
+var _slotInput2 = _interopRequireDefault(_slotInput);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// <script>
 exports.default = {
     name: 'formulario-resultado',
+    components: { 'ig-slot-input': _slotInput2.default },
     mounted: function mounted() {},
     data: function data() {
         return {
@@ -26908,6 +26925,7 @@ exports.default = {
     },
     props: {
         value: {},
+        gender: '',
         disabled: {
             type: Boolean,
             default: true
@@ -26915,7 +26933,7 @@ exports.default = {
     },
     methods: {
         validateErrorItem: function validateErrorItem(item) {
-            var gender = 'M';
+            var gender = this.gender.toUpperCase();
             if (item.tipo.name == 'number' && 'referencias' in item) {
                 var refMin = item.referencias[gender].minima;
                 var refMax = item.referencias[gender].maxima;
@@ -26933,15 +26951,27 @@ exports.default = {
             var _this = this;
 
             var childs = this.$createElement('v-data-table', {
-                props: { headers: this.headers, items: this.value.items },
+                props: {
+                    headers: this.headers, items: this.value.items,
+                    rowsPerPageItems: [100],
+                    pagination: {
+                        page: 1,
+                        rowsPerPage: 100,
+                        descending: false,
+                        totalItems: 0
+                    }
+                },
                 scopedSlots: {
                     items: function items(props) {
                         var tds = [];
-                        return [_this._genTd(props.item, props.item.nombre), _this._genTd(props.item, _this.createTdWithProp(props.item)), _this._genTd(props.item, props.item.unidades), _this._genTd(props.item, props.item.nombre)].concat((0, _toConsumableArray3.default)(_this.calculaReferencias(props.item)));
+                        if (props.item.tipo.name != 'title') {
+                            return [_this._genTd(props.item, props.item.nombre), _this._genTd(props.item, _this.createTdWithProp(props.item)), _this._genTd(props.item, props.item.unidades), _this._genTd(props.item, props.item.nombre)].concat((0, _toConsumableArray3.default)(_this.calculaReferencias(props.item)));
+                        }
+                        return [_this.$createElement('td', { 'class': 'text-xs-left', attrs: { colspan: 6 } }, [_this.$createElement('strong', { attrs: { style: 'font-size: 20px' } }, [props.item.nombre.toUpperCase()])])];
                     }
                 }
             }, []);
-            // console.log(this.$refs.select)
+
             return childs;
         },
         calculaReferencias: function calculaReferencias(item) {
@@ -26959,7 +26989,7 @@ exports.default = {
              * }
             */
             var childs = [];
-            var gender = 'M';
+            var gender = this.gender.toUpperCase();
             var unidades = item.unidades;
             if (item.tipo.name != 'number') {
                 unidades = '';
@@ -26987,6 +27017,9 @@ exports.default = {
             };
 
             var dialog = 'v-edit-dialog';
+            if (this.disabled) {
+                dialog = 'ig-slot-input';
+            }
 
             if (MATCH[item.tipo.name] == 'v-text-field') {
                 var unidades = '';
@@ -27025,12 +27058,35 @@ exports.default = {
             } else if (MATCH[item.tipo.name] == 'v-select') {
                 return this.$createElement(dialog, {
                     'class': 'text-xs-center',
+                    props: { large: true, 'cancel-text': 'Cancelar', 'save-text': 'Guardar' },
                     on: {
                         open: function open() {
                             item._model_text = item.model_text;
+                            // fix z-index
+                            if (!_underscore2.default.isEmpty(_this2.$refs.select)) {
+                                if (_this2.$refs.select instanceof Array) {
+                                    _this2.$refs.select.forEach(function (select) {
+                                        select.$refs.menu.$el.classList.add('fixindex');
+                                    });
+                                } else {
+                                    // console.log(this.$refs.select.$refs.menu.$ refs.content)
+                                    _this2.$refs.select.$refs.menu.$refs.content.classList.add('fixindex');
+                                }
+                            }
                         },
                         cancel: function cancel() {
                             item.model_text = item._model_text || item.model_text;
+                            // fix z-index
+                            if (!_underscore2.default.isEmpty(_this2.$refs.select)) {
+                                if (_this2.$refs.select instanceof Array) {
+                                    _this2.$refs.select.forEach(function (select) {
+                                        select.$refs.menu.$el.classList.add('fixindex');
+                                    });
+                                } else {
+                                    // console.log(this.$refs.select.$refs.menu.$ refs.content)
+                                    _this2.$refs.select.$refs.menu.$refs.content.classList.add('fixindex');
+                                }
+                            }
                         }
                     }
                 }, [!_underscore2.default.isEmpty(item.model_text) ? item.model_text.text : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Resultado']), this.$createElement(MATCH[item.tipo.name], {
@@ -27039,7 +27095,7 @@ exports.default = {
                     props: {
                         label: 'Resultado', 'item-value': 'text',
                         hint: item.help, 'persistent-hint': true,
-                        items: item.choices_select
+                        items: item.choices_select, 'return-object': true
                     },
                     on: {
                         input: function input(event) {
@@ -27063,92 +27119,11 @@ exports.default = {
 // </script>
 //
 // <style lang="css">
-// ul.list:parent {
-//     z-index: 14!important;
+// .fixindex {
+//     z-index: 7 !important;
 // }
 // </style>
 //
-// <!-- <template lang="html">
-//     <div>
-//         <v-container>
-//             <v-layout>
-//                 <h1 class="title">Formulario de Resultado</h1>
-//             </v-layout>
-//             <v-layout v-for="(item, id) of value.items" :key="id">
-//                 <v-flex md8>
-//                     <v-text-field
-//                         v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea'"
-//                         :multi-line="item.tipo.name == 'textarea'"
-//                         :label="item.nombre"
-//                         :hint="item.help"
-//                         v-model="item.model_text"
-//                         :disabled="disabled"
-//                         persistent-hint
-//                         @input="$emit('input', $event)"
-//                     ></v-text-field>
-//                     <v-select
-//                         v-else-if="item.tipo.name == 'select'"
-//                         dark
-//                         :label="item.nombre"
-//                         :hint="item.help"
-//                         v-model="item.model_text"
-//                         :items="item.choices_select"
-//                         item-value="text"
-//                         :disabled="disabled"
-//                         persistent-hint
-//                         @input="$emit('input', $event)"
-//                     ></v-select>
-//                     <div v-else-if="item.tipo.name == 'checkbox'">
-//                         <dl class="section-text section-text--def">
-//                             <dt>{{ item.nombre }}</dt>
-//                             <dd>{{ item.help }}</dd>
-//                         </dl>
-//                         <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
-//                             <v-flex xs7 md7>
-//                                 <!--v-if="!choice.edit"-- !> esto esta comentado
-//                                 <v-checkbox
-//                                     :label="choice.name"
-//                                     v-model="item.model_check"
-//                                     :value="choice.id"
-//                                     :disabled="disabled"
-//                                     primary
-//                                     @input="$emit('input', $event)"
-//                                 ></v-checkbox>
-//                             </v-flex>
-//                         </v-layout>
-//                     </div>
-//                     <div v-else-if="item.tipo.name == 'radio'">
-//                         <dl class="section-text section-text--def">
-//                             <dt>{{ item.nombre }}</dt>
-//                             <dd>{{ item.help }}</dd>
-//                         </dl>
-//                         <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
-//                             <v-flex xs7 md7>
-//                                 <v-radio
-//                                     v-if="!choice.edit"
-//                                     :label="choice.name"
-//                                     v-model="item.model_text"
-//                                     :value="choice.name"
-//                                     :disabled="disabled"
-//                                     primary
-//                                     @input="$emit('input', $event)"
-//                                 ></v-radio>
-//                             </v-flex>
-//                         </v-layout>
-//                     </div>
-//                 </v-flex>
-//                 <v-flex md2 v-if="Boolean(item.referencia)">
-//                   <h6 class="title">Referencia:</h6> {{ item.referencia }}
-//                 </v-flex>
-//                 <v-flex md2 v-if="Boolean(item.unidades)">
-//                   <h6 class="title">Unidades:</h6> {{ item.unidades }}
-//                 </v-flex>
-//             </v-layout>
-//         </v-container>
-//     </div>
-// </template> -->
-//
-// <script>
 
 /***/ }),
 /* 54 */
@@ -27475,7 +27450,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(11);
+var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -27487,7 +27462,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -27740,7 +27715,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _keys = __webpack_require__(34);
+var _keys = __webpack_require__(36);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -27748,7 +27723,7 @@ var _typeof2 = __webpack_require__(15);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _getIterator2 = __webpack_require__(11);
+var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -27976,7 +27951,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -28150,7 +28125,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -28166,7 +28141,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(10);
+var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
@@ -28283,7 +28258,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -28299,7 +28274,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(10);
+var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
@@ -28429,7 +28404,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -28445,7 +28420,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(10);
+var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
@@ -28574,7 +28549,7 @@ var _stringify = __webpack_require__(22);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _getIterator2 = __webpack_require__(11);
+var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -28590,15 +28565,15 @@ var _errormixin = __webpack_require__(18);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
 
-var _floatingButton = __webpack_require__(31);
+var _floatingButton = __webpack_require__(32);
 
 var _floatingButton2 = _interopRequireDefault(_floatingButton);
 
-var _formularioResultado = __webpack_require__(32);
+var _formularioResultado = __webpack_require__(33);
 
 var _formularioResultado2 = _interopRequireDefault(_formularioResultado);
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -29074,11 +29049,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(11);
+var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -29094,7 +29069,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(10);
+var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
@@ -29106,11 +29081,11 @@ var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _formato = __webpack_require__(160);
+var _formato = __webpack_require__(159);
 
 var _formato2 = _interopRequireDefault(_formato);
 
-var _productos = __webpack_require__(47);
+var _productos = __webpack_require__(34);
 
 var _productos2 = _interopRequireDefault(_productos);
 
@@ -29160,13 +29135,13 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //                   @clearselected="selected = false"
 //                   :selected="selected"
 //                   >
-//                       <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
+//                       <v-btn flat @click.native="stepper = 3" dark v-if="validateFirstStep()">
 //                           Continuar
 //                       </v-btn>
 //                   </ig-form>
 //               </v-stepper-content>
 //               <v-stepper-content step="2" class="white">
-//                   <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
+//                   <!--<ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>-->
 //               </v-stepper-content>
 //               <v-stepper-content step="3" class="white">
 //                   <v-card>
@@ -29390,11 +29365,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(11);
+var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _keys = __webpack_require__(34);
+var _keys = __webpack_require__(36);
 
 var _keys2 = _interopRequireDefault(_keys);
 
@@ -29402,7 +29377,7 @@ var _typeof2 = __webpack_require__(15);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -29418,7 +29393,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(10);
+var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
@@ -29702,7 +29677,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -29718,7 +29693,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(10);
+var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
@@ -29877,11 +29852,11 @@ var _stringify = __webpack_require__(22);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _getIterator2 = __webpack_require__(11);
+var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -29889,11 +29864,11 @@ var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _formularioResultado = __webpack_require__(32);
+var _formularioResultado = __webpack_require__(33);
 
 var _formularioResultado2 = _interopRequireDefault(_formularioResultado);
 
-var _floatingButton = __webpack_require__(31);
+var _floatingButton = __webpack_require__(32);
 
 var _floatingButton2 = _interopRequireDefault(_floatingButton);
 
@@ -29932,15 +29907,67 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                         <v-card-title>
 //                         </v-card-title>
 //                         <v-card-text class="grey lighten-5">
-//                             <formulario-resultado @input="error = hasError()" :value="{item, items: 'formato' in item ? item.formato: item.resultado}" :disabled="'resultado' in item"></formulario-resultado>
+//                             <formulario-resultado
+//                               @input="error = hasError()"
+//                               :gender="orden.paciente.genero"
+//                               :value="{item, items: 'formato' in item ? item.formato: item.resultado}"
+//                               :disabled="formDisabled(item)"
+//                               >
+//                             </formulario-resultado>
 //                         </v-card-text>
-//                         <v-card-row actions v-if="'formato' in item">
-//                           <v-btn :class="{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}" flat @click.native="someError(item) ? () => undefined: saveItem(item)">Guardar</v-btn>
+//                         <v-card-row actions v-if="'resultado' in item ? !item.resultado.cerrado: true">
+//                           <v-btn
+//                             :class="{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}"
+//                             flat
+//                             @click.native="someError(item) ? () => undefined: saveItem(item)">
+//                               Guardar
+//                           </v-btn>
 //                         </v-card-row>
 //                     </v-card>
 //                 </v-tabs-content>
 //             </v-tabs>
 //             <v-layout></v-layout>
+//             <v-dialog v-model="dialog">
+//                 <v-card>
+//                     <v-card-row>
+//                         <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>
+//                     </v-card-row>
+//                     <v-card-row>
+//                         <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>
+//                     </v-card-row>
+//                     <v-card-row actions>
+//                         <v-btn class="green--text darken-1" flat="flat" @click.native="cerrarPrueba">Aceptar</v-btn>
+//                         <v-btn class="green--text darken-1" flat="flat" @click.native="dialog = false">Cancelar</v-btn>
+//                     </v-card-row>
+//                 </v-card>
+//             </v-dialog>
+//             <v-dialog v-model="preview" fullscreen transition="v-dialog-bottom-transition" :overlay="false">
+//                 <v-card>
+//                     <v-card-row>
+//                         <v-toolbar class="cyan darken-4">
+//                             <v-btn icon="icon" @click.native="preview = false">
+//                                 <v-icon class="white--text">close</v-icon>
+//                             </v-btn>
+//                             <v-toolbar-title class="white--text">Settings</v-toolbar-title>
+//                             <v-btn
+//                               class="white--text" flat="flat"
+//                               @click.native="preview = false">
+//                                 Imprimir
+//                             </v-btn>
+//                         </v-toolbar>
+//                     </v-card-row>
+//                     <v-card-row>
+//                         <v-container>
+//                           <div class="wrap__all" v-if="!contentLoaded">
+//                               <div class="preloader">
+//                                   <v-progress-circular indeterminate class="blue--text" :size="50"></v-progress-circular>
+//                               </div>
+//                           </div>
+//                           <canvas id="the-canvas" style="border: 1px solid black"></canvas>
+//                         </v-container>
+//                     </v-card-row>
+//                 </v-card>
+//             </v-dialog>
 //         </v-container>
 //         <v-container v-else>
 //            <h5>403 Forbidden</h5>
@@ -29948,13 +29975,19 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //            <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>
 //         </v-container>
 //         <floating-button v-if="items">
-//             <v-btn
-//               floating
-//               :error="error"
-//               :success="!error"
-//               v-tooltip:left="{html: Boolean(error) ? 'Aun hay errores': 'Confirmar y Guardar'}"
-//               @click.native="saveAll">
-//                 <v-icon light>{{ Boolean(error) ? 'clear': 'done' }}</v-icon>
+//             <template slot="child">
+//                 <v-btn floating info small @click.native.stop="dialog = true" v-tooltip:left="{html: 'Cerrar Prueba'}">
+//                     <v-icon light>check</v-icon>
+//                 </v-btn>
+//                 <v-btn floating warning small @click.native.stop="showSingleResult" v-tooltip:left="{html: 'Imprimir individual'}">
+//                     <v-icon light>fingerprint</v-icon>
+//                 </v-btn>
+//                 <v-btn floating success small @click.native.stop="showAllResults" v-tooltip:left="{html: 'Imprimir terminados'}">
+//                     <v-icon light>print</v-icon>
+//                 </v-btn>
+//             </template>
+//             <v-btn floating error v-tooltip:left="{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}">
+//                 <v-icon light>settings</v-icon>
 //             </v-btn>
 //         </floating-button>
 //     </div>
@@ -29978,31 +30011,62 @@ exports.default = {
             _this.tab = 'tabs-0';
         }, 1000);
     },
+    computed: {
+        selected_tab: function selected_tab() {
+            var sub = this.tab.substring(this.tab.length, this.tab.length - 1);
+            return sub;
+        }
+    },
     data: function data() {
         return {
             items: [],
             error: true,
-            tab: null
+            tab: null,
+            orden: '',
+            bacteriologo: '',
+            preview: false,
+            dialog: false,
+            contentLoaded: true
         };
     },
     watch: {
         '$route': '_fetchData',
-        tab: function tab() {}
+        tab: function tab() {},
+        preview: function preview() {}
     },
     props: {},
     methods: {
-        someError: function someError(item) {
-            var formato = 'formato' in item ? item.formato : item.resultado;
+        cerrarPrueba: function cerrarPrueba() {
+            var laboratorio = this.items[parseInt(this.selected_tab)];
+            laboratorio.cerrado = true;
+            this.saveItem(laboratorio);
+            this.dialog = false;
+        },
+        showSingleResult: function showSingleResult(event) {
+            var sub = this.tab.substring(this.tab.length, this.tab.length - 1);
+            var laboratorio = this.items[parseInt(sub)];
+            if ('resultado' in laboratorio) {
+                return this.showAllResults(event, '?laboratorio=' + laboratorio.id);
+            }
+            this.$emit('mostrarsnackbar', 'No se puede imprimir el laboratorio sin resultado.');
+        },
+        showAllResults: function showAllResults(event) {
+            var _this2 = this;
+
+            var add = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+            var validated = false;
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
 
             try {
-                for (var _iterator = (0, _getIterator3.default)(formato), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var field = _step.value;
+                for (var _iterator = (0, _getIterator3.default)(this.items), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var item = _step.value;
 
-                    if (this.hasError(field)) {
-                        return true;
+                    if ('resultado' in item) {
+                        validated = true;
+                        break;
                     }
                 }
             } catch (err) {
@@ -30020,9 +30084,61 @@ exports.default = {
                 }
             }
 
-            return false;
+            if (validated) {
+                this.preview = true;
+                this.contentLoaded = false;
+                var url = '/laboratorios/imprimir/' + this.orden.id + '/' + add;
+                PDFJS.workerSrc = '/static/js/pdfjs/pdf.worker.js';
+
+                var loadingTask = PDFJS.getDocument(url);
+
+                loadingTask.promise.then(function (pdf) {
+                    // Fetch the first page
+                    var pageNumber = 1;
+                    pdf.getPage(pageNumber).then(function (page) {
+                        var scale = 1.5;
+                        var viewport = page.getViewport(scale);
+                        // Prepare canvas using PDF page dimensions
+                        var canvas = document.getElementById('the-canvas');
+                        var context = canvas.getContext('2d');
+
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+
+                        // Render PDF page into canvas context
+                        var renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+                        var renderTask = page.render(renderContext);
+                        renderTask.then(function () {
+                            _this2.contentLoaded = true;
+                        });
+                    });
+                }, function (reason) {
+                    // PDF loading error
+                    console.error(reason);
+                });
+            } else {
+                this.$emit('mostrarsnackbar', 'No hay resultados para imprimir');
+                return undefined;
+            }
         },
-        genValidationsForItem: function genValidationsForItem(item) {
+        formDisabled: function formDisabled(item) {
+            var areas = this.bacteriologo.areas.map(function (x) {
+                return x.id;
+            });
+            var laboratorio = item.laboratorio.seccion_trabajo.id;
+
+            if ('resultado' in item) {
+                if (item.cerrado) {
+                    return true;
+                }
+                return areas.indexOf(laboratorio) == -1;
+            }
+            return areas.indexOf(laboratorio) == -1;
+        },
+        someError: function someError(item) {
             var formato = 'formato' in item ? item.formato : item.resultado;
             var _iteratorNormalCompletion2 = true;
             var _didIteratorError2 = false;
@@ -30032,13 +30148,9 @@ exports.default = {
                 for (var _iterator2 = (0, _getIterator3.default)(formato), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                     var field = _step2.value;
 
-                    this.addValidation({
-                        target: field,
-                        validations: [
-                            // i => ['select', 'radio', 'textarea', 'text'].indexOf(i.tipo.name) !== -1 ? i.model_text !== '': true,
-                            // i => ['checkbox'].indexOf(i.tipo.name) !== -1 ? i.model_check.length > 1: true,
-                        ]
-                    });
+                    if (this.hasError(field)) {
+                        return true;
+                    }
                 }
             } catch (err) {
                 _didIteratorError2 = true;
@@ -30054,52 +30166,59 @@ exports.default = {
                     }
                 }
             }
+
+            return false;
         },
-        _fetchData: function _fetchData() {
-            var _this2 = this;
+        genValidationsForItem: function genValidationsForItem(item) {
+            var formato = 'formato' in item ? item.formato : item.resultado;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
 
-            this.$http.get(_urls2.default.resultados.concat(this.$route.params.id.toString() + '/')).then(function (response) {
-                _this2.items = [];
-                if ('resultados' in response.body && response.body.resultados) {
-                    _this2.items.push.apply(_this2.items, response.body.resultados);
-                    var _iteratorNormalCompletion3 = true;
-                    var _didIteratorError3 = false;
-                    var _iteratorError3 = undefined;
+            try {
+                for (var _iterator3 = (0, _getIterator3.default)(formato), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var field = _step3.value;
 
-                    try {
-                        for (var _iterator3 = (0, _getIterator3.default)(response.body.resultados), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                            var items = _step3.value;
-
-                            // this.items(items)
-                            _this2.genValidationsForItem(items);
-                        }
-                    } catch (err) {
-                        _didIteratorError3 = true;
-                        _iteratorError3 = err;
-                    } finally {
-                        try {
-                            if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                                _iterator3.return();
-                            }
-                        } finally {
-                            if (_didIteratorError3) {
-                                throw _iteratorError3;
-                            }
-                        }
+                    this.addValidation({
+                        target: field,
+                        validations: [
+                            // i => ['select', 'radio', 'textarea', 'text'].indexOf(i.tipo.name) !== -1 ? i.model_text !== '': true,
+                            // i => ['checkbox'].indexOf(i.tipo.name) !== -1 ? i.model_check.length > 1: true,
+                        ]
+                    });
+                }
+            } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
+                    }
+                } finally {
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
                     }
                 }
-                if ('formatos' in response.body && response.body.formatos) {
-                    _this2.items.push.apply(_this2.items, response.body.formatos);
+            }
+        },
+        _fetchData: function _fetchData() {
+            var _this3 = this;
+
+            this.$http.get(_urls2.default.resultados.concat(this.$route.params.id.toString() + '/')).then(function (response) {
+                _this3.items = [];
+                if ('resultados' in response.body && response.body.resultados) {
+                    _this3.items.push.apply(_this3.items, response.body.resultados);
                     var _iteratorNormalCompletion4 = true;
                     var _didIteratorError4 = false;
                     var _iteratorError4 = undefined;
 
                     try {
-                        for (var _iterator4 = (0, _getIterator3.default)(response.body.formatos), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                            var _items = _step4.value;
+                        for (var _iterator4 = (0, _getIterator3.default)(response.body.resultados), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                            var items = _step4.value;
 
                             // this.items(items)
-                            _this2.genValidationsForItem(_items);
+                            _this3.genValidationsForItem(items);
                         }
                     } catch (err) {
                         _didIteratorError4 = true;
@@ -30116,12 +30235,42 @@ exports.default = {
                         }
                     }
                 }
+                if ('formatos' in response.body && response.body.formatos) {
+                    _this3.items.push.apply(_this3.items, response.body.formatos);
+                    var _iteratorNormalCompletion5 = true;
+                    var _didIteratorError5 = false;
+                    var _iteratorError5 = undefined;
+
+                    try {
+                        for (var _iterator5 = (0, _getIterator3.default)(response.body.formatos), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                            var _items = _step5.value;
+
+                            // this.items(items)
+                            _this3.genValidationsForItem(_items);
+                        }
+                    } catch (err) {
+                        _didIteratorError5 = true;
+                        _iteratorError5 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                                _iterator5.return();
+                            }
+                        } finally {
+                            if (_didIteratorError5) {
+                                throw _iteratorError5;
+                            }
+                        }
+                    }
+                }
+                _this3.orden = response.body.orden;
+                _this3.bacteriologo = response.body.bacteriologo;
             }, function (response) {
                 console.error(response);
             });
         },
         saveItem: function saveItem(item) {
-            var _this3 = this;
+            var _this4 = this;
 
             var showsnack = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
@@ -30129,7 +30278,8 @@ exports.default = {
             var data = {
                 laboratorio: item.laboratorio,
                 orden: { id: this.$route.params.id },
-                resultado: (0, _stringify2.default)('formato' in item ? item.formato : item.resultado)
+                resultado: (0, _stringify2.default)('formato' in item ? item.formato : item.resultado),
+                cerrado: 'cerrado' in item ? item.cerrado : false
             };
             if ('resultado' in item) {
                 data.id = item.id;
@@ -30139,7 +30289,7 @@ exports.default = {
                 // console.log(item)
                 this.$http.post(_urls2.default.resultados.concat(this.$route.params.id.toString() + '/'), data, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
                     if (showsnack) {
-                        _this3.$emit('mostrarsnackbar', 'Se ha guardado el resultado de el laboratorio '.concat(item.laboratorio.nombre.toString()));
+                        _this4.$emit('mostrarsnackbar', 'Se ha guardado el resultado de el laboratorio '.concat(item.laboratorio.nombre.toString()));
                         error = false;
                     }
                     if (!('resultado' in item)) {
@@ -30150,7 +30300,7 @@ exports.default = {
                     item.id = response.body.id;
                 }, function (response) {
                     if (showsnack) {
-                        _this3.$emit('mostrarsnackbar', 'Ha ocurrido un error al guardar el resultado');
+                        _this4.$emit('mostrarsnackbar', 'Ha ocurrido un error al guardar el resultado');
                         error = true;
                     }
                 });
@@ -30169,13 +30319,13 @@ exports.default = {
                 return undefined;
             } else {
                 var error = void 0;
-                var _iteratorNormalCompletion5 = true;
-                var _didIteratorError5 = false;
-                var _iteratorError5 = undefined;
+                var _iteratorNormalCompletion6 = true;
+                var _didIteratorError6 = false;
+                var _iteratorError6 = undefined;
 
                 try {
-                    for (var _iterator5 = (0, _getIterator3.default)(this.items), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                        var item = _step5.value;
+                    for (var _iterator6 = (0, _getIterator3.default)(this.items), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                        var item = _step6.value;
 
                         error = this.saveItem(item, false);
                         if (error) {
@@ -30184,16 +30334,16 @@ exports.default = {
                         }
                     }
                 } catch (err) {
-                    _didIteratorError5 = true;
-                    _iteratorError5 = err;
+                    _didIteratorError6 = true;
+                    _iteratorError6 = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                            _iterator5.return();
+                        if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                            _iterator6.return();
                         }
                     } finally {
-                        if (_didIteratorError5) {
-                            throw _iteratorError5;
+                        if (_didIteratorError6) {
+                            throw _iteratorError6;
                         }
                     }
                 }
@@ -30222,7 +30372,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -30238,7 +30388,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(10);
+var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
@@ -30250,7 +30400,7 @@ var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _productos = __webpack_require__(47);
+var _productos = __webpack_require__(34);
 
 var _productos2 = _interopRequireDefault(_productos);
 
@@ -30423,7 +30573,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -30439,7 +30589,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _menu = __webpack_require__(10);
+var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
@@ -30555,11 +30705,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(11);
+var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _underscore = __webpack_require__(2);
+var _underscore = __webpack_require__(0);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -30579,7 +30729,7 @@ var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _productos = __webpack_require__(47);
+var _productos = __webpack_require__(34);
 
 var _productos2 = _interopRequireDefault(_productos);
 
@@ -30832,7 +30982,7 @@ module.exports = { "default": __webpack_require__(77), __esModule: true };
 /* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(46);
+__webpack_require__(47);
 __webpack_require__(96);
 module.exports = __webpack_require__(12).Array.from;
 
@@ -30841,7 +30991,7 @@ module.exports = __webpack_require__(12).Array.from;
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(102);
-__webpack_require__(46);
+__webpack_require__(47);
 module.exports = __webpack_require__(95);
 
 /***/ }),
@@ -30895,7 +31045,7 @@ module.exports = function(){ /* empty */ };
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(24)
+var cof = __webpack_require__(25)
   , TAG = __webpack_require__(14)('toStringTag')
   // ES3 wrong here
   , ARG = cof(function(){ return arguments; }()) == 'Arguments';
@@ -30973,7 +31123,7 @@ module.exports = function(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
-var cof = __webpack_require__(24);
+var cof = __webpack_require__(25);
 module.exports = Array.isArray || function(arg){
   return cof(arg) == 'Array';
 };
@@ -30991,7 +31141,7 @@ module.exports = function(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 // call something on iterator step with safe closing on error
-var anObject = __webpack_require__(23);
+var anObject = __webpack_require__(24);
 module.exports = function(iterator, fn, value, entries){
   try {
     return entries ? fn(anObject(value)[0], value[1]) : fn(value);
@@ -31010,12 +31160,12 @@ module.exports = function(iterator, fn, value, entries){
 "use strict";
 
 var $              = __webpack_require__(13)
-  , descriptor     = __webpack_require__(28)
-  , setToStringTag = __webpack_require__(29)
+  , descriptor     = __webpack_require__(29)
+  , setToStringTag = __webpack_require__(30)
   , IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(27)(IteratorPrototype, __webpack_require__(14)('iterator'), function(){ return this; });
+__webpack_require__(28)(IteratorPrototype, __webpack_require__(14)('iterator'), function(){ return this; });
 
 module.exports = function(Constructor, NAME, next){
   Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
@@ -31077,8 +31227,8 @@ module.exports = function(object, el){
 
 // 19.1.2.1 Object.assign(target, source, ...)
 var $        = __webpack_require__(13)
-  , toObject = __webpack_require__(30)
-  , IObject  = __webpack_require__(38);
+  , toObject = __webpack_require__(31)
+  , IObject  = __webpack_require__(39);
 
 // should work with symbols and should have deterministic property order (V8 bug)
 module.exports = __webpack_require__(19)(function(){
@@ -31128,8 +31278,8 @@ module.exports = function(KEY, exec){
 /* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toInteger = __webpack_require__(43)
-  , defined   = __webpack_require__(25);
+var toInteger = __webpack_require__(44)
+  , defined   = __webpack_require__(26);
 // true  -> String#at
 // false -> String#codePointAt
 module.exports = function(TO_STRING){
@@ -31151,7 +31301,7 @@ module.exports = function(TO_STRING){
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
-var toInteger = __webpack_require__(43)
+var toInteger = __webpack_require__(44)
   , min       = Math.min;
 module.exports = function(it){
   return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
@@ -31161,8 +31311,8 @@ module.exports = function(it){
 /* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(23)
-  , get      = __webpack_require__(45);
+var anObject = __webpack_require__(24)
+  , get      = __webpack_require__(46);
 module.exports = __webpack_require__(12).getIterator = function(it){
   var iterFn = get(it);
   if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
@@ -31175,13 +31325,13 @@ module.exports = __webpack_require__(12).getIterator = function(it){
 
 "use strict";
 
-var ctx         = __webpack_require__(36)
+var ctx         = __webpack_require__(37)
   , $export     = __webpack_require__(16)
-  , toObject    = __webpack_require__(30)
+  , toObject    = __webpack_require__(31)
   , call        = __webpack_require__(86)
   , isArrayIter = __webpack_require__(83)
   , toLength    = __webpack_require__(94)
-  , getIterFn   = __webpack_require__(45);
+  , getIterFn   = __webpack_require__(46);
 $export($export.S + $export.F * !__webpack_require__(88)(function(iter){ Array.from(iter); }), 'Array', {
   // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
   from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
@@ -31227,7 +31377,7 @@ var addToUnscopables = __webpack_require__(79)
 // 22.1.3.13 Array.prototype.keys()
 // 22.1.3.29 Array.prototype.values()
 // 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(39)(Array, 'Array', function(iterated, kind){
+module.exports = __webpack_require__(40)(Array, 'Array', function(iterated, kind){
   this._t = toIObject(iterated); // target
   this._i = 0;                   // next index
   this._k = kind;                // kind
@@ -31266,7 +31416,7 @@ $export($export.S + $export.F, 'Object', {assign: __webpack_require__(91)});
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
-var toObject = __webpack_require__(30);
+var toObject = __webpack_require__(31);
 
 __webpack_require__(92)('keys', function($keys){
   return function keys(it){
@@ -31289,22 +31439,22 @@ __webpack_require__(92)('keys', function($keys){
 // ECMAScript 6 symbols shim
 var $              = __webpack_require__(13)
   , global         = __webpack_require__(20)
-  , has            = __webpack_require__(26)
-  , DESCRIPTORS    = __webpack_require__(37)
+  , has            = __webpack_require__(27)
+  , DESCRIPTORS    = __webpack_require__(38)
   , $export        = __webpack_require__(16)
-  , redefine       = __webpack_require__(41)
+  , redefine       = __webpack_require__(42)
   , $fails         = __webpack_require__(19)
-  , shared         = __webpack_require__(42)
-  , setToStringTag = __webpack_require__(29)
-  , uid            = __webpack_require__(44)
+  , shared         = __webpack_require__(43)
+  , setToStringTag = __webpack_require__(30)
+  , uid            = __webpack_require__(45)
   , wks            = __webpack_require__(14)
   , keyOf          = __webpack_require__(90)
   , $names         = __webpack_require__(82)
   , enumKeys       = __webpack_require__(81)
   , isArray        = __webpack_require__(84)
-  , anObject       = __webpack_require__(23)
+  , anObject       = __webpack_require__(24)
   , toIObject      = __webpack_require__(21)
-  , createDesc     = __webpack_require__(28)
+  , createDesc     = __webpack_require__(29)
   , getDesc        = $.getDesc
   , setDesc        = $.setDesc
   , _create        = $.create
@@ -31444,7 +31594,7 @@ if(!useNative){
   $.getNames   = $names.get = $getOwnPropertyNames;
   $.getSymbols = $getOwnPropertySymbols;
 
-  if(DESCRIPTORS && !__webpack_require__(40)){
+  if(DESCRIPTORS && !__webpack_require__(41)){
     redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
   }
 }
@@ -31525,7 +31675,7 @@ Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
 /* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31539,7 +31689,7 @@ exports.push([module.i, "\n.stepper__wrapper .card {\n    box-shadow: inherit;\n
 /* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31553,7 +31703,7 @@ exports.push([module.i, "\n", ""]);
 /* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31567,7 +31717,7 @@ exports.push([module.i, "\n.productos .container {\n  padding: 0;\n}\n", ""]);
 /* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31581,7 +31731,7 @@ exports.push([module.i, "\n", ""]);
 /* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31595,7 +31745,7 @@ exports.push([module.i, "\n", ""]);
 /* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31609,7 +31759,7 @@ exports.push([module.i, "\n", ""]);
 /* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31623,7 +31773,7 @@ exports.push([module.i, "\n", ""]);
 /* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31637,7 +31787,7 @@ exports.push([module.i, "\n", ""]);
 /* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31651,7 +31801,7 @@ exports.push([module.i, "\n.ig-floating-button {\n    position: fixed;\n    bott
 /* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31665,7 +31815,7 @@ exports.push([module.i, "\n", ""]);
 /* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31679,12 +31829,12 @@ exports.push([module.i, "\n", ""]);
 /* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "\nul.list:parent {\n    z-index: 14!important;\n}\n", ""]);
+exports.push([module.i, "\n.fixindex {\n    z-index: 7 !important;\n}\n", ""]);
 
 // exports
 
@@ -31693,7 +31843,7 @@ exports.push([module.i, "\nul.list:parent {\n    z-index: 14!important;\n}\n", "
 /* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31707,7 +31857,7 @@ exports.push([module.i, "\n", ""]);
 /* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31721,7 +31871,7 @@ exports.push([module.i, "\n", ""]);
 /* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31735,7 +31885,7 @@ exports.push([module.i, "\n", ""]);
 /* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31749,7 +31899,7 @@ exports.push([module.i, "\n.text-xs-left {\n    text-align: center !important;\n
 /* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31763,7 +31913,7 @@ exports.push([module.i, "\n", ""]);
 /* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -31777,7 +31927,7 @@ exports.push([module.i, "\n", ""]);
 /* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(0)(undefined);
+exports = module.exports = __webpack_require__(1)(undefined);
 // imports
 
 
@@ -32082,7 +32232,7 @@ module.exports = function (css) {
 var content = __webpack_require__(103);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32108,7 +32258,7 @@ if(false) {
 var content = __webpack_require__(104);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32134,7 +32284,7 @@ if(false) {
 var content = __webpack_require__(105);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32160,7 +32310,7 @@ if(false) {
 var content = __webpack_require__(106);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32186,7 +32336,7 @@ if(false) {
 var content = __webpack_require__(107);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32212,7 +32362,7 @@ if(false) {
 var content = __webpack_require__(108);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32238,7 +32388,7 @@ if(false) {
 var content = __webpack_require__(109);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32264,7 +32414,7 @@ if(false) {
 var content = __webpack_require__(110);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32290,7 +32440,7 @@ if(false) {
 var content = __webpack_require__(111);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32316,7 +32466,7 @@ if(false) {
 var content = __webpack_require__(112);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32342,7 +32492,7 @@ if(false) {
 var content = __webpack_require__(113);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32368,7 +32518,7 @@ if(false) {
 var content = __webpack_require__(114);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32394,7 +32544,7 @@ if(false) {
 var content = __webpack_require__(115);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32420,7 +32570,7 @@ if(false) {
 var content = __webpack_require__(116);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32446,7 +32596,7 @@ if(false) {
 var content = __webpack_require__(117);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32472,7 +32622,7 @@ if(false) {
 var content = __webpack_require__(118);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32498,7 +32648,7 @@ if(false) {
 var content = __webpack_require__(119);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32524,7 +32674,7 @@ if(false) {
 var content = __webpack_require__(120);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32550,7 +32700,7 @@ if(false) {
 var content = __webpack_require__(121);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
+var update = __webpack_require__(2)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32573,98 +32723,97 @@ if(false) {
 module.exports = "\n    <div v-if=\"formato\">\n        <v-container class=\"white\">\n            <v-layout>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-layout>\n            <v-layout wrap>\n                <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand class=\"white\">\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        return-object\n                                        persistent-hint\n                                        dark\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Texto de ayuda\"\n                                        v-model=\"item.help\"\n                                        hint=\"Ayuda textual que acompaña el campo\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia mínima\"\n                                        v-model=\"item.referencia_minima\"\n                                        hint=\"Texto de referencia minima para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia máxima\"\n                                        v-model=\"item.referencia_maxima\"\n                                        hint=\"Texto de referencia máxima para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Unidades\"\n                                        v-model=\"item.unidades\"\n                                        hint=\"Medida en unidades de el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'\"\n                                        :multi-line=\"item.tipo.name == 'textarea'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model_text\"\n                                        :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                        persistent-hint\n                                    ></v-text-field>\n                                    <div v-else-if=\"item.tipo.name == 'select'\">\n                                        <v-layout>\n                                            <v-flex md10 xs10>\n                                                <v-select\n                                                    :label=\"item.nombre\"\n                                                    :hint=\"item.help\"\n                                                    v-model=\"item.model_text\"\n                                                    :items=\"item.choices_select\"\n                                                    :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                    item-value=\"text\"\n                                                    persistent-hint\n                                                ></v-select>\n                                            </v-flex>\n                                            <v-flex md2 xs2>\n                                                <v-btn\n                                                    v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                    class=\"green--text darken-1\" icon=\"icon\"\n                                                    @click.native.stop=\"dialog = true; lastItem = item\">\n                                                    <v-icon>add</v-icon>\n                                                </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-checkbox\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_check\"\n                                                  :value=\"choice.id\"\n                                                  primary\n                                                ></v-checkbox>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-radio\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_text\"\n                                                  :value=\"choice.name\"\n                                                  primary\n                                                ></v-radio>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ }),
-/* 144 */,
-/* 145 */
+/* 144 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n            <v-toolbar-side-icon @click.native.stop=\"sidebar = !sidebar\"></v-toolbar-side-icon>\n            <v-toolbar-title>Dasalud</v-toolbar-title>\n        </v-toolbar>\n        <main>\n            <v-sidebar v-model=\"sidebar\" drawer class=\"mt-0 scroll-y\" :mobile-break-point=\"576\">\n                <v-list dense>\n                    <v-list-item>\n                        <v-list-tile href=\"/\">\n                            <v-list-tile-avatar>\n                                <v-icon>accessibility</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Dashboard</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>people</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Pacientes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/pacientes/page/1/\">\n                                <v-list-tile-title>Lista Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/add/paciente/\">\n                                <v-list-tile-title>Crear Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>today</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Agendas</v-list-tile-title>\n                                </v-list-tile-content>\n                                    <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/\">\n                                <v-list-tile-title>Agenda del Dia</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/doctor/\">\n                                <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>open_in_browser</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenes/\">\n                                <v-list-tile-title>Lista de Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenesReporte/\">\n                                <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/portal_empresas/\">\n                            <v-list-tile-avatar>\n                                <v-icon>search</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Buscar Orden</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-divider light></v-divider>\n                    <v-subheader>Utilidades</v-subheader>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/medicos/\">\n                                <v-list-tile-title>Medicos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/instituciones/\">\n                                <v-list-tile-title>Instituciones</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>business_center</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Empresas y Planes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/empresas/\">\n                                <v-list-tile-title>Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/planes/\">\n                                <v-list-tile-title>Planes de Salud</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/procedimientos/\">\n                                <v-list-tile-title>Procedimientos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/plantillas/\">\n                                <v-list-tile-title>Plantillas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/servicios/\">\n                                <v-list-tile-title>Servicios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Usuarios</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuarios/\">\n                                <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuariosEmpresa/\">\n                                <v-list-tile-title>Usuarios Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-divider light></v-divider>\n                    <v-subheader>Laboratorio</v-subheader>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"#/ordenes_laboratorios/\">\n                            <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Administración</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/bacteriologos/\">\n                              <v-list-tile-title>Bacteriologos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/laboratorios/\">\n                              <v-list-tile-title>Laboratorios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/equipos/\">\n                                <v-list-tile-title>Equipos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/tecnicas/\">\n                                <v-list-tile-title>Tecnicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/secciones_trabajo/\">\n                                <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/reactivos/\">\n                                <v-list-tile-title>Reactivos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/caracteristicas/\">\n                                <v-list-tile-title>Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/especificacion_caracteristicas/\">\n                                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                </v-list>\n            </v-sidebar>\n            <div class=\"main\">\n                <v-content class=\"grey lighten-4\">\n                    <v-container fluid>\n                        <br>\n                        <v-spacer></v-spacer>\n                        <slot></slot>\n                    </v-container>\n                </v-content>\n            </div>\n        </main>\n    </div>\n";
 
 /***/ }),
-/* 146 */
+/* 145 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\n";
 
 /***/ }),
-/* 147 */
+/* 146 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <v-data-table\n            :pagination.sync=\"pagination\"\n            v-bind:headers=\"headers\"\n            :items=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            :rowsPerPage=\"10\"\n            :filter=\"filter\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"headers\" scope=\"props\">\n                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n            </template>\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                    <td class=\"text-xs-center\" v-else>\n                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                            <v-icon light>mode_edit</v-icon>\n                        </v-btn>\n                    </td>\n                </template>\n            </template>\n        </v-data-table>\n        <v-progress-linear indeterminate class=\"red--text\" height=\"3\" :active=\"loading\"></v-progress-linear>\n    </v-card>\n";
 
 /***/ }),
-/* 148 */
+/* 147 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Bacteriologos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 149 */
+/* 148 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Caracteristicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 150 */
+/* 149 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Equipos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 151 */
+/* 150 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Especificacion Caracteristica\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['nombre', 'caracteristica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 152 */
+/* 151 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div v-if=\"formato\">\n        <v-container>\n            <v-layout>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-layout>\n            <v-layout wrap>\n                <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand class=\"white\">\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        return-object\n                                        persistent-hint\n                                        dark\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Texto de ayuda\"\n                                        v-model=\"item.help\"\n                                        hint=\"Ayuda textual que acompaña el campo\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia\"\n                                        v-model=\"item.referencia\"\n                                        hint=\"Texto de referencia para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Unidades\"\n                                        v-model=\"item.unidades\"\n                                        hint=\"Medida en unidades de el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                        :multi-line=\"item.tipo.name == 'textarea'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model_text\"\n                                        persistent-hint\n                                    ></v-text-field>\n                                    <div v-else-if=\"item.tipo.name == 'select'\">\n                                        <v-layout>\n                                            <v-flex md10 xs10>\n                                                <v-select\n                                                    :label=\"item.nombre\"\n                                                    :hint=\"item.help\"\n                                                    v-model=\"item.model_text\"\n                                                    :items=\"item.choices_select\"\n                                                    :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                    item-value=\"text\"\n                                                    persistent-hint\n                                                ></v-select>\n                                            </v-flex>\n                                            <v-flex md2 xs2>\n                                                <v-btn\n                                                    v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                    class=\"green--text darken-1\" icon=\"icon\"\n                                                    @click.native.stop=\"dialog = true; lastItem = item\">\n                                                    <v-icon>add</v-icon>\n                                                </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-checkbox\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_check\"\n                                                  :value=\"choice.id\"\n                                                  primary\n                                                ></v-checkbox>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-radio\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_text\"\n                                                  :value=\"choice.name\"\n                                                  primary\n                                                ></v-radio>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ }),
-/* 153 */
+/* 152 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]\"\n              @selectedrow=\"customEventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n      <v-container>\n          <v-stepper v-model=\"stepper\" non-linear>\n              <v-stepper-header class=\"white\">\n                  <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"2\" :rules=\"[() => false]\" @click.native=\"\" :complete=\"false\">Formato</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"3\" @click.native=\"thirdStepClick\">Insumos y Reactivos</v-stepper-step>\n              </v-stepper-header>\n              <v-stepper-content step=\"1\" class=\"white\">\n                  <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"_eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  >\n                      <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                          Continuar\n                      </v-btn>\n                  </ig-form>\n              </v-stepper-content>\n              <v-stepper-content step=\"2\" class=\"white\">\n                  <ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>\n              </v-stepper-content>\n              <v-stepper-content step=\"3\" class=\"white\">\n                  <v-card>\n                      <v-card-text>\n                          <v-layout>\n                              <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                              </v-flex>\n                              <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                              </v-flex>\n                          </v-layout>\n                      </v-card-text>\n                      <!-- <v-card-row actions>\n                          <v-btn primary @click.native=\"stepper = 1\" light>Continue</v-btn>\n                          <v-btn flat dark>Cancel</v-btn>\n                      </v-card-row> -->\n                  </v-card>\n              </v-stepper-content>\n          </v-stepper>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]\"\n              @selectedrow=\"customEventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n      <v-container>\n          <v-stepper v-model=\"stepper\" non-linear>\n              <v-stepper-header class=\"white\">\n                  <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"2\" :rules=\"[() => false]\" @click.native=\"\" :complete=\"false\">Formato</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"3\" @click.native=\"thirdStepClick\">Insumos y Reactivos</v-stepper-step>\n              </v-stepper-header>\n              <v-stepper-content step=\"1\" class=\"white\">\n                  <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"_eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  >\n                      <v-btn flat @click.native=\"stepper = 3\" dark v-if=\"validateFirstStep()\">\n                          Continuar\n                      </v-btn>\n                  </ig-form>\n              </v-stepper-content>\n              <v-stepper-content step=\"2\" class=\"white\">\n                  <!--<ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>-->\n              </v-stepper-content>\n              <v-stepper-content step=\"3\" class=\"white\">\n                  <v-card>\n                      <v-card-text>\n                          <v-layout>\n                              <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                              </v-flex>\n                              <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                              </v-flex>\n                          </v-layout>\n                      </v-card-text>\n                      <!-- <v-card-row actions>\n                          <v-btn primary @click.native=\"stepper = 1\" light>Continue</v-btn>\n                          <v-btn flat dark>Cancel</v-btn>\n                      </v-card-row> -->\n                  </v-card>\n              </v-stepper-content>\n          </v-stepper>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 154 */
+/* 153 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes con laboratorios\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                            :pagination.sync=\"pagination\"\n                            :total-items=\"totalItems\"\n                            :loading=\"loading\"\n                            v-bind:headers=\"headers\"\n                            :items=\"elements\"\n                            v-bind:search=\"buscador\"\n                            :rows-per-page-items=\"[10]\"\n                            :filter=\"filter\"\n                            rows-per-page-text=\"Filas por Página\"\n                            no-results-text=\"No se encontraron resultados\">\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <template v-for=\"field of fields\">\n                                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                    <td class=\"text-xs-center\" v-else>\n                                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                            <v-icon light>mode_edit</v-icon>\n                                        </v-btn>\n                                    </td>\n                                </template>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <br>\n    </div>\n";
 
 /***/ }),
-/* 155 */
+/* 154 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Productos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tipo_display', 'cantidad']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 156 */
+/* 155 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"\">\n        <v-container v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                light>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado @input=\"error = hasError()\" :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\" :disabled=\"'resultado' in item\"></formulario-resultado>\n                        </v-card-text>\n                        <v-card-row actions v-if=\"'formato' in item\">\n                          <v-btn :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\" flat @click.native=\"someError(item) ? () => undefined: saveItem(item)\">Guardar</v-btn>\n                        </v-card-row>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n        </v-container>\n        <v-container v-else>\n           <h5>403 Forbidden</h5>\n           <br>\n           <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items\">\n            <v-btn\n              floating\n              :error=\"error\"\n              :success=\"!error\"\n              v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Confirmar y Guardar'}\"\n              @click.native=\"saveAll\">\n                <v-icon light>{{ Boolean(error) ? 'clear': 'done' }}</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+module.exports = "\n    <div class=\"\">\n        <v-container v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                light>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-row actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                          <v-btn\n                            :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                            flat\n                            @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                              Guardar\n                          </v-btn>\n                        </v-card-row>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\">\n                <v-card>\n                    <v-card-row>\n                        <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    </v-card-row>\n                    <v-card-row actions>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-card-row>\n                        <v-toolbar class=\"cyan darken-4\">\n                            <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                                <v-icon class=\"white--text\">close</v-icon>\n                            </v-btn>\n                            <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                            <v-btn\n                              class=\"white--text\" flat=\"flat\"\n                              @click.native=\"preview = false\">\n                                Imprimir\n                            </v-btn>\n                        </v-toolbar>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-container>\n                          <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                              <div class=\"preloader\">\n                                  <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                              </div>\n                          </div>\n                          <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas>\n                        </v-container>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n        </v-container>\n        <v-container v-else>\n           <h5>403 Forbidden</h5>\n           <br>\n           <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items\">\n            <template slot=\"child\">\n                <v-btn floating info small @click.native.stop=\"dialog = true\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon light>check</v-icon>\n                </v-btn>\n                <v-btn floating warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon light>fingerprint</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon light>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
 
 /***/ }),
-/* 157 */
+/* 156 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-table\n                    table-title=\"Areas\"\n                    :headers=\"headers\"\n                    :data=\"elements\"\n                    :fields=\"['codigo', 'descripcion']\"\n                    @selectedrow=\"eventUpdatedForm\"\n                    :loading=\"loading\"\n                    ></ig-table>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <br>\n        <!-- <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-form\n                    :fields=\"fields\"\n                    :url=\"urlForm\"\n                    @showsnack=\"showSnackBar\"\n                    @objectcreated=\"eventCreatedObject\"\n                    @clearselected=\"selected = false\"\n                    :selected=\"selected\"\n                    >\n                    </ig-form>\n                </v-flex>\n            </v-layout>\n            <br>\n        </v-container> -->\n        <br>\n        <v-container>\n            <v-stepper v-model=\"stepper\">\n                <v-stepper-header class=\"white\">\n                    <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Área</v-stepper-step>\n                    <v-divider></v-divider>\n                    <v-stepper-step step=\"2\" @click.native=\"secondStepClick\">Plantilla de Gasto</v-stepper-step>\n                </v-stepper-header>\n                <v-stepper-content step=\"1\" class=\"white\">\n                    <ig-form\n                    :fields=\"fields\"\n                    :url=\"urlForm\"\n                    @showsnack=\"showSnackBar\"\n                    @objectcreated=\"eventCreatedObject\"\n                    @clearselected=\"selected = false\"\n                    :selected=\"selected\"\n                    >\n                        <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                            Continuar\n                        </v-btn>\n                    </ig-form>\n                </v-stepper-content>\n                <v-stepper-content step=\"2\" class=\"white\">\n                    <v-card>\n                        <v-card-title>Lista de insumos por área</v-card-title>\n                        <v-card-row>\n                            <v-card-text>\n                                <ig-producto :area=\"area\" :plantillas=\"plantillas\"></ig-producto>\n                            </v-card-text>\n                        </v-card-row>\n                    </v-card>\n                </v-stepper-content>\n            </v-stepper>\n        </v-container>\n    </div>\n";
 
 /***/ }),
-/* 158 */
+/* 157 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Tecnicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
-/* 159 */
+/* 158 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes en Recepción\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo, ' | ') }}</td>\n                                <td>\n                                    <v-btn floating small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-row>\n                    <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                </v-card-row>\n                <v-card-row v-if=\"hasRecepcion\">\n                    <v-card-text>\n                        <v-card horizontal flat>\n                            <v-card-row :img=\"recepcion.paciente.foto\" height=\"325px\"></v-card-row>\n                            <v-card-column>\n                                <v-card-row height=\"100px\" class=\"\">\n                                    <v-card-text>\n                                      <v-layout>\n                                        <v-flex md6>\n                                            <strong>Nombre del paciente</strong>\n                                            <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                            <br>\n                                            <strong>Identificación</strong>\n                                            <div>{{ recepcion.paciente.cedula }}</div>\n                                            <br>\n                                            <strong>Edad del paciente</strong>\n                                            <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                        </v-flex>\n                                        <v-flex md6>\n                                            <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                        </v-flex>\n                                      </v-layout>\n                                    </v-card-text>\n                                </v-card-row>\n                                <v-card-row actions class=\"cyan darken-1\">\n                                    <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                        <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                    </v-btn>\n                                </v-card-row>\n                            </v-card-column>\n                        </v-card>\n                    </v-card-text>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ }),
-/* 160 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
@@ -32687,13 +32836,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 161 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
 __webpack_require__(131)
 __vue_script__ = __webpack_require__(57)
-__vue_template__ = __webpack_require__(148)
+__vue_template__ = __webpack_require__(147)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32710,13 +32859,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 162 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
 __webpack_require__(136)
 __vue_script__ = __webpack_require__(58)
-__vue_template__ = __webpack_require__(149)
+__vue_template__ = __webpack_require__(148)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32733,13 +32882,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 163 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
 __webpack_require__(140)
 __vue_script__ = __webpack_require__(59)
-__vue_template__ = __webpack_require__(150)
+__vue_template__ = __webpack_require__(149)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32756,13 +32905,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 164 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
 __webpack_require__(141)
 __vue_script__ = __webpack_require__(60)
-__vue_template__ = __webpack_require__(151)
+__vue_template__ = __webpack_require__(150)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32779,13 +32928,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 165 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
 __webpack_require__(134)
 __vue_script__ = __webpack_require__(61)
-__vue_template__ = __webpack_require__(152)
+__vue_template__ = __webpack_require__(151)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32802,13 +32951,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 166 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
 __webpack_require__(124)
 __vue_script__ = __webpack_require__(62)
-__vue_template__ = __webpack_require__(153)
+__vue_template__ = __webpack_require__(152)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32825,13 +32974,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 167 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
 __webpack_require__(138)
 __vue_script__ = __webpack_require__(63)
-__vue_template__ = __webpack_require__(154)
+__vue_template__ = __webpack_require__(153)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32848,13 +32997,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 168 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
 __webpack_require__(125)
 __vue_script__ = __webpack_require__(64)
-__vue_template__ = __webpack_require__(155)
+__vue_template__ = __webpack_require__(154)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32871,13 +33020,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 169 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
 __webpack_require__(129)
 __vue_script__ = __webpack_require__(65)
-__vue_template__ = __webpack_require__(156)
+__vue_template__ = __webpack_require__(155)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32894,13 +33043,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 170 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
 __webpack_require__(130)
 __vue_script__ = __webpack_require__(66)
-__vue_template__ = __webpack_require__(157)
+__vue_template__ = __webpack_require__(156)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32917,13 +33066,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 171 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
 __webpack_require__(137)
 __vue_script__ = __webpack_require__(67)
-__vue_template__ = __webpack_require__(158)
+__vue_template__ = __webpack_require__(157)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32940,13 +33089,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 172 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
 __webpack_require__(133)
 __vue_script__ = __webpack_require__(68)
-__vue_template__ = __webpack_require__(159)
+__vue_template__ = __webpack_require__(158)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32963,7 +33112,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 173 */
+/* 172 */
 /***/ (function(module, exports) {
 
 var g;
@@ -32990,10 +33139,106 @@ module.exports = g;
 
 
 /***/ }),
-/* 174 */
+/* 173 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
+
+/***/ }),
+/* 174 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+// <template lang="html">
+//     <div class="">
+//         <slot></slot>
+//         <div v-show="false">
+//           <slot name="input"></slot>
+//         </div>
+//     </div>
+// </template>
+//
+// <script>
+exports.default = {};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+
+/***/ }),
+/* 175 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 176 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(175);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(2)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3ea4c643&file=slot-input.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3ea4c643&file=slot-input.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 177 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"\">\n        <slot></slot>\n        <div v-show=\"false\">\n          <slot name=\"input\"></slot>\n        </div>\n    </div>\n";
+
+/***/ }),
+/* 178 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(176)
+__vue_script__ = __webpack_require__(174)
+__vue_template__ = __webpack_require__(177)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/static/static/laboratorios/components/slot-input.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
 /***/ })
 /******/ ]);

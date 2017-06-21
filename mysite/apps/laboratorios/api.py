@@ -35,7 +35,7 @@ from mysite.apps.parametros.models import servicios as Servicio
 from mysite.apps.parametros.serializers import ServicioSerializer
 
 import datetime
-
+import reversion
 
 class LaboratoriosListAPI(ListViewAPIMixin, generics.ListCreateAPIView):
     queryset = Laboratorio.objects.all()
@@ -363,6 +363,8 @@ def resultado_api_view(request, pk):
         formatos = Formato.objects.filter(id__in=laboratorios.values_list('formato__id', flat=True))
         serializer = FormatoSerializer(formatos, many=True)
         data['formatos'] = serializer.data
+        data['orden'] = OrdenSerializer(orden).data
+        data['bacteriologo'] = BacteriologoSerializer(bacteriologo).data
         args = (data, )
 
     if request.method == 'POST':
@@ -374,9 +376,12 @@ def resultado_api_view(request, pk):
         serializer = ResultadoSerializer(**kwargs_serializer)
 
         if serializer.is_valid():
-            serializer.save(bacteriologo=bacteriologo)
-            args = (serializer.data, )
-            kwargs['status'] = status.HTTP_201_CREATED
+            with reversion.create_revision():
+                serializer.save(bacteriologo=bacteriologo)
+                args = (serializer.data, )
+                kwargs['status'] = status.HTTP_201_CREATED
+
+                reversion.set_user(request.user)
         else:
             args = (serializer.errors, )
             kwargs['status'] = status.HTTP_400_BAD_REQUEST

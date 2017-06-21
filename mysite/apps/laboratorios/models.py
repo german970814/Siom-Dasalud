@@ -227,10 +227,20 @@ class Resultado(models.Model):
     laboratorio = models.ForeignKey(Laboratorio, verbose_name=_('Laboratorio'), related_name='resultados')
     bacteriologo = models.ForeignKey(Bacteriologo, verbose_name=_('Bacteriólogo'), related_name='resultados')
     fecha = models.DateField(auto_now_add=True)
-
+    cerrado = models.NullBooleanField(default=False, verbose_name=_('Cerrado'))
     resultado = models.TextField(blank=True, null=True)
 
-    __str__ = lambda self: 'Orden #{self.orden.id} ({self.laboratorio})'.format(self=self)
+    def __str__(self):
+        return 'Orden #{self.orden.id} ({self.laboratorio})'.format(self=self)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            plantillas = self.laboratorio.plantillas_laboratorio.filter(producto__tipo=Producto.REACTIVO)
+            for plantilla in plantillas:
+                HojaGasto.objects.create(
+                    cantidad=plantilla.cantidad, producto=plantilla.producto, orden=self.orden
+                )
+        super(Resultado, self).save(*args, **kwargs)
 
 
 @python_2_unicode_compatible

@@ -4,6 +4,8 @@ from . import views, api
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^imprimir/(?P<pk>\d+)/$', views.imprimir_laboratorio, name='imprimir'),
+    url(r'^pr/(?P<pk>\d+)/$', views.prueba, name='imprimir_pras'),
     # url(r'^toma_muestra/$', views.ordenes_toma_muestra, name='toma_muestra'),
 ]
 
@@ -36,9 +38,8 @@ urlpatterns += [
     url(r'^api/servicios/(?P<pk>\d+)/$', api.ServicioLaboratorioAPI.as_view(), name='detalle_servicio'),
     url(r'^api/formatos/(?P<pk>\d+)/$', api.formato_api_view, name='formato_laboratorio'),
     url(r'^api/resultado/(?P<pk>\d+)/$', api.resultado_api_view, name='resultado'),
-    url(r'^api/ordenes/buscar/', api.search_resultado_api_view, name='busqueda_ordenes'),
-    url(r'^api/ordenes/toma_muestra/', api.ordenes_toma_muestra, name='ordenes_toma_muestra'),
+    url(r'^api/ordenes/buscar/$', api.search_resultado_api_view, name='busqueda_ordenes'),
+    url(r'^api/ordenes/toma_muestra/$', api.ordenes_toma_muestra, name='ordenes_toma_muestra'),
     url(r'^api/especificacion_caracteristicas/caracteristica/(?P<pk>\d+)/$',
         api.especificacion_caracteristica_por_caracteristica, name='especificaciones_por_carateristica'),
-    url(r'^prueba/', views.prueba_impresion, name='imprier'),
 ]

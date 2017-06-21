@@ -1,88 +1,10 @@
-<!-- <template lang="html">
-    <div>
-        <v-container>
-            <v-layout>
-                <h1 class="title">Formulario de Resultado</h1>
-            </v-layout>
-            <v-layout v-for="(item, id) of value.items" :key="id">
-                <v-flex md8>
-                    <v-text-field
-                        v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea'"
-                        :multi-line="item.tipo.name == 'textarea'"
-                        :label="item.nombre"
-                        :hint="item.help"
-                        v-model="item.model_text"
-                        :disabled="disabled"
-                        persistent-hint
-                        @input="$emit('input', $event)"
-                    ></v-text-field>
-                    <v-select
-                        v-else-if="item.tipo.name == 'select'"
-                        dark
-                        :label="item.nombre"
-                        :hint="item.help"
-                        v-model="item.model_text"
-                        :items="item.choices_select"
-                        item-value="text"
-                        :disabled="disabled"
-                        persistent-hint
-                        @input="$emit('input', $event)"
-                    ></v-select>
-                    <div v-else-if="item.tipo.name == 'checkbox'">
-                        <dl class="section-text section-text--def">
-                            <dt>{{ item.nombre }}</dt>
-                            <dd>{{ item.help }}</dd>
-                        </dl>
-                        <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
-                            <v-flex xs7 md7>
-                                <!--v-if="!choice.edit"-- !> esto esta comentado
-                                <v-checkbox
-                                    :label="choice.name"
-                                    v-model="item.model_check"
-                                    :value="choice.id"
-                                    :disabled="disabled"
-                                    primary
-                                    @input="$emit('input', $event)"
-                                ></v-checkbox>
-                            </v-flex>
-                        </v-layout>
-                    </div>
-                    <div v-else-if="item.tipo.name == 'radio'">
-                        <dl class="section-text section-text--def">
-                            <dt>{{ item.nombre }}</dt>
-                            <dd>{{ item.help }}</dd>
-                        </dl>
-                        <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
-                            <v-flex xs7 md7>
-                                <v-radio
-                                    v-if="!choice.edit"
-                                    :label="choice.name"
-                                    v-model="item.model_text"
-                                    :value="choice.name"
-                                    :disabled="disabled"
-                                    primary
-                                    @input="$emit('input', $event)"
-                                ></v-radio>
-                            </v-flex>
-                        </v-layout>
-                    </div>
-                </v-flex>
-                <v-flex md2 v-if="Boolean(item.referencia)">
-                  <h6 class="title">Referencia:</h6> {{ item.referencia }}
-                </v-flex>
-                <v-flex md2 v-if="Boolean(item.unidades)">
-                  <h6 class="title">Unidades:</h6> {{ item.unidades }}
-                </v-flex>
-            </v-layout>
-        </v-container>
-    </div>
-</template> -->
-
 <script>
 import _ from 'underscore';
+import IGSlotInput from './slot-input.vue';
 
 export default {
     name: 'formulario-resultado',
+    components: {'ig-slot-input': IGSlotInput},
     mounted: function () {
 
     },
@@ -112,6 +34,7 @@ export default {
     },
     props: {
         value: {},
+        gender: '',
         disabled: {
             type: Boolean,
             default: true
@@ -119,7 +42,7 @@ export default {
     },
     methods: {
         validateErrorItem (item) {
-            let gender = 'M';
+            let gender = this.gender.toUpperCase();
             if (item.tipo.name == 'number' && 'referencias' in item) {
                 let refMin = item.referencias[gender].minima;
                 let refMax = item.referencias[gender].maxima;
@@ -140,23 +63,39 @@ export default {
         },
         _genBody () {
             let childs = this.$createElement('v-data-table', {
-                  props: {headers: this.headers, items: this.value.items},
+                  props: {
+                      headers: this.headers, items: this.value.items,
+                      rowsPerPageItems: [100],
+                      pagination: {
+                          page: 1,
+                          rowsPerPage: 100,
+                          descending: false,
+                          totalItems: 0
+                      }
+                  },
                   scopedSlots: {
                       items: (props) => {
                           let tds = [];
+                          if (props.item.tipo.name != 'title') {
+                              return [
+                                  this._genTd(props.item, props.item.nombre),
+                                  this._genTd(props.item, this.createTdWithProp(props.item)),
+                                  this._genTd(props.item, props.item.unidades),
+                                  this._genTd(props.item, props.item.nombre),
+                                  ...this.calculaReferencias(props.item),
+                              ]
+                          }
                           return [
-                              this._genTd(props.item, props.item.nombre),
-                              this._genTd(props.item, this.createTdWithProp(props.item)),
-                              this._genTd(props.item, props.item.unidades),
-                              this._genTd(props.item, props.item.nombre),
-                              ...this.calculaReferencias(props.item),
+                              this.$createElement('td', {'class': 'text-xs-left', attrs: {colspan: 6}}, [
+                                  this.$createElement('strong', {attrs: {style: 'font-size: 20px'}} , [props.item.nombre.toUpperCase()])
+                              ])
                           ]
                       }
                   }
                 },
                 []
             );
-            // console.log(this.$refs.select)
+
             return childs;
         },
         calculaReferencias (item) {
@@ -174,7 +113,7 @@ export default {
              * }
             */
             let childs = [];
-            let gender = 'M';
+            let gender = this.gender.toUpperCase();
             let unidades = item.unidades;
             if (item.tipo.name != 'number') {
                 unidades = '';
@@ -208,6 +147,9 @@ export default {
             }
 
             let dialog = 'v-edit-dialog';
+            if (this.disabled) {
+                dialog = 'ig-slot-input';
+            }
 
             if (MATCH[item.tipo.name] == 'v-text-field') {
                 let unidades = '';
@@ -252,12 +194,35 @@ export default {
             } else if (MATCH[item.tipo.name] == 'v-select') {
                 return this.$createElement(dialog, {
                     'class': 'text-xs-center',
+                    props: {large: true, 'cancel-text': 'Cancelar', 'save-text': 'Guardar'},
                     on: {
                         open: () => {
-                            item._model_text = item.model_text
+                            item._model_text = item.model_text;
+                            // fix z-index
+                            if (!_.isEmpty(this.$refs.select)) {
+                                if (this.$refs.select instanceof Array) {
+                                    this.$refs.select.forEach(select => {
+                                        select.$refs.menu.$el.classList.add('fixindex');
+                                    })
+                                } else {
+                                    // console.log(this.$refs.select.$refs.menu.$ refs.content)
+                                    this.$refs.select.$refs.menu.$refs.content.classList.add('fixindex');
+                                }
+                            }
                         },
                         cancel: () => {
-                            item.model_text = item._model_text || item.model_text
+                            item.model_text = item._model_text || item.model_text;
+                            // fix z-index
+                            if (!_.isEmpty(this.$refs.select)) {
+                                if (this.$refs.select instanceof Array) {
+                                    this.$refs.select.forEach(select => {
+                                        select.$refs.menu.$el.classList.add('fixindex');
+                                    })
+                                } else {
+                                    // console.log(this.$refs.select.$refs.menu.$ refs.content)
+                                    this.$refs.select.$refs.menu.$refs.content.classList.add('fixindex');
+                                }
+                            }
                         }
                     }
                   },
@@ -269,7 +234,7 @@ export default {
                         props: {
                             label: 'Resultado', 'item-value': 'text',
                             hint: item.help, 'persistent-hint': true,
-                            items: item.choices_select
+                            items: item.choices_select, 'return-object': true
                         },
                         on: {
                             input: (event) => {
@@ -298,7 +263,7 @@ export default {
 </script>
 
 <style lang="css">
-ul.list:parent {
-    z-index: 14!important;
+.fixindex {
+    z-index: 7 !important;
 }
 </style>

@@ -16,7 +16,8 @@ class OrdenProductoSerializer(IGModelSerializer):
 
 class OrdenSerializer(IGModelSerializer, serializers.ModelSerializer):
 
-    paciente = PacienteSerializer(fields=('pnombre', 'snombre', 'papellido', 'sapellido', 'cedula', 'foto', 'edad', 'unidad_edad'))
+    paciente = PacienteSerializer(fields=(
+        'pnombre', 'snombre', 'papellido', 'sapellido', 'cedula', 'foto', 'edad', 'unidad_edad', 'genero'))
     institucion = InstitucionSerializer(fields=('razon', ))
     empresa = EmpresaSerializer(fields=('razon', ))
 
@@ -32,7 +33,8 @@ class OrdenSerializer(IGModelSerializer, serializers.ModelSerializer):
         return [{
             'id': laboratorio.id,
             'nombre': laboratorio.nombre,
-            'codigo': laboratorio.codigo
+            'codigo': laboratorio.codigo,
+            'area': laboratorio.seccion_trabajo.id
         } for laboratorio in laboratorios.iterator()]
 
     def to_representation(self, obj):

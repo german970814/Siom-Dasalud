@@ -5,172 +5,6 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Laboratorios</title>
-        <link href="{% static 'laboratorios/fonts.css' %}" rel="stylesheet" type="text/css">
-        <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="all">
-
-        <style>
-            @page {
-                size: letter portrait;
-                margin: 0.5cm 0.05cm 3.5cm 0.05cm;
-            }
-
-            @media print {
-                .row {
-                    width: 100% !important;
-                }
-
-                .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
-                    float: left;
-                }
-
-                .col-md-12 {
-                    width: 100%;
-                }
-
-                .col-md-11 {
-                    width: 91.66666667%;
-                }
-
-                .col-md-10 {
-                    width: 83.33333333%;
-                }
-
-                .col-md-9 {
-                    width: 75%;
-                }
-
-                .col-md-8 {
-                    width: 66.66666667%;
-                }
-
-                .col-md-7 {
-                    width: 58.33333333%;
-                }
-
-                .col-md-6 {
-                    width: 50%;
-                }
-
-                .col-md-5 {
-                    width: 41.66666667%;
-                }
-
-                .col-md-4 {
-                    width: 33.33333333%;
-                }
-
-                .col-md-3 {
-                    width: 25%;
-                }
-
-                .col-md-2 {
-                    width: 16.66666667%;
-                }
-
-                .col-md-1 {
-                    width: 8.33333333%;
-                }
-
-                *, :after, :before {
-                    background: 0 0 !important;
-                    color: #000 !important;
-                    box-shadow: none !important;
-                    text-shadow: none !important;
-                }
-
-                .invoice .card-header {
-                    padding: 20px;
-                    margin: -60px -30px 25px;
-                    background: #eee !important;
-                }
-
-                table>thead>tr>th {
-                    border-bottom: 0px !important;
-                }
-
-                .table>caption+thead>tr:first-child>th, .table>colgroup+thead>tr:first-child>th, .table>thead:first-child>tr:first-child>th, .table>caption+thead>tr:first-child>td, .table>colgroup+thead>tr:first-child>td, .table>thead:first-child>tr:first-child>td {
-                    border: 0px !important;
-                }
-
-                .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {
-                    border: 0px !important;
-                }
-            }
-
-            .sidebar .material-icons.icon {
-                line-height: inherit !important;
-            }
-
-            body {
-              background-color: #f5f5f5;
-            }
-
-            .wrap__all {
-              background-color: #fff;
-              width: 100%;
-              height: 100%;
-              top: 0;
-              left: 0;
-              display: block;
-              position: fixed;
-              z-index: 100000;
-            }
-
-            .preloader {
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                margin-left: -25px;
-                margin-top: -55px;
-            }
-
-            .card {
-                position: relative;
-                background: #fff;
-                margin-bottom: 30px;
-                border-radius: 2px;
-            }
-
-            .card, .mini-charts-item {
-                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-            }
-
-            .card .card-header.ch-alt:not([class*="bgm-"]) {
-                background-color: #f7f7f7;
-            }
-
-            .card .card-header {
-                position: relative;
-                display: block;
-                padding: 26px 30px;
-                border-radius: 2px 2px 0 0;
-            }
-
-            .card .card-body.card-padding {
-                padding: 26px 30px;
-            }
-
-            .text-center {
-                text-align: center;
-            }
-
-            table>thead>tr>th {
-                border-bottom: 0px;
-            }
-
-            .table>caption+thead>tr:first-child>th, .table>colgroup+thead>tr:first-child>th, .table>thead:first-child>tr:first-child>th, .table>caption+thead>tr:first-child>td, .table>colgroup+thead>tr:first-child>td, .table>thead:first-child>tr:first-child>td {
-                border: 0px;
-            }
-
-            .table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {
-                border: 0px;
-            }
-
-            .firma {
-                position: relative;
-                width: 30%;
-            }
-        </style>
     </head>
     <body>
         <div class="container">
@@ -180,21 +14,22 @@
                         <div class="row">
                             <div class="">
                                 <table class="table table-responsive table-bordered">
+                                    {% with paciente=orden.paciente %}
                                     <tr>
                                         <th>Paciente</th>
-                                        <td>Geovanni Berdugo</td>
+                                        <td>{{ paciente.pnombre|upper }} {{ paciente.snombre|upper }} {{ paciente.papellido|upper }} {{ paciente.sapellido|upper }}</td>
                                         <th>No. Orden</th>
-                                        <td>4401</td>
+                                        <td>{{ orden.id }}</td>
                                         <th>Documento Identificación</th>
-                                        <td>72270273</td>
+                                        <td>{{ paciente.cedula }}</td>
                                     </tr>
                                     <tr>
                                         <th>Telefonos</th>
-                                        <td>335636</td>
+                                        <td>{{ paciente.telefono }}{% if paciente.celular and paciente.telefono %} - {% endif %}{{ paciente.celular }}</td>
                                         <th>Fecha RPC</th>
                                         <td>01-06-2017 4:48:26 p.m.</td>
                                         <th>Empresa</th>
-                                        <td>SIOM INTERNOS</td>
+                                        <td>{{ orden.institucion.razon }}({{ orden.institucion.numero }})</td>
                                     </tr>
                                     <tr>
                                         <th>Medico</th>
@@ -206,47 +41,53 @@
                                     </tr>
                                     <tr>
                                         <th>Sexo</th>
-                                        <td>MASCULINO</td>
+                                        <td>{% if paciente.genero == 'M' %}MASCULINO{% else %}FEMENINO{% endif %}</td>
                                         <th>Fecha</th>
                                         <td>01-06-2017</td>
                                         <td></td>
                                         <th></th>
                                     </tr>
+                                    {% endwith %}
                                 </table>
                             </div>
                         </div>
                         <div class="row">
                             <h4>Resultados</h4>
                             <br>
+                            {% regroup resultados by laboratorio.seccion_trabajo as resultados_areas %}
+                            {% for resultado_in in resultados_areas %}
+                            <h6 class="title">{{ resultado_in.grouper|upper }}</h6>
                             <table class="table table-responsive table-bordered">
                                 <thead>
-                                    <tr>
+                                    <tr class="header">
                                         <th></th>
                                         <th>Resultado</th>
                                         <th>Referencia Mínima</th>
                                         <th>Referencia Máxima</th>
                                     </tr>
-                                    <tr>
-                                        <th colspan="4">Quimica</th>
-                                    </tr>
                                 </thead>
                                 <tbody>
-                                    {% for resultado in resultados %}
-                                        {% if resultado.tipo.name == 'title' %}
-                                        <tr>
-                                            <th colspan="4">{{ resultado.nombre|upper }}</th>
-                                        </tr>
-                                        {% else %}
-                                        <tr>
-                                            <td>{{ resultado.nombre|upper }}</td>
-                                            <td>{% if resultado.tipo.name == 'text' %}{{ resultado.model_text }}{% else %}{{ resultado.model_check }}{% endif %} {{ resultado.unidades }}</td>
-                                            <td>{% if paciente.genero == 'M' %}{{ resultado.genero.M.referencia_minima }}{% else %}{{ resultado.genero.F.referencia_minima }}{% endif %} {{ resultado.unidades }}</td>
-                                            <td>{% if paciente.genero == 'M' %}{{ resultado.genero.M.referencia_maxima }}{% else %}{{ resultado.genero.M.referencia_maxima }}{% endif %} {{ resultado.unidades }}</td>
-                                        </tr>
-                                        {% endif %}
+                                    {% for resultado_inner in resultado_in.list %}
+                                        {% with resultados_laboratorio=resultado_inner.resultado %}
+                                            {% for resultado_fin in resultados_laboratorio %}
+                                                {% if resultado_fin.tipo.name == 'title' %}
+                                                <tr>
+                                                    <th colspan="4">{{ resultado_fin.nombre|upper }}</th>
+                                                </tr>
+                                                {% else %}
+                                                <tr>
+                                                    <td>{{ resultado_fin.nombre|upper }}</td>
+                                                    <td>{% with tipo=resultado_fin.tipo.name %}{% if tipo == 'text' or tipo == 'textarea' or tipo == 'number' %}{{ resultado_fin.model_text|upper }}{% elif tipo == 'select' %}{{ resultado_fin.model_text.text|upper }}{% else %}{{ resultado_fin.model_check }}{% endif %} {% if tipo == 'number' %}{{ resultado_fin.unidades }}{% endif %}{% endwith %}</td>
+                                                    <td>{% if orden.paciente.genero == 'M' %}{{ resultado_fin.genero.M.referencia_minima }}{% else %}{{ resultado_fin.genero.F.referencia_minima }}{% endif %} {{ resultado_fin.unidades }}</td>
+                                                    <td>{% if orden.paciente.genero == 'M' %}{{ resultado_fin.genero.M.referencia_maxima }}{% else %}{{ resultado_fin.genero.M.referencia_maxima }}{% endif %} {{ resultado_fin.unidades }}</td>
+                                                </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endwith %}
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            {% endfor %}
                         </div>
                         <br>
                         <div class="row">
