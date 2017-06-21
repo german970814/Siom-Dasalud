@@ -43,8 +43,12 @@ class Recepcion(models.Model):
         laboratorios = Laboratorio.objects.filter(
             servicio__in=self.orden.OrdenProducto_orden.all().values_list('servicio__nombre__id', flat=True).distinct()
         ).values_list('codigo', flat=True)
-        lab_str = list(laboratorios).join(' | ')
-        return 'Recepcion #{self.orden.id} | {lab_str}'.format(self=self, laboratorios=lab_str)
+        lab_str = ' | '.join(list(laboratorios))
+        return 'Recepcion #{self.orden.id} | {laboratorios}'.format(self=self, laboratorios=lab_str)
+
+    def save(self, *args, **kwargs):
+        super(Recepcion, self).save(*args, **kwargs)
+        print("si guardo")
 
 
 @python_2_unicode_compatible
@@ -288,14 +292,17 @@ class HojaGasto(models.Model):
     def save(self, *args, **kwargs):
         with transaction.atomic():
             if not self.pk:
-                self.producto.cantidad -= self.cantidad
+                producto = self.producto
+                producto.cantidad -= self.cantidad
+                producto.save()
             else:
                 self_copy = copy.deepcopy(self)
                 self_copy.refresh_from_db()
+                producto = self.producto
                 if self.cantidad > self_copy.cantidad:  # si se gastó más de lo que se había guardado
-                    self.producto.cantidad -= self.cantidad - self_copy.cantidad
-                    self.producto.save()
+                    producto.cantidad -= self.cantidad - self_copy.cantidad
+                    producto.save()
                 if self.cantidad < self_copy.cantidad:  # se se gastó menos de lo que se había guardado
-                    self.producto.cantidad += self_copy.cantidad - self.cantidad
-                    self.producto.save()
+                    producto.cantidad += self_copy.cantidad - self.cantidad
+                    producto.save()
             super(HojaGasto, self).save(*args, **kwargs)

@@ -176,13 +176,14 @@ def ordenes_toma_muestra(request):
     """
     hoy = timezone.now().date()
     servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
+    recepciones = Recepcion.objects.all().values_list('orden__id', flat=True)
 
     ordenes = Orden.objects.filter(  # actuelmente solo se traen los ultimos 8 días.
         id__in=OrdenProducto.objects.filter(
             servicio__nombre__id__in=servicios
         ).values_list('orden_id', flat=True).distinct(),
         fecha__range=(hoy - datetime.timedelta(days=32), hoy)
-    ).order_by('-fecha')  # .select_related('paciente')
+    ).order_by('-fecha').exclude(id__in=recepciones)  # .select_related('paciente')
 
     serializer = OrdenSerializer(ordenes, many=True)
     return Response(serializer.data)
