@@ -7,7 +7,7 @@
               table-title="Laboratorios"
               :headers="headers"
               :data="elements"
-              :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]"
+              :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
               @selectedrow="customEventUpdatedForm"
               :loading="loading"
               ></ig-table>
@@ -20,7 +20,7 @@
               <v-stepper-header class="white">
                   <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Laboratorio</v-stepper-step>
                   <v-divider></v-divider>
-                  <v-stepper-step step="2" :rules="[() => false]" @click.native="" :complete="false">Formato</v-stepper-step>
+                  <v-stepper-step step="2" @click.native="secondStepClick" :complete="stepper > 2">Formato</v-stepper-step>
                   <v-divider></v-divider>
                   <v-stepper-step step="3" @click.native="thirdStepClick">Insumos y Reactivos</v-stepper-step>
               </v-stepper-header>
@@ -33,13 +33,13 @@
                   @clearselected="selected = false"
                   :selected="selected"
                   >
-                      <v-btn flat @click.native="stepper = 3" dark v-if="validateFirstStep()">
+                      <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
                           Continuar
                       </v-btn>
                   </ig-form>
               </v-stepper-content>
               <v-stepper-content step="2" class="white">
-                  <!--<ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>-->
+                  <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
               </v-stepper-content>
               <v-stepper-content step="3" class="white">
                   <v-card>
@@ -117,9 +117,6 @@ export default {
                 {
                   text: 'Sección de Trabajo', value: 'seccion_trabajo', left: true,
                   sortable: false,
-                },
-                {
-                  text: 'Accion', left: true, sortable: false
                 },
               ],
               fields: [
@@ -203,6 +200,11 @@ export default {
     methods: {
         validateFirstStep: function () {
             return !_.isEmpty(this.laboratorio);
+        },
+        secondStepClick: function () {
+            if (this.validateFirstStep()) {
+                this.stepper = 2;
+            }
         },
         thirdStepClick: function () {
             if (this.validateFirstStep()) {

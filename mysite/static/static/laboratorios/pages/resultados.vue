@@ -89,7 +89,7 @@
            <br>
            <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>
         </v-container>
-        <floating-button v-if="items">
+        <floating-button v-if="items.length">
             <template slot="child">
                 <v-btn floating info small @click.native.stop="dialog = true" v-tooltip:left="{html: 'Cerrar Prueba'}">
                     <v-icon light>check</v-icon>

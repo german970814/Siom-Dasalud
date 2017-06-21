@@ -68,6 +68,384 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+var stylesInDom = {},
+	memoize = function(fn) {
+		var memo;
+		return function () {
+			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+			return memo;
+		};
+	},
+	isOldIE = memoize(function() {
+		// Test for IE <= 9 as proposed by Browserhacks
+		// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+		// Tests for existence of standard globals is to allow style-loader 
+		// to operate correctly into non-standard environments
+		// @see https://github.com/webpack-contrib/style-loader/issues/177
+		return window && document && document.all && !window.atob;
+	}),
+	getElement = (function(fn) {
+		var memo = {};
+		return function(selector) {
+			if (typeof memo[selector] === "undefined") {
+				memo[selector] = fn.call(this, selector);
+			}
+			return memo[selector]
+		};
+	})(function (styleTarget) {
+		return document.querySelector(styleTarget)
+	}),
+	singletonElement = null,
+	singletonCounter = 0,
+	styleElementsInsertedAtTop = [],
+	fixUrls = __webpack_require__(125);
+
+module.exports = function(list, options) {
+	if(typeof DEBUG !== "undefined" && DEBUG) {
+		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+	// By default, add <style> tags to the <head> element
+	if (typeof options.insertInto === "undefined") options.insertInto = "head";
+
+	// By default, add <style> tags to the bottom of the target
+	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+	var styles = listToStyles(list);
+	addStylesToDom(styles, options);
+
+	return function update(newList) {
+		var mayRemove = [];
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+		if(newList) {
+			var newStyles = listToStyles(newList);
+			addStylesToDom(newStyles, options);
+		}
+		for(var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+			if(domStyle.refs === 0) {
+				for(var j = 0; j < domStyle.parts.length; j++)
+					domStyle.parts[j]();
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+};
+
+function addStylesToDom(styles, options) {
+	for(var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+		if(domStyle) {
+			domStyle.refs++;
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles(list) {
+	var styles = [];
+	var newStyles = {};
+	for(var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+		if(!newStyles[id])
+			styles.push(newStyles[id] = {id: id, parts: [part]});
+		else
+			newStyles[id].parts.push(part);
+	}
+	return styles;
+}
+
+function insertStyleElement(options, styleElement) {
+	var styleTarget = getElement(options.insertInto)
+	if (!styleTarget) {
+		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+	}
+	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+	if (options.insertAt === "top") {
+		if(!lastStyleElementInsertedAtTop) {
+			styleTarget.insertBefore(styleElement, styleTarget.firstChild);
+		} else if(lastStyleElementInsertedAtTop.nextSibling) {
+			styleTarget.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			styleTarget.appendChild(styleElement);
+		}
+		styleElementsInsertedAtTop.push(styleElement);
+	} else if (options.insertAt === "bottom") {
+		styleTarget.appendChild(styleElement);
+	} else {
+		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+	}
+}
+
+function removeStyleElement(styleElement) {
+	styleElement.parentNode.removeChild(styleElement);
+	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+	if(idx >= 0) {
+		styleElementsInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement(options) {
+	var styleElement = document.createElement("style");
+	options.attrs.type = "text/css";
+
+	attachTagAttrs(styleElement, options.attrs);
+	insertStyleElement(options, styleElement);
+	return styleElement;
+}
+
+function createLinkElement(options) {
+	var linkElement = document.createElement("link");
+	options.attrs.type = "text/css";
+	options.attrs.rel = "stylesheet";
+
+	attachTagAttrs(linkElement, options.attrs);
+	insertStyleElement(options, linkElement);
+	return linkElement;
+}
+
+function attachTagAttrs(element, attrs) {
+	Object.keys(attrs).forEach(function (key) {
+		element.setAttribute(key, attrs[key]);
+	});
+}
+
+function addStyle(obj, options) {
+	var styleElement, update, remove;
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+		styleElement = singletonElement || (singletonElement = createStyleElement(options));
+		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+	} else if(obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function") {
+		styleElement = createLinkElement(options);
+		update = updateLink.bind(null, styleElement, options);
+		remove = function() {
+			removeStyleElement(styleElement);
+			if(styleElement.href)
+				URL.revokeObjectURL(styleElement.href);
+		};
+	} else {
+		styleElement = createStyleElement(options);
+		update = applyToTag.bind(null, styleElement);
+		remove = function() {
+			removeStyleElement(styleElement);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle(newObj) {
+		if(newObj) {
+			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+				return;
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag(styleElement, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = styleElement.childNodes;
+		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+		if (childNodes.length) {
+			styleElement.insertBefore(cssNode, childNodes[index]);
+		} else {
+			styleElement.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag(styleElement, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		styleElement.setAttribute("media", media)
+	}
+
+	if(styleElement.styleSheet) {
+		styleElement.styleSheet.cssText = css;
+	} else {
+		while(styleElement.firstChild) {
+			styleElement.removeChild(styleElement.firstChild);
+		}
+		styleElement.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink(linkElement, options, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	/* If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+	and there is no publicPath defined then lets turn convertToAbsoluteUrls
+	on by default.  Otherwise default to the convertToAbsoluteUrls option
+	directly
+	*/
+	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+
+	if (options.convertToAbsoluteUrls || autoFixUrls){
+		css = fixUrls(css);
+	}
+
+	if(sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = linkElement.href;
+
+	linkElement.href = URL.createObjectURL(blob);
+
+	if(oldSrc)
+		URL.revokeObjectURL(oldSrc);
+}
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscore.js 1.8.3
@@ -1619,384 +1997,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
   }
 }.call(this));
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-var stylesInDom = {},
-	memoize = function(fn) {
-		var memo;
-		return function () {
-			if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-			return memo;
-		};
-	},
-	isOldIE = memoize(function() {
-		// Test for IE <= 9 as proposed by Browserhacks
-		// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
-		// Tests for existence of standard globals is to allow style-loader 
-		// to operate correctly into non-standard environments
-		// @see https://github.com/webpack-contrib/style-loader/issues/177
-		return window && document && document.all && !window.atob;
-	}),
-	getElement = (function(fn) {
-		var memo = {};
-		return function(selector) {
-			if (typeof memo[selector] === "undefined") {
-				memo[selector] = fn.call(this, selector);
-			}
-			return memo[selector]
-		};
-	})(function (styleTarget) {
-		return document.querySelector(styleTarget)
-	}),
-	singletonElement = null,
-	singletonCounter = 0,
-	styleElementsInsertedAtTop = [],
-	fixUrls = __webpack_require__(123);
-
-module.exports = function(list, options) {
-	if(typeof DEBUG !== "undefined" && DEBUG) {
-		if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-	}
-
-	options = options || {};
-	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
-
-	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-	// tags it will allow on a page
-	if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-	// By default, add <style> tags to the <head> element
-	if (typeof options.insertInto === "undefined") options.insertInto = "head";
-
-	// By default, add <style> tags to the bottom of the target
-	if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-	var styles = listToStyles(list);
-	addStylesToDom(styles, options);
-
-	return function update(newList) {
-		var mayRemove = [];
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			domStyle.refs--;
-			mayRemove.push(domStyle);
-		}
-		if(newList) {
-			var newStyles = listToStyles(newList);
-			addStylesToDom(newStyles, options);
-		}
-		for(var i = 0; i < mayRemove.length; i++) {
-			var domStyle = mayRemove[i];
-			if(domStyle.refs === 0) {
-				for(var j = 0; j < domStyle.parts.length; j++)
-					domStyle.parts[j]();
-				delete stylesInDom[domStyle.id];
-			}
-		}
-	};
-};
-
-function addStylesToDom(styles, options) {
-	for(var i = 0; i < styles.length; i++) {
-		var item = styles[i];
-		var domStyle = stylesInDom[item.id];
-		if(domStyle) {
-			domStyle.refs++;
-			for(var j = 0; j < domStyle.parts.length; j++) {
-				domStyle.parts[j](item.parts[j]);
-			}
-			for(; j < item.parts.length; j++) {
-				domStyle.parts.push(addStyle(item.parts[j], options));
-			}
-		} else {
-			var parts = [];
-			for(var j = 0; j < item.parts.length; j++) {
-				parts.push(addStyle(item.parts[j], options));
-			}
-			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-		}
-	}
-}
-
-function listToStyles(list) {
-	var styles = [];
-	var newStyles = {};
-	for(var i = 0; i < list.length; i++) {
-		var item = list[i];
-		var id = item[0];
-		var css = item[1];
-		var media = item[2];
-		var sourceMap = item[3];
-		var part = {css: css, media: media, sourceMap: sourceMap};
-		if(!newStyles[id])
-			styles.push(newStyles[id] = {id: id, parts: [part]});
-		else
-			newStyles[id].parts.push(part);
-	}
-	return styles;
-}
-
-function insertStyleElement(options, styleElement) {
-	var styleTarget = getElement(options.insertInto)
-	if (!styleTarget) {
-		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
-	}
-	var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-	if (options.insertAt === "top") {
-		if(!lastStyleElementInsertedAtTop) {
-			styleTarget.insertBefore(styleElement, styleTarget.firstChild);
-		} else if(lastStyleElementInsertedAtTop.nextSibling) {
-			styleTarget.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-		} else {
-			styleTarget.appendChild(styleElement);
-		}
-		styleElementsInsertedAtTop.push(styleElement);
-	} else if (options.insertAt === "bottom") {
-		styleTarget.appendChild(styleElement);
-	} else {
-		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-	}
-}
-
-function removeStyleElement(styleElement) {
-	styleElement.parentNode.removeChild(styleElement);
-	var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-	if(idx >= 0) {
-		styleElementsInsertedAtTop.splice(idx, 1);
-	}
-}
-
-function createStyleElement(options) {
-	var styleElement = document.createElement("style");
-	options.attrs.type = "text/css";
-
-	attachTagAttrs(styleElement, options.attrs);
-	insertStyleElement(options, styleElement);
-	return styleElement;
-}
-
-function createLinkElement(options) {
-	var linkElement = document.createElement("link");
-	options.attrs.type = "text/css";
-	options.attrs.rel = "stylesheet";
-
-	attachTagAttrs(linkElement, options.attrs);
-	insertStyleElement(options, linkElement);
-	return linkElement;
-}
-
-function attachTagAttrs(element, attrs) {
-	Object.keys(attrs).forEach(function (key) {
-		element.setAttribute(key, attrs[key]);
-	});
-}
-
-function addStyle(obj, options) {
-	var styleElement, update, remove;
-
-	if (options.singleton) {
-		var styleIndex = singletonCounter++;
-		styleElement = singletonElement || (singletonElement = createStyleElement(options));
-		update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-		remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-	} else if(obj.sourceMap &&
-		typeof URL === "function" &&
-		typeof URL.createObjectURL === "function" &&
-		typeof URL.revokeObjectURL === "function" &&
-		typeof Blob === "function" &&
-		typeof btoa === "function") {
-		styleElement = createLinkElement(options);
-		update = updateLink.bind(null, styleElement, options);
-		remove = function() {
-			removeStyleElement(styleElement);
-			if(styleElement.href)
-				URL.revokeObjectURL(styleElement.href);
-		};
-	} else {
-		styleElement = createStyleElement(options);
-		update = applyToTag.bind(null, styleElement);
-		remove = function() {
-			removeStyleElement(styleElement);
-		};
-	}
-
-	update(obj);
-
-	return function updateStyle(newObj) {
-		if(newObj) {
-			if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-				return;
-			update(obj = newObj);
-		} else {
-			remove();
-		}
-	};
-}
-
-var replaceText = (function () {
-	var textStore = [];
-
-	return function (index, replacement) {
-		textStore[index] = replacement;
-		return textStore.filter(Boolean).join('\n');
-	};
-})();
-
-function applyToSingletonTag(styleElement, index, remove, obj) {
-	var css = remove ? "" : obj.css;
-
-	if (styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = replaceText(index, css);
-	} else {
-		var cssNode = document.createTextNode(css);
-		var childNodes = styleElement.childNodes;
-		if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-		if (childNodes.length) {
-			styleElement.insertBefore(cssNode, childNodes[index]);
-		} else {
-			styleElement.appendChild(cssNode);
-		}
-	}
-}
-
-function applyToTag(styleElement, obj) {
-	var css = obj.css;
-	var media = obj.media;
-
-	if(media) {
-		styleElement.setAttribute("media", media)
-	}
-
-	if(styleElement.styleSheet) {
-		styleElement.styleSheet.cssText = css;
-	} else {
-		while(styleElement.firstChild) {
-			styleElement.removeChild(styleElement.firstChild);
-		}
-		styleElement.appendChild(document.createTextNode(css));
-	}
-}
-
-function updateLink(linkElement, options, obj) {
-	var css = obj.css;
-	var sourceMap = obj.sourceMap;
-
-	/* If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
-	and there is no publicPath defined then lets turn convertToAbsoluteUrls
-	on by default.  Otherwise default to the convertToAbsoluteUrls option
-	directly
-	*/
-	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
-
-	if (options.convertToAbsoluteUrls || autoFixUrls){
-		css = fixUrls(css);
-	}
-
-	if(sourceMap) {
-		// http://stackoverflow.com/a/26603875
-		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-	}
-
-	var blob = new Blob([css], { type: "text/css" });
-
-	var oldSrc = linkElement.href;
-
-	linkElement.href = URL.createObjectURL(blob);
-
-	if(oldSrc)
-		URL.revokeObjectURL(oldSrc);
-}
 
 
 /***/ }),
@@ -11373,7 +11373,7 @@ return Vue$3;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(172)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(177)))
 
 /***/ }),
 /* 5 */
@@ -11381,7 +11381,7 @@ return Vue$3;
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
 
 
@@ -12555,7 +12555,7 @@ var xhrClient = function (request) {
 
 var nodeClient = function (request) {
 
-    var client = __webpack_require__(173);
+    var client = __webpack_require__(178);
 
     return new PromiseObj(function (resolve) {
 
@@ -13023,7 +13023,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(127)
+__webpack_require__(129)
 __vue_script__ = __webpack_require__(51)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -13045,9 +13045,9 @@ if (false) {(function () {  module.hot.accept()
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(139)
-__vue_script__ = __webpack_require__(56)
-__vue_template__ = __webpack_require__(146)
+__webpack_require__(142)
+__vue_script__ = __webpack_require__(57)
+__vue_template__ = __webpack_require__(150)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22087,16 +22087,16 @@ if (typeof window !== 'undefined' && window.Vue) {
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(73), __esModule: true };
+module.exports = { "default": __webpack_require__(74), __esModule: true };
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(142)
+__webpack_require__(145)
 __vue_script__ = __webpack_require__(54)
-__vue_template__ = __webpack_require__(144)
+__vue_template__ = __webpack_require__(147)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22156,7 +22156,7 @@ module.exports = function(name){
 "use strict";
 
 
-var _Symbol = __webpack_require__(71)["default"];
+var _Symbol = __webpack_require__(72)["default"];
 
 exports["default"] = function (obj) {
   return obj && obj.constructor === _Symbol ? "symbol" : typeof obj;
@@ -22227,7 +22227,7 @@ module.exports = {};
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
 /*
 
@@ -22347,7 +22347,7 @@ module.exports = function(it){
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(74), __esModule: true };
+module.exports = { "default": __webpack_require__(75), __esModule: true };
 
 /***/ }),
 /* 23 */
@@ -22358,7 +22358,7 @@ module.exports = { "default": __webpack_require__(74), __esModule: true };
 
 exports.__esModule = true;
 
-var _from = __webpack_require__(69);
+var _from = __webpack_require__(70);
 
 var _from2 = _interopRequireDefault(_from);
 
@@ -22380,7 +22380,7 @@ exports.default = function (arr) {
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(85);
+var isObject = __webpack_require__(86);
 module.exports = function(it){
   if(!isObject(it))throw TypeError(it + ' is not an object!');
   return it;
@@ -22468,7 +22468,7 @@ module.exports = function(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(132)
+__webpack_require__(134)
 __vue_script__ = __webpack_require__(50)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -22490,7 +22490,7 @@ if (false) {(function () {  module.hot.accept()
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(135)
+__webpack_require__(138)
 __vue_script__ = __webpack_require__(53)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -22512,9 +22512,9 @@ if (false) {(function () {  module.hot.accept()
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(126)
+__webpack_require__(128)
 __vue_script__ = __webpack_require__(55)
-__vue_template__ = __webpack_require__(145)
+__vue_template__ = __webpack_require__(148)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -25000,20 +25000,20 @@ if (inBrowser && window.Vue) {
 
 /* harmony default export */ __webpack_exports__["a"] = (VueRouter);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(122)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(124)))
 
 /***/ }),
 /* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(76), __esModule: true };
+module.exports = { "default": __webpack_require__(77), __esModule: true };
 
 /***/ }),
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(78);
+var aFunction = __webpack_require__(79);
 module.exports = function(fn, that, length){
   aFunction(fn);
   if(that === undefined)return fn;
@@ -25064,7 +25064,7 @@ var LIBRARY        = __webpack_require__(41)
   , hide           = __webpack_require__(28)
   , has            = __webpack_require__(27)
   , Iterators      = __webpack_require__(17)
-  , $iterCreate    = __webpack_require__(87)
+  , $iterCreate    = __webpack_require__(88)
   , setToStringTag = __webpack_require__(30)
   , getProto       = __webpack_require__(13).getProto
   , ITERATOR       = __webpack_require__(14)('iterator')
@@ -25172,7 +25172,7 @@ module.exports = function(key){
 /* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var classof   = __webpack_require__(80)
+var classof   = __webpack_require__(81)
   , ITERATOR  = __webpack_require__(14)('iterator')
   , Iterators = __webpack_require__(17);
 module.exports = __webpack_require__(12).getIteratorMethod = function(it){
@@ -25187,7 +25187,7 @@ module.exports = __webpack_require__(12).getIteratorMethod = function(it){
 
 "use strict";
 
-var $at  = __webpack_require__(93)(true);
+var $at  = __webpack_require__(94)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
 __webpack_require__(40)(String, 'String', function(iterated){
@@ -25210,29 +25210,29 @@ __webpack_require__(40)(String, 'String', function(iterated){
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__ = __webpack_require__(170);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__ = __webpack_require__(162);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__ = __webpack_require__(167);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__ = __webpack_require__(170);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__ = __webpack_require__(175);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__ = __webpack_require__(169);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__ = __webpack_require__(174);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__ = __webpack_require__(172);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__ = __webpack_require__(161);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__ = __webpack_require__(166);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__ = __webpack_require__(163);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__ = __webpack_require__(168);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__ = __webpack_require__(171);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__ = __webpack_require__(169);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__ = __webpack_require__(160);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__ = __webpack_require__(165);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__ = __webpack_require__(168);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__ = __webpack_require__(173);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__ = __webpack_require__(176);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__);
 
 
@@ -25291,7 +25291,7 @@ const router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__);
@@ -25544,7 +25544,7 @@ var _typeof2 = __webpack_require__(15);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _assign = __webpack_require__(70);
+var _assign = __webpack_require__(71);
 
 var _assign2 = _interopRequireDefault(_assign);
 
@@ -25564,7 +25564,7 @@ var _errormixin = __webpack_require__(18);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -26388,7 +26388,7 @@ var _formularioResultado = __webpack_require__(33);
 
 var _formularioResultado2 = _interopRequireDefault(_formularioResultado);
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -26433,119 +26433,101 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                                         required
 //                                     ></v-text-field>
 //                                     <br>
-//                                     <v-text-field
-//                                         label="Texto de ayuda"
-//                                         v-model="item.help"
-//                                         hint="Ayuda textual que acompaña el campo"
-//                                     ></v-text-field>
-//                                     <br>
-//                                     <v-text-field
-//                                         label="Valores de referencia mínima"
-//                                         v-model="item.referencia_minima"
-//                                         hint="Texto de referencia minima para el momento de poner el resultado"
-//                                     ></v-text-field>
-//                                     <br>
-//                                     <v-text-field
-//                                         label="Valores de referencia máxima"
-//                                         v-model="item.referencia_maxima"
-//                                         hint="Texto de referencia máxima para el momento de poner el resultado"
-//                                     ></v-text-field>
-//                                     <br>
-//                                     <v-text-field
-//                                         label="Unidades"
-//                                         v-model="item.unidades"
-//                                         hint="Medida en unidades de el resultado"
-//                                     ></v-text-field>
-//                                     <br>
-//                                     <v-text-field
-//                                         v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'"
-//                                         :multi-line="item.tipo.name == 'textarea'"
-//                                         :label="item.nombre"
-//                                         :hint="item.help"
-//                                         v-model="item.model_text"
-//                                         :type="item.tipo.name == 'number' ? 'number': 'text'"
-//                                         persistent-hint
-//                                     ></v-text-field>
-//                                     <div v-else-if="item.tipo.name == 'select'">
-//                                         <v-layout>
-//                                             <v-flex md10 xs10>
-//                                                 <v-select
-//                                                     :label="item.nombre"
-//                                                     :hint="item.help"
-//                                                     v-model="item.model_text"
-//                                                     :items="item.choices_select"
-//                                                     :rules="[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]"
-//                                                     item-value="text"
-//                                                     persistent-hint
-//                                                 ></v-select>
-//                                             </v-flex>
-//                                             <v-flex md2 xs2>
-//                                                 <v-btn
-//                                                     v-tooltip:top="{html: 'Agregar Opciones'}"
-//                                                     class="green--text darken-1" icon="icon"
-//                                                     @click.native.stop="dialog = true; lastItem = item">
-//                                                     <v-icon>add</v-icon>
-//                                                 </v-btn>
-//                                             </v-flex>
-//                                         </v-layout>
-//                                     </div>
-//                                     <div v-else-if="item.tipo.name == 'checkbox'">
-//                                         <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
-//                                             <v-flex xs7 md7>
-//                                                 <v-checkbox
-//                                                   v-if="!choice.edit"
-//                                                   :label="choice.name"
-//                                                   v-model="item.model_check"
-//                                                   :value="choice.id"
-//                                                   primary
-//                                                 ></v-checkbox>
+//                                     <div v-if="item.tipo.name != 'title'">
+//                                         <v-text-field
+//                                           label="Texto de ayuda"
+//                                           v-model="item.help"
+//                                             hint="Ayuda textual que acompaña el campo"
+//                                         ></v-text-field>
+//                                         <br>
+//                                         <v-layout wrap>
+//                                             <v-flex md12><v-subheader>Referencias</v-subheader></v-flex>
+//                                             <v-flex md6>
+//                                                 <v-subheader>Hombre</v-subheader>
 //                                                 <v-text-field
-//                                                   v-else
-//                                                   label="Texto para mostrar"
-//                                                   v-model="choice.name"
+//                                                     label="Valores de referencia mínima (HOMBRE)"
+//                                                     v-model="item.referencias.M.minima"
+//                                                     type="number"
+//                                                     hint="Texto de referencia minima para el momento de poner el resultado (HOMBRE)"
+//                                                 ></v-text-field>
+//                                                 <br>
+//                                                 <v-text-field
+//                                                     label="Valores de referencia máxima (HOMBRE)"
+//                                                     v-model="item.referencias.M.maxima"
+//                                                     hint="Texto de referencia máxima para el momento de poner el resultado (HOMBRE)"
 //                                                 ></v-text-field>
 //                                             </v-flex>
-//                                             <v-flex xs5 md5>
-//                                               <v-btn v-tooltip:top="{html: 'Editar opción'}" icon="icon" class="indigo--text" @click.native="toggleValueEditCheckBox(choice)">
-//                                                   <v-icon>mode_edit</v-icon>
-//                                               </v-btn>
-//                                               <v-btn v-tooltip:top="{html: 'Remover opción'}" icon="icon" class="red--text" @click.native="deleteChoiceItem(item, choiceId)" v-show="item.choices.length != 1">
-//                                                   <v-icon>delete</v-icon>
-//                                               </v-btn>
-//                                               <v-btn v-tooltip:top="{html: 'Agregar opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
-//                                                   <v-icon>add</v-icon>
-//                                               </v-btn>
-//                                             </v-flex>
-//                                         </v-layout>
-//                                     </div>
-//                                     <div v-else-if="item.tipo.name == 'radio'">
-//                                         <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
-//                                             <v-flex xs7 md7>
-//                                                 <v-radio
-//                                                   v-if="!choice.edit"
-//                                                   :label="choice.name"
-//                                                   v-model="item.model_text"
-//                                                   :value="choice.name"
-//                                                   primary
-//                                                 ></v-radio>
+//                                             <v-flex md6>
+//                                                 <v-subheader>Mujer</v-subheader>
 //                                                 <v-text-field
-//                                                   v-else
-//                                                   label="Texto para mostrar"
-//                                                   v-model="choice.name"
+//                                                     label="Valores de referencia mínima (MUJER)"
+//                                                     v-model="item.referencias.F.minima"
+//                                                     hint="Texto de referencia minima para el momento de poner el resultado (MUJER)"
+//                                                 ></v-text-field>
+//                                                 <br>
+//                                                 <v-text-field
+//                                                     label="Valores de referencia máxima (MUJER)"
+//                                                     v-model="item.referencias.F.maxima"
+//                                                     hint="Texto de referencia máxima para el momento de poner el resultado (MUJER)"
 //                                                 ></v-text-field>
 //                                             </v-flex>
-//                                             <v-flex xs5 md5>
-//                                               <v-btn v-tooltip:top="{html: 'Editar opción'}" icon="icon" class="indigo--text" @click.native="toggleValueEditCheckBox(choice)">
-//                                                   <v-icon>mode_edit</v-icon>
-//                                               </v-btn>
-//                                               <v-btn v-tooltip:top="{html: 'Remover opción'}" icon="icon" class="red--text" @click.native="deleteChoiceItem(item, choiceId)" v-show="item.choices.length != 1">
-//                                                   <v-icon>delete</v-icon>
-//                                               </v-btn>
-//                                               <v-btn v-tooltip:top="{html: 'Agregar una nueva opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
-//                                                   <v-icon>add</v-icon>
-//                                               </v-btn>
-//                                             </v-flex>
 //                                         </v-layout>
+//                                         <br>
+//                                         <v-text-field
+//                                             label="Unidades"
+//                                             v-model="item.unidades"
+//                                             hint="Medida en unidades de el resultado"
+//                                         ></v-text-field>
+//                                         <br>
+//                                         <v-text-field
+//                                             v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'"
+//                                             :multi-line="item.tipo.name == 'textarea'"
+//                                             :label="item.nombre"
+//                                             :hint="item.help"
+//                                             v-model="item.model_text"
+//                                             :type="item.tipo.name == 'number' ? 'number': 'text'"
+//                                             persistent-hint
+//                                         ></v-text-field>
+//                                         <div v-else-if="item.tipo.name == 'select'">
+//                                             <v-layout>
+//                                                 <v-flex md10 xs10>
+//                                                     <v-select
+//                                                         :label="item.nombre"
+//                                                         :hint="item.help"
+//                                                         v-model="item.model_text"
+//                                                         :items="item.choices"
+//                                                         :rules="[item.choices.length >= 1 || 'Debes escoger una caracteristica', item.choices.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]"
+//                                                         item-value="text"
+//                                                         :return-object="true"
+//                                                         persistent-hint
+//                                                     ></v-select>
+//                                                 </v-flex>
+//                                                 <v-flex md2 xs2>
+//                                                     <v-btn
+//                                                         v-tooltip:top="{html: 'Agregar Opciones'}"
+//                                                         class="green--text darken-1" icon="icon"
+//                                                         @click.native.stop="dialog = true; lastItem = item">
+//                                                         <v-icon>add</v-icon>
+//                                                     </v-btn>
+//                                                 </v-flex>
+//                                             </v-layout>
+//                                             <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
+//                                                 <v-flex xs7 md7>
+//                                                     <v-text-field
+//                                                       label="Texto para mostrar"
+//                                                       v-model="choice.text"
+//                                                     ></v-text-field>
+//                                                 </v-flex>
+//                                                 <v-flex xs5 md5>
+//                                                     <v-btn v-tooltip:top="{html: 'Remover opción'}" icon="icon" class="red--text" @click.native="deleteChoiceItem(item, choiceId)" v-show="item.choices.length != 1">
+//                                                         <v-icon>delete</v-icon>
+//                                                     </v-btn>
+//                                                     <v-btn v-tooltip:top="{html: 'Agregar opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
+//                                                         <v-icon>add</v-icon>
+//                                                     </v-btn>
+//                                                 </v-flex>
+//                                             </v-layout>
+//                                         </div>
 //                                     </div>
 //                                 </v-card-text>
 //                                 <v-card-row actions>
@@ -26571,28 +26553,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                 <v-btn floating success small @click.native="saveFormato" v-tooltip:left="{html: 'Guardar Formato'}">
 //                     <v-icon light>save</v-icon>
 //                 </v-btn>
-//                 <v-btn floating info small @click.native.stop="preview = true" v-tooltip:left="{html: 'Previsualizar el Formulario'}">
-//                     <v-icon light>photo</v-icon>
-//                 </v-btn>
 //             </template>
 //             <v-btn floating error v-tooltip:left="{html: 'Opciones'}">
 //                 <v-icon light>settings</v-icon>
 //             </v-btn>
 //         </floating-button>
-//         <v-dialog v-model="preview" fullscreen transition="v-dialog-bottom-transition" :overlay="false">
-//             <v-card>
-//                 <v-card-row>
-//                     <v-toolbar class="orange darken-2">
-//                         <v-btn icon="icon" @click.native="preview = false">
-//                             <v-icon class="white--text">close</v-icon>
-//                         </v-btn>
-//                         <v-toolbar-title class="white--text">Settings</v-toolbar-title>
-//                         <!-- <v-btn class="white--text" flat="flat" @click.native="preview = false">Save</v-btn> -->
-//                     </v-toolbar>
-//                 </v-card-row>
-//                 <formulario-resultado :value="$data"></formulario-resultado>
-//             </v-card>
-//         </v-dialog>
 //         <v-dialog v-model="dialog" scrollable>
 //             <v-card>
 //                 <v-card-title>Selecciona una Caracteristica</v-card-title>
@@ -26637,7 +26602,6 @@ exports.default = {
         return {
             formato: { laboratorio: { nombre: '', codigo: '', id: '' } },
             dialog: false,
-            preview: false,
             caracteristicas: [],
             modalchoice: '',
             items: [],
@@ -26652,13 +26616,13 @@ exports.default = {
                 name: 'number',
                 help: 'Con este campo se puede dar un resultado numérico.'
             }, {
-                text: 'Selección Unica',
-                name: 'radio',
-                help: 'Con este campo se proveen varias opciones y solo podrá ser escogida 1.'
+                text: 'Titulo',
+                name: 'title',
+                help: 'Con este campo se creará un titulo, el cual servirá de separador.'
             }, {
-                text: 'Multiple Selección',
-                name: 'checkbox',
-                help: 'Con este campo se proveen varias opciones y podrán ser escogidas 1 o todas.'
+                text: 'Laboratorio',
+                name: 'lab',
+                help: 'Con este campo podrá extender de un formato de laboratorio ya creado.'
             }, {
                 text: 'Caracteristicas',
                 name: 'select',
@@ -26692,13 +26656,11 @@ exports.default = {
             return {
                 target: item,
                 validations: [function (i) {
-                    return ['checkbox', 'radio'].indexOf(i.tipo.name) === -1 || i.choices.length > 1;
-                }, function (i) {
                     return i.tipo !== '';
                 }, function (i) {
                     return i.nombre !== '';
                 }, function (i) {
-                    return ['select'].indexOf(i.tipo.name) === -1 || i.choices_select.length > 1;
+                    return ['select'].indexOf(i.tipo.name) === -1 || i.choices.length > 1;
                 }]
             };
         },
@@ -26714,8 +26676,16 @@ exports.default = {
                 model_check: [],
                 unidades: '',
                 tipo: '',
-                referencia_minima: '',
-                referencia_maxima: ''
+                referencias: {
+                    F: {
+                        maxima: '',
+                        minima: ''
+                    },
+                    M: {
+                        maxima: '',
+                        minima: ''
+                    }
+                }
             };
             this.items.push(item);
             this.addValidation(this.genValidationsForItem(item));
@@ -26726,7 +26696,7 @@ exports.default = {
         addChoiceItem: function addChoiceItem(item) {
             var length = (item.choices.length + 1).toString();
             item.choices_count++;
-            item.choices.push({ edit: false, name: 'Option ' + length, id: item.choices_count });
+            item.choices.push({ edit: false, text: 'Option ' + length, id: item.choices_count });
         },
         toggleValueEditCheckBox: function toggleValueEditCheckBox(item) {
             // item es un choice
@@ -26748,7 +26718,7 @@ exports.default = {
             var item = this.lastItem;
             if (this.modalchoice) {
                 this.$http.get(_urls2.default.especificaciones_por_carateristica + this.modalchoice.toString() + '/').then(function (response) {
-                    item.choices_select = [];
+                    item.choices = [];
                     var _iteratorNormalCompletion = true;
                     var _didIteratorError = false;
                     var _iteratorError = undefined;
@@ -26758,7 +26728,7 @@ exports.default = {
                             var choice = _step.value;
 
                             choice.text = choice.nombre;
-                            item.choices_select.push(choice);
+                            item.choices.push(choice);
                         }
                     } catch (err) {
                         _didIteratorError = true;
@@ -26891,11 +26861,11 @@ var _toConsumableArray2 = __webpack_require__(23);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _slotInput = __webpack_require__(178);
+var _slotInput = __webpack_require__(164);
 
 var _slotInput2 = _interopRequireDefault(_slotInput);
 
@@ -27095,7 +27065,7 @@ exports.default = {
                     props: {
                         label: 'Resultado', 'item-value': 'text',
                         hint: item.help, 'persistent-hint': true,
-                        items: item.choices_select, 'return-object': true
+                        items: item.choices, 'return-object': true
                     },
                     on: {
                         input: function input(event) {
@@ -27462,7 +27432,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -27712,6 +27682,33 @@ exports.default = {
 
 
 Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+// <template lang="html">
+//     <div class="">
+//         <slot></slot>
+//         <div v-show="false">
+//           <slot name="input"></slot>
+//         </div>
+//     </div>
+// </template>
+//
+// <script>
+exports.default = {};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
@@ -27941,7 +27938,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27951,7 +27948,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -28115,7 +28112,7 @@ exports.default = {
 // <script>
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28125,7 +28122,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -28248,7 +28245,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28258,7 +28255,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -28394,7 +28391,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28404,7 +28401,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -28531,7 +28528,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28573,7 +28570,7 @@ var _formularioResultado = __webpack_require__(33);
 
 var _formularioResultado2 = _interopRequireDefault(_formularioResultado);
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -29039,7 +29036,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29053,7 +29050,7 @@ var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -29081,7 +29078,7 @@ var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _formato = __webpack_require__(159);
+var _formato = __webpack_require__(163);
 
 var _formato2 = _interopRequireDefault(_formato);
 
@@ -29109,7 +29106,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //               table-title="Laboratorios"
 //               :headers="headers"
 //               :data="elements"
-//               :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]"
+//               :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
 //               @selectedrow="customEventUpdatedForm"
 //               :loading="loading"
 //               ></ig-table>
@@ -29122,7 +29119,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //               <v-stepper-header class="white">
 //                   <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Laboratorio</v-stepper-step>
 //                   <v-divider></v-divider>
-//                   <v-stepper-step step="2" :rules="[() => false]" @click.native="" :complete="false">Formato</v-stepper-step>
+//                   <v-stepper-step step="2" @click.native="secondStepClick" :complete="stepper > 2">Formato</v-stepper-step>
 //                   <v-divider></v-divider>
 //                   <v-stepper-step step="3" @click.native="thirdStepClick">Insumos y Reactivos</v-stepper-step>
 //               </v-stepper-header>
@@ -29135,13 +29132,13 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //                   @clearselected="selected = false"
 //                   :selected="selected"
 //                   >
-//                       <v-btn flat @click.native="stepper = 3" dark v-if="validateFirstStep()">
+//                       <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
 //                           Continuar
 //                       </v-btn>
 //                   </ig-form>
 //               </v-stepper-content>
 //               <v-stepper-content step="2" class="white">
-//                   <!--<ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>-->
+//                   <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
 //               </v-stepper-content>
 //               <v-stepper-content step="3" class="white">
 //                   <v-card>
@@ -29197,8 +29194,6 @@ exports.default = {
             }, {
                 text: 'Sección de Trabajo', value: 'seccion_trabajo', left: true,
                 sortable: false
-            }, {
-                text: 'Accion', left: true, sortable: false
             }],
             fields: [{
                 name: 'codigo',
@@ -29295,6 +29290,11 @@ exports.default = {
         validateFirstStep: function validateFirstStep() {
             return !_underscore2.default.isEmpty(this.laboratorio);
         },
+        secondStepClick: function secondStepClick() {
+            if (this.validateFirstStep()) {
+                this.stepper = 2;
+            }
+        },
         thirdStepClick: function thirdStepClick() {
             if (this.validateFirstStep()) {
                 this.stepper = 3;
@@ -29355,7 +29355,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29377,7 +29377,7 @@ var _typeof2 = __webpack_require__(15);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -29667,7 +29667,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29677,7 +29677,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -29838,7 +29838,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29856,7 +29856,7 @@ var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -29974,7 +29974,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //            <br>
 //            <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>
 //         </v-container>
-//         <floating-button v-if="items">
+//         <floating-button v-if="items.length">
 //             <template slot="child">
 //                 <v-btn floating info small @click.native.stop="dialog = true" v-tooltip:left="{html: 'Cerrar Prueba'}">
 //                     <v-icon light>check</v-icon>
@@ -30362,7 +30362,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30372,7 +30372,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -30563,7 +30563,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30573,7 +30573,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -30695,7 +30695,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30709,7 +30709,7 @@ var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _underscore = __webpack_require__(0);
+var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
@@ -30961,41 +30961,41 @@ exports.default = {
 //
 
 /***/ }),
-/* 69 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(72), __esModule: true };
-
-/***/ }),
 /* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(75), __esModule: true };
+module.exports = { "default": __webpack_require__(73), __esModule: true };
 
 /***/ }),
 /* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(77), __esModule: true };
+module.exports = { "default": __webpack_require__(76), __esModule: true };
 
 /***/ }),
 /* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(47);
-__webpack_require__(96);
-module.exports = __webpack_require__(12).Array.from;
+module.exports = { "default": __webpack_require__(78), __esModule: true };
 
 /***/ }),
 /* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(102);
 __webpack_require__(47);
-module.exports = __webpack_require__(95);
+__webpack_require__(97);
+module.exports = __webpack_require__(12).Array.from;
 
 /***/ }),
 /* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(103);
+__webpack_require__(47);
+module.exports = __webpack_require__(96);
+
+/***/ }),
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var core = __webpack_require__(12);
@@ -31004,29 +31004,29 @@ module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
 };
 
 /***/ }),
-/* 75 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(98);
-module.exports = __webpack_require__(12).Object.assign;
-
-/***/ }),
 /* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(99);
-module.exports = __webpack_require__(12).Object.keys;
+module.exports = __webpack_require__(12).Object.assign;
 
 /***/ }),
 /* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(101);
 __webpack_require__(100);
-module.exports = __webpack_require__(12).Symbol;
+module.exports = __webpack_require__(12).Object.keys;
 
 /***/ }),
 /* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(102);
+__webpack_require__(101);
+module.exports = __webpack_require__(12).Symbol;
+
+/***/ }),
+/* 79 */
 /***/ (function(module, exports) {
 
 module.exports = function(it){
@@ -31035,13 +31035,13 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports) {
 
 module.exports = function(){ /* empty */ };
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
@@ -31062,7 +31062,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // all enumerable object keys, includes symbols
@@ -31081,7 +31081,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
@@ -31106,7 +31106,7 @@ module.exports.get = function getOwnPropertyNames(it){
 };
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // check on default Array iterator
@@ -31119,7 +31119,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
@@ -31129,7 +31129,7 @@ module.exports = Array.isArray || function(arg){
 };
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports) {
 
 module.exports = function(it){
@@ -31137,7 +31137,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // call something on iterator step with safe closing on error
@@ -31154,7 +31154,7 @@ module.exports = function(iterator, fn, value, entries){
 };
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31173,7 +31173,7 @@ module.exports = function(Constructor, NAME, next){
 };
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ITERATOR     = __webpack_require__(14)('iterator')
@@ -31199,7 +31199,7 @@ module.exports = function(exec, skipClosing){
 };
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports) {
 
 module.exports = function(done, value){
@@ -31207,7 +31207,7 @@ module.exports = function(done, value){
 };
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $         = __webpack_require__(13)
@@ -31222,7 +31222,7 @@ module.exports = function(object, el){
 };
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.1 Object.assign(target, source, ...)
@@ -31260,7 +31260,7 @@ module.exports = __webpack_require__(19)(function(){
 } : Object.assign;
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
@@ -31275,7 +31275,7 @@ module.exports = function(KEY, exec){
 };
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(44)
@@ -31297,7 +31297,7 @@ module.exports = function(TO_STRING){
 };
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
@@ -31308,7 +31308,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var anObject = __webpack_require__(24)
@@ -31320,7 +31320,7 @@ module.exports = __webpack_require__(12).getIterator = function(it){
 };
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31328,11 +31328,11 @@ module.exports = __webpack_require__(12).getIterator = function(it){
 var ctx         = __webpack_require__(37)
   , $export     = __webpack_require__(16)
   , toObject    = __webpack_require__(31)
-  , call        = __webpack_require__(86)
-  , isArrayIter = __webpack_require__(83)
-  , toLength    = __webpack_require__(94)
+  , call        = __webpack_require__(87)
+  , isArrayIter = __webpack_require__(84)
+  , toLength    = __webpack_require__(95)
   , getIterFn   = __webpack_require__(46);
-$export($export.S + $export.F * !__webpack_require__(88)(function(iter){ Array.from(iter); }), 'Array', {
+$export($export.S + $export.F * !__webpack_require__(89)(function(iter){ Array.from(iter); }), 'Array', {
   // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
   from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
     var O       = toObject(arrayLike)
@@ -31363,13 +31363,13 @@ $export($export.S + $export.F * !__webpack_require__(88)(function(iter){ Array.f
 
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(79)
-  , step             = __webpack_require__(89)
+var addToUnscopables = __webpack_require__(80)
+  , step             = __webpack_require__(90)
   , Iterators        = __webpack_require__(17)
   , toIObject        = __webpack_require__(21);
 
@@ -31403,35 +31403,35 @@ addToUnscopables('values');
 addToUnscopables('entries');
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.1 Object.assign(target, source)
 var $export = __webpack_require__(16);
 
-$export($export.S + $export.F, 'Object', {assign: __webpack_require__(91)});
+$export($export.S + $export.F, 'Object', {assign: __webpack_require__(92)});
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
 var toObject = __webpack_require__(31);
 
-__webpack_require__(92)('keys', function($keys){
+__webpack_require__(93)('keys', function($keys){
   return function keys(it){
     return $keys(toObject(it));
   };
 });
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports) {
 
 
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31448,10 +31448,10 @@ var $              = __webpack_require__(13)
   , setToStringTag = __webpack_require__(30)
   , uid            = __webpack_require__(45)
   , wks            = __webpack_require__(14)
-  , keyOf          = __webpack_require__(90)
-  , $names         = __webpack_require__(82)
-  , enumKeys       = __webpack_require__(81)
-  , isArray        = __webpack_require__(84)
+  , keyOf          = __webpack_require__(91)
+  , $names         = __webpack_require__(83)
+  , enumKeys       = __webpack_require__(82)
+  , isArray        = __webpack_require__(85)
   , anObject       = __webpack_require__(24)
   , toIObject      = __webpack_require__(21)
   , createDesc     = __webpack_require__(29)
@@ -31664,18 +31664,18 @@ setToStringTag(Math, 'Math', true);
 setToStringTag(global.JSON, 'JSON', true);
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(97);
+__webpack_require__(98);
 var Iterators = __webpack_require__(17);
 Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31686,10 +31686,10 @@ exports.push([module.i, "\n.stepper__wrapper .card {\n    box-shadow: inherit;\n
 
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31700,10 +31700,10 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31714,24 +31714,10 @@ exports.push([module.i, "\n.productos .container {\n  padding: 0;\n}\n", ""]);
 
 
 /***/ }),
-/* 106 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
 /* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31745,7 +31731,7 @@ exports.push([module.i, "\n", ""]);
 /* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31759,7 +31745,7 @@ exports.push([module.i, "\n", ""]);
 /* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31773,7 +31759,7 @@ exports.push([module.i, "\n", ""]);
 /* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31787,21 +31773,7 @@ exports.push([module.i, "\n", ""]);
 /* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.ig-floating-button {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin-right: 22px;\n    /*margin-bottom: 90px;*/\n    transition-duration: 50ms !important;\n    -webkit-animation-duration: 500ms;\n            animation-duration: 500ms;\n}\n\n.ig-floating-button-main {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin: 15px;\n    transition-duration: 500ms;\n    z-index: 10;\n}\n\n.ig-floating-button-main:hover {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg);\n    transition-duration: 500ms;\n}\n\n.ig-floating-button-container {\n    position: fixed;\n    background-color: transparent;\n    /*background-color: #323213;*/\n    padding: 40px;\n    right: 0;\n    top: 0;\n    z-index: 0;\n    height: 100%;\n}\n\n/*.ig-rotator {\n    transform: rotate(360deg);\n    transition-duration: 500ms;\n}*/\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 112 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31812,10 +31784,24 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
+/* 112 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.ig-floating-button {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin-right: 22px;\n    /*margin-bottom: 90px;*/\n    transition-duration: 50ms !important;\n    -webkit-animation-duration: 500ms;\n            animation-duration: 500ms;\n}\n\n.ig-floating-button-main {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin: 15px;\n    transition-duration: 500ms;\n    z-index: 10;\n}\n\n.ig-floating-button-main:hover {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg);\n    transition-duration: 500ms;\n}\n\n.ig-floating-button-container {\n    position: fixed;\n    background-color: transparent;\n    /*background-color: #323213;*/\n    padding: 40px;\n    right: 0;\n    top: 0;\n    z-index: 0;\n    height: 100%;\n}\n\n/*.ig-rotator {\n    transform: rotate(360deg);\n    transition-duration: 500ms;\n}*/\n", ""]);
+
+// exports
+
+
+/***/ }),
 /* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31829,12 +31815,12 @@ exports.push([module.i, "\n", ""]);
 /* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "\n.fixindex {\n    z-index: 7 !important;\n}\n", ""]);
+exports.push([module.i, "\n", ""]);
 
 // exports
 
@@ -31843,7 +31829,7 @@ exports.push([module.i, "\n.fixindex {\n    z-index: 7 !important;\n}\n", ""]);
 /* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31857,12 +31843,12 @@ exports.push([module.i, "\n", ""]);
 /* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "\n", ""]);
+exports.push([module.i, "\n.fixindex {\n    z-index: 7 !important;\n}\n", ""]);
 
 // exports
 
@@ -31871,7 +31857,7 @@ exports.push([module.i, "\n", ""]);
 /* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31885,12 +31871,12 @@ exports.push([module.i, "\n", ""]);
 /* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "\n.text-xs-left {\n    text-align: center !important;\n}\n", ""]);
+exports.push([module.i, "\n", ""]);
 
 // exports
 
@@ -31899,7 +31885,7 @@ exports.push([module.i, "\n.text-xs-left {\n    text-align: center !important;\n
 /* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31913,7 +31899,21 @@ exports.push([module.i, "\n", ""]);
 /* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.text-xs-left {\n    text-align: center !important;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31924,10 +31924,24 @@ exports.push([module.i, "\n", ""]);
 
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(1)(undefined);
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
 // imports
 
 
@@ -31938,7 +31952,7 @@ exports.push([module.i, "\n  .main {\n    width: 100% !important;\n  }\n", ""]);
 
 
 /***/ }),
-/* 122 */
+/* 124 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -32128,7 +32142,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 123 */
+/* 125 */
 /***/ (function(module, exports) {
 
 
@@ -32223,16 +32237,16 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 124 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(103);
+var content = __webpack_require__(104);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32249,16 +32263,16 @@ if(false) {
 }
 
 /***/ }),
-/* 125 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(104);
+var content = __webpack_require__(105);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32275,16 +32289,16 @@ if(false) {
 }
 
 /***/ }),
-/* 126 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(105);
+var content = __webpack_require__(106);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32301,16 +32315,16 @@ if(false) {
 }
 
 /***/ }),
-/* 127 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(106);
+var content = __webpack_require__(107);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32327,16 +32341,16 @@ if(false) {
 }
 
 /***/ }),
-/* 128 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(107);
+var content = __webpack_require__(108);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32353,16 +32367,16 @@ if(false) {
 }
 
 /***/ }),
-/* 129 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(108);
+var content = __webpack_require__(109);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32379,16 +32393,16 @@ if(false) {
 }
 
 /***/ }),
-/* 130 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(109);
+var content = __webpack_require__(110);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32405,16 +32419,16 @@ if(false) {
 }
 
 /***/ }),
-/* 131 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(110);
+var content = __webpack_require__(111);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32431,16 +32445,16 @@ if(false) {
 }
 
 /***/ }),
-/* 132 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(111);
+var content = __webpack_require__(112);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32457,16 +32471,16 @@ if(false) {
 }
 
 /***/ }),
-/* 133 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(112);
+var content = __webpack_require__(113);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32483,16 +32497,42 @@ if(false) {
 }
 
 /***/ }),
-/* 134 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(113);
+var content = __webpack_require__(114);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3ea4c643&file=slot-input.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3ea4c643&file=slot-input.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 137 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(115);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32509,16 +32549,16 @@ if(false) {
 }
 
 /***/ }),
-/* 135 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(114);
+var content = __webpack_require__(116);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32535,16 +32575,16 @@ if(false) {
 }
 
 /***/ }),
-/* 136 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(115);
+var content = __webpack_require__(117);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32561,16 +32601,16 @@ if(false) {
 }
 
 /***/ }),
-/* 137 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(116);
+var content = __webpack_require__(118);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32587,16 +32627,16 @@ if(false) {
 }
 
 /***/ }),
-/* 138 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(117);
+var content = __webpack_require__(119);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32613,16 +32653,16 @@ if(false) {
 }
 
 /***/ }),
-/* 139 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(118);
+var content = __webpack_require__(120);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32639,16 +32679,16 @@ if(false) {
 }
 
 /***/ }),
-/* 140 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(119);
+var content = __webpack_require__(121);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32665,16 +32705,16 @@ if(false) {
 }
 
 /***/ }),
-/* 141 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(120);
+var content = __webpack_require__(122);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32691,16 +32731,16 @@ if(false) {
 }
 
 /***/ }),
-/* 142 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(121);
+var content = __webpack_require__(123);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
+var update = __webpack_require__(1)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -32717,109 +32757,115 @@ if(false) {
 }
 
 /***/ }),
-/* 143 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div v-if=\"formato\">\n        <v-container class=\"white\">\n            <v-layout>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-layout>\n            <v-layout wrap>\n                <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand class=\"white\">\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        return-object\n                                        persistent-hint\n                                        dark\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Texto de ayuda\"\n                                        v-model=\"item.help\"\n                                        hint=\"Ayuda textual que acompaña el campo\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia mínima\"\n                                        v-model=\"item.referencia_minima\"\n                                        hint=\"Texto de referencia minima para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia máxima\"\n                                        v-model=\"item.referencia_maxima\"\n                                        hint=\"Texto de referencia máxima para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Unidades\"\n                                        v-model=\"item.unidades\"\n                                        hint=\"Medida en unidades de el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'\"\n                                        :multi-line=\"item.tipo.name == 'textarea'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model_text\"\n                                        :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                        persistent-hint\n                                    ></v-text-field>\n                                    <div v-else-if=\"item.tipo.name == 'select'\">\n                                        <v-layout>\n                                            <v-flex md10 xs10>\n                                                <v-select\n                                                    :label=\"item.nombre\"\n                                                    :hint=\"item.help\"\n                                                    v-model=\"item.model_text\"\n                                                    :items=\"item.choices_select\"\n                                                    :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                    item-value=\"text\"\n                                                    persistent-hint\n                                                ></v-select>\n                                            </v-flex>\n                                            <v-flex md2 xs2>\n                                                <v-btn\n                                                    v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                    class=\"green--text darken-1\" icon=\"icon\"\n                                                    @click.native.stop=\"dialog = true; lastItem = item\">\n                                                    <v-icon>add</v-icon>\n                                                </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-checkbox\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_check\"\n                                                  :value=\"choice.id\"\n                                                  primary\n                                                ></v-checkbox>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-radio\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_text\"\n                                                  :value=\"choice.name\"\n                                                  primary\n                                                ></v-radio>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
-
-/***/ }),
-/* 144 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n            <v-toolbar-side-icon @click.native.stop=\"sidebar = !sidebar\"></v-toolbar-side-icon>\n            <v-toolbar-title>Dasalud</v-toolbar-title>\n        </v-toolbar>\n        <main>\n            <v-sidebar v-model=\"sidebar\" drawer class=\"mt-0 scroll-y\" :mobile-break-point=\"576\">\n                <v-list dense>\n                    <v-list-item>\n                        <v-list-tile href=\"/\">\n                            <v-list-tile-avatar>\n                                <v-icon>accessibility</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Dashboard</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>people</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Pacientes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/pacientes/page/1/\">\n                                <v-list-tile-title>Lista Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/add/paciente/\">\n                                <v-list-tile-title>Crear Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>today</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Agendas</v-list-tile-title>\n                                </v-list-tile-content>\n                                    <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/\">\n                                <v-list-tile-title>Agenda del Dia</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/doctor/\">\n                                <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>open_in_browser</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenes/\">\n                                <v-list-tile-title>Lista de Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenesReporte/\">\n                                <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/portal_empresas/\">\n                            <v-list-tile-avatar>\n                                <v-icon>search</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Buscar Orden</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-divider light></v-divider>\n                    <v-subheader>Utilidades</v-subheader>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/medicos/\">\n                                <v-list-tile-title>Medicos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/instituciones/\">\n                                <v-list-tile-title>Instituciones</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>business_center</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Empresas y Planes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/empresas/\">\n                                <v-list-tile-title>Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/planes/\">\n                                <v-list-tile-title>Planes de Salud</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/procedimientos/\">\n                                <v-list-tile-title>Procedimientos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/plantillas/\">\n                                <v-list-tile-title>Plantillas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/servicios/\">\n                                <v-list-tile-title>Servicios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Usuarios</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuarios/\">\n                                <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuariosEmpresa/\">\n                                <v-list-tile-title>Usuarios Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-divider light></v-divider>\n                    <v-subheader>Laboratorio</v-subheader>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"#/ordenes_laboratorios/\">\n                            <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Administración</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/bacteriologos/\">\n                              <v-list-tile-title>Bacteriologos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/laboratorios/\">\n                              <v-list-tile-title>Laboratorios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/equipos/\">\n                                <v-list-tile-title>Equipos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/tecnicas/\">\n                                <v-list-tile-title>Tecnicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/secciones_trabajo/\">\n                                <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/reactivos/\">\n                                <v-list-tile-title>Reactivos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/caracteristicas/\">\n                                <v-list-tile-title>Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/especificacion_caracteristicas/\">\n                                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                </v-list>\n            </v-sidebar>\n            <div class=\"main\">\n                <v-content class=\"grey lighten-4\">\n                    <v-container fluid>\n                        <br>\n                        <v-spacer></v-spacer>\n                        <slot></slot>\n                    </v-container>\n                </v-content>\n            </div>\n        </main>\n    </div>\n";
-
-/***/ }),
-/* 145 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\n";
-
-/***/ }),
 /* 146 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <v-data-table\n            :pagination.sync=\"pagination\"\n            v-bind:headers=\"headers\"\n            :items=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            :rowsPerPage=\"10\"\n            :filter=\"filter\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"headers\" scope=\"props\">\n                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n            </template>\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                    <td class=\"text-xs-center\" v-else>\n                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                            <v-icon light>mode_edit</v-icon>\n                        </v-btn>\n                    </td>\n                </template>\n            </template>\n        </v-data-table>\n        <v-progress-linear indeterminate class=\"red--text\" height=\"3\" :active=\"loading\"></v-progress-linear>\n    </v-card>\n";
+module.exports = "\n    <div v-if=\"formato\">\n        <v-container class=\"white\">\n            <v-layout>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-layout>\n            <v-layout wrap>\n                <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand class=\"white\">\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        return-object\n                                        persistent-hint\n                                        dark\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <div v-if=\"item.tipo.name != 'title'\">\n                                        <v-text-field\n                                          label=\"Texto de ayuda\"\n                                          v-model=\"item.help\"\n                                            hint=\"Ayuda textual que acompaña el campo\"\n                                        ></v-text-field>\n                                        <br>\n                                        <v-layout wrap>\n                                            <v-flex md12><v-subheader>Referencias</v-subheader></v-flex>\n                                            <v-flex md6>\n                                                <v-subheader>Hombre</v-subheader>\n                                                <v-text-field\n                                                    label=\"Valores de referencia mínima (HOMBRE)\"\n                                                    v-model=\"item.referencias.M.minima\"\n                                                    type=\"number\"\n                                                    hint=\"Texto de referencia minima para el momento de poner el resultado (HOMBRE)\"\n                                                ></v-text-field>\n                                                <br>\n                                                <v-text-field\n                                                    label=\"Valores de referencia máxima (HOMBRE)\"\n                                                    v-model=\"item.referencias.M.maxima\"\n                                                    hint=\"Texto de referencia máxima para el momento de poner el resultado (HOMBRE)\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex md6>\n                                                <v-subheader>Mujer</v-subheader>\n                                                <v-text-field\n                                                    label=\"Valores de referencia mínima (MUJER)\"\n                                                    v-model=\"item.referencias.F.minima\"\n                                                    hint=\"Texto de referencia minima para el momento de poner el resultado (MUJER)\"\n                                                ></v-text-field>\n                                                <br>\n                                                <v-text-field\n                                                    label=\"Valores de referencia máxima (MUJER)\"\n                                                    v-model=\"item.referencias.F.maxima\"\n                                                    hint=\"Texto de referencia máxima para el momento de poner el resultado (MUJER)\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                        </v-layout>\n                                        <br>\n                                        <v-text-field\n                                            label=\"Unidades\"\n                                            v-model=\"item.unidades\"\n                                            hint=\"Medida en unidades de el resultado\"\n                                        ></v-text-field>\n                                        <br>\n                                        <v-text-field\n                                            v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'\"\n                                            :multi-line=\"item.tipo.name == 'textarea'\"\n                                            :label=\"item.nombre\"\n                                            :hint=\"item.help\"\n                                            v-model=\"item.model_text\"\n                                            :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                            persistent-hint\n                                        ></v-text-field>\n                                        <div v-else-if=\"item.tipo.name == 'select'\">\n                                            <v-layout>\n                                                <v-flex md10 xs10>\n                                                    <v-select\n                                                        :label=\"item.nombre\"\n                                                        :hint=\"item.help\"\n                                                        v-model=\"item.model_text\"\n                                                        :items=\"item.choices\"\n                                                        :rules=\"[item.choices.length >= 1 || 'Debes escoger una caracteristica', item.choices.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                        item-value=\"text\"\n                                                        :return-object=\"true\"\n                                                        persistent-hint\n                                                    ></v-select>\n                                                </v-flex>\n                                                <v-flex md2 xs2>\n                                                    <v-btn\n                                                        v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                        class=\"green--text darken-1\" icon=\"icon\"\n                                                        @click.native.stop=\"dialog = true; lastItem = item\">\n                                                        <v-icon>add</v-icon>\n                                                    </v-btn>\n                                                </v-flex>\n                                            </v-layout>\n                                            <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                                <v-flex xs7 md7>\n                                                    <v-text-field\n                                                      label=\"Texto para mostrar\"\n                                                      v-model=\"choice.text\"\n                                                    ></v-text-field>\n                                                </v-flex>\n                                                <v-flex xs5 md5>\n                                                    <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                        <v-icon>delete</v-icon>\n                                                    </v-btn>\n                                                    <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                        <v-icon>add</v-icon>\n                                                    </v-btn>\n                                                </v-flex>\n                                            </v-layout>\n                                        </div>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ }),
 /* 147 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Bacteriologos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n            <v-toolbar-side-icon @click.native.stop=\"sidebar = !sidebar\"></v-toolbar-side-icon>\n            <v-toolbar-title>Dasalud</v-toolbar-title>\n        </v-toolbar>\n        <main>\n            <v-sidebar v-model=\"sidebar\" drawer class=\"mt-0 scroll-y\" :mobile-break-point=\"576\">\n                <v-list dense>\n                    <v-list-item>\n                        <v-list-tile href=\"/\">\n                            <v-list-tile-avatar>\n                                <v-icon>accessibility</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Dashboard</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>people</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Pacientes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/pacientes/page/1/\">\n                                <v-list-tile-title>Lista Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/add/paciente/\">\n                                <v-list-tile-title>Crear Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>today</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Agendas</v-list-tile-title>\n                                </v-list-tile-content>\n                                    <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/\">\n                                <v-list-tile-title>Agenda del Dia</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/doctor/\">\n                                <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>open_in_browser</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenes/\">\n                                <v-list-tile-title>Lista de Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenesReporte/\">\n                                <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/portal_empresas/\">\n                            <v-list-tile-avatar>\n                                <v-icon>search</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Buscar Orden</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-divider light></v-divider>\n                    <v-subheader>Utilidades</v-subheader>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/medicos/\">\n                                <v-list-tile-title>Medicos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/instituciones/\">\n                                <v-list-tile-title>Instituciones</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>business_center</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Empresas y Planes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/empresas/\">\n                                <v-list-tile-title>Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/planes/\">\n                                <v-list-tile-title>Planes de Salud</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/procedimientos/\">\n                                <v-list-tile-title>Procedimientos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/plantillas/\">\n                                <v-list-tile-title>Plantillas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/servicios/\">\n                                <v-list-tile-title>Servicios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Usuarios</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuarios/\">\n                                <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuariosEmpresa/\">\n                                <v-list-tile-title>Usuarios Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-divider light></v-divider>\n                    <v-subheader>Laboratorio</v-subheader>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"#/ordenes_laboratorios/\">\n                            <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Administración</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/bacteriologos/\">\n                              <v-list-tile-title>Bacteriologos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/laboratorios/\">\n                              <v-list-tile-title>Laboratorios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/equipos/\">\n                                <v-list-tile-title>Equipos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/tecnicas/\">\n                                <v-list-tile-title>Tecnicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/secciones_trabajo/\">\n                                <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/reactivos/\">\n                                <v-list-tile-title>Reactivos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/caracteristicas/\">\n                                <v-list-tile-title>Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/especificacion_caracteristicas/\">\n                                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                </v-list>\n            </v-sidebar>\n            <div class=\"main\">\n                <v-content class=\"grey lighten-4\">\n                    <v-container fluid>\n                        <br>\n                        <v-spacer></v-spacer>\n                        <slot></slot>\n                    </v-container>\n                </v-content>\n            </div>\n        </main>\n    </div>\n";
 
 /***/ }),
 /* 148 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Caracteristicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n\n";
 
 /***/ }),
 /* 149 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Equipos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div class=\"\">\n        <slot></slot>\n        <div v-show=\"false\">\n          <slot name=\"input\"></slot>\n        </div>\n    </div>\n";
 
 /***/ }),
 /* 150 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Especificacion Caracteristica\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['nombre', 'caracteristica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <v-data-table\n            :pagination.sync=\"pagination\"\n            v-bind:headers=\"headers\"\n            :items=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            :rowsPerPage=\"10\"\n            :filter=\"filter\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"headers\" scope=\"props\">\n                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n            </template>\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                    <td class=\"text-xs-center\" v-else>\n                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                            <v-icon light>mode_edit</v-icon>\n                        </v-btn>\n                    </td>\n                </template>\n            </template>\n        </v-data-table>\n        <v-progress-linear indeterminate class=\"red--text\" height=\"3\" :active=\"loading\"></v-progress-linear>\n    </v-card>\n";
 
 /***/ }),
 /* 151 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div v-if=\"formato\">\n        <v-container>\n            <v-layout>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-layout>\n            <v-layout wrap>\n                <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand class=\"white\">\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        return-object\n                                        persistent-hint\n                                        dark\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Texto de ayuda\"\n                                        v-model=\"item.help\"\n                                        hint=\"Ayuda textual que acompaña el campo\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia\"\n                                        v-model=\"item.referencia\"\n                                        hint=\"Texto de referencia para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Unidades\"\n                                        v-model=\"item.unidades\"\n                                        hint=\"Medida en unidades de el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                        :multi-line=\"item.tipo.name == 'textarea'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model_text\"\n                                        persistent-hint\n                                    ></v-text-field>\n                                    <div v-else-if=\"item.tipo.name == 'select'\">\n                                        <v-layout>\n                                            <v-flex md10 xs10>\n                                                <v-select\n                                                    :label=\"item.nombre\"\n                                                    :hint=\"item.help\"\n                                                    v-model=\"item.model_text\"\n                                                    :items=\"item.choices_select\"\n                                                    :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                    item-value=\"text\"\n                                                    persistent-hint\n                                                ></v-select>\n                                            </v-flex>\n                                            <v-flex md2 xs2>\n                                                <v-btn\n                                                    v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                    class=\"green--text darken-1\" icon=\"icon\"\n                                                    @click.native.stop=\"dialog = true; lastItem = item\">\n                                                    <v-icon>add</v-icon>\n                                                </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-checkbox\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_check\"\n                                                  :value=\"choice.id\"\n                                                  primary\n                                                ></v-checkbox>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-radio\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_text\"\n                                                  :value=\"choice.name\"\n                                                  primary\n                                                ></v-radio>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Bacteriologos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 152 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo', {href: '/formatos/:id/'}]\"\n              @selectedrow=\"customEventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n      <v-container>\n          <v-stepper v-model=\"stepper\" non-linear>\n              <v-stepper-header class=\"white\">\n                  <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"2\" :rules=\"[() => false]\" @click.native=\"\" :complete=\"false\">Formato</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"3\" @click.native=\"thirdStepClick\">Insumos y Reactivos</v-stepper-step>\n              </v-stepper-header>\n              <v-stepper-content step=\"1\" class=\"white\">\n                  <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"_eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  >\n                      <v-btn flat @click.native=\"stepper = 3\" dark v-if=\"validateFirstStep()\">\n                          Continuar\n                      </v-btn>\n                  </ig-form>\n              </v-stepper-content>\n              <v-stepper-content step=\"2\" class=\"white\">\n                  <!--<ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>-->\n              </v-stepper-content>\n              <v-stepper-content step=\"3\" class=\"white\">\n                  <v-card>\n                      <v-card-text>\n                          <v-layout>\n                              <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                              </v-flex>\n                              <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                              </v-flex>\n                          </v-layout>\n                      </v-card-text>\n                      <!-- <v-card-row actions>\n                          <v-btn primary @click.native=\"stepper = 1\" light>Continue</v-btn>\n                          <v-btn flat dark>Cancel</v-btn>\n                      </v-card-row> -->\n                  </v-card>\n              </v-stepper-content>\n          </v-stepper>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Caracteristicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 153 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes con laboratorios\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                            :pagination.sync=\"pagination\"\n                            :total-items=\"totalItems\"\n                            :loading=\"loading\"\n                            v-bind:headers=\"headers\"\n                            :items=\"elements\"\n                            v-bind:search=\"buscador\"\n                            :rows-per-page-items=\"[10]\"\n                            :filter=\"filter\"\n                            rows-per-page-text=\"Filas por Página\"\n                            no-results-text=\"No se encontraron resultados\">\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <template v-for=\"field of fields\">\n                                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                    <td class=\"text-xs-center\" v-else>\n                                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                            <v-icon light>mode_edit</v-icon>\n                                        </v-btn>\n                                    </td>\n                                </template>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <br>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Equipos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 154 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Productos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tipo_display', 'cantidad']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Especificacion Caracteristica\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['nombre', 'caracteristica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 155 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"\">\n        <v-container v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                light>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-row actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                          <v-btn\n                            :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                            flat\n                            @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                              Guardar\n                          </v-btn>\n                        </v-card-row>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\">\n                <v-card>\n                    <v-card-row>\n                        <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    </v-card-row>\n                    <v-card-row actions>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-card-row>\n                        <v-toolbar class=\"cyan darken-4\">\n                            <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                                <v-icon class=\"white--text\">close</v-icon>\n                            </v-btn>\n                            <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                            <v-btn\n                              class=\"white--text\" flat=\"flat\"\n                              @click.native=\"preview = false\">\n                                Imprimir\n                            </v-btn>\n                        </v-toolbar>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-container>\n                          <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                              <div class=\"preloader\">\n                                  <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                              </div>\n                          </div>\n                          <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas>\n                        </v-container>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n        </v-container>\n        <v-container v-else>\n           <h5>403 Forbidden</h5>\n           <br>\n           <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items\">\n            <template slot=\"child\">\n                <v-btn floating info small @click.native.stop=\"dialog = true\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon light>check</v-icon>\n                </v-btn>\n                <v-btn floating warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon light>fingerprint</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon light>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+module.exports = "\n    <div v-if=\"formato\">\n        <v-container>\n            <v-layout>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-layout>\n            <v-layout wrap>\n                <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand class=\"white\">\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        return-object\n                                        persistent-hint\n                                        dark\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Texto de ayuda\"\n                                        v-model=\"item.help\"\n                                        hint=\"Ayuda textual que acompaña el campo\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia\"\n                                        v-model=\"item.referencia\"\n                                        hint=\"Texto de referencia para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Unidades\"\n                                        v-model=\"item.unidades\"\n                                        hint=\"Medida en unidades de el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                        :multi-line=\"item.tipo.name == 'textarea'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model_text\"\n                                        persistent-hint\n                                    ></v-text-field>\n                                    <div v-else-if=\"item.tipo.name == 'select'\">\n                                        <v-layout>\n                                            <v-flex md10 xs10>\n                                                <v-select\n                                                    :label=\"item.nombre\"\n                                                    :hint=\"item.help\"\n                                                    v-model=\"item.model_text\"\n                                                    :items=\"item.choices_select\"\n                                                    :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                    item-value=\"text\"\n                                                    persistent-hint\n                                                ></v-select>\n                                            </v-flex>\n                                            <v-flex md2 xs2>\n                                                <v-btn\n                                                    v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                    class=\"green--text darken-1\" icon=\"icon\"\n                                                    @click.native.stop=\"dialog = true; lastItem = item\">\n                                                    <v-icon>add</v-icon>\n                                                </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-checkbox\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_check\"\n                                                  :value=\"choice.id\"\n                                                  primary\n                                                ></v-checkbox>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-radio\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_text\"\n                                                  :value=\"choice.name\"\n                                                  primary\n                                                ></v-radio>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ }),
 /* 156 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-table\n                    table-title=\"Areas\"\n                    :headers=\"headers\"\n                    :data=\"elements\"\n                    :fields=\"['codigo', 'descripcion']\"\n                    @selectedrow=\"eventUpdatedForm\"\n                    :loading=\"loading\"\n                    ></ig-table>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <br>\n        <!-- <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-form\n                    :fields=\"fields\"\n                    :url=\"urlForm\"\n                    @showsnack=\"showSnackBar\"\n                    @objectcreated=\"eventCreatedObject\"\n                    @clearselected=\"selected = false\"\n                    :selected=\"selected\"\n                    >\n                    </ig-form>\n                </v-flex>\n            </v-layout>\n            <br>\n        </v-container> -->\n        <br>\n        <v-container>\n            <v-stepper v-model=\"stepper\">\n                <v-stepper-header class=\"white\">\n                    <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Área</v-stepper-step>\n                    <v-divider></v-divider>\n                    <v-stepper-step step=\"2\" @click.native=\"secondStepClick\">Plantilla de Gasto</v-stepper-step>\n                </v-stepper-header>\n                <v-stepper-content step=\"1\" class=\"white\">\n                    <ig-form\n                    :fields=\"fields\"\n                    :url=\"urlForm\"\n                    @showsnack=\"showSnackBar\"\n                    @objectcreated=\"eventCreatedObject\"\n                    @clearselected=\"selected = false\"\n                    :selected=\"selected\"\n                    >\n                        <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                            Continuar\n                        </v-btn>\n                    </ig-form>\n                </v-stepper-content>\n                <v-stepper-content step=\"2\" class=\"white\">\n                    <v-card>\n                        <v-card-title>Lista de insumos por área</v-card-title>\n                        <v-card-row>\n                            <v-card-text>\n                                <ig-producto :area=\"area\" :plantillas=\"plantillas\"></ig-producto>\n                            </v-card-text>\n                        </v-card-row>\n                    </v-card>\n                </v-stepper-content>\n            </v-stepper>\n        </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']\"\n              @selectedrow=\"customEventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n      <v-container>\n          <v-stepper v-model=\"stepper\" non-linear>\n              <v-stepper-header class=\"white\">\n                  <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"2\" @click.native=\"secondStepClick\" :complete=\"stepper > 2\">Formato</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"3\" @click.native=\"thirdStepClick\">Insumos y Reactivos</v-stepper-step>\n              </v-stepper-header>\n              <v-stepper-content step=\"1\" class=\"white\">\n                  <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"_eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  >\n                      <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                          Continuar\n                      </v-btn>\n                  </ig-form>\n              </v-stepper-content>\n              <v-stepper-content step=\"2\" class=\"white\">\n                  <ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>\n              </v-stepper-content>\n              <v-stepper-content step=\"3\" class=\"white\">\n                  <v-card>\n                      <v-card-text>\n                          <v-layout>\n                              <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                              </v-flex>\n                              <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                              </v-flex>\n                          </v-layout>\n                      </v-card-text>\n                      <!-- <v-card-row actions>\n                          <v-btn primary @click.native=\"stepper = 1\" light>Continue</v-btn>\n                          <v-btn flat dark>Cancel</v-btn>\n                      </v-card-row> -->\n                  </v-card>\n              </v-stepper-content>\n          </v-stepper>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 157 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Tecnicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes con laboratorios\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                            :pagination.sync=\"pagination\"\n                            :total-items=\"totalItems\"\n                            :loading=\"loading\"\n                            v-bind:headers=\"headers\"\n                            :items=\"elements\"\n                            v-bind:search=\"buscador\"\n                            :rows-per-page-items=\"[10]\"\n                            :filter=\"filter\"\n                            rows-per-page-text=\"Filas por Página\"\n                            no-results-text=\"No se encontraron resultados\">\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <template v-for=\"field of fields\">\n                                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                    <td class=\"text-xs-center\" v-else>\n                                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                            <v-icon light>mode_edit</v-icon>\n                                        </v-btn>\n                                    </td>\n                                </template>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <br>\n    </div>\n";
 
 /***/ }),
 /* 158 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes en Recepción\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo, ' | ') }}</td>\n                                <td>\n                                    <v-btn floating small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-row>\n                    <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                </v-card-row>\n                <v-card-row v-if=\"hasRecepcion\">\n                    <v-card-text>\n                        <v-card horizontal flat>\n                            <v-card-row :img=\"recepcion.paciente.foto\" height=\"325px\"></v-card-row>\n                            <v-card-column>\n                                <v-card-row height=\"100px\" class=\"\">\n                                    <v-card-text>\n                                      <v-layout>\n                                        <v-flex md6>\n                                            <strong>Nombre del paciente</strong>\n                                            <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                            <br>\n                                            <strong>Identificación</strong>\n                                            <div>{{ recepcion.paciente.cedula }}</div>\n                                            <br>\n                                            <strong>Edad del paciente</strong>\n                                            <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                        </v-flex>\n                                        <v-flex md6>\n                                            <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                        </v-flex>\n                                      </v-layout>\n                                    </v-card-text>\n                                </v-card-row>\n                                <v-card-row actions class=\"cyan darken-1\">\n                                    <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                        <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                    </v-btn>\n                                </v-card-row>\n                            </v-card-column>\n                        </v-card>\n                    </v-card-text>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Productos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tipo_display', 'cantidad']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
 
 /***/ }),
 /* 159 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"\">\n        <v-container v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                light>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-row actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                          <v-btn\n                            :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                            flat\n                            @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                              Guardar\n                          </v-btn>\n                        </v-card-row>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\">\n                <v-card>\n                    <v-card-row>\n                        <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    </v-card-row>\n                    <v-card-row actions>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-card-row>\n                        <v-toolbar class=\"cyan darken-4\">\n                            <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                                <v-icon class=\"white--text\">close</v-icon>\n                            </v-btn>\n                            <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                            <v-btn\n                              class=\"white--text\" flat=\"flat\"\n                              @click.native=\"preview = false\">\n                                Imprimir\n                            </v-btn>\n                        </v-toolbar>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-container>\n                          <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                              <div class=\"preloader\">\n                                  <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                              </div>\n                          </div>\n                          <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas>\n                        </v-container>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n        </v-container>\n        <v-container v-else>\n           <h5>403 Forbidden</h5>\n           <br>\n           <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn floating info small @click.native.stop=\"dialog = true\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon light>check</v-icon>\n                </v-btn>\n                <v-btn floating warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon light>fingerprint</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon light>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+
+/***/ }),
+/* 160 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-table\n                    table-title=\"Areas\"\n                    :headers=\"headers\"\n                    :data=\"elements\"\n                    :fields=\"['codigo', 'descripcion']\"\n                    @selectedrow=\"eventUpdatedForm\"\n                    :loading=\"loading\"\n                    ></ig-table>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <br>\n        <!-- <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-form\n                    :fields=\"fields\"\n                    :url=\"urlForm\"\n                    @showsnack=\"showSnackBar\"\n                    @objectcreated=\"eventCreatedObject\"\n                    @clearselected=\"selected = false\"\n                    :selected=\"selected\"\n                    >\n                    </ig-form>\n                </v-flex>\n            </v-layout>\n            <br>\n        </v-container> -->\n        <br>\n        <v-container>\n            <v-stepper v-model=\"stepper\">\n                <v-stepper-header class=\"white\">\n                    <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Área</v-stepper-step>\n                    <v-divider></v-divider>\n                    <v-stepper-step step=\"2\" @click.native=\"secondStepClick\">Plantilla de Gasto</v-stepper-step>\n                </v-stepper-header>\n                <v-stepper-content step=\"1\" class=\"white\">\n                    <ig-form\n                    :fields=\"fields\"\n                    :url=\"urlForm\"\n                    @showsnack=\"showSnackBar\"\n                    @objectcreated=\"eventCreatedObject\"\n                    @clearselected=\"selected = false\"\n                    :selected=\"selected\"\n                    >\n                        <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                            Continuar\n                        </v-btn>\n                    </ig-form>\n                </v-stepper-content>\n                <v-stepper-content step=\"2\" class=\"white\">\n                    <v-card>\n                        <v-card-title>Lista de insumos por área</v-card-title>\n                        <v-card-row>\n                            <v-card-text>\n                                <ig-producto :area=\"area\" :plantillas=\"plantillas\"></ig-producto>\n                            </v-card-text>\n                        </v-card-row>\n                    </v-card>\n                </v-stepper-content>\n            </v-stepper>\n        </v-container>\n    </div>\n";
+
+/***/ }),
+/* 161 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Tecnicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes en Recepción\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo, ' | ') }}</td>\n                                <td>\n                                    <v-btn floating small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-row>\n                    <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                </v-card-row>\n                <v-card-row v-if=\"hasRecepcion\">\n                    <v-card-text>\n                        <v-card horizontal flat>\n                            <v-card-row :img=\"recepcion.paciente.foto\" height=\"325px\"></v-card-row>\n                            <v-card-column>\n                                <v-card-row height=\"100px\" class=\"\">\n                                    <v-card-text>\n                                      <v-layout>\n                                        <v-flex md6>\n                                            <strong>Nombre del paciente</strong>\n                                            <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                            <br>\n                                            <strong>Identificación</strong>\n                                            <div>{{ recepcion.paciente.cedula }}</div>\n                                            <br>\n                                            <strong>Edad del paciente</strong>\n                                            <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                        </v-flex>\n                                        <v-flex md6>\n                                            <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                        </v-flex>\n                                      </v-layout>\n                                    </v-card-text>\n                                </v-card-row>\n                                <v-card-row actions class=\"cyan darken-1\">\n                                    <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                        <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                    </v-btn>\n                                </v-card-row>\n                            </v-card-column>\n                        </v-card>\n                    </v-card-text>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+
+/***/ }),
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(128)
+__webpack_require__(130)
 __vue_script__ = __webpack_require__(52)
-__vue_template__ = __webpack_require__(143)
+__vue_template__ = __webpack_require__(146)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32836,13 +32882,36 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 160 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(131)
-__vue_script__ = __webpack_require__(57)
-__vue_template__ = __webpack_require__(147)
+__webpack_require__(136)
+__vue_script__ = __webpack_require__(56)
+__vue_template__ = __webpack_require__(149)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/static/static/laboratorios/components/slot-input.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 165 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(133)
+__vue_script__ = __webpack_require__(58)
+__vue_template__ = __webpack_require__(151)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32859,13 +32928,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 161 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(136)
-__vue_script__ = __webpack_require__(58)
-__vue_template__ = __webpack_require__(148)
+__webpack_require__(139)
+__vue_script__ = __webpack_require__(59)
+__vue_template__ = __webpack_require__(152)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32882,13 +32951,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 162 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(140)
-__vue_script__ = __webpack_require__(59)
-__vue_template__ = __webpack_require__(149)
+__webpack_require__(143)
+__vue_script__ = __webpack_require__(60)
+__vue_template__ = __webpack_require__(153)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32905,13 +32974,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 163 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(141)
-__vue_script__ = __webpack_require__(60)
-__vue_template__ = __webpack_require__(150)
+__webpack_require__(144)
+__vue_script__ = __webpack_require__(61)
+__vue_template__ = __webpack_require__(154)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32928,13 +32997,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 164 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(134)
-__vue_script__ = __webpack_require__(61)
-__vue_template__ = __webpack_require__(151)
+__webpack_require__(137)
+__vue_script__ = __webpack_require__(62)
+__vue_template__ = __webpack_require__(155)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32951,13 +33020,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 165 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(124)
-__vue_script__ = __webpack_require__(62)
-__vue_template__ = __webpack_require__(152)
+__webpack_require__(126)
+__vue_script__ = __webpack_require__(63)
+__vue_template__ = __webpack_require__(156)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32974,13 +33043,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 166 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(138)
-__vue_script__ = __webpack_require__(63)
-__vue_template__ = __webpack_require__(153)
+__webpack_require__(141)
+__vue_script__ = __webpack_require__(64)
+__vue_template__ = __webpack_require__(157)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32997,13 +33066,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 167 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(125)
-__vue_script__ = __webpack_require__(64)
-__vue_template__ = __webpack_require__(154)
+__webpack_require__(127)
+__vue_script__ = __webpack_require__(65)
+__vue_template__ = __webpack_require__(158)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33020,13 +33089,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 168 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(129)
-__vue_script__ = __webpack_require__(65)
-__vue_template__ = __webpack_require__(155)
+__webpack_require__(131)
+__vue_script__ = __webpack_require__(66)
+__vue_template__ = __webpack_require__(159)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33043,13 +33112,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 169 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(130)
-__vue_script__ = __webpack_require__(66)
-__vue_template__ = __webpack_require__(156)
+__webpack_require__(132)
+__vue_script__ = __webpack_require__(67)
+__vue_template__ = __webpack_require__(160)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33066,13 +33135,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 170 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(137)
-__vue_script__ = __webpack_require__(67)
-__vue_template__ = __webpack_require__(157)
+__webpack_require__(140)
+__vue_script__ = __webpack_require__(68)
+__vue_template__ = __webpack_require__(161)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33089,13 +33158,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 171 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(133)
-__vue_script__ = __webpack_require__(68)
-__vue_template__ = __webpack_require__(158)
+__webpack_require__(135)
+__vue_script__ = __webpack_require__(69)
+__vue_template__ = __webpack_require__(162)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33112,7 +33181,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 172 */
+/* 177 */
 /***/ (function(module, exports) {
 
 var g;
@@ -33139,106 +33208,10 @@ module.exports = g;
 
 
 /***/ }),
-/* 173 */
+/* 178 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
-
-/***/ }),
-/* 174 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-// <template lang="html">
-//     <div class="">
-//         <slot></slot>
-//         <div v-show="false">
-//           <slot name="input"></slot>
-//         </div>
-//     </div>
-// </template>
-//
-// <script>
-exports.default = {};
-// </script>
-//
-// <style lang="css">
-// </style>
-//
-
-/***/ }),
-/* 175 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(1)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 176 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(175);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(2)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3ea4c643&file=slot-input.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3ea4c643&file=slot-input.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 177 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div class=\"\">\n        <slot></slot>\n        <div v-show=\"false\">\n          <slot name=\"input\"></slot>\n        </div>\n    </div>\n";
-
-/***/ }),
-/* 178 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(176)
-__vue_script__ = __webpack_require__(174)
-__vue_template__ = __webpack_require__(177)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/static/static/laboratorios/components/slot-input.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
 
 /***/ })
 /******/ ]);

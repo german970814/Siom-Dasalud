@@ -234,7 +234,7 @@ export default {
                         props: {
                             label: 'Resultado', 'item-value': 'text',
                             hint: item.help, 'persistent-hint': true,
-                            items: item.choices_select, 'return-object': true
+                            items: item.choices, 'return-object': true
                         },
                         on: {
                             input: (event) => {

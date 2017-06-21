@@ -37,119 +37,101 @@
                                         required
                                     ></v-text-field>
                                     <br>
-                                    <v-text-field
-                                        label="Texto de ayuda"
-                                        v-model="item.help"
-                                        hint="Ayuda textual que acompaña el campo"
-                                    ></v-text-field>
-                                    <br>
-                                    <v-text-field
-                                        label="Valores de referencia mínima"
-                                        v-model="item.referencia_minima"
-                                        hint="Texto de referencia minima para el momento de poner el resultado"
-                                    ></v-text-field>
-                                    <br>
-                                    <v-text-field
-                                        label="Valores de referencia máxima"
-                                        v-model="item.referencia_maxima"
-                                        hint="Texto de referencia máxima para el momento de poner el resultado"
-                                    ></v-text-field>
-                                    <br>
-                                    <v-text-field
-                                        label="Unidades"
-                                        v-model="item.unidades"
-                                        hint="Medida en unidades de el resultado"
-                                    ></v-text-field>
-                                    <br>
-                                    <v-text-field
-                                        v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'"
-                                        :multi-line="item.tipo.name == 'textarea'"
-                                        :label="item.nombre"
-                                        :hint="item.help"
-                                        v-model="item.model_text"
-                                        :type="item.tipo.name == 'number' ? 'number': 'text'"
-                                        persistent-hint
-                                    ></v-text-field>
-                                    <div v-else-if="item.tipo.name == 'select'">
-                                        <v-layout>
-                                            <v-flex md10 xs10>
-                                                <v-select
-                                                    :label="item.nombre"
-                                                    :hint="item.help"
-                                                    v-model="item.model_text"
-                                                    :items="item.choices_select"
-                                                    :rules="[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]"
-                                                    item-value="text"
-                                                    persistent-hint
-                                                ></v-select>
-                                            </v-flex>
-                                            <v-flex md2 xs2>
-                                                <v-btn
-                                                    v-tooltip:top="{html: 'Agregar Opciones'}"
-                                                    class="green--text darken-1" icon="icon"
-                                                    @click.native.stop="dialog = true; lastItem = item">
-                                                    <v-icon>add</v-icon>
-                                                </v-btn>
-                                            </v-flex>
-                                        </v-layout>
-                                    </div>
-                                    <div v-else-if="item.tipo.name == 'checkbox'">
-                                        <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
-                                            <v-flex xs7 md7>
-                                                <v-checkbox
-                                                  v-if="!choice.edit"
-                                                  :label="choice.name"
-                                                  v-model="item.model_check"
-                                                  :value="choice.id"
-                                                  primary
-                                                ></v-checkbox>
+                                    <div v-if="item.tipo.name != 'title'">
+                                        <v-text-field
+                                          label="Texto de ayuda"
+                                          v-model="item.help"
+                                            hint="Ayuda textual que acompaña el campo"
+                                        ></v-text-field>
+                                        <br>
+                                        <v-layout wrap>
+                                            <v-flex md12><v-subheader>Referencias</v-subheader></v-flex>
+                                            <v-flex md6>
+                                                <v-subheader>Hombre</v-subheader>
                                                 <v-text-field
-                                                  v-else
-                                                  label="Texto para mostrar"
-                                                  v-model="choice.name"
+                                                    label="Valores de referencia mínima (HOMBRE)"
+                                                    v-model="item.referencias.M.minima"
+                                                    type="number"
+                                                    hint="Texto de referencia minima para el momento de poner el resultado (HOMBRE)"
+                                                ></v-text-field>
+                                                <br>
+                                                <v-text-field
+                                                    label="Valores de referencia máxima (HOMBRE)"
+                                                    v-model="item.referencias.M.maxima"
+                                                    hint="Texto de referencia máxima para el momento de poner el resultado (HOMBRE)"
                                                 ></v-text-field>
                                             </v-flex>
-                                            <v-flex xs5 md5>
-                                              <v-btn v-tooltip:top="{html: 'Editar opción'}" icon="icon" class="indigo--text" @click.native="toggleValueEditCheckBox(choice)">
-                                                  <v-icon>mode_edit</v-icon>
-                                              </v-btn>
-                                              <v-btn v-tooltip:top="{html: 'Remover opción'}" icon="icon" class="red--text" @click.native="deleteChoiceItem(item, choiceId)" v-show="item.choices.length != 1">
-                                                  <v-icon>delete</v-icon>
-                                              </v-btn>
-                                              <v-btn v-tooltip:top="{html: 'Agregar opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
-                                                  <v-icon>add</v-icon>
-                                              </v-btn>
-                                            </v-flex>
-                                        </v-layout>
-                                    </div>
-                                    <div v-else-if="item.tipo.name == 'radio'">
-                                        <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
-                                            <v-flex xs7 md7>
-                                                <v-radio
-                                                  v-if="!choice.edit"
-                                                  :label="choice.name"
-                                                  v-model="item.model_text"
-                                                  :value="choice.name"
-                                                  primary
-                                                ></v-radio>
+                                            <v-flex md6>
+                                                <v-subheader>Mujer</v-subheader>
                                                 <v-text-field
-                                                  v-else
-                                                  label="Texto para mostrar"
-                                                  v-model="choice.name"
+                                                    label="Valores de referencia mínima (MUJER)"
+                                                    v-model="item.referencias.F.minima"
+                                                    hint="Texto de referencia minima para el momento de poner el resultado (MUJER)"
+                                                ></v-text-field>
+                                                <br>
+                                                <v-text-field
+                                                    label="Valores de referencia máxima (MUJER)"
+                                                    v-model="item.referencias.F.maxima"
+                                                    hint="Texto de referencia máxima para el momento de poner el resultado (MUJER)"
                                                 ></v-text-field>
                                             </v-flex>
-                                            <v-flex xs5 md5>
-                                              <v-btn v-tooltip:top="{html: 'Editar opción'}" icon="icon" class="indigo--text" @click.native="toggleValueEditCheckBox(choice)">
-                                                  <v-icon>mode_edit</v-icon>
-                                              </v-btn>
-                                              <v-btn v-tooltip:top="{html: 'Remover opción'}" icon="icon" class="red--text" @click.native="deleteChoiceItem(item, choiceId)" v-show="item.choices.length != 1">
-                                                  <v-icon>delete</v-icon>
-                                              </v-btn>
-                                              <v-btn v-tooltip:top="{html: 'Agregar una nueva opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
-                                                  <v-icon>add</v-icon>
-                                              </v-btn>
-                                            </v-flex>
                                         </v-layout>
+                                        <br>
+                                        <v-text-field
+                                            label="Unidades"
+                                            v-model="item.unidades"
+                                            hint="Medida en unidades de el resultado"
+                                        ></v-text-field>
+                                        <br>
+                                        <v-text-field
+                                            v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'"
+                                            :multi-line="item.tipo.name == 'textarea'"
+                                            :label="item.nombre"
+                                            :hint="item.help"
+                                            v-model="item.model_text"
+                                            :type="item.tipo.name == 'number' ? 'number': 'text'"
+                                            persistent-hint
+                                        ></v-text-field>
+                                        <div v-else-if="item.tipo.name == 'select'">
+                                            <v-layout>
+                                                <v-flex md10 xs10>
+                                                    <v-select
+                                                        :label="item.nombre"
+                                                        :hint="item.help"
+                                                        v-model="item.model_text"
+                                                        :items="item.choices"
+                                                        :rules="[item.choices.length >= 1 || 'Debes escoger una caracteristica', item.choices.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]"
+                                                        item-value="text"
+                                                        :return-object="true"
+                                                        persistent-hint
+                                                    ></v-select>
+                                                </v-flex>
+                                                <v-flex md2 xs2>
+                                                    <v-btn
+                                                        v-tooltip:top="{html: 'Agregar Opciones'}"
+                                                        class="green--text darken-1" icon="icon"
+                                                        @click.native.stop="dialog = true; lastItem = item">
+                                                        <v-icon>add</v-icon>
+                                                    </v-btn>
+                                                </v-flex>
+                                            </v-layout>
+                                            <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
+                                                <v-flex xs7 md7>
+                                                    <v-text-field
+                                                      label="Texto para mostrar"
+                                                      v-model="choice.text"
+                                                    ></v-text-field>
+                                                </v-flex>
+                                                <v-flex xs5 md5>
+                                                    <v-btn v-tooltip:top="{html: 'Remover opción'}" icon="icon" class="red--text" @click.native="deleteChoiceItem(item, choiceId)" v-show="item.choices.length != 1">
+                                                        <v-icon>delete</v-icon>
+                                                    </v-btn>
+                                                    <v-btn v-tooltip:top="{html: 'Agregar opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
+                                                        <v-icon>add</v-icon>
+                                                    </v-btn>
+                                                </v-flex>
+                                            </v-layout>
+                                        </div>
                                     </div>
                                 </v-card-text>
                                 <v-card-row actions>
@@ -175,28 +157,11 @@
                 <v-btn floating success small @click.native="saveFormato" v-tooltip:left="{html: 'Guardar Formato'}">
                     <v-icon light>save</v-icon>
                 </v-btn>
-                <v-btn floating info small @click.native.stop="preview = true" v-tooltip:left="{html: 'Previsualizar el Formulario'}">
-                    <v-icon light>photo</v-icon>
-                </v-btn>
             </template>
             <v-btn floating error v-tooltip:left="{html: 'Opciones'}">
                 <v-icon light>settings</v-icon>
             </v-btn>
         </floating-button>
-        <v-dialog v-model="preview" fullscreen transition="v-dialog-bottom-transition" :overlay="false">
-            <v-card>
-                <v-card-row>
-                    <v-toolbar class="orange darken-2">
-                        <v-btn icon="icon" @click.native="preview = false">
-                            <v-icon class="white--text">close</v-icon>
-                        </v-btn>
-                        <v-toolbar-title class="white--text">Settings</v-toolbar-title>
-                        <!-- <v-btn class="white--text" flat="flat" @click.native="preview = false">Save</v-btn> -->
-                    </v-toolbar>
-                </v-card-row>
-                <formulario-resultado :value="$data"></formulario-resultado>
-            </v-card>
-        </v-dialog>
         <v-dialog v-model="dialog" scrollable>
             <v-card>
                 <v-card-title>Selecciona una Caracteristica</v-card-title>
@@ -248,7 +213,6 @@ export default {
         return {
             formato: {laboratorio: {nombre: '', codigo: '', id: ''}},
             dialog: false,
-            preview: false,
             caracteristicas: [],
             modalchoice: '',
             items: [],
@@ -266,14 +230,14 @@ export default {
                   help: 'Con este campo se puede dar un resultado numérico.'
                 },
                 {
-                  text: 'Selección Unica',
-                  name: 'radio',
-                  help: 'Con este campo se proveen varias opciones y solo podrá ser escogida 1.'
+                  text: 'Titulo',
+                  name: 'title',
+                  help: 'Con este campo se creará un titulo, el cual servirá de separador.'
                 },
                 {
-                  text: 'Multiple Selección',
-                  name: 'checkbox',
-                  help: 'Con este campo se proveen varias opciones y podrán ser escogidas 1 o todas.'
+                  text: 'Laboratorio',
+                  name: 'lab',
+                  help: 'Con este campo podrá extender de un formato de laboratorio ya creado.'
                 },
                 {
                   text: 'Caracteristicas',
@@ -309,10 +273,9 @@ export default {
             return {
                 target: item,
                 validations: [
-                    i => ['checkbox', 'radio'].indexOf(i.tipo.name) === -1 || i.choices.length > 1,
                     i => i.tipo !== '',
                     i => i.nombre !== '',
-                    i => ['select'].indexOf(i.tipo.name) === -1 || i.choices_select.length > 1
+                    i => ['select'].indexOf(i.tipo.name) === -1 || i.choices.length > 1
                 ]
             }
         },
@@ -328,8 +291,16 @@ export default {
                 model_check: [],
                 unidades: '',
                 tipo: '',
-                referencia_minima: '',
-                referencia_maxima: '',
+                referencias: {
+                    F: {
+                        maxima: '',
+                        minima: ''
+                    },
+                    M: {
+                        maxima: '',
+                        minima: ''
+                    },
+                }
             }
             this.items.push(item);
             this.addValidation(this.genValidationsForItem(item));
@@ -341,7 +312,7 @@ export default {
             let length = (item.choices.length + 1).toString();
             item.choices_count++;
             item.choices.push(
-                {edit: false, name: 'Option ' + length, id: item.choices_count}
+                {edit: false, text: 'Option ' + length, id: item.choices_count}
             );
         },
         toggleValueEditCheckBox: function (item) {
@@ -361,10 +332,10 @@ export default {
             if (this.modalchoice) {
                 this.$http.get(URL.especificaciones_por_carateristica + this.modalchoice.toString() + '/')
                   .then(response => {
-                      item.choices_select = [];
+                      item.choices = [];
                       for (let choice of response.body) {
                           choice.text = choice.nombre;
-                          item.choices_select.push(choice);
+                          item.choices.push(choice);
                       }
                   }, response => {
                       this.showSnackBar('Ha ocurrido un error al intentar obtener las caracteristicas, por favor vuelva a intentarlo mas tarde.');
