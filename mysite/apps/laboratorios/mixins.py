@@ -172,21 +172,6 @@ class IGModelSerializer(object):
                     getattr(instance, field).add(model)
         return instance
 
-        # for field in data:
-        #     try:
-        #         if Model._meta.get_field(field).is_relation:
-        #             data[field] = Model._meta.get_field(
-        #                 field).related_model.objects.get(pk=data[field]['id'])
-        #     except FieldDoesNotExist:
-        #         continue
-        #
-        # for field in data:
-        #     setattr(instance, field, data[field])
-        #
-        # if commit:
-        #     instance.save()
-        # return instance
-
     @staticmethod
     def _get_data_for_type(field, data):
         """

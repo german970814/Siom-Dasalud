@@ -1,68 +1,64 @@
 <template lang="html">
     <div>
-        <v-container>
-          <v-layout>
+        <v-layout>
             <v-flex xs12 md12>
-              <ig-table
-              table-title="Laboratorios"
-              :headers="headers"
-              :data="elements"
-              :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
-              @selectedrow="customEventUpdatedForm"
-              :loading="loading"
-              ></ig-table>
+                <ig-table
+                  table-title="Laboratorios"
+                  :headers="headers"
+                  :data="elements"
+                  :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
+                  @selectedrow="customEventUpdatedForm"
+                  :loading="loading"
+                ></ig-table>
             </v-flex>
-          </v-layout>
-        </v-container>
+        </v-layout>
         <br>
-      <v-container>
-          <v-stepper v-model="stepper" non-linear>
-              <v-stepper-header class="white">
-                  <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Laboratorio</v-stepper-step>
-                  <v-divider></v-divider>
-                  <v-stepper-step step="2" @click.native="secondStepClick" :complete="stepper > 2">Formato</v-stepper-step>
-                  <v-divider></v-divider>
-                  <v-stepper-step step="3" @click.native="thirdStepClick">Insumos y Reactivos</v-stepper-step>
-              </v-stepper-header>
-              <v-stepper-content step="1" class="white">
-                  <ig-form
-                  :fields="fields"
-                  :url="urlForm"
-                  @showsnack="showSnackBar"
-                  @objectcreated="_eventCreatedObject"
-                  @clearselected="selected = false"
-                  :selected="selected"
-                  >
-                      <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
-                          Continuar
-                      </v-btn>
-                  </ig-form>
-              </v-stepper-content>
-              <v-stepper-content step="2" class="white">
-                  <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
-              </v-stepper-content>
-              <v-stepper-content step="3" class="white">
-                  <v-card>
-                      <v-card-text>
-                          <v-layout>
-                              <v-flex md6 xs12>
-                                <v-subheader>Insumos</v-subheader>
-                                <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_insumos" tipo="i"></ig-producto>
-                              </v-flex>
-                              <v-flex md6 xs12>
-                                <v-subheader>Reactivos</v-subheader>
-                                <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_reactivos" tipo="r"></ig-producto>
-                              </v-flex>
-                          </v-layout>
-                      </v-card-text>
-                      <!-- <v-card-row actions>
-                          <v-btn primary @click.native="stepper = 1" light>Continue</v-btn>
-                          <v-btn flat dark>Cancel</v-btn>
-                      </v-card-row> -->
-                  </v-card>
-              </v-stepper-content>
-          </v-stepper>
-      </v-container>
+        <v-stepper v-model="stepper" non-linear>
+            <v-stepper-header class="white">
+                <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Laboratorio</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="2" @click.native="secondStepClick" :complete="stepper > 2">Formato</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="3" @click.native="thirdStepClick">Insumos y Reactivos</v-stepper-step>
+            </v-stepper-header>
+            <v-stepper-content step="1" class="white">
+                <ig-form
+                :fields="fields"
+                :url="urlForm"
+                @showsnack="showSnackBar"
+                @objectcreated="_eventCreatedObject"
+                @clearselected="selected = false"
+                :selected="selected"
+                >
+                    <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
+                        Continuar
+                    </v-btn>
+                </ig-form>
+            </v-stepper-content>
+            <v-stepper-content step="2" class="white">
+                <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
+            </v-stepper-content>
+            <v-stepper-content step="3" class="white">
+                <v-card>
+                    <v-card-text>
+                        <v-layout>
+                            <v-flex md6 xs12>
+                              <v-subheader>Insumos</v-subheader>
+                              <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_insumos" tipo="i"></ig-producto>
+                            </v-flex>
+                            <v-flex md6 xs12>
+                              <v-subheader>Reactivos</v-subheader>
+                              <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_reactivos" tipo="r"></ig-producto>
+                            </v-flex>
+                        </v-layout>
+                    </v-card-text>
+                    <!-- <v-card-row actions>
+                        <v-btn primary @click.native="stepper = 1" light>Continue</v-btn>
+                        <v-btn flat dark>Cancel</v-btn>
+                    </v-card-row> -->
+                </v-card>
+            </v-stepper-content>
+        </v-stepper>
     </div>
 </template>
 

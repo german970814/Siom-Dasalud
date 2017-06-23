@@ -1,36 +1,30 @@
 <template lang="html">
     <div>
-        <v-container>
-          <v-layout>
+        <v-layout>
             <v-flex xs12 md12>
-              <ig-table
-              table-title="Equipos"
-              :headers="headers"
-              :data="elements"
-              :fields="['codigo', 'nombre', 'tecnica.codigo']"
-              @selectedrow="eventUpdatedForm"
-              :loading="loading"
-              ></ig-table>
+                <ig-table
+                  table-title="Equipos"
+                  :headers="headers"
+                  :data="elements"
+                  :fields="['codigo', 'nombre', 'tecnica.codigo']"
+                  @selectedrow="eventUpdatedForm"
+                  :loading="loading"
+                ></ig-table>
             </v-flex>
-          </v-layout>
-        </v-container>
-        <br>
-        <v-container>
-          <v-layout>
-            <v-flex xs12 md12>
-              <ig-form
-              :fields="fields"
-              :url="urlForm"
-              @showsnack="showSnackBar"
-              @objectcreated="eventCreatedObject"
-              @clearselected="selected = false"
-              :selected="selected"
-              >
-            </ig-form>
-          </v-flex>
         </v-layout>
         <br>
-      </v-container>
+        <v-layout>
+            <v-flex xs12 md12>
+                <ig-form
+                  :fields="fields"
+                  :url="urlForm"
+                  @showsnack="showSnackBar"
+                  @objectcreated="eventCreatedObject"
+                  @clearselected="selected = false"
+                  :selected="selected"
+                  ></ig-form>
+            </v-flex>
+        </v-layout>
     </div>
 </template>
 

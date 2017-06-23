@@ -8,6 +8,9 @@ from .models import paciente as Paciente
 from mysite.apps.laboratorios.mixins import IGModelSerializer
 
 
+import os
+
+
 class PacienteSerializer(IGModelSerializer, serializers.ModelSerializer):
     """
     Serializer para los pacientes

@@ -4,7 +4,7 @@ from rest_framework import status
 from django.db.models import Q
 
 
-def get_object_or_404_api(ModelOrQuery, **kwargs):
+def get_object_or_404_api(ModelOrQuery, **kwargs):  # deprecate
     """
     Funcion para obtener los objetos o arrojar un 404 si no los encuentras
     en formato json para api.
@@ -12,7 +12,7 @@ def get_object_or_404_api(ModelOrQuery, **kwargs):
     try:
         return getattr(ModelOrQuery, 'objects', ModelOrQuery).get(**kwargs)
     except Exception:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        raise Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class Pagination(PageNumberPagination):

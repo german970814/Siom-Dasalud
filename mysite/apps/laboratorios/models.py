@@ -239,7 +239,7 @@ class Resultado(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            plantillas = self.laboratorio.plantillas_laboratorio.filter(producto__tipo=Producto.REACTIVO)
+            plantillas = self.laboratorio.plantillas.filter(producto__tipo=Producto.REACTIVO)
             for plantilla in plantillas:
                 HojaGasto.objects.create(
                     cantidad=plantilla.cantidad, producto=plantilla.producto, orden=self.orden

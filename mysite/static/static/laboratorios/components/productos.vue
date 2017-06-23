@@ -212,7 +212,7 @@ export default {
                             }
                         }
                     }, [
-                        this.$createElement('v-icon', ['check_circle'])
+                        this.$createElement('v-icon', ['save'])
                     ])
                 ])
             );

@@ -1,44 +1,41 @@
 <template lang="html">
     <div>
-        <v-container>
-            <v-layout>
-                <v-flex xs12 md12>
-                    <v-card>
-                        <v-card-title>
-                            Ordenes con laboratorios
-                            <v-spacer></v-spacer>
-                            <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
-                        </v-card-title>
-                        <v-data-table
-                            :pagination.sync="pagination"
-                            :total-items="totalItems"
-                            :loading="loading"
-                            v-bind:headers="headers"
-                            :items="elements"
-                            v-bind:search="buscador"
-                            :rows-per-page-items="[10]"
-                            :filter="filter"
-                            rows-per-page-text="Filas por Página"
-                            no-results-text="No se encontraron resultados">
-                            <template slot="headers" scope="props">
-                                <span style="text-align:before: center !important">{{ props.item.text }}</span>
+        <v-layout>
+            <v-flex xs12 md12>
+                <v-card>
+                    <v-card-title>
+                        Ordenes con laboratorios
+                        <v-spacer></v-spacer>
+                        <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
+                    </v-card-title>
+                    <v-data-table
+                        :pagination.sync="pagination"
+                        :total-items="totalItems"
+                        :loading="loading"
+                        v-bind:headers="headers"
+                        :items="elements"
+                        v-bind:search="buscador"
+                        :rows-per-page-items="[10]"
+                        :filter="filter"
+                        rows-per-page-text="Filas por Página"
+                        no-results-text="No se encontraron resultados">
+                        <template slot="headers" scope="props">
+                            <span style="text-align:before: center !important">{{ props.item.text }}</span>
+                        </template>
+                        <template slot="items" scope="props">
+                            <template v-for="field of fields">
+                                <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
+                                <td class="text-xs-center" v-else>
+                                    <v-btn floating small router class="cyan darken-1" :href="field.href.replace(':id', props.item.orden.id)">
+                                        <v-icon light>mode_edit</v-icon>
+                                    </v-btn>
+                                </td>
                             </template>
-                            <template slot="items" scope="props">
-                                <template v-for="field of fields">
-                                    <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
-                                    <td class="text-xs-center" v-else>
-                                        <v-btn floating small router class="cyan darken-1" :href="field.href.replace(':id', props.item.orden.id)">
-                                            <v-icon light>mode_edit</v-icon>
-                                        </v-btn>
-                                    </td>
-                                </template>
-                            </template>
-                        </v-data-table>
-                    </v-card>
-                </v-flex>
-            </v-layout>
-        </v-container>
-        <br>
+                        </template>
+                    </v-data-table>
+                </v-card>
+            </v-flex>
+        </v-layout>
     </div>
 </template>
 

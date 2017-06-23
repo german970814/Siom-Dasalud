@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.db.models import Q
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from rest_framework import status
-from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
@@ -28,7 +25,7 @@ from .serializers import (
     ResultadoSerializer, PlantillaAreaSerializer, PlantillaSerializer,
     RecepcionSerializer, HojaGastoSerializer, PlantillaLaboratorioSerializer
 )
-from .utils import get_object_or_404_api, ListViewAPIMixin
+from .utils import ListViewAPIMixin
 from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
 from mysite.apps.historias.serializers import OrdenSerializer
 from mysite.apps.parametros.models import servicios as Servicio
@@ -36,6 +33,7 @@ from mysite.apps.parametros.serializers import ServicioSerializer
 
 import datetime
 import reversion
+
 
 class LaboratoriosListAPI(ListViewAPIMixin, generics.ListCreateAPIView):
     queryset = Laboratorio.objects.all()
@@ -45,10 +43,6 @@ class LaboratoriosListAPI(ListViewAPIMixin, generics.ListCreateAPIView):
         'equipo__nombre', 'equipo__codigo', 'seccion_trabajo__codigo',
         'seccion_trabajo__descripcion'
     )
-
-# class LaboratorioDetailAPI(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Laboratorio.objects.all()
-#     serializer_class = LaboratorioSerializer
 
 
 class EquiposListAPI(generics.ListCreateAPIView):
@@ -274,31 +268,6 @@ def search_resultado_api_view(request):
     return pagination.get_paginated_response(serializer.data)
 
 
-# @api_view(['GET', 'POST'])
-# def lista_laboratorio(request):
-#     """
-#     Lista los laboratorios en formato json.
-#     """
-#     args = tuple()
-#     kwargs = dict()
-#
-#     if request.method == 'GET':
-#         laboratorios = Laboratorio.objects.all()
-#         serializer = LaboratorioSerializer(laboratorios, many=True)
-#         args = (serializer.data, )
-#
-#     elif request.method == 'POST':
-#         serializer = LaboratorioSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             args = (serializer.data, )
-#             kwargs['status'] = status.HTTP_201_CREATED
-#         else:
-#             args = (serializer.errors, )
-#             kwargs['status'] = status.HTTP_400_BAD_REQUEST
-#     return Response(*args, **kwargs)
-
-
 @api_view(['GET', 'PUT', 'DELETE'])
 def detalle_laboratorio(request, pk):
     """
@@ -308,7 +277,7 @@ def detalle_laboratorio(request, pk):
     args = tuple()
     kwargs = dict()
 
-    laboratorio = get_object_or_404_api(Laboratorio, pk=pk)
+    laboratorio = get_object_or_404(Laboratorio, pk=pk)
 
     if request.method == 'GET':
         serializer = LaboratorioSerializer(laboratorio)
@@ -408,11 +377,8 @@ def formato_api_view(request, pk):
     elif request.method == 'POST':
         try:
             formato = laboratorio.formato
-            # request.data['formato'] = JSONRenderer().render(request.data['formato'])
             formato = FormatoSerializer.update(FormatoSerializer(), formato, request.data)
         except:
-            # if 'formato' in request.data:
-            #     request.data['formato'] = JSONRenderer().render(request.data['formato'])
             formato = FormatoSerializer.create(FormatoSerializer(), request.data)
         formato = Formato.objects.get(laboratorio=laboratorio)
         serializer = FormatoSerializer(instance=formato)

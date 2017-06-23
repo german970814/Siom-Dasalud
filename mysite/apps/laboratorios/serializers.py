@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.utils.six import BytesIO
-from django.contrib.auth import get_user_model
+
 from rest_framework import serializers
 from rest_framework.parsers import JSONParser
 

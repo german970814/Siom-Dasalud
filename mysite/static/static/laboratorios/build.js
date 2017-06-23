@@ -27656,7 +27656,7 @@ exports.default = {
                         // console.log(this.self_plantillas)
                     }
                 }
-            }, [this.$createElement('v-icon', ['check_circle'])])]));
+            }, [this.$createElement('v-icon', ['save'])])]));
 
             return this.$createElement('v-container', [this.$createElement('v-layout', [].concat(childs))]);
         }
@@ -28075,37 +28075,31 @@ exports.default = {
 //
 // <template lang="html">
 //     <div>
-//         <v-container>
-//           <v-layout>
+//         <v-layout>
 //             <v-flex xs12 md12>
-//               <ig-table
-//               table-title="Bacteriologos"
-//               :headers="headers"
-//               :data="elements"
-//               :fields="['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']"
-//               @selectedrow="eventUpdatedForm"
-//               :loading="loading"
-//               ></ig-table>
+//                 <ig-table
+//                   table-title="Bacteriologos"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
 //             </v-flex>
-//           </v-layout>
-//         </v-container>
-//         <br>
-//         <v-container>
-//           <v-layout>
-//             <v-flex xs12 md12>
-//               <ig-form
-//               :fields="fields"
-//               :url="urlForm"
-//               @showsnack="showSnackBar"
-//               @objectcreated="eventCreatedObject"
-//               @clearselected="selected = false"
-//               :selected="selected"
-//               >
-//             </ig-form>
-//           </v-flex>
 //         </v-layout>
 //         <br>
-//       </v-container>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-form
+//                 :fields="fields"
+//                 :url="urlForm"
+//                 @showsnack="showSnackBar"
+//                 @objectcreated="eventCreatedObject"
+//                 @clearselected="selected = false"
+//                 :selected="selected"
+//                 ></ig-form>
+//             </v-flex>
+//         </v-layout>
 //     </div>
 // </template>
 //
@@ -28163,37 +28157,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Vue.use(VueRouter);
 _vue2.default.use(_vueResource2.default); // <template lang="html">
 //     <div>
-//         <v-container>
-//           <v-layout>
+//         <v-layout>
 //             <v-flex xs12 md12>
-//               <ig-table
-//               table-title="Caracteristicas"
-//               :headers="headers"
-//               :data="elements"
-//               :fields="['codigo', 'descripcion']"
-//               @selectedrow="eventUpdatedForm"
-//               :loading="loading"
-//               ></ig-table>
+//                 <ig-table
+//                   table-title="Caracteristicas"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['codigo', 'descripcion']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
 //             </v-flex>
-//           </v-layout>
-//         </v-container>
-//         <br>
-//         <v-container>
-//           <v-layout>
-//             <v-flex xs12 md12>
-//               <ig-form
-//               :fields="fields"
-//               :url="urlForm"
-//               @showsnack="showSnackBar"
-//               @objectcreated="eventCreatedObject"
-//               @clearselected="selected = false"
-//               :selected="selected"
-//               >
-//             </ig-form>
-//           </v-flex>
 //         </v-layout>
 //         <br>
-//       </v-container>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-form
+//                   :fields="fields"
+//                   :url="urlForm"
+//                   @showsnack="showSnackBar"
+//                   @objectcreated="eventCreatedObject"
+//                   @clearselected="selected = false"
+//                   :selected="selected"
+//                 ></ig-form>
+//             </v-flex>
+//         </v-layout>
 //     </div>
 // </template>
 //
@@ -28296,37 +28284,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Vue.use(VueRouter);
 _vue2.default.use(_vueResource2.default); // <template lang="html">
 //     <div>
-//         <v-container>
-//           <v-layout>
+//         <v-layout>
 //             <v-flex xs12 md12>
-//               <ig-table
-//               table-title="Equipos"
-//               :headers="headers"
-//               :data="elements"
-//               :fields="['codigo', 'nombre', 'tecnica.codigo']"
-//               @selectedrow="eventUpdatedForm"
-//               :loading="loading"
-//               ></ig-table>
+//                 <ig-table
+//                   table-title="Equipos"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['codigo', 'nombre', 'tecnica.codigo']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
 //             </v-flex>
-//           </v-layout>
-//         </v-container>
-//         <br>
-//         <v-container>
-//           <v-layout>
-//             <v-flex xs12 md12>
-//               <ig-form
-//               :fields="fields"
-//               :url="urlForm"
-//               @showsnack="showSnackBar"
-//               @objectcreated="eventCreatedObject"
-//               @clearselected="selected = false"
-//               :selected="selected"
-//               >
-//             </ig-form>
-//           </v-flex>
 //         </v-layout>
 //         <br>
-//       </v-container>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-form
+//                   :fields="fields"
+//                   :url="urlForm"
+//                   @showsnack="showSnackBar"
+//                   @objectcreated="eventCreatedObject"
+//                   @clearselected="selected = false"
+//                   :selected="selected"
+//                   ></ig-form>
+//             </v-flex>
+//         </v-layout>
 //     </div>
 // </template>
 //
@@ -28442,37 +28424,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Vue.use(VueRouter);
 _vue2.default.use(_vueResource2.default); // <template lang="html">
 //     <div>
-//         <v-container>
-//           <v-layout>
+//         <v-layout>
 //             <v-flex xs12 md12>
-//               <ig-table
-//               table-title="Especificacion Caracteristica"
-//               :headers="headers"
-//               :data="elements"
-//               :fields="['nombre', 'caracteristica.codigo']"
-//               @selectedrow="eventUpdatedForm"
-//               :loading="loading"
-//               ></ig-table>
+//                 <ig-table
+//                   table-title="Especificacion Caracteristica"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['nombre', 'caracteristica.codigo']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
 //             </v-flex>
-//           </v-layout>
-//         </v-container>
-//         <br>
-//         <v-container>
-//           <v-layout>
-//             <v-flex xs12 md12>
-//               <ig-form
-//               :fields="fields"
-//               :url="urlForm"
-//               @showsnack="showSnackBar"
-//               @objectcreated="eventCreatedObject"
-//               @clearselected="selected = false"
-//               :selected="selected"
-//               >
-//             </ig-form>
-//           </v-flex>
 //         </v-layout>
 //         <br>
-//       </v-container>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//               <ig-form
+//                 :fields="fields"
+//                 :url="urlForm"
+//                 @showsnack="showSnackBar"
+//                 @objectcreated="eventCreatedObject"
+//                 @clearselected="selected = false"
+//                 :selected="selected"
+//                 ></ig-form>
+//             </v-flex>
+//         </v-layout>
 //     </div>
 // </template>
 //
@@ -28578,166 +28554,164 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // <template lang="html">
 //     <div v-if="formato">
-//         <v-container>
-//             <v-layout>
-//                 <h1 class="title">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>
-//             </v-layout>
-//             <v-layout wrap>
-//                 <v-flex md6 class="mb-5" v-for="(item, id) of items" :key="id">
-//                     <v-expansion-panel expand class="white">
-//                         <v-expansion-panel-content>
-//                             <div slot="header">{{ item.nombre }}</div>
-//                             <v-card>
-//                                 <v-card-title>
-//                                 </v-card-title>
-//                                 <v-card-text class="grey lighten-5">
-//                                     <v-alert error hide-icon :value="['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1">
-//                                         Asegurate de crear varias opciones.
-//                                     </v-alert>
-//                                     <v-select
-//                                         label="Tipo"
-//                                         :hint="item.tipo.help"
-//                                         :items="tipoOpciones"
-//                                         v-model="item.tipo"
-//                                         item-value="text"
-//                                         :rules="[item.tipo !== '' || 'Este campo es obligatorio']"
-//                                         required
-//                                         return-object
-//                                         persistent-hint
-//                                         dark
-//                                     ></v-select>
-//                                     <br>
-//                                     <v-text-field
-//                                         label="Nombre del Campo"
-//                                         v-model="item.nombre"
-//                                         hint="Con este nombre se identificará el campo"
-//                                         :rules="[item.nombre !== '' || 'Este campo es obligatorio']"
-//                                         required
-//                                     ></v-text-field>
-//                                     <br>
-//                                     <v-text-field
-//                                         label="Texto de ayuda"
-//                                         v-model="item.help"
-//                                         hint="Ayuda textual que acompaña el campo"
-//                                     ></v-text-field>
-//                                     <br>
-//                                     <v-text-field
-//                                         label="Valores de referencia"
-//                                         v-model="item.referencia"
-//                                         hint="Texto de referencia para el momento de poner el resultado"
-//                                     ></v-text-field>
-//                                     <br>
-//                                     <v-text-field
-//                                         label="Unidades"
-//                                         v-model="item.unidades"
-//                                         hint="Medida en unidades de el resultado"
-//                                     ></v-text-field>
-//                                     <br>
-//                                     <v-text-field
-//                                         v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea'"
-//                                         :multi-line="item.tipo.name == 'textarea'"
-//                                         :label="item.nombre"
-//                                         :hint="item.help"
-//                                         v-model="item.model_text"
-//                                         persistent-hint
-//                                     ></v-text-field>
-//                                     <div v-else-if="item.tipo.name == 'select'">
-//                                         <v-layout>
-//                                             <v-flex md10 xs10>
-//                                                 <v-select
-//                                                     :label="item.nombre"
-//                                                     :hint="item.help"
-//                                                     v-model="item.model_text"
-//                                                     :items="item.choices_select"
-//                                                     :rules="[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]"
-//                                                     item-value="text"
-//                                                     persistent-hint
-//                                                 ></v-select>
-//                                             </v-flex>
-//                                             <v-flex md2 xs2>
-//                                                 <v-btn
-//                                                     v-tooltip:top="{html: 'Agregar Opciones'}"
-//                                                     class="green--text darken-1" icon="icon"
-//                                                     @click.native.stop="dialog = true; lastItem = item">
-//                                                     <v-icon>add</v-icon>
-//                                                 </v-btn>
-//                                             </v-flex>
-//                                         </v-layout>
-//                                     </div>
-//                                     <div v-else-if="item.tipo.name == 'checkbox'">
-//                                         <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
-//                                             <v-flex xs7 md7>
-//                                                 <v-checkbox
-//                                                   v-if="!choice.edit"
-//                                                   :label="choice.name"
-//                                                   v-model="item.model_check"
-//                                                   :value="choice.id"
-//                                                   primary
-//                                                 ></v-checkbox>
-//                                                 <v-text-field
-//                                                   v-else
-//                                                   label="Texto para mostrar"
-//                                                   v-model="choice.name"
-//                                                 ></v-text-field>
-//                                             </v-flex>
-//                                             <v-flex xs5 md5>
-//                                               <v-btn v-tooltip:top="{html: 'Editar opción'}" icon="icon" class="indigo--text" @click.native="toggleValueEditCheckBox(choice)">
-//                                                   <v-icon>mode_edit</v-icon>
-//                                               </v-btn>
-//                                               <v-btn v-tooltip:top="{html: 'Remover opción'}" icon="icon" class="red--text" @click.native="deleteChoiceItem(item, choiceId)" v-show="item.choices.length != 1">
-//                                                   <v-icon>delete</v-icon>
-//                                               </v-btn>
-//                                               <v-btn v-tooltip:top="{html: 'Agregar opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
-//                                                   <v-icon>add</v-icon>
-//                                               </v-btn>
-//                                             </v-flex>
-//                                         </v-layout>
-//                                     </div>
-//                                     <div v-else-if="item.tipo.name == 'radio'">
-//                                         <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
-//                                             <v-flex xs7 md7>
-//                                                 <v-radio
-//                                                   v-if="!choice.edit"
-//                                                   :label="choice.name"
-//                                                   v-model="item.model_text"
-//                                                   :value="choice.name"
-//                                                   primary
-//                                                 ></v-radio>
-//                                                 <v-text-field
-//                                                   v-else
-//                                                   label="Texto para mostrar"
-//                                                   v-model="choice.name"
-//                                                 ></v-text-field>
-//                                             </v-flex>
-//                                             <v-flex xs5 md5>
-//                                               <v-btn v-tooltip:top="{html: 'Editar opción'}" icon="icon" class="indigo--text" @click.native="toggleValueEditCheckBox(choice)">
-//                                                   <v-icon>mode_edit</v-icon>
-//                                               </v-btn>
-//                                               <v-btn v-tooltip:top="{html: 'Remover opción'}" icon="icon" class="red--text" @click.native="deleteChoiceItem(item, choiceId)" v-show="item.choices.length != 1">
-//                                                   <v-icon>delete</v-icon>
-//                                               </v-btn>
-//                                               <v-btn v-tooltip:top="{html: 'Agregar una nueva opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
-//                                                   <v-icon>add</v-icon>
-//                                               </v-btn>
-//                                             </v-flex>
-//                                         </v-layout>
-//                                     </div>
-//                                 </v-card-text>
-//                                 <v-card-row actions>
-//                                     <v-btn
-//                                       v-show="items.length > 1"
-//                                       flat
-//                                       class="red--text darken-1"
-//                                       @click.native="removeItem(id)"
-//                                     >Eliminar Campo</v-btn>
-//                                 </v-card-row>
-//                             </v-card>
-//                         </v-expansion-panel-content>
-//                     </v-expansion-panel>
-//                     <br>
-//                 </v-flex>
-//             </v-layout>
-//         </v-container>
+//         <v-layout>
+//             <h1 class="title">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>
+//         </v-layout>
+//         <v-layout wrap>
+//             <v-flex md6 class="mb-5" v-for="(item, id) of items" :key="id">
+//                 <v-expansion-panel expand class="white">
+//                     <v-expansion-panel-content>
+//                         <div slot="header">{{ item.nombre }}</div>
+//                         <v-card>
+//                             <v-card-title>
+//                             </v-card-title>
+//                             <v-card-text class="grey lighten-5">
+//                                 <v-alert error hide-icon :value="['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1">
+//                                     Asegurate de crear varias opciones.
+//                                 </v-alert>
+//                                 <v-select
+//                                     label="Tipo"
+//                                     :hint="item.tipo.help"
+//                                     :items="tipoOpciones"
+//                                     v-model="item.tipo"
+//                                     item-value="text"
+//                                     :rules="[item.tipo !== '' || 'Este campo es obligatorio']"
+//                                     required
+//                                     return-object
+//                                     persistent-hint
+//                                     dark
+//                                 ></v-select>
+//                                 <br>
+//                                 <v-text-field
+//                                     label="Nombre del Campo"
+//                                     v-model="item.nombre"
+//                                     hint="Con este nombre se identificará el campo"
+//                                     :rules="[item.nombre !== '' || 'Este campo es obligatorio']"
+//                                     required
+//                                 ></v-text-field>
+//                                 <br>
+//                                 <v-text-field
+//                                     label="Texto de ayuda"
+//                                     v-model="item.help"
+//                                     hint="Ayuda textual que acompaña el campo"
+//                                 ></v-text-field>
+//                                 <br>
+//                                 <v-text-field
+//                                     label="Valores de referencia"
+//                                     v-model="item.referencia"
+//                                     hint="Texto de referencia para el momento de poner el resultado"
+//                                 ></v-text-field>
+//                                 <br>
+//                                 <v-text-field
+//                                     label="Unidades"
+//                                     v-model="item.unidades"
+//                                     hint="Medida en unidades de el resultado"
+//                                 ></v-text-field>
+//                                 <br>
+//                                 <v-text-field
+//                                     v-if="item.tipo.name == 'text' || item.tipo.name == 'textarea'"
+//                                     :multi-line="item.tipo.name == 'textarea'"
+//                                     :label="item.nombre"
+//                                     :hint="item.help"
+//                                     v-model="item.model_text"
+//                                     persistent-hint
+//                                 ></v-text-field>
+//                                 <div v-else-if="item.tipo.name == 'select'">
+//                                     <v-layout>
+//                                         <v-flex md10 xs10>
+//                                             <v-select
+//                                                 :label="item.nombre"
+//                                                 :hint="item.help"
+//                                                 v-model="item.model_text"
+//                                                 :items="item.choices_select"
+//                                                 :rules="[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]"
+//                                                 item-value="text"
+//                                                 persistent-hint
+//                                             ></v-select>
+//                                         </v-flex>
+//                                         <v-flex md2 xs2>
+//                                             <v-btn
+//                                                 v-tooltip:top="{html: 'Agregar Opciones'}"
+//                                                 class="green--text darken-1" icon="icon"
+//                                                 @click.native.stop="dialog = true; lastItem = item">
+//                                                 <v-icon>add</v-icon>
+//                                             </v-btn>
+//                                         </v-flex>
+//                                     </v-layout>
+//                                 </div>
+//                                 <div v-else-if="item.tipo.name == 'checkbox'">
+//                                     <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
+//                                         <v-flex xs7 md7>
+//                                             <v-checkbox
+//                                               v-if="!choice.edit"
+//                                               :label="choice.name"
+//                                               v-model="item.model_check"
+//                                               :value="choice.id"
+//                                               primary
+//                                             ></v-checkbox>
+//                                             <v-text-field
+//                                               v-else
+//                                               label="Texto para mostrar"
+//                                               v-model="choice.name"
+//                                             ></v-text-field>
+//                                         </v-flex>
+//                                         <v-flex xs5 md5>
+//                                           <v-btn v-tooltip:top="{html: 'Editar opción'}" icon="icon" class="indigo--text" @click.native="toggleValueEditCheckBox(choice)">
+//                                               <v-icon>mode_edit</v-icon>
+//                                           </v-btn>
+//                                           <v-btn v-tooltip:top="{html: 'Remover opción'}" icon="icon" class="red--text" @click.native="deleteChoiceItem(item, choiceId)" v-show="item.choices.length != 1">
+//                                               <v-icon>delete</v-icon>
+//                                           </v-btn>
+//                                           <v-btn v-tooltip:top="{html: 'Agregar opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
+//                                               <v-icon>add</v-icon>
+//                                           </v-btn>
+//                                         </v-flex>
+//                                     </v-layout>
+//                                 </div>
+//                                 <div v-else-if="item.tipo.name == 'radio'">
+//                                     <v-layout v-for="(choice, choiceId) of item.choices" :key="choiceId">
+//                                         <v-flex xs7 md7>
+//                                             <v-radio
+//                                               v-if="!choice.edit"
+//                                               :label="choice.name"
+//                                               v-model="item.model_text"
+//                                               :value="choice.name"
+//                                               primary
+//                                             ></v-radio>
+//                                             <v-text-field
+//                                               v-else
+//                                               label="Texto para mostrar"
+//                                               v-model="choice.name"
+//                                             ></v-text-field>
+//                                         </v-flex>
+//                                         <v-flex xs5 md5>
+//                                           <v-btn v-tooltip:top="{html: 'Editar opción'}" icon="icon" class="indigo--text" @click.native="toggleValueEditCheckBox(choice)">
+//                                               <v-icon>mode_edit</v-icon>
+//                                           </v-btn>
+//                                           <v-btn v-tooltip:top="{html: 'Remover opción'}" icon="icon" class="red--text" @click.native="deleteChoiceItem(item, choiceId)" v-show="item.choices.length != 1">
+//                                               <v-icon>delete</v-icon>
+//                                           </v-btn>
+//                                           <v-btn v-tooltip:top="{html: 'Agregar una nueva opción'}" icon="icon" class="yellow--text" @click.native="addChoiceItem(item)" v-show="choiceId == item.choices.length - 1">
+//                                               <v-icon>add</v-icon>
+//                                           </v-btn>
+//                                         </v-flex>
+//                                     </v-layout>
+//                                 </div>
+//                             </v-card-text>
+//                             <v-card-row actions>
+//                                 <v-btn
+//                                   v-show="items.length > 1"
+//                                   flat
+//                                   class="red--text darken-1"
+//                                   @click.native="removeItem(id)"
+//                                 >Eliminar Campo</v-btn>
+//                             </v-card-row>
+//                         </v-card>
+//                     </v-expansion-panel-content>
+//                 </v-expansion-panel>
+//                 <br>
+//             </v-flex>
+//         </v-layout>
 //         <floating-button>
 //             <template slot="child">
 //                 <v-btn floating warning small @click.native="addItem" v-tooltip:left="{html: 'Agregar Campo'}">
@@ -29099,69 +29073,65 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Vue.use(VueRouter);
 _vue2.default.use(_vueResource2.default); // <template lang="html">
 //     <div>
-//         <v-container>
-//           <v-layout>
+//         <v-layout>
 //             <v-flex xs12 md12>
-//               <ig-table
-//               table-title="Laboratorios"
-//               :headers="headers"
-//               :data="elements"
-//               :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
-//               @selectedrow="customEventUpdatedForm"
-//               :loading="loading"
-//               ></ig-table>
+//                 <ig-table
+//                   table-title="Laboratorios"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
+//                   @selectedrow="customEventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
 //             </v-flex>
-//           </v-layout>
-//         </v-container>
+//         </v-layout>
 //         <br>
-//       <v-container>
-//           <v-stepper v-model="stepper" non-linear>
-//               <v-stepper-header class="white">
-//                   <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Laboratorio</v-stepper-step>
-//                   <v-divider></v-divider>
-//                   <v-stepper-step step="2" @click.native="secondStepClick" :complete="stepper > 2">Formato</v-stepper-step>
-//                   <v-divider></v-divider>
-//                   <v-stepper-step step="3" @click.native="thirdStepClick">Insumos y Reactivos</v-stepper-step>
-//               </v-stepper-header>
-//               <v-stepper-content step="1" class="white">
-//                   <ig-form
-//                   :fields="fields"
-//                   :url="urlForm"
-//                   @showsnack="showSnackBar"
-//                   @objectcreated="_eventCreatedObject"
-//                   @clearselected="selected = false"
-//                   :selected="selected"
-//                   >
-//                       <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
-//                           Continuar
-//                       </v-btn>
-//                   </ig-form>
-//               </v-stepper-content>
-//               <v-stepper-content step="2" class="white">
-//                   <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
-//               </v-stepper-content>
-//               <v-stepper-content step="3" class="white">
-//                   <v-card>
-//                       <v-card-text>
-//                           <v-layout>
-//                               <v-flex md6 xs12>
-//                                 <v-subheader>Insumos</v-subheader>
-//                                 <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_insumos" tipo="i"></ig-producto>
-//                               </v-flex>
-//                               <v-flex md6 xs12>
-//                                 <v-subheader>Reactivos</v-subheader>
-//                                 <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_reactivos" tipo="r"></ig-producto>
-//                               </v-flex>
-//                           </v-layout>
-//                       </v-card-text>
-//                       <!-- <v-card-row actions>
-//                           <v-btn primary @click.native="stepper = 1" light>Continue</v-btn>
-//                           <v-btn flat dark>Cancel</v-btn>
-//                       </v-card-row> -->
-//                   </v-card>
-//               </v-stepper-content>
-//           </v-stepper>
-//       </v-container>
+//         <v-stepper v-model="stepper" non-linear>
+//             <v-stepper-header class="white">
+//                 <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Laboratorio</v-stepper-step>
+//                 <v-divider></v-divider>
+//                 <v-stepper-step step="2" @click.native="secondStepClick" :complete="stepper > 2">Formato</v-stepper-step>
+//                 <v-divider></v-divider>
+//                 <v-stepper-step step="3" @click.native="thirdStepClick">Insumos y Reactivos</v-stepper-step>
+//             </v-stepper-header>
+//             <v-stepper-content step="1" class="white">
+//                 <ig-form
+//                 :fields="fields"
+//                 :url="urlForm"
+//                 @showsnack="showSnackBar"
+//                 @objectcreated="_eventCreatedObject"
+//                 @clearselected="selected = false"
+//                 :selected="selected"
+//                 >
+//                     <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
+//                         Continuar
+//                     </v-btn>
+//                 </ig-form>
+//             </v-stepper-content>
+//             <v-stepper-content step="2" class="white">
+//                 <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
+//             </v-stepper-content>
+//             <v-stepper-content step="3" class="white">
+//                 <v-card>
+//                     <v-card-text>
+//                         <v-layout>
+//                             <v-flex md6 xs12>
+//                               <v-subheader>Insumos</v-subheader>
+//                               <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_insumos" tipo="i"></ig-producto>
+//                             </v-flex>
+//                             <v-flex md6 xs12>
+//                               <v-subheader>Reactivos</v-subheader>
+//                               <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_reactivos" tipo="r"></ig-producto>
+//                             </v-flex>
+//                         </v-layout>
+//                     </v-card-text>
+//                     <!-- <v-card-row actions>
+//                         <v-btn primary @click.native="stepper = 1" light>Continue</v-btn>
+//                         <v-btn flat dark>Cancel</v-btn>
+//                     </v-card-row> -->
+//                 </v-card>
+//             </v-stepper-content>
+//         </v-stepper>
 //     </div>
 // </template>
 //
@@ -29418,45 +29388,42 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Vue.use(VueRouter);
 _vue2.default.use(_vueResource2.default); // <template lang="html">
 //     <div>
-//         <v-container>
-//             <v-layout>
-//                 <v-flex xs12 md12>
-//                     <v-card>
-//                         <v-card-title>
-//                             Ordenes con laboratorios
-//                             <v-spacer></v-spacer>
-//                             <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
-//                         </v-card-title>
-//                         <v-data-table
-//                             :pagination.sync="pagination"
-//                             :total-items="totalItems"
-//                             :loading="loading"
-//                             v-bind:headers="headers"
-//                             :items="elements"
-//                             v-bind:search="buscador"
-//                             :rows-per-page-items="[10]"
-//                             :filter="filter"
-//                             rows-per-page-text="Filas por Página"
-//                             no-results-text="No se encontraron resultados">
-//                             <template slot="headers" scope="props">
-//                                 <span style="text-align:before: center !important">{{ props.item.text }}</span>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <v-card>
+//                     <v-card-title>
+//                         Ordenes con laboratorios
+//                         <v-spacer></v-spacer>
+//                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
+//                     </v-card-title>
+//                     <v-data-table
+//                         :pagination.sync="pagination"
+//                         :total-items="totalItems"
+//                         :loading="loading"
+//                         v-bind:headers="headers"
+//                         :items="elements"
+//                         v-bind:search="buscador"
+//                         :rows-per-page-items="[10]"
+//                         :filter="filter"
+//                         rows-per-page-text="Filas por Página"
+//                         no-results-text="No se encontraron resultados">
+//                         <template slot="headers" scope="props">
+//                             <span style="text-align:before: center !important">{{ props.item.text }}</span>
+//                         </template>
+//                         <template slot="items" scope="props">
+//                             <template v-for="field of fields">
+//                                 <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
+//                                 <td class="text-xs-center" v-else>
+//                                     <v-btn floating small router class="cyan darken-1" :href="field.href.replace(':id', props.item.orden.id)">
+//                                         <v-icon light>mode_edit</v-icon>
+//                                     </v-btn>
+//                                 </td>
 //                             </template>
-//                             <template slot="items" scope="props">
-//                                 <template v-for="field of fields">
-//                                     <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
-//                                     <td class="text-xs-center" v-else>
-//                                         <v-btn floating small router class="cyan darken-1" :href="field.href.replace(':id', props.item.orden.id)">
-//                                             <v-icon light>mode_edit</v-icon>
-//                                         </v-btn>
-//                                     </td>
-//                                 </template>
-//                             </template>
-//                         </v-data-table>
-//                     </v-card>
-//                 </v-flex>
-//             </v-layout>
-//         </v-container>
-//         <br>
+//                         </template>
+//                     </v-data-table>
+//                 </v-card>
+//             </v-flex>
+//         </v-layout>
 //     </div>
 // </template>
 //
@@ -29718,37 +29685,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Vue.use(VueRouter);
 _vue2.default.use(_vueResource2.default); // <template lang="html">
 //     <div>
-//         <v-container>
-//           <v-layout>
+//         <v-layout>
 //             <v-flex xs12 md12>
-//               <ig-table
-//               table-title="Productos"
-//               :headers="headers"
-//               :data="elements"
-//               :fields="['codigo', 'nombre', 'tipo_display', 'cantidad']"
-//               @selectedrow="eventUpdatedForm"
-//               :loading="loading"
-//               ></ig-table>
+//                 <ig-table
+//                   table-title="Productos"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['codigo', 'nombre', 'tipo_display', 'cantidad']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
 //             </v-flex>
-//           </v-layout>
-//         </v-container>
-//         <br>
-//         <v-container>
-//           <v-layout>
-//             <v-flex xs12 md12>
-//               <ig-form
-//               :fields="fields"
-//               :url="urlForm"
-//               @showsnack="showSnackBar"
-//               @objectcreated="eventCreatedObject"
-//               @clearselected="selected = false"
-//               :selected="selected"
-//               >
-//             </ig-form>
-//           </v-flex>
 //         </v-layout>
 //         <br>
-//       </v-container>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-form
+//                   :fields="fields"
+//                   :url="urlForm"
+//                   @showsnack="showSnackBar"
+//                   @objectcreated="eventCreatedObject"
+//                   @clearselected="selected = false"
+//                   :selected="selected"
+//                 ></ig-form>
+//             </v-flex>
+//         </v-layout>
 //     </div>
 // </template>
 //
@@ -30417,71 +30378,50 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Vue.use(VueRouter);
 // <template lang="html">
 //     <div>
-//         <v-container>
-//             <v-layout>
-//                 <v-flex xs12 md12>
-//                     <ig-table
-//                     table-title="Areas"
-//                     :headers="headers"
-//                     :data="elements"
-//                     :fields="['codigo', 'descripcion']"
-//                     @selectedrow="eventUpdatedForm"
-//                     :loading="loading"
-//                     ></ig-table>
-//                 </v-flex>
-//             </v-layout>
-//         </v-container>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-table
+//                   table-title="Areas"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['codigo', 'descripcion']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
+//             </v-flex>
+//         </v-layout>
 //         <br>
-//         <!-- <v-container>
-//             <v-layout>
-//                 <v-flex xs12 md12>
-//                     <ig-form
-//                     :fields="fields"
-//                     :url="urlForm"
-//                     @showsnack="showSnackBar"
-//                     @objectcreated="eventCreatedObject"
-//                     @clearselected="selected = false"
-//                     :selected="selected"
-//                     >
-//                     </ig-form>
-//                 </v-flex>
-//             </v-layout>
-//             <br>
-//         </v-container> -->
-//         <br>
-//         <v-container>
-//             <v-stepper v-model="stepper">
-//                 <v-stepper-header class="white">
-//                     <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Área</v-stepper-step>
-//                     <v-divider></v-divider>
-//                     <v-stepper-step step="2" @click.native="secondStepClick">Plantilla de Gasto</v-stepper-step>
-//                 </v-stepper-header>
-//                 <v-stepper-content step="1" class="white">
-//                     <ig-form
-//                     :fields="fields"
-//                     :url="urlForm"
-//                     @showsnack="showSnackBar"
-//                     @objectcreated="eventCreatedObject"
-//                     @clearselected="selected = false"
-//                     :selected="selected"
-//                     >
-//                         <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
-//                             Continuar
-//                         </v-btn>
-//                     </ig-form>
-//                 </v-stepper-content>
-//                 <v-stepper-content step="2" class="white">
-//                     <v-card>
-//                         <v-card-title>Lista de insumos por área</v-card-title>
-//                         <v-card-row>
-//                             <v-card-text>
-//                                 <ig-producto :area="area" :plantillas="plantillas"></ig-producto>
-//                             </v-card-text>
-//                         </v-card-row>
-//                     </v-card>
-//                 </v-stepper-content>
-//             </v-stepper>
-//         </v-container>
+//         <v-stepper v-model="stepper">
+//             <v-stepper-header class="white">
+//                 <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Área</v-stepper-step>
+//                 <v-divider></v-divider>
+//                 <v-stepper-step step="2" @click.native="secondStepClick">Plantilla de Gasto</v-stepper-step>
+//             </v-stepper-header>
+//             <v-stepper-content step="1" class="white">
+//                 <ig-form
+//                 :fields="fields"
+//                 :url="urlForm"
+//                 @showsnack="showSnackBar"
+//                 @objectcreated="eventCreatedObject"
+//                 @clearselected="selected = false"
+//                 :selected="selected"
+//                 >
+//                     <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
+//                         Continuar
+//                     </v-btn>
+//                 </ig-form>
+//             </v-stepper-content>
+//             <v-stepper-content step="2" class="white">
+//                 <v-card>
+//                     <v-card-title>Lista de insumos por área</v-card-title>
+//                     <v-card-row>
+//                         <v-card-text>
+//                             <ig-producto :area="area" :plantillas="plantillas"></ig-producto>
+//                         </v-card-text>
+//                     </v-card-row>
+//                 </v-card>
+//             </v-stepper-content>
+//         </v-stepper>
 //     </div>
 // </template>
 //
@@ -30614,37 +30554,32 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Vue.use(VueRouter);
 _vue2.default.use(_vueResource2.default); // <template lang="html">
 //     <div>
-//         <v-container>
-//           <v-layout>
+//         <v-layout>
 //             <v-flex xs12 md12>
-//               <ig-table
-//               table-title="Tecnicas"
-//               :headers="headers"
-//               :data="elements"
-//               :fields="['codigo', 'nombre']"
-//               @selectedrow="eventUpdatedForm"
-//               :loading="loading"
-//               ></ig-table>
+//                 <ig-table
+//                   table-title="Tecnicas"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['codigo', 'nombre']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
 //             </v-flex>
-//           </v-layout>
-//         </v-container>
-//         <br>
-//         <v-container>
-//           <v-layout>
-//             <v-flex xs12 md12>
-//               <ig-form
-//               :fields="fields"
-//               :url="urlForm"
-//               @showsnack="showSnackBar"
-//               @objectcreated="eventCreatedObject"
-//               @clearselected="selected = false"
-//               :selected="selected"
-//               >
-//             </ig-form>
-//           </v-flex>
 //         </v-layout>
 //         <br>
-//       </v-container>
+//             <v-layout>
+//                 <v-flex xs12 md12>
+//                     <ig-form
+//                       :fields="fields"
+//                       :url="urlForm"
+//                       @showsnack="showSnackBar"
+//                       @objectcreated="eventCreatedObject"
+//                       @clearselected="selected = false"
+//                       :selected="selected"
+//                     ></ig-form>
+//                 </v-flex>
+//             </v-layout>
+//         <br>
 //     </div>
 // </template>
 //
@@ -30742,7 +30677,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Vue.use(VueRouter);
 _vue2.default.use(_vueResource2.default); // <template lang="html">
 //     <div>
-//         <v-container>
+//         <v-container fluid>
 //             <v-layout>
 //                 <v-flex xs12 md12>
 //                     <v-card>
@@ -30786,7 +30721,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //                 <v-card-row v-if="hasRecepcion">
 //                     <v-card-text>
 //                         <v-card horizontal flat>
-//                             <v-card-row :img="recepcion.paciente.foto" height="325px"></v-card-row>
+//                             <v-card-row :img="fotoPaciente" height="325px"></v-card-row>
 //                             <v-card-column>
 //                                 <v-card-row height="100px" class="">
 //                                     <v-card-text>
@@ -30861,10 +30796,23 @@ exports.default = {
             return !_underscore2.default.isEmpty(this.recepcion);
         }
     },
-    watch: {},
+    watch: {
+        recepcion: function recepcion() {
+            this.reloadFoto();
+        }
+    },
     methods: {
-        saveRecepcion: function saveRecepcion($event) {
+        reloadFoto: function reloadFoto() {
             var _this = this;
+
+            this.$http.get(this.recepcion.paciente.foto).then(function (response) {
+                _this.fotoPaciente = _this.recepcion.paciente.foto;
+            }, function (response) {
+                _this.fotoPaciente = '/static/profile-none.jpg';
+            });
+        },
+        saveRecepcion: function saveRecepcion($event) {
+            var _this2 = this;
 
             var token = document.getElementsByName('csrfmiddlewaretoken')[0];
             var plantillas = this.$refs.hojaGasto.self_plantillas;
@@ -30896,13 +30844,13 @@ exports.default = {
 
             this.$http.post(_urls2.default.recepciones, { orden: orden, hoja_gasto: plantillas }, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
                 // console.log(response);
-                var item = _this.elements.find(function (x) {
-                    return x.id == _this.recepcion.id;
+                var item = _this2.elements.find(function (x) {
+                    return x.id == _this2.recepcion.id;
                 });
                 if (item) {
-                    _this.elements.splice(_this.elements.indexOf(item), 1);
+                    _this2.elements.splice(_this2.elements.indexOf(item), 1);
                 }
-                _this.modalTomaMuestra = false;
+                _this2.modalTomaMuestra = false;
             }, function (response) {
                 // console.log(response)
             });
@@ -30941,12 +30889,12 @@ exports.default = {
             return string;
         },
         selectRecepcion: function selectRecepcion(item) {
-            var _this2 = this;
+            var _this3 = this;
 
             this.modalTomaMuestra = true;
             this.recepcion = item;
             this.$http.get(_urls2.default.plantillasOrdenes.concat(this.recepcion.id.toString() + '/?tipo=i')).then(function (response) {
-                _this2.plantillas = response.body;
+                _this3.plantillas = response.body;
             }, function (response) {});
         }
     },
@@ -32790,49 +32738,49 @@ module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTi
 /* 151 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Bacteriologos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Bacteriologos\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 152 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Caracteristicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'descripcion']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Caracteristicas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'descripcion']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 153 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Equipos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Equipos\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 154 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Especificacion Caracteristica\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['nombre', 'caracteristica.codigo']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Especificacion Caracteristica\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['nombre', 'caracteristica.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 155 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div v-if=\"formato\">\n        <v-container>\n            <v-layout>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-layout>\n            <v-layout wrap>\n                <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand class=\"white\">\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        return-object\n                                        persistent-hint\n                                        dark\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Texto de ayuda\"\n                                        v-model=\"item.help\"\n                                        hint=\"Ayuda textual que acompaña el campo\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Valores de referencia\"\n                                        v-model=\"item.referencia\"\n                                        hint=\"Texto de referencia para el momento de poner el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Unidades\"\n                                        v-model=\"item.unidades\"\n                                        hint=\"Medida en unidades de el resultado\"\n                                    ></v-text-field>\n                                    <br>\n                                    <v-text-field\n                                        v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                        :multi-line=\"item.tipo.name == 'textarea'\"\n                                        :label=\"item.nombre\"\n                                        :hint=\"item.help\"\n                                        v-model=\"item.model_text\"\n                                        persistent-hint\n                                    ></v-text-field>\n                                    <div v-else-if=\"item.tipo.name == 'select'\">\n                                        <v-layout>\n                                            <v-flex md10 xs10>\n                                                <v-select\n                                                    :label=\"item.nombre\"\n                                                    :hint=\"item.help\"\n                                                    v-model=\"item.model_text\"\n                                                    :items=\"item.choices_select\"\n                                                    :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                    item-value=\"text\"\n                                                    persistent-hint\n                                                ></v-select>\n                                            </v-flex>\n                                            <v-flex md2 xs2>\n                                                <v-btn\n                                                    v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                    class=\"green--text darken-1\" icon=\"icon\"\n                                                    @click.native.stop=\"dialog = true; lastItem = item\">\n                                                    <v-icon>add</v-icon>\n                                                </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-checkbox\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_check\"\n                                                  :value=\"choice.id\"\n                                                  primary\n                                                ></v-checkbox>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                    <div v-else-if=\"item.tipo.name == 'radio'\">\n                                        <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                            <v-flex xs7 md7>\n                                                <v-radio\n                                                  v-if=\"!choice.edit\"\n                                                  :label=\"choice.name\"\n                                                  v-model=\"item.model_text\"\n                                                  :value=\"choice.name\"\n                                                  primary\n                                                ></v-radio>\n                                                <v-text-field\n                                                  v-else\n                                                  label=\"Texto para mostrar\"\n                                                  v-model=\"choice.name\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex xs5 md5>\n                                              <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                                  <v-icon>mode_edit</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                  <v-icon>delete</v-icon>\n                                              </v-btn>\n                                              <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                  <v-icon>add</v-icon>\n                                              </v-btn>\n                                            </v-flex>\n                                        </v-layout>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+module.exports = "\n    <div v-if=\"formato\">\n        <v-layout>\n            <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n        </v-layout>\n        <v-layout wrap>\n            <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                <v-expansion-panel expand class=\"white\">\n                    <v-expansion-panel-content>\n                        <div slot=\"header\">{{ item.nombre }}</div>\n                        <v-card>\n                            <v-card-title>\n                            </v-card-title>\n                            <v-card-text class=\"grey lighten-5\">\n                                <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                    Asegurate de crear varias opciones.\n                                </v-alert>\n                                <v-select\n                                    label=\"Tipo\"\n                                    :hint=\"item.tipo.help\"\n                                    :items=\"tipoOpciones\"\n                                    v-model=\"item.tipo\"\n                                    item-value=\"text\"\n                                    :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                    required\n                                    return-object\n                                    persistent-hint\n                                    dark\n                                ></v-select>\n                                <br>\n                                <v-text-field\n                                    label=\"Nombre del Campo\"\n                                    v-model=\"item.nombre\"\n                                    hint=\"Con este nombre se identificará el campo\"\n                                    :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                    required\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Texto de ayuda\"\n                                    v-model=\"item.help\"\n                                    hint=\"Ayuda textual que acompaña el campo\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Valores de referencia\"\n                                    v-model=\"item.referencia\"\n                                    hint=\"Texto de referencia para el momento de poner el resultado\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Unidades\"\n                                    v-model=\"item.unidades\"\n                                    hint=\"Medida en unidades de el resultado\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                    :multi-line=\"item.tipo.name == 'textarea'\"\n                                    :label=\"item.nombre\"\n                                    :hint=\"item.help\"\n                                    v-model=\"item.model_text\"\n                                    persistent-hint\n                                ></v-text-field>\n                                <div v-else-if=\"item.tipo.name == 'select'\">\n                                    <v-layout>\n                                        <v-flex md10 xs10>\n                                            <v-select\n                                                :label=\"item.nombre\"\n                                                :hint=\"item.help\"\n                                                v-model=\"item.model_text\"\n                                                :items=\"item.choices_select\"\n                                                :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                item-value=\"text\"\n                                                persistent-hint\n                                            ></v-select>\n                                        </v-flex>\n                                        <v-flex md2 xs2>\n                                            <v-btn\n                                                v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                class=\"green--text darken-1\" icon=\"icon\"\n                                                @click.native.stop=\"dialog = true; lastItem = item\">\n                                                <v-icon>add</v-icon>\n                                            </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                                <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                    <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                        <v-flex xs7 md7>\n                                            <v-checkbox\n                                              v-if=\"!choice.edit\"\n                                              :label=\"choice.name\"\n                                              v-model=\"item.model_check\"\n                                              :value=\"choice.id\"\n                                              primary\n                                            ></v-checkbox>\n                                            <v-text-field\n                                              v-else\n                                              label=\"Texto para mostrar\"\n                                              v-model=\"choice.name\"\n                                            ></v-text-field>\n                                        </v-flex>\n                                        <v-flex xs5 md5>\n                                          <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                              <v-icon>mode_edit</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                              <v-icon>delete</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                              <v-icon>add</v-icon>\n                                          </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                                <div v-else-if=\"item.tipo.name == 'radio'\">\n                                    <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                        <v-flex xs7 md7>\n                                            <v-radio\n                                              v-if=\"!choice.edit\"\n                                              :label=\"choice.name\"\n                                              v-model=\"item.model_text\"\n                                              :value=\"choice.name\"\n                                              primary\n                                            ></v-radio>\n                                            <v-text-field\n                                              v-else\n                                              label=\"Texto para mostrar\"\n                                              v-model=\"choice.name\"\n                                            ></v-text-field>\n                                        </v-flex>\n                                        <v-flex xs5 md5>\n                                          <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                              <v-icon>mode_edit</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                              <v-icon>delete</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                              <v-icon>add</v-icon>\n                                          </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                            </v-card-text>\n                            <v-card-row actions>\n                                <v-btn\n                                  v-show=\"items.length > 1\"\n                                  flat\n                                  class=\"red--text darken-1\"\n                                  @click.native=\"removeItem(id)\"\n                                >Eliminar Campo</v-btn>\n                            </v-card-row>\n                        </v-card>\n                    </v-expansion-panel-content>\n                </v-expansion-panel>\n                <br>\n            </v-flex>\n        </v-layout>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ }),
 /* 156 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Laboratorios\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']\"\n              @selectedrow=\"customEventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n      <v-container>\n          <v-stepper v-model=\"stepper\" non-linear>\n              <v-stepper-header class=\"white\">\n                  <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"2\" @click.native=\"secondStepClick\" :complete=\"stepper > 2\">Formato</v-stepper-step>\n                  <v-divider></v-divider>\n                  <v-stepper-step step=\"3\" @click.native=\"thirdStepClick\">Insumos y Reactivos</v-stepper-step>\n              </v-stepper-header>\n              <v-stepper-content step=\"1\" class=\"white\">\n                  <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"_eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  >\n                      <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                          Continuar\n                      </v-btn>\n                  </ig-form>\n              </v-stepper-content>\n              <v-stepper-content step=\"2\" class=\"white\">\n                  <ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>\n              </v-stepper-content>\n              <v-stepper-content step=\"3\" class=\"white\">\n                  <v-card>\n                      <v-card-text>\n                          <v-layout>\n                              <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                              </v-flex>\n                              <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                              </v-flex>\n                          </v-layout>\n                      </v-card-text>\n                      <!-- <v-card-row actions>\n                          <v-btn primary @click.native=\"stepper = 1\" light>Continue</v-btn>\n                          <v-btn flat dark>Cancel</v-btn>\n                      </v-card-row> -->\n                  </v-card>\n              </v-stepper-content>\n          </v-stepper>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Laboratorios\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']\"\n                  @selectedrow=\"customEventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-stepper v-model=\"stepper\" non-linear>\n            <v-stepper-header class=\"white\">\n                <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"2\" @click.native=\"secondStepClick\" :complete=\"stepper > 2\">Formato</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"3\" @click.native=\"thirdStepClick\">Insumos y Reactivos</v-stepper-step>\n            </v-stepper-header>\n            <v-stepper-content step=\"1\" class=\"white\">\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"_eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                >\n                    <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                        Continuar\n                    </v-btn>\n                </ig-form>\n            </v-stepper-content>\n            <v-stepper-content step=\"2\" class=\"white\">\n                <ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>\n            </v-stepper-content>\n            <v-stepper-content step=\"3\" class=\"white\">\n                <v-card>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                              <v-subheader>Insumos</v-subheader>\n                              <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                              <v-subheader>Reactivos</v-subheader>\n                              <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <!-- <v-card-row actions>\n                        <v-btn primary @click.native=\"stepper = 1\" light>Continue</v-btn>\n                        <v-btn flat dark>Cancel</v-btn>\n                    </v-card-row> -->\n                </v-card>\n            </v-stepper-content>\n        </v-stepper>\n    </div>\n";
 
 /***/ }),
 /* 157 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes con laboratorios\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                            :pagination.sync=\"pagination\"\n                            :total-items=\"totalItems\"\n                            :loading=\"loading\"\n                            v-bind:headers=\"headers\"\n                            :items=\"elements\"\n                            v-bind:search=\"buscador\"\n                            :rows-per-page-items=\"[10]\"\n                            :filter=\"filter\"\n                            rows-per-page-text=\"Filas por Página\"\n                            no-results-text=\"No se encontraron resultados\">\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <template v-for=\"field of fields\">\n                                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                    <td class=\"text-xs-center\" v-else>\n                                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                            <v-icon light>mode_edit</v-icon>\n                                        </v-btn>\n                                    </td>\n                                </template>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <br>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Ordenes con laboratorios\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :total-items=\"totalItems\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        :filter=\"filter\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <template slot=\"headers\" scope=\"props\">\n                            <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of fields\">\n                                <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td class=\"text-xs-center\" v-else>\n                                    <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 158 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Productos\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre', 'tipo_display', 'cantidad']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Productos\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'tipo_display', 'cantidad']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 159 */
@@ -32844,19 +32792,19 @@ module.exports = "\n    <div class=\"\">\n        <v-container v-if=\"items.leng
 /* 160 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-table\n                    table-title=\"Areas\"\n                    :headers=\"headers\"\n                    :data=\"elements\"\n                    :fields=\"['codigo', 'descripcion']\"\n                    @selectedrow=\"eventUpdatedForm\"\n                    :loading=\"loading\"\n                    ></ig-table>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <br>\n        <!-- <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-form\n                    :fields=\"fields\"\n                    :url=\"urlForm\"\n                    @showsnack=\"showSnackBar\"\n                    @objectcreated=\"eventCreatedObject\"\n                    @clearselected=\"selected = false\"\n                    :selected=\"selected\"\n                    >\n                    </ig-form>\n                </v-flex>\n            </v-layout>\n            <br>\n        </v-container> -->\n        <br>\n        <v-container>\n            <v-stepper v-model=\"stepper\">\n                <v-stepper-header class=\"white\">\n                    <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Área</v-stepper-step>\n                    <v-divider></v-divider>\n                    <v-stepper-step step=\"2\" @click.native=\"secondStepClick\">Plantilla de Gasto</v-stepper-step>\n                </v-stepper-header>\n                <v-stepper-content step=\"1\" class=\"white\">\n                    <ig-form\n                    :fields=\"fields\"\n                    :url=\"urlForm\"\n                    @showsnack=\"showSnackBar\"\n                    @objectcreated=\"eventCreatedObject\"\n                    @clearselected=\"selected = false\"\n                    :selected=\"selected\"\n                    >\n                        <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                            Continuar\n                        </v-btn>\n                    </ig-form>\n                </v-stepper-content>\n                <v-stepper-content step=\"2\" class=\"white\">\n                    <v-card>\n                        <v-card-title>Lista de insumos por área</v-card-title>\n                        <v-card-row>\n                            <v-card-text>\n                                <ig-producto :area=\"area\" :plantillas=\"plantillas\"></ig-producto>\n                            </v-card-text>\n                        </v-card-row>\n                    </v-card>\n                </v-stepper-content>\n            </v-stepper>\n        </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Areas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'descripcion']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-stepper v-model=\"stepper\">\n            <v-stepper-header class=\"white\">\n                <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Área</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"2\" @click.native=\"secondStepClick\">Plantilla de Gasto</v-stepper-step>\n            </v-stepper-header>\n            <v-stepper-content step=\"1\" class=\"white\">\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                >\n                    <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                        Continuar\n                    </v-btn>\n                </ig-form>\n            </v-stepper-content>\n            <v-stepper-content step=\"2\" class=\"white\">\n                <v-card>\n                    <v-card-title>Lista de insumos por área</v-card-title>\n                    <v-card-row>\n                        <v-card-text>\n                            <ig-producto :area=\"area\" :plantillas=\"plantillas\"></ig-producto>\n                        </v-card-text>\n                    </v-card-row>\n                </v-card>\n            </v-stepper-content>\n        </v-stepper>\n    </div>\n";
 
 /***/ }),
 /* 161 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-table\n              table-title=\"Tecnicas\"\n              :headers=\"headers\"\n              :data=\"elements\"\n              :fields=\"['codigo', 'nombre']\"\n              @selectedrow=\"eventUpdatedForm\"\n              :loading=\"loading\"\n              ></ig-table>\n            </v-flex>\n          </v-layout>\n        </v-container>\n        <br>\n        <v-container>\n          <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n              :fields=\"fields\"\n              :url=\"urlForm\"\n              @showsnack=\"showSnackBar\"\n              @objectcreated=\"eventCreatedObject\"\n              @clearselected=\"selected = false\"\n              :selected=\"selected\"\n              >\n            </ig-form>\n          </v-flex>\n        </v-layout>\n        <br>\n      </v-container>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Tecnicas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-form\n                      :fields=\"fields\"\n                      :url=\"urlForm\"\n                      @showsnack=\"showSnackBar\"\n                      @objectcreated=\"eventCreatedObject\"\n                      @clearselected=\"selected = false\"\n                      :selected=\"selected\"\n                    ></ig-form>\n                </v-flex>\n            </v-layout>\n        <br>\n    </div>\n";
 
 /***/ }),
 /* 162 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes en Recepción\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo, ' | ') }}</td>\n                                <td>\n                                    <v-btn floating small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-row>\n                    <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                </v-card-row>\n                <v-card-row v-if=\"hasRecepcion\">\n                    <v-card-text>\n                        <v-card horizontal flat>\n                            <v-card-row :img=\"recepcion.paciente.foto\" height=\"325px\"></v-card-row>\n                            <v-card-column>\n                                <v-card-row height=\"100px\" class=\"\">\n                                    <v-card-text>\n                                      <v-layout>\n                                        <v-flex md6>\n                                            <strong>Nombre del paciente</strong>\n                                            <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                            <br>\n                                            <strong>Identificación</strong>\n                                            <div>{{ recepcion.paciente.cedula }}</div>\n                                            <br>\n                                            <strong>Edad del paciente</strong>\n                                            <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                        </v-flex>\n                                        <v-flex md6>\n                                            <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                        </v-flex>\n                                      </v-layout>\n                                    </v-card-text>\n                                </v-card-row>\n                                <v-card-row actions class=\"cyan darken-1\">\n                                    <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                        <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                    </v-btn>\n                                </v-card-row>\n                            </v-card-column>\n                        </v-card>\n                    </v-card-text>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container fluid>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes en Recepción\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo, ' | ') }}</td>\n                                <td>\n                                    <v-btn floating small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-row>\n                    <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                </v-card-row>\n                <v-card-row v-if=\"hasRecepcion\">\n                    <v-card-text>\n                        <v-card horizontal flat>\n                            <v-card-row :img=\"fotoPaciente\" height=\"325px\"></v-card-row>\n                            <v-card-column>\n                                <v-card-row height=\"100px\" class=\"\">\n                                    <v-card-text>\n                                      <v-layout>\n                                        <v-flex md6>\n                                            <strong>Nombre del paciente</strong>\n                                            <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                            <br>\n                                            <strong>Identificación</strong>\n                                            <div>{{ recepcion.paciente.cedula }}</div>\n                                            <br>\n                                            <strong>Edad del paciente</strong>\n                                            <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                        </v-flex>\n                                        <v-flex md6>\n                                            <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                        </v-flex>\n                                      </v-layout>\n                                    </v-card-text>\n                                </v-card-row>\n                                <v-card-row actions class=\"cyan darken-1\">\n                                    <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                        <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                    </v-btn>\n                                </v-card-row>\n                            </v-card-column>\n                        </v-card>\n                    </v-card-text>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ }),
 /* 163 */

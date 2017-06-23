@@ -1,6 +1,6 @@
 <template lang="html">
     <div>
-        <v-container>
+        <v-container fluid>
             <v-layout>
                 <v-flex xs12 md12>
                     <v-card>
@@ -44,7 +44,7 @@
                 <v-card-row v-if="hasRecepcion">
                     <v-card-text>
                         <v-card horizontal flat>
-                            <v-card-row :img="recepcion.paciente.foto" height="325px"></v-card-row>
+                            <v-card-row :img="fotoPaciente" height="325px"></v-card-row>
                             <v-card-column>
                                 <v-card-row height="100px" class="">
                                     <v-card-text>
@@ -134,11 +134,22 @@ export default {
     computed: {
         hasRecepcion: function () {
             return !_.isEmpty(this.recepcion);
-        }
+        },
     },
     watch: {
+        recepcion: function () {
+            this.reloadFoto()
+        }
     },
     methods: {
+        reloadFoto () {
+            this.$http.get(this.recepcion.paciente.foto)
+              .then(response => {
+                  this.fotoPaciente = this.recepcion.paciente.foto;
+              }, response => {
+                  this.fotoPaciente = '/static/profile-none.jpg';
+              })
+        },
         saveRecepcion ($event) {
             let token = document.getElementsByName('csrfmiddlewaretoken')[0];
             let plantillas = this.$refs.hojaGasto.self_plantillas;
