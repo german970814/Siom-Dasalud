@@ -157,7 +157,7 @@ export default {
             for (let plantilla of plantillas) {
                 plantilla.orden = orden;
             }
-            this.$http.post(URL.recepciones, {orden: orden, hoja_gasto: plantillas}, {headers: {'X-CSRFToken': token.value}})
+            this.$http.post(URL.laboratoriosTomaMuestra, {orden: orden, hoja_gasto: plantillas}, {headers: {'X-CSRFToken': token.value}})
               .then(response => {
                   // console.log(response);
                   let item = this.elements.find(x => {return x.id == this.recepcion.id});

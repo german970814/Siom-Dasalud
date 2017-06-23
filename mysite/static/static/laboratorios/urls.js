@@ -1,6 +1,5 @@
 const BASE = '/laboratorios/api/';
 
-const recepciones = BASE.concat('recepciones/');
 const bacteriologos = BASE.concat('bacteriologos/');
 const caracteristicas = BASE.concat('caracteristicas/');
 const equipos = BASE.concat('equipos/');
@@ -40,6 +39,5 @@ export default {
     laboratoriosTomaMuestra,
     plantillaArea,
     plantillasOrdenes,
-    recepciones,
     plantillaLaboratorio
 }

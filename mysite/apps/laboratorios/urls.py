@@ -6,12 +6,10 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^imprimir/(?P<pk>\d+)/$', views.imprimir_laboratorio, name='imprimir'),
     url(r'^pr/(?P<pk>\d+)/$', views.prueba, name='imprimir_pras'),
-    # url(r'^toma_muestra/$', views.ordenes_toma_muestra, name='toma_muestra'),
 ]
 
 # api
 urlpatterns += [
-    url(r'^api/recepciones/$', api.recepcion_api, name='recepciones'),
     url(r'^api/laboratorios/$', api.LaboratoriosListAPI.as_view(), name='laboratorios'),
     url(r'^api/laboratorios/(?P<pk>\d+)/$', api.detalle_laboratorio, name='detalle_laboratorio'),
     url(r'^api/laboratorios/plantilla/(?P<pk>\d+)/$', api.plantillas_orden, name='plantilla_laboratorios'),

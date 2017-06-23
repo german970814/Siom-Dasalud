@@ -2007,7 +2007,6 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;//     Underscor
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 const BASE = '/laboratorios/api/';
 
-const recepciones = BASE.concat('recepciones/');
 const bacteriologos = BASE.concat('bacteriologos/');
 const caracteristicas = BASE.concat('caracteristicas/');
 const equipos = BASE.concat('equipos/');
@@ -2047,7 +2046,6 @@ const plantillasOrdenes = BASE.concat('laboratorios/plantilla/');
     laboratoriosTomaMuestra,
     plantillaArea,
     plantillasOrdenes,
-    recepciones,
     plantillaLaboratorio
 });
 
@@ -29217,10 +29215,11 @@ exports.default = {
 
             this.plantillas_insumos = [];
             this.plantillas_reactivos = [];
+
             if (!this.selected) {
                 this.laboratorio = {};
             } else {
-                this.laboratorios = this.selected;
+                this.laboratorio = this.selected;
                 this.$http.get(_urls2.default.plantillaLaboratorio.concat('?laboratorio=' + this.laboratorio.id.toString())).then(function (response) {
                     if (response.body instanceof Array) {
                         var _iteratorNormalCompletion = true;
@@ -30842,7 +30841,7 @@ exports.default = {
                 }
             }
 
-            this.$http.post(_urls2.default.recepciones, { orden: orden, hoja_gasto: plantillas }, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
+            this.$http.post(_urls2.default.laboratoriosTomaMuestra, { orden: orden, hoja_gasto: plantillas }, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
                 // console.log(response);
                 var item = _this2.elements.find(function (x) {
                     return x.id == _this2.recepcion.id;

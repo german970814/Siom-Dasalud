@@ -172,10 +172,11 @@ export default {
         selected: function () {
             this.plantillas_insumos = [];
             this.plantillas_reactivos = [];
+
             if (!this.selected) {
                 this.laboratorio = {};
             } else {
-                this.laboratorios = this.selected;
+                this.laboratorio = this.selected;
                 this.$http.get(URL.plantillaLaboratorio.concat('?laboratorio=' + this.laboratorio.id.toString()))
                   .then(response => {
                       if (response.body instanceof Array) {

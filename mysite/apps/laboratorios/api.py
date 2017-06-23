@@ -26,6 +26,7 @@ from .serializers import (
     RecepcionSerializer, HojaGastoSerializer, PlantillaLaboratorioSerializer
 )
 from .utils import ListViewAPIMixin
+from .permissions import AdminPermission, BacteriologoPermission, AdminOrBacteriologoPermission, ReadOnlyPermission
 from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
 from mysite.apps.historias.serializers import OrdenSerializer
 from mysite.apps.parametros.models import servicios as Servicio
@@ -38,6 +39,7 @@ import reversion
 class LaboratoriosListAPI(ListViewAPIMixin, generics.ListCreateAPIView):
     queryset = Laboratorio.objects.all()
     serializer_class = LaboratorioSerializer
+    permission_classes = (ReadOnlyPermission,)
     search_params = (
         'nombre', 'codigo', 'codigo_internacional',
         'equipo__nombre', 'equipo__codigo', 'seccion_trabajo__codigo',
@@ -48,62 +50,74 @@ class LaboratoriosListAPI(ListViewAPIMixin, generics.ListCreateAPIView):
 class EquiposListAPI(generics.ListCreateAPIView):
     queryset = Equipo.objects.all()
     serializer_class = EquipoSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class EquipoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = Equipo.objects.all()
     serializer_class = EquipoSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class SeccionesTrabajoListAPI(generics.ListCreateAPIView):
     queryset = SeccionTrabajo.objects.all()
     serializer_class = SeccionTrabajoSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class SeccionTrabajoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = SeccionTrabajo.objects.all()
     serializer_class = SeccionTrabajoSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class TecnicasListAPI(generics.ListCreateAPIView):
     queryset = Tecnica.objects.all()
     serializer_class = TecnicaSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class TecnicaDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = Tecnica.objects.all()
     serializer_class = TecnicaSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class ProductosListAPI(generics.ListCreateAPIView):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
     filter_fields = ['tipo']
+    permission_classes = (ReadOnlyPermission,)
 
 
 class ProductoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class CaracteristicasListAPI(generics.ListCreateAPIView):
     queryset = Caracteristica.objects.all()
     serializer_class = CaracteristicaSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class CaracteristicaDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = Caracteristica.objects.all()
     serializer_class = CaracteristicaSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class EspecificacionCaracteristicasListAPI(generics.ListCreateAPIView):
     queryset = EspecificacionCaracteristica.objects.all()
     serializer_class = EspecificacionCaracteristicaSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class EspecificacionCaracteristicaDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = EspecificacionCaracteristica.objects.all()
     serializer_class = EspecificacionCaracteristicaSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class ServiciosListAPI(generics.ListAPIView):
@@ -119,16 +133,19 @@ class ServicioLaboratorioAPI(generics.RetrieveAPIView):
 class BacteriologoListAPI(generics.ListCreateAPIView):
     queryset = Bacteriologo.objects.all()
     serializer_class = BacteriologoSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class BacteriologoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = Bacteriologo.objects.all()
     serializer_class = BacteriologoSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class PlantillaAreaListAPI(generics.ListCreateAPIView):
     queryset = PlantillaArea.objects.all()
     serializer_class = PlantillaAreaSerializer
+    permission_classes = (ReadOnlyPermission,)
 
     def get_queryset(self, *args, **kwargs):
         queryset = super(PlantillaAreaListAPI, self).get_queryset(*args, **kwargs)
@@ -142,11 +159,13 @@ class PlantillaAreaListAPI(generics.ListCreateAPIView):
 class PlantillaAreaDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = PlantillaArea.objects.all()
     serializer_class = PlantillaAreaSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
 class PlantillaLaboratorioAPI(generics.ListCreateAPIView):
     queryset = PlantillaLaboratorio.objects.all()
     serializer_class = PlantillaLaboratorioSerializer
+    permission_classes = (ReadOnlyPermission,)
 
     def get_queryset(self, *args, **kwargs):
         queryset = super(PlantillaLaboratorioAPI, self).get_queryset(*args, **kwargs)
@@ -160,62 +179,60 @@ class PlantillaLaboratorioAPI(generics.ListCreateAPIView):
 class PlantillaLaboratorioDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = PlantillaLaboratorio.objects.all()
     serializer_class = PlantillaLaboratorioSerializer
+    permission_classes = (ReadOnlyPermission,)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def ordenes_toma_muestra(request):
     """
     Lista las ordenes que vienen de recepcion y son enviadas al area de toma de muestra.
     Aqui empieza el proceso de trazabilidad de un laboratorio.
     """
-    hoy = timezone.now().date()
-    servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
-    recepciones = Recepcion.objects.all().values_list('orden__id', flat=True)
-
-    ordenes = Orden.objects.filter(  # actuelmente solo se traen los ultimos 8 días.
-        id__in=OrdenProducto.objects.filter(
-            servicio__nombre__id__in=servicios
-        ).values_list('orden_id', flat=True).distinct(),
-        fecha__range=(hoy - datetime.timedelta(days=32), hoy)
-    ).order_by('-fecha').exclude(id__in=recepciones)  # .select_related('paciente')
-
-    serializer = OrdenSerializer(ordenes, many=True)
-    return Response(serializer.data)
-
-
-@api_view(['POST'])
-def recepcion_api(request):
-    """
-    Vista para crear una recepcion y sus hojas de gasto.
-    """
 
     args = tuple()
     kwargs = {}
 
-    serializer = RecepcionSerializer(data=request.data)
-    if 'hoja_gasto' in request.data:
-        serializer_hoja_gasto = HojaGastoSerializer(data=request.data['hoja_gasto'], many=True)
-        valid_serializer = serializer.is_valid()
-        valid_hoja_gasto = serializer_hoja_gasto.is_valid()
-        if valid_hoja_gasto and valid_serializer:
-            serializer.save(estado=Recepcion.EN_CURSO)
-            serializer_hoja_gasto.save()
-            args = ([serializer.data, serializer_hoja_gasto.data], )
-        else:
-            args = ([getattr(serializer, 'errors', []), getattr(serializer_hoja_gasto, 'errors', [])], )
-            kwargs['status'] = status.HTTP_400_BAD_REQUEST
+    if request.method == 'GET':
+        hoy = timezone.now().date()
+        servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
+        recepciones = Recepcion.objects.all().values_list('orden__id', flat=True)
+
+        ordenes = Orden.objects.filter(  # actualmente solo se traen los ultimos 32 días.
+            id__in=OrdenProducto.objects.filter(
+                servicio__nombre__id__in=servicios
+            ).values_list('orden_id', flat=True).distinct(),
+            fecha__range=(hoy - datetime.timedelta(days=32), hoy)
+        ).order_by('-fecha').exclude(id__in=recepciones)  # .select_related('paciente')
+
+        serializer = OrdenSerializer(ordenes, many=True)
+        args = (serializer.data, )
+
     else:
-        if serializer.is_valid():
-            serializer.save(estado=Recepcion.EN_CURSO)
-            args = (serializer.data, )
+        serializer = RecepcionSerializer(data=request.data)
+        if 'hoja_gasto' in request.data:
+            serializer_hoja_gasto = HojaGastoSerializer(data=request.data['hoja_gasto'], many=True)
+            valid_serializer = serializer.is_valid()
+            valid_hoja_gasto = serializer_hoja_gasto.is_valid()
+            if valid_hoja_gasto and valid_serializer:
+                serializer.save(estado=Recepcion.EN_CURSO)
+                serializer_hoja_gasto.save()
+                args = ([serializer.data, serializer_hoja_gasto.data], )
+            else:
+                args = ([getattr(serializer, 'errors', []), getattr(serializer_hoja_gasto, 'errors', [])], )
+                kwargs['status'] = status.HTTP_400_BAD_REQUEST
         else:
-            args = (serializer.errors, )
-            kwargs['status'] = status.HTTP_400_BAD_REQUEST
+            if serializer.is_valid():
+                serializer.save(estado=Recepcion.EN_CURSO)
+                args = (serializer.data, )
+            else:
+                args = (serializer.errors, )
+                kwargs['status'] = status.HTTP_400_BAD_REQUEST
 
     return Response(*args, **kwargs)
 
 
 @api_view(['GET'])
+@permission_classes((BacteriologoPermission, ))
 def ordenes_laboratorios(request):
     """
     Lista las ordenes que tengan laboratorios.
@@ -223,17 +240,16 @@ def ordenes_laboratorios(request):
 
     args = tuple()
     kwargs = {}
-    try:
-        bacteriologo = request.user.bacteriologo
-    except:
-        kwargs['status'] = status.HTTP_403_FORBIDDEN
-        return Response(**kwargs)
+
+    bacteriologo = request.user.bacteriologo
 
     pagination = PageNumberPagination()
     pagination.page_size = 10
 
     ordenes = Recepcion.objects.filter(
-        estado=Recepcion.EN_CURSO).select_related('orden').order_by('-orden__fecha')
+        estado=Recepcion.EN_CURSO,
+        orden__OrdenProducto_orden__servicio__nombre__laboratorio__seccion_trabajo__id__in=bacteriologo.areas.values_list('id', flat=True)
+    ).select_related('orden').order_by('-orden__fecha')
 
     result_pagination = pagination.paginate_queryset(ordenes, request)
     # serializer = OrdenSerializer(result_pagination, many=True)
@@ -243,6 +259,7 @@ def ordenes_laboratorios(request):
 
 
 @api_view(['GET'])
+@permission_classes((AdminOrBacteriologoPermission, ))
 def search_resultado_api_view(request):
     """
     Vista para buscar y listar todas las ordenes o recepciones de acuerdo a un parametro
@@ -269,6 +286,7 @@ def search_resultado_api_view(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes((AdminOrBacteriologoPermission, ))
 def detalle_laboratorio(request, pk):
     """
     CRUD para los laboratorios.
@@ -299,6 +317,7 @@ def detalle_laboratorio(request, pk):
 
 
 @api_view(['POST', 'GET'])
+@permission_classes((BacteriologoPermission, ))
 def resultado_api_view(request, pk):
     """
     Vista para listar el formato de resultado y guardar el resultado de un laboratorio.
@@ -308,11 +327,7 @@ def resultado_api_view(request, pk):
     args = tuple()
     kwargs = {}
 
-    try:
-        bacteriologo = request.user.bacteriologo
-    except:
-        kwargs['status'] = status.HTTP_403_FORBIDDEN
-        return Response(**kwargs)
+    bacteriologo = request.user.bacteriologo
 
     if request.method == 'GET':
         data = {}
@@ -360,8 +375,11 @@ def resultado_api_view(request, pk):
 
 
 @api_view(['GET', 'POST'])
+@permission_classes((AdminOrBacteriologoPermission, ))
 def formato_api_view(request, pk):
-    """"""
+    """
+    Crea los formatos y lista los formatos de un laboratorio
+    """
 
     laboratorio = get_object_or_404(Laboratorio.objects.all(), pk=pk)
     args = tuple()
@@ -372,6 +390,7 @@ def formato_api_view(request, pk):
             formato = laboratorio.formato
         except Formato.DoesNotExist:
             formato = Formato(laboratorio=laboratorio)
+
         serializer = FormatoSerializer(instance=formato)
         args = (serializer.data, )
     elif request.method == 'POST':
@@ -389,6 +408,7 @@ def formato_api_view(request, pk):
 
 
 @api_view(['GET'])
+@permission_classes((AdminPermission, ))
 def especificacion_caracteristica_por_caracteristica(request, pk):
     """
     Retorna las especificaciones de una caracteristica
