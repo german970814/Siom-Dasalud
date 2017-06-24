@@ -25,6 +25,16 @@ class BacteriologoPermission(permissions.BasePermission):
         return False
 
 
+class EmpleadoPermission(permissions.BasePermission):
+    message = _('Usuario no empleado')
+
+    def has_permission(self, request, view):
+        if request.user.is_authenticated():
+            empleado = getattr(request.user, 'empleado', None)
+            return empleado is not None and bool(empleado)
+        return False
+
+
 class AdminOrBacteriologoPermission(permissions.BasePermission):
     message = _('No tienes permisos de realizar acciones')
 

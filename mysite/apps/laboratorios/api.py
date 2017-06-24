@@ -16,17 +16,21 @@ from rest_framework.pagination import PageNumberPagination
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo, Tecnica, Caracteristica, Producto,
     EspecificacionCaracteristica, Formato, Bacteriologo, Resultado,
-    PlantillaArea, Recepcion, HojaGasto, PlantillaLaboratorio
+    PlantillaArea, Recepcion, HojaGasto, PlantillaLaboratorio, Empleado
 )
 from .serializers import (
     LaboratorioSerializer, EquipoSerializer, SeccionTrabajoSerializer,
     TecnicaSerializer, CaracteristicaSerializer, ProductoSerializer,
     EspecificacionCaracteristicaSerializer, FormatoSerializer, BacteriologoSerializer,
     ResultadoSerializer, PlantillaAreaSerializer, PlantillaSerializer,
-    RecepcionSerializer, HojaGastoSerializer, PlantillaLaboratorioSerializer
+    RecepcionSerializer, HojaGastoSerializer, PlantillaLaboratorioSerializer,
+    EmpleadoSerializer
 )
 from .utils import ListViewAPIMixin
-from .permissions import AdminPermission, BacteriologoPermission, AdminOrBacteriologoPermission, ReadOnlyPermission
+from .permissions import (
+    AdminPermission, BacteriologoPermission, AdminOrBacteriologoPermission,
+    ReadOnlyPermission, EmpleadoPermission
+)
 from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
 from mysite.apps.historias.serializers import OrdenSerializer
 from mysite.apps.parametros.models import servicios as Servicio
@@ -142,6 +146,18 @@ class BacteriologoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (ReadOnlyPermission,)
 
 
+class EmpleadoListAPI(generics.ListCreateAPIView):
+    queryset = Empleado.objects.all()
+    serializer_class = EmpleadoSerializer
+    permission_classes = (ReadOnlyPermission,)
+
+
+class EmpleadoDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Empleado.objects.all()
+    serializer_class = EmpleadoSerializer
+    permission_classes = (ReadOnlyPermission,)
+
+
 class PlantillaAreaListAPI(generics.ListCreateAPIView):
     queryset = PlantillaArea.objects.all()
     serializer_class = PlantillaAreaSerializer
@@ -183,6 +199,7 @@ class PlantillaLaboratorioDetailAPI(generics.RetrieveUpdateDestroyAPIView):
 
 
 @api_view(['GET', 'POST'])
+@permission_classes((EmpleadoPermission, ))
 def ordenes_toma_muestra(request):
     """
     Lista las ordenes que vienen de recepcion y son enviadas al area de toma de muestra.
@@ -191,6 +208,7 @@ def ordenes_toma_muestra(request):
 
     args = tuple()
     kwargs = {}
+    empleado = request.user.empleado
 
     if request.method == 'GET':
         hoy = timezone.now().date()
@@ -201,7 +219,7 @@ def ordenes_toma_muestra(request):
             id__in=OrdenProducto.objects.filter(
                 servicio__nombre__id__in=servicios
             ).values_list('orden_id', flat=True).distinct(),
-            fecha__range=(hoy - datetime.timedelta(days=32), hoy)
+            fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
         ).order_by('-fecha').exclude(id__in=recepciones)  # .select_related('paciente')
 
         serializer = OrdenSerializer(ordenes, many=True)
@@ -214,7 +232,7 @@ def ordenes_toma_muestra(request):
             valid_serializer = serializer.is_valid()
             valid_hoja_gasto = serializer_hoja_gasto.is_valid()
             if valid_hoja_gasto and valid_serializer:
-                serializer.save(estado=Recepcion.EN_CURSO)
+                serializer.save(estado=Recepcion.EN_CURSO, empleado=empleado)
                 serializer_hoja_gasto.save()
                 args = ([serializer.data, serializer_hoja_gasto.data], )
             else:
@@ -222,7 +240,7 @@ def ordenes_toma_muestra(request):
                 kwargs['status'] = status.HTTP_400_BAD_REQUEST
         else:
             if serializer.is_valid():
-                serializer.save(estado=Recepcion.EN_CURSO)
+                serializer.save(estado=Recepcion.EN_CURSO, empleado=empleado)
                 args = (serializer.data, )
             else:
                 args = (serializer.errors, )

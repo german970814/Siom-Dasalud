@@ -17,7 +17,24 @@ import copy
 
 
 def ruta_imagen_bacteriologo(self, filename):
-    return 'bacteriologos/{}'.format(filename)
+    return 'laboratorios/bacteriologos/{}'.format(filename)
+
+def ruta_imagen_empleado(self, filename):
+    return 'laboratorios/empleados/{}'.format(filename)
+
+
+@python_2_unicode_compatible
+class Empleado(models.Model):
+    """Modelo para guardar los usuarios empleados del laboratorio"""
+
+    nombres = models.CharField(max_length=255, verbose_name=_('Nombres'))
+    apellidos = models.CharField(max_length=255, verbose_name=_('Apellidos'))
+    documento = models.CharField(max_length=100, verbose_name=_('Documento'))
+    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, verbose_name=('Usuario'))
+    # firma = models.FileField(upload_to=ruta_imagen_empleado, null=True, blank=True)
+
+    def __str__(self):
+        return '{self.nombres} {self.apellidos}'.format(self=self).upper()
 
 
 @python_2_unicode_compatible
@@ -38,6 +55,7 @@ class Recepcion(models.Model):
 
     orden = models.OneToOneField(Orden, related_name='recepcion', verbose_name=_('Orden'))
     estado = models.CharField(max_length=2, verbose_name=_('Estado'), choices=ESTADO_OPCIONES, default=TOMA_MUESTRA)
+    empleado = models.ForeignKey(Empleado, related_name='recepciones', verbose_name=_('Empleado'))
 
     def __str__(self):
         laboratorios = Laboratorio.objects.filter(
@@ -160,12 +178,13 @@ class Recarga(models.Model):
             else:
                 self_copy = copy.deepcopy(self)
                 self_copy.refresh_from_db()
+                produco = self.producto
                 if self.cantidad > self_copy.cantidad:  # si se ingresó más de lo que se había guardado
-                    self.producto.cantidad += self.cantidad - self_copy.cantidad
-                    self.producto.save()
+                    producto.cantidad += self.cantidad - self_copy.cantidad
+                    producto.save()
                 if self.cantidad < self_copy.cantidad:  # se se ingresó menos de lo que se había guardado
-                    self.producto.cantidad -= self_copy.cantidad - self.cantidad
-                    self.producto.save()
+                    producto.cantidad -= self_copy.cantidad - self.cantidad
+                    producto.save()
             super(Recarga, self).save(*args, **kwargs)
 
 
@@ -198,6 +217,7 @@ class Bacteriologo(models.Model):
     """
     Modelo para guardar los bacteriologos del sistema.
     """
+
     usuario = models.OneToOneField(settings.AUTH_USER_MODEL, verbose_name=_('Usuario'))
     codigo = models.CharField(max_length=50, verbose_name=('Código'))
     nombre = models.CharField(max_length=200, verbose_name=('Nombre'))

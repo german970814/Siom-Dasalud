@@ -2009,22 +2009,23 @@ const BASE = '/laboratorios/api/';
 
 const bacteriologos = BASE.concat('bacteriologos/');
 const caracteristicas = BASE.concat('caracteristicas/');
+const empleados = BASE.concat('empleados/');
 const equipos = BASE.concat('equipos/');
 const especificacion_caracteristicas = BASE.concat('especificacion_caracteristicas/');
 const especificaciones_por_carateristica = BASE.concat('especificacion_caracteristicas/caracteristica/');
 const formatos = BASE.concat('formatos/');
 const laboratorios = BASE.concat('laboratorios/');
+const laboratoriosTomaMuestra = BASE.concat('ordenes/toma_muestra/');
+const ordenes_busqueda = BASE.concat('ordenes/buscar/');
 const ordenes_laboratorios = BASE.concat('ordenes_laboratorios/');
-const reactivos = BASE.concat('productos/');
-const secciones_trabajo = BASE.concat('seccion_trabajo/');
 const plantillaArea = BASE.concat('seccion_trabajo/plantillas/');
 const plantillaLaboratorio = BASE.concat('laboratorios/plantilla_laboratorios/');
-const tecnicas = BASE.concat('tecnicas/');
-const servicios = BASE.concat('servicios/');
-const resultados = BASE.concat('resultado/');
-const ordenes_busqueda = BASE.concat('ordenes/buscar/');
-const laboratoriosTomaMuestra = BASE.concat('ordenes/toma_muestra/');
 const plantillasOrdenes = BASE.concat('laboratorios/plantilla/');
+const reactivos = BASE.concat('productos/');
+const resultados = BASE.concat('resultado/');
+const secciones_trabajo = BASE.concat('seccion_trabajo/');
+const servicios = BASE.concat('servicios/');
+const tecnicas = BASE.concat('tecnicas/');
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2046,7 +2047,8 @@ const plantillasOrdenes = BASE.concat('laboratorios/plantilla/');
     laboratoriosTomaMuestra,
     plantillaArea,
     plantillasOrdenes,
-    plantillaLaboratorio
+    plantillaLaboratorio,
+    empleados
 });
 
 
@@ -25232,6 +25234,9 @@ __webpack_require__(40)(String, 'String', function(iterated){
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__ = __webpack_require__(176);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue__ = __webpack_require__(183);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue__);
+
 
 
 
@@ -25260,6 +25265,7 @@ const routes = [
     {path: '/bacteriologos/', component: __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue___default.a},
     {path: '/resultados/:id/', component: __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue___default.a},
     {path: '/toma_muestra/', component: __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue___default.a},
+    {path: '/empleados/', component: __WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue___default.a},
 ]
 
 // router.beforeEach((to, from, next) => {
@@ -33159,6 +33165,223 @@ module.exports = g;
 /***/ (function(module, exports) {
 
 /* (ignored) */
+
+/***/ }),
+/* 179 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _igmixin = __webpack_require__(5);
+
+var _igmixin2 = _interopRequireDefault(_igmixin);
+
+var _table = __webpack_require__(8);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _form = __webpack_require__(7);
+
+var _form2 = _interopRequireDefault(_form);
+
+var _urls = __webpack_require__(3);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  components: {
+    igTable: _table2.default,
+    igForm: _form2.default
+  },
+  mixins: [_igmixin2.default],
+  data: function data() {
+    return {
+      urlForm: _urls2.default.empleados,
+      selected: false,
+      headers: [{
+        text: 'Usuario',
+        value: 'username',
+        left: true
+      }, {
+        text: 'Nombre',
+        value: 'nombre',
+        left: true
+      }, {
+        text: 'Email',
+        value: 'usuario.email',
+        left: true
+      }, {
+        text: 'Documento',
+        value: 'documento',
+        left: true,
+        sortable: false
+      }],
+      fields: [{
+        name: 'username',
+        verbose_name: 'Usuario',
+        type: String,
+        hint: 'Este es el nombre de usuario de el bacteriologo.',
+        group: 'usuario'
+      }, {
+        name: 'password',
+        verbose_name: 'Contraseña',
+        type: String,
+        hint: 'Esta es la contraseña de el bacteriologo.',
+        required: false,
+        group: 'usuario',
+        kwargs: {
+          type: 'password'
+        }
+      }, {
+        name: 'email',
+        verbose_name: 'Email',
+        type: String,
+        hint: 'Este es el email de el bacteriologo.',
+        group: 'usuario',
+        kwargs: {
+          type: 'email'
+        }
+      }, {
+        name: 'nombres',
+        verbose_name: 'Nombre',
+        type: String,
+        hint: 'Nombres del empleado.'
+      }, {
+        name: 'apellidos',
+        verbose_name: 'Apellidos',
+        type: String,
+        hint: 'Apellidos de el empleado.'
+      }, {
+        name: 'documento',
+        verbose_name: 'Documento',
+        type: Number,
+        hint: 'Documento de el empleado.',
+        kwargs: {
+          type: 'number'
+        }
+      }]
+    };
+  },
+  mounted: function mounted() {
+    this.getElements(_urls2.default.empleados);
+  }
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+// <template lang="html">
+//     <div>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-table
+//                   table-title="Empleados"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['usuario.username', 'nombres', 'usuario.email', 'documento']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
+//             </v-flex>
+//         </v-layout>
+//         <br>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-form
+//                 :fields="fields"
+//                 :url="urlForm"
+//                 @showsnack="showSnackBar"
+//                 @objectcreated="eventCreatedObject"
+//                 @clearselected="selected = false"
+//                 :selected="selected"
+//                 ></ig-form>
+//             </v-flex>
+//         </v-layout>
+//     </div>
+// </template>
+//
+// <script>
+
+/***/ }),
+/* 180 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 181 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(180);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-68c3c8a8&file=empleados.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-68c3c8a8&file=empleados.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 182 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Empleados\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombres', 'usuario.email', 'documento']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+
+/***/ }),
+/* 183 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(181)
+__vue_script__ = __webpack_require__(179)
+__vue_template__ = __webpack_require__(182)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/static/static/laboratorios/pages/empleados.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
 
 /***/ })
 /******/ ]);
