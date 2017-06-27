@@ -202,11 +202,13 @@
     </v-list-tile>
 </v-list-item>
 {% endif %}
+{% if user.empleado %}
 <v-list-item>
     <v-list-tile ripple href="{% url 'laboratorios:index' %}#/toma_muestra/">
         <v-list-tile-title>Ordenes Toma Muestra</v-list-tile-title>
     </v-list-tile>
 </v-list-item>
+{% endif %}
 {% if perms.home.es_administrador %}
 <v-list-group>
     <v-list-item slot="item">

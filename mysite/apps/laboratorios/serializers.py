@@ -9,7 +9,7 @@ from rest_framework.parsers import JSONParser
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo, Tecnica, Caracteristica, Producto,
     EspecificacionCaracteristica, Bacteriologo, Formato, Resultado, PlantillaArea, Recepcion,
-    HojaGasto, PlantillaLaboratorio, Empleado
+    HojaGasto, PlantillaLaboratorio, Empleado, Recarga
 )
 from .mixins import IGModelSerializer, IGSerializer
 from mysite.apps.parametros.serializers import ServicioSerializer
@@ -228,3 +228,23 @@ class HojaGastoSerializer(IGSerializer):
     class Meta:
         model = HojaGasto
         fields = ('id', 'cantidad', 'producto', 'orden', )
+
+
+class RecargaSerializer(IGSerializer):
+    """"""
+
+    class Meta:
+        model = Recarga
+        fields = ('id', 'producto', 'cantidad', )
+        # producto = models.ForeignKey(Producto, verbose_name=_('Producto'), related_name='recargas')
+        # cantidad = models.IntegerField(verbose_name=_('Cantidad'))
+        # fecha = models.DateField(auto_now_add=True)
+        # fecha_vencimiento = models.DateField(verbose_name=_('Fecha de vencimiento'), blank=True, null=True)
+        # lote = models.CharField(max_length=100, verbose_name=_('Lote'), blank=True)
+        # distribuidor = models.CharField(max_length=100, verbose_name=_('Distribuidor'), blank=True)
+        # fabricante = models.CharField(max_length=100, verbose_name=_('Fabricante'), blank=True)
+        # marca = models.CharField(max_length=100, verbose_name=_('Marca'), blank=True)
+        # # fecha en la que se crea el producto.
+        # fecha_distribucion =  models.DateField(verbose_name=_('Fecha de distribución'), blank=True, null=True)
+        # presentacion = models.CharField(max_length=100, verbose_name=_('Presentación'), blank=True)
+        # invima = models.CharField(max_length=100, verbose_name=_('Invima'), blank=True)

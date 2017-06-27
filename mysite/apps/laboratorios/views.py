@@ -11,7 +11,7 @@ from django.conf import settings
 
 from weasyprint import HTML
 
-from .models import Laboratorio, Resultado
+from .models import Laboratorio, Resultado, Recepcion
 from mysite.apps.historias.models import orden as Orden, ordenesProducto as OrdenProducto
 
 import datetime
@@ -56,14 +56,22 @@ def prueba(request, pk):
 
     return render(request, 'laboratorios/prueba.html', {'resultados': resultados, 'orden': orden})
 
+
+@login_required
 def imprimir_laboratorio(request, pk):
 
     orden = get_object_or_404(Orden, pk=pk)
     resultados = orden.resultados_laboratorio.all()
+    _print = request.GET.get('print', None)
 
     if 'laboratorio' in request.GET:
         laboratorio = get_object_or_404(Resultado, pk=request.GET.get('laboratorio'))
         resultados = Resultado.objects.filter(id=laboratorio.id)
+    else:
+        if _print is not None and orden.recepcion.estado != Recepcion.RESULTADO_EMITIDO:
+            recepcion = orden.recepcion
+            recepcion.estado = Recepcion.RESULTADO_EMITIDO
+            recepcion.save()
 
     for resultado in resultados:
         resultado.resultado = json.loads(resultado.resultado)
@@ -71,7 +79,7 @@ def imprimir_laboratorio(request, pk):
     ruta = settings.STATIC_ROOT + '/%s'
     to_html = render_to_string('laboratorios/resultados.html', {'resultados': resultados, 'orden': orden}, RequestContext(request))
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=report-by'
+    response['Content-Disposition'] = 'attachment; filename=lab-%d' % orden.id
     HTML(string=to_html).write_pdf(
         response, stylesheets=['static/css/bootstrap.min.css', 'static/css/print_laboratorios.css'])
 
@@ -82,127 +90,4 @@ def imprimir_laboratorio(request, pk):
                 result >= resultado.referencia_maxima[paciente.genero.upper()] else ''
         return ''
 
-    # modelo = {
-    #     'nombre': '',
-    #     'help': '',
-    #     'choices': [{'edit': False, 'name': 'Option 1', id: 0}],
-    #     'choices_select': [],
-    #     'choices_count': 0,
-    #     'model_text': '',
-    #     'model_check': [],
-    #     'unidades': '',
-    #     'tipo': '',
-    #     'genero': {
-    #         'M': {
-    #             'referencia_minima': '',
-    #             'referencia_maxima': '',
-    #         },
-    #         'F': {
-    #             'referencia_minima': '',
-    #             'referencia_maxima': '',
-    #         },
-    #     }
-    # }
-    # resultado = [
-    #     {
-    #         'nombre': 'Glicemia',
-    #         'help': 'Esto es para probar',
-    #         'choices': [{'edit': False, 'name': 'Option 1', 'id': 0}],
-    #         'choices_select': [],
-    #         'choices_count': 0,
-    #         'model_text': '142',
-    #         'model_check': [],
-    #         'unidades': 'md/dl',
-    #         'tipo': {
-    #             'text': 'Texto',
-    #             'name': 'text',
-    #             'help': 'Con este campo se puede dar un resultado libre corto y conciso.'
-    #         },
-    #         'genero': {
-    #             'M': {
-    #                 'referencia_minima': '127',
-    #                 'referencia_maxima': '412',
-    #             },
-    #             'F': {
-    #                 'referencia_minima': '504',
-    #                 'referencia_maxima': '852',
-    #             },
-    #         }
-    #     },
-    #     {
-    #         'nombre': 'Croprológico',
-    #         'help': 'Hola como estas',
-    #         'choices': [{'edit': False, 'name': 'Option 1', 'id': 0}],
-    #         'choices_select': [],
-    #         'choices_count': 0,
-    #         'model_text': '159',
-    #         'model_check': [],
-    #         'unidades': 'mg/dl',
-    #         'tipo': {
-    #             'text': 'Texto',
-    #             'name': 'text',
-    #             'help': 'Con este campo se puede dar un resultado libre corto y conciso.'
-    #         },
-    #         'genero': {
-    #             'M': {
-    #                 'referencia_minima': '50',
-    #                 'referencia_maxima': '205',
-    #             },
-    #             'F': {
-    #                 'referencia_minima': '20',
-    #                 'referencia_maxima': '108',
-    #             },
-    #         }
-    #     },
-    #     {
-    #         'nombre': 'Hematocritos',
-    #         'help': 'Hola como estas',
-    #         'choices': [{'edit': False, 'name': 'Option 1', 'id': 0}],
-    #         'choices_select': [],
-    #         'choices_count': 0,
-    #         'model_text': '159',
-    #         'model_check': [],
-    #         'unidades': 'mg/dl',
-    #         'tipo': {
-    #             'text': 'title',
-    #             'name': 'title',
-    #             'help': 'Con este campo se puede dar un resultado libre corto y conciso.'
-    #         },
-    #         'genero': {
-    #             'M': {
-    #                 'referencia_minima': '50',
-    #                 'referencia_maxima': '205',
-    #             },
-    #             'F': {
-    #                 'referencia_minima': '20',
-    #                 'referencia_maxima': '108',
-    #             },
-    #         }
-    #     },
-    #     {
-    #         'nombre': 'Pefil Lipídico',
-    #         'help': 'Hola como estas',
-    #         'choices': [{'edit': False, 'name': 'Option 1', 'id': 0}],
-    #         'choices_select': [],
-    #         'choices_count': 0,
-    #         'model_text': '159',
-    #         'model_check': [],
-    #         'unidades': 'mg/dl',
-    #         'tipo': {
-    #             'text': 'Texto',
-    #             'name': 'text',
-    #             'help': 'Con este campo se puede dar un resultado libre corto y conciso.'
-    #         },
-    #         'genero': {
-    #             'M': {
-    #                 'referencia_minima': '50',
-    #                 'referencia_maxima': '205',
-    #             },
-    #             'F': {
-    #                 'referencia_minima': '20',
-    #                 'referencia_maxima': '108',
-    #             },
-    #         }
-    #     },
-    # ]
     return response

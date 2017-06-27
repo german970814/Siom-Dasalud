@@ -16,7 +16,8 @@ from rest_framework.pagination import PageNumberPagination
 from .models import (
     Laboratorio, Equipo, SeccionTrabajo, Tecnica, Caracteristica, Producto,
     EspecificacionCaracteristica, Formato, Bacteriologo, Resultado,
-    PlantillaArea, Recepcion, HojaGasto, PlantillaLaboratorio, Empleado
+    PlantillaArea, Recepcion, HojaGasto, PlantillaLaboratorio, Empleado,
+    Recarga
 )
 from .serializers import (
     LaboratorioSerializer, EquipoSerializer, SeccionTrabajoSerializer,
@@ -198,6 +199,10 @@ class PlantillaLaboratorioDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (ReadOnlyPermission,)
 
 
+# class RecargaAPI(generics.CreateAPIView):
+#     queryset = Recarga
+
+
 @api_view(['GET', 'POST'])
 @permission_classes((EmpleadoPermission, ))
 def ordenes_toma_muestra(request):
@@ -267,7 +272,7 @@ def ordenes_laboratorios(request):
     ordenes = Recepcion.objects.filter(
         estado=Recepcion.EN_CURSO,
         orden__OrdenProducto_orden__servicio__nombre__laboratorio__seccion_trabajo__id__in=bacteriologo.areas.values_list('id', flat=True)
-    ).select_related('orden').order_by('-orden__fecha')
+    ).select_related('orden').order_by('-orden__fecha').distinct()
 
     result_pagination = pagination.paginate_queryset(ordenes, request)
     # serializer = OrdenSerializer(result_pagination, many=True)

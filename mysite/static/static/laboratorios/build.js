@@ -186,7 +186,7 @@ var stylesInDom = {},
 	singletonElement = null,
 	singletonCounter = 0,
 	styleElementsInsertedAtTop = [],
-	fixUrls = __webpack_require__(125);
+	fixUrls = __webpack_require__(127);
 
 module.exports = function(list, options) {
 	if(typeof DEBUG !== "undefined" && DEBUG) {
@@ -2054,6 +2054,95 @@ const tecnicas = BASE.concat('tecnicas/');
 
 /***/ }),
 /* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function () {
+        return {
+          elements: [],
+          __parent_: undefined,
+          loading: false,
+        }
+    },
+    methods: {
+        getElements: function () {
+            if ('loading' in this) {
+                if (!this.loading) {
+                  this.toggleLoading()
+                }
+            }
+            let url = this.url || arguments[0];
+            if (!url) {
+                throw new Error('URL no provehida para hacer consula de elementos');
+            }
+            this.$http.get(url)
+                .then(response => {
+                    this.$emit('http403', false);
+                    this.elements = [];
+                    for (let object of response.body) {
+                        object.selected = false;
+                        this.elements.push(object);
+                    }
+                    this.toggleLoading()
+                }, response => {
+                    if (response.status == 403) {
+                        this.$emit('http403', true);
+                    }
+                    this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
+                    this.toggleLoading()
+                });
+        },
+        __getParent__: function () {
+            if (!this.__parent_) {  // singleton
+                let parent = this.$parent;
+                while (parent !== undefined) {
+                    if (parent.$parent === undefined) {
+                        break;
+                    }
+                    parent = parent.$parent;
+                }
+                this.__parent_ = parent;
+            }
+            return this.__parent_;
+        },
+        getParent: function () {
+            return this.__getParent__().$options.methods;
+        },
+        showSnackBar: function (value) {
+            this.$emit('mostrarsnackbar', value);
+        },
+        eventCreatedObject: function (value) {
+            value.selected = false;
+            let exists = this.elements.find(x => x.id == value.id);
+            if (exists) {
+                for (let attr in exists) {
+                    this.elements[this.elements.indexOf(exists)][attr] = value[attr] || exists[attr];
+                }
+            } else {
+                this.elements.push(value);
+            }
+            this.selected = value;
+        },
+        eventUpdatedForm: function (value) {
+            this.selected = value;
+        },
+        toggleLoading: function () {
+            if ('loading' in this) {
+                this.loading = !this.loading;
+            }
+        }
+    }
+});
+
+
+/***/ }),
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -11373,96 +11462,7 @@ return Vue$3;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(177)))
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    data: function () {
-        return {
-          elements: [],
-          __parent_: undefined,
-          loading: false,
-        }
-    },
-    methods: {
-        getElements: function () {
-            if ('loading' in this) {
-                if (!this.loading) {
-                  this.toggleLoading()
-                }
-            }
-            let url = this.url || arguments[0];
-            if (!url) {
-                throw new Error('URL no provehida para hacer consula de elementos');
-            }
-            this.$http.get(url)
-                .then(response => {
-                    this.$emit('http403', false);
-                    this.elements = [];
-                    for (let object of response.body) {
-                        object.selected = false;
-                        this.elements.push(object);
-                    }
-                    this.toggleLoading()
-                }, response => {
-                    if (response.status == 403) {
-                        this.$emit('http403', true);
-                    }
-                    this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
-                    this.toggleLoading()
-                });
-        },
-        __getParent__: function () {
-            if (!this.__parent_) {  // singleton
-                let parent = this.$parent;
-                while (parent !== undefined) {
-                    if (parent.$parent === undefined) {
-                        break;
-                    }
-                    parent = parent.$parent;
-                }
-                this.__parent_ = parent;
-            }
-            return this.__parent_;
-        },
-        getParent: function () {
-            return this.__getParent__().$options.methods;
-        },
-        showSnackBar: function (value) {
-            this.$emit('mostrarsnackbar', value);
-        },
-        eventCreatedObject: function (value) {
-            value.selected = false;
-            let exists = this.elements.find(x => x.id == value.id);
-            if (exists) {
-                for (let attr in exists) {
-                    this.elements[this.elements.indexOf(exists)][attr] = value[attr] || exists[attr];
-                }
-            } else {
-                this.elements.push(value);
-            }
-            this.selected = value;
-        },
-        eventUpdatedForm: function (value) {
-            this.selected = value;
-        },
-        toggleLoading: function () {
-            if ('loading' in this) {
-                this.loading = !this.loading;
-            }
-        }
-    }
-});
-
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(182)))
 
 /***/ }),
 /* 6 */
@@ -12555,7 +12555,7 @@ var xhrClient = function (request) {
 
 var nodeClient = function (request) {
 
-    var client = __webpack_require__(178);
+    var client = __webpack_require__(183);
 
     return new PromiseObj(function (resolve) {
 
@@ -13023,7 +13023,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(129)
+__webpack_require__(131)
 __vue_script__ = __webpack_require__(51)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -13045,9 +13045,9 @@ if (false) {(function () {  module.hot.accept()
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(142)
+__webpack_require__(145)
 __vue_script__ = __webpack_require__(57)
-__vue_template__ = __webpack_require__(150)
+__vue_template__ = __webpack_require__(153)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22087,16 +22087,16 @@ if (typeof window !== 'undefined' && window.Vue) {
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(74), __esModule: true };
+module.exports = { "default": __webpack_require__(75), __esModule: true };
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(145)
+__webpack_require__(148)
 __vue_script__ = __webpack_require__(54)
-__vue_template__ = __webpack_require__(147)
+__vue_template__ = __webpack_require__(150)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22156,7 +22156,7 @@ module.exports = function(name){
 "use strict";
 
 
-var _Symbol = __webpack_require__(72)["default"];
+var _Symbol = __webpack_require__(73)["default"];
 
 exports["default"] = function (obj) {
   return obj && obj.constructor === _Symbol ? "symbol" : typeof obj;
@@ -22347,7 +22347,7 @@ module.exports = function(it){
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(75), __esModule: true };
+module.exports = { "default": __webpack_require__(76), __esModule: true };
 
 /***/ }),
 /* 23 */
@@ -22358,7 +22358,7 @@ module.exports = { "default": __webpack_require__(75), __esModule: true };
 
 exports.__esModule = true;
 
-var _from = __webpack_require__(70);
+var _from = __webpack_require__(71);
 
 var _from2 = _interopRequireDefault(_from);
 
@@ -22380,7 +22380,7 @@ exports.default = function (arr) {
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(86);
+var isObject = __webpack_require__(87);
 module.exports = function(it){
   if(!isObject(it))throw TypeError(it + ' is not an object!');
   return it;
@@ -22468,7 +22468,7 @@ module.exports = function(it){
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(134)
+__webpack_require__(136)
 __vue_script__ = __webpack_require__(50)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -22490,7 +22490,7 @@ if (false) {(function () {  module.hot.accept()
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(138)
+__webpack_require__(140)
 __vue_script__ = __webpack_require__(53)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
@@ -22512,9 +22512,9 @@ if (false) {(function () {  module.hot.accept()
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(128)
+__webpack_require__(130)
 __vue_script__ = __webpack_require__(55)
-__vue_template__ = __webpack_require__(148)
+__vue_template__ = __webpack_require__(151)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -25000,20 +25000,20 @@ if (inBrowser && window.Vue) {
 
 /* harmony default export */ __webpack_exports__["a"] = (VueRouter);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(124)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(126)))
 
 /***/ }),
 /* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(77), __esModule: true };
+module.exports = { "default": __webpack_require__(78), __esModule: true };
 
 /***/ }),
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(79);
+var aFunction = __webpack_require__(80);
 module.exports = function(fn, that, length){
   aFunction(fn);
   if(that === undefined)return fn;
@@ -25064,7 +25064,7 @@ var LIBRARY        = __webpack_require__(41)
   , hide           = __webpack_require__(28)
   , has            = __webpack_require__(27)
   , Iterators      = __webpack_require__(17)
-  , $iterCreate    = __webpack_require__(88)
+  , $iterCreate    = __webpack_require__(89)
   , setToStringTag = __webpack_require__(30)
   , getProto       = __webpack_require__(13).getProto
   , ITERATOR       = __webpack_require__(14)('iterator')
@@ -25172,7 +25172,7 @@ module.exports = function(key){
 /* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var classof   = __webpack_require__(81)
+var classof   = __webpack_require__(82)
   , ITERATOR  = __webpack_require__(14)('iterator')
   , Iterators = __webpack_require__(17);
 module.exports = __webpack_require__(12).getIteratorMethod = function(it){
@@ -25187,7 +25187,7 @@ module.exports = __webpack_require__(12).getIteratorMethod = function(it){
 
 "use strict";
 
-var $at  = __webpack_require__(94)(true);
+var $at  = __webpack_require__(95)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
 __webpack_require__(40)(String, 'String', function(iterated){
@@ -25210,31 +25210,31 @@ __webpack_require__(40)(String, 'String', function(iterated){
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__ = __webpack_require__(170);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__ = __webpack_require__(175);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__ = __webpack_require__(167);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__ = __webpack_require__(172);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__ = __webpack_require__(175);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__ = __webpack_require__(180);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__ = __webpack_require__(174);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__ = __webpack_require__(179);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__ = __webpack_require__(172);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__ = __webpack_require__(177);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__ = __webpack_require__(166);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__ = __webpack_require__(170);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__ = __webpack_require__(168);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__ = __webpack_require__(173);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__ = __webpack_require__(171);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__ = __webpack_require__(176);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__ = __webpack_require__(169);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__ = __webpack_require__(174);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__ = __webpack_require__(165);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__ = __webpack_require__(169);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__ = __webpack_require__(173);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__ = __webpack_require__(178);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__ = __webpack_require__(176);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__ = __webpack_require__(181);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue__ = __webpack_require__(183);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue__ = __webpack_require__(171);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue__);
 
 
@@ -25297,7 +25297,7 @@ const router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuetify__);
@@ -25309,7 +25309,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_table_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__components_form_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__mixins_igmixin_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__mixins_igmixin_js__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__routes__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__urls_js__ = __webpack_require__(3);
 
@@ -25389,7 +25389,7 @@ var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vue = __webpack_require__(4);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -25548,7 +25548,7 @@ var _typeof2 = __webpack_require__(15);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _assign = __webpack_require__(71);
+var _assign = __webpack_require__(72);
 
 var _assign2 = _interopRequireDefault(_assign);
 
@@ -25556,7 +25556,7 @@ var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vue = __webpack_require__(4);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -26376,7 +26376,7 @@ var _urls = __webpack_require__(3);
 
 var _urls2 = _interopRequireDefault(_urls);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(4);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -26869,7 +26869,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _slotInput = __webpack_require__(164);
+var _slotInput = __webpack_require__(168);
 
 var _slotInput2 = _interopRequireDefault(_slotInput);
 
@@ -27428,7 +27428,7 @@ var _getIterator2 = __webpack_require__(10);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vue = __webpack_require__(4);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -27956,7 +27956,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(4);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -28124,7 +28124,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(4);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -28148,7 +28148,7 @@ var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(4);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -28251,7 +28251,155 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(4);
+var _igmixin = __webpack_require__(4);
+
+var _igmixin2 = _interopRequireDefault(_igmixin);
+
+var _table = __webpack_require__(8);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _form = __webpack_require__(7);
+
+var _form2 = _interopRequireDefault(_form);
+
+var _urls = __webpack_require__(3);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  components: {
+    igTable: _table2.default,
+    igForm: _form2.default
+  },
+  mixins: [_igmixin2.default],
+  data: function data() {
+    return {
+      urlForm: _urls2.default.empleados,
+      selected: false,
+      headers: [{
+        text: 'Usuario',
+        value: 'username',
+        left: true
+      }, {
+        text: 'Nombre',
+        value: 'nombre',
+        left: true
+      }, {
+        text: 'Email',
+        value: 'usuario.email',
+        left: true
+      }, {
+        text: 'Documento',
+        value: 'documento',
+        left: true,
+        sortable: false
+      }],
+      fields: [{
+        name: 'username',
+        verbose_name: 'Usuario',
+        type: String,
+        hint: 'Este es el nombre de usuario de el bacteriologo.',
+        group: 'usuario'
+      }, {
+        name: 'password',
+        verbose_name: 'Contraseña',
+        type: String,
+        hint: 'Esta es la contraseña de el bacteriologo.',
+        required: false,
+        group: 'usuario',
+        kwargs: {
+          type: 'password'
+        }
+      }, {
+        name: 'email',
+        verbose_name: 'Email',
+        type: String,
+        hint: 'Este es el email de el bacteriologo.',
+        group: 'usuario',
+        kwargs: {
+          type: 'email'
+        }
+      }, {
+        name: 'nombres',
+        verbose_name: 'Nombre',
+        type: String,
+        hint: 'Nombres del empleado.'
+      }, {
+        name: 'apellidos',
+        verbose_name: 'Apellidos',
+        type: String,
+        hint: 'Apellidos de el empleado.'
+      }, {
+        name: 'documento',
+        verbose_name: 'Documento',
+        type: Number,
+        hint: 'Documento de el empleado.',
+        kwargs: {
+          type: 'number'
+        }
+      }]
+    };
+  },
+  mounted: function mounted() {
+    this.getElements(_urls2.default.empleados);
+  }
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+// <template lang="html">
+//     <div>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-table
+//                   table-title="Empleados"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['usuario.username', 'nombres', 'usuario.email', 'documento']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
+//             </v-flex>
+//         </v-layout>
+//         <br>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-form
+//                 :fields="fields"
+//                 :url="urlForm"
+//                 @showsnack="showSnackBar"
+//                 @objectcreated="eventCreatedObject"
+//                 @clearselected="selected = false"
+//                 :selected="selected"
+//                 ></ig-form>
+//             </v-flex>
+//         </v-layout>
+//     </div>
+// </template>
+//
+// <script>
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -28275,7 +28423,7 @@ var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(4);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -28377,7 +28525,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28391,7 +28539,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(4);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -28415,7 +28563,7 @@ var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(4);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -28508,7 +28656,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28534,7 +28682,7 @@ var _urls = __webpack_require__(3);
 
 var _urls2 = _interopRequireDefault(_urls);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(4);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -29014,7 +29162,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29032,7 +29180,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(4);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -29056,7 +29204,7 @@ var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _formato = __webpack_require__(163);
+var _formato = __webpack_require__(167);
 
 var _formato2 = _interopRequireDefault(_formato);
 
@@ -29064,7 +29212,7 @@ var _productos = __webpack_require__(34);
 
 var _productos2 = _interopRequireDefault(_productos);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(4);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -29330,7 +29478,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29356,7 +29504,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(4);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -29380,7 +29528,7 @@ var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(4);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -29639,7 +29787,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29653,7 +29801,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(4);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -29677,7 +29825,7 @@ var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(4);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -29804,7 +29952,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29826,7 +29974,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(4);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -29915,11 +30063,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //                                 <v-icon class="white--text">close</v-icon>
 //                             </v-btn>
 //                             <v-toolbar-title class="white--text">Settings</v-toolbar-title>
-//                             <v-btn
-//                               class="white--text" flat="flat"
-//                               @click.native="preview = false">
-//                                 Imprimir
-//                             </v-btn>
+//                             <a class="white--text btn btn--dark btn--flat" :href="url_impresion">
+//                               <span class="btn__content">Imprimir</span>
+//                             </a>
 //                         </v-toolbar>
 //                     </v-card-row>
 //                     <v-card-row>
@@ -29936,9 +30082,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //             </v-dialog>
 //         </v-container>
 //         <v-container v-else>
-//            <h5>403 Forbidden</h5>
-//            <br>
-//            <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>
+//            <!-- <h5>403 Forbidden</h5>
+//            <br> -->
+//            <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>
 //         </v-container>
 //         <floating-button v-if="items.length">
 //             <template slot="child">
@@ -29992,7 +30138,8 @@ exports.default = {
             bacteriologo: '',
             preview: false,
             dialog: false,
-            contentLoaded: true
+            contentLoaded: true,
+            url_impresion: ''
         };
     },
     watch: {
@@ -30054,6 +30201,7 @@ exports.default = {
                 this.preview = true;
                 this.contentLoaded = false;
                 var url = '/laboratorios/imprimir/' + this.orden.id + '/' + add;
+                this.url_impresion = url;
                 PDFJS.workerSrc = '/static/js/pdfjs/pdf.worker.js';
 
                 var loadingTask = PDFJS.getDocument(url);
@@ -30328,7 +30476,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30342,7 +30490,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(4);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -30370,7 +30518,7 @@ var _productos = __webpack_require__(34);
 
 var _productos2 = _interopRequireDefault(_productos);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(4);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -30508,7 +30656,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30522,7 +30670,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(4);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -30546,7 +30694,7 @@ var _form = __webpack_require__(7);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(4);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -30635,7 +30783,7 @@ exports.default = {
 //
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30653,7 +30801,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(4);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -30665,7 +30813,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _igmixin = __webpack_require__(5);
+var _igmixin = __webpack_require__(4);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -30914,41 +31062,41 @@ exports.default = {
 //
 
 /***/ }),
-/* 70 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(73), __esModule: true };
-
-/***/ }),
 /* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(76), __esModule: true };
+module.exports = { "default": __webpack_require__(74), __esModule: true };
 
 /***/ }),
 /* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(78), __esModule: true };
+module.exports = { "default": __webpack_require__(77), __esModule: true };
 
 /***/ }),
 /* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(47);
-__webpack_require__(97);
-module.exports = __webpack_require__(12).Array.from;
+module.exports = { "default": __webpack_require__(79), __esModule: true };
 
 /***/ }),
 /* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(103);
 __webpack_require__(47);
-module.exports = __webpack_require__(96);
+__webpack_require__(98);
+module.exports = __webpack_require__(12).Array.from;
 
 /***/ }),
 /* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(104);
+__webpack_require__(47);
+module.exports = __webpack_require__(97);
+
+/***/ }),
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var core = __webpack_require__(12);
@@ -30957,29 +31105,29 @@ module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
 };
 
 /***/ }),
-/* 76 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(99);
-module.exports = __webpack_require__(12).Object.assign;
-
-/***/ }),
 /* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(100);
-module.exports = __webpack_require__(12).Object.keys;
+module.exports = __webpack_require__(12).Object.assign;
 
 /***/ }),
 /* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(102);
 __webpack_require__(101);
-module.exports = __webpack_require__(12).Symbol;
+module.exports = __webpack_require__(12).Object.keys;
 
 /***/ }),
 /* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(103);
+__webpack_require__(102);
+module.exports = __webpack_require__(12).Symbol;
+
+/***/ }),
+/* 80 */
 /***/ (function(module, exports) {
 
 module.exports = function(it){
@@ -30988,13 +31136,13 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports) {
 
 module.exports = function(){ /* empty */ };
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
@@ -31015,7 +31163,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // all enumerable object keys, includes symbols
@@ -31034,7 +31182,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
@@ -31059,7 +31207,7 @@ module.exports.get = function getOwnPropertyNames(it){
 };
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // check on default Array iterator
@@ -31072,7 +31220,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
@@ -31082,7 +31230,7 @@ module.exports = Array.isArray || function(arg){
 };
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports) {
 
 module.exports = function(it){
@@ -31090,7 +31238,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // call something on iterator step with safe closing on error
@@ -31107,7 +31255,7 @@ module.exports = function(iterator, fn, value, entries){
 };
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31126,7 +31274,7 @@ module.exports = function(Constructor, NAME, next){
 };
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ITERATOR     = __webpack_require__(14)('iterator')
@@ -31152,7 +31300,7 @@ module.exports = function(exec, skipClosing){
 };
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports) {
 
 module.exports = function(done, value){
@@ -31160,7 +31308,7 @@ module.exports = function(done, value){
 };
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $         = __webpack_require__(13)
@@ -31175,7 +31323,7 @@ module.exports = function(object, el){
 };
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.1 Object.assign(target, source, ...)
@@ -31213,7 +31361,7 @@ module.exports = __webpack_require__(19)(function(){
 } : Object.assign;
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
@@ -31228,7 +31376,7 @@ module.exports = function(KEY, exec){
 };
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(44)
@@ -31250,7 +31398,7 @@ module.exports = function(TO_STRING){
 };
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
@@ -31261,7 +31409,7 @@ module.exports = function(it){
 };
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var anObject = __webpack_require__(24)
@@ -31273,7 +31421,7 @@ module.exports = __webpack_require__(12).getIterator = function(it){
 };
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31281,11 +31429,11 @@ module.exports = __webpack_require__(12).getIterator = function(it){
 var ctx         = __webpack_require__(37)
   , $export     = __webpack_require__(16)
   , toObject    = __webpack_require__(31)
-  , call        = __webpack_require__(87)
-  , isArrayIter = __webpack_require__(84)
-  , toLength    = __webpack_require__(95)
+  , call        = __webpack_require__(88)
+  , isArrayIter = __webpack_require__(85)
+  , toLength    = __webpack_require__(96)
   , getIterFn   = __webpack_require__(46);
-$export($export.S + $export.F * !__webpack_require__(89)(function(iter){ Array.from(iter); }), 'Array', {
+$export($export.S + $export.F * !__webpack_require__(90)(function(iter){ Array.from(iter); }), 'Array', {
   // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
   from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
     var O       = toObject(arrayLike)
@@ -31316,13 +31464,13 @@ $export($export.S + $export.F * !__webpack_require__(89)(function(iter){ Array.f
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(80)
-  , step             = __webpack_require__(90)
+var addToUnscopables = __webpack_require__(81)
+  , step             = __webpack_require__(91)
   , Iterators        = __webpack_require__(17)
   , toIObject        = __webpack_require__(21);
 
@@ -31356,35 +31504,35 @@ addToUnscopables('values');
 addToUnscopables('entries');
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.1 Object.assign(target, source)
 var $export = __webpack_require__(16);
 
-$export($export.S + $export.F, 'Object', {assign: __webpack_require__(92)});
+$export($export.S + $export.F, 'Object', {assign: __webpack_require__(93)});
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
 var toObject = __webpack_require__(31);
 
-__webpack_require__(93)('keys', function($keys){
+__webpack_require__(94)('keys', function($keys){
   return function keys(it){
     return $keys(toObject(it));
   };
 });
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports) {
 
 
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31401,10 +31549,10 @@ var $              = __webpack_require__(13)
   , setToStringTag = __webpack_require__(30)
   , uid            = __webpack_require__(45)
   , wks            = __webpack_require__(14)
-  , keyOf          = __webpack_require__(91)
-  , $names         = __webpack_require__(83)
-  , enumKeys       = __webpack_require__(82)
-  , isArray        = __webpack_require__(85)
+  , keyOf          = __webpack_require__(92)
+  , $names         = __webpack_require__(84)
+  , enumKeys       = __webpack_require__(83)
+  , isArray        = __webpack_require__(86)
   , anObject       = __webpack_require__(24)
   , toIObject      = __webpack_require__(21)
   , createDesc     = __webpack_require__(29)
@@ -31617,15 +31765,15 @@ setToStringTag(Math, 'Math', true);
 setToStringTag(global.JSON, 'JSON', true);
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(98);
+__webpack_require__(99);
 var Iterators = __webpack_require__(17);
 Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(0)(undefined);
@@ -31639,20 +31787,6 @@ exports.push([module.i, "\n.stepper__wrapper .card {\n    box-shadow: inherit;\n
 
 
 /***/ }),
-/* 105 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
 /* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -31661,7 +31795,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n.productos .container {\n  padding: 0;\n}\n", ""]);
+exports.push([module.i, "\n", ""]);
 
 // exports
 
@@ -31675,7 +31809,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n", ""]);
+exports.push([module.i, "\n.productos .container {\n  padding: 0;\n}\n", ""]);
 
 // exports
 
@@ -31745,7 +31879,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n.ig-floating-button {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin-right: 22px;\n    /*margin-bottom: 90px;*/\n    transition-duration: 50ms !important;\n    -webkit-animation-duration: 500ms;\n            animation-duration: 500ms;\n}\n\n.ig-floating-button-main {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin: 15px;\n    transition-duration: 500ms;\n    z-index: 10;\n}\n\n.ig-floating-button-main:hover {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg);\n    transition-duration: 500ms;\n}\n\n.ig-floating-button-container {\n    position: fixed;\n    background-color: transparent;\n    /*background-color: #323213;*/\n    padding: 40px;\n    right: 0;\n    top: 0;\n    z-index: 0;\n    height: 100%;\n}\n\n/*.ig-rotator {\n    transform: rotate(360deg);\n    transition-duration: 500ms;\n}*/\n", ""]);
+exports.push([module.i, "\n", ""]);
 
 // exports
 
@@ -31759,7 +31893,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n", ""]);
+exports.push([module.i, "\n.ig-floating-button {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin-right: 22px;\n    /*margin-bottom: 90px;*/\n    transition-duration: 50ms !important;\n    -webkit-animation-duration: 500ms;\n            animation-duration: 500ms;\n}\n\n.ig-floating-button-main {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin: 15px;\n    transition-duration: 500ms;\n    z-index: 10;\n}\n\n.ig-floating-button-main:hover {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg);\n    transition-duration: 500ms;\n}\n\n.ig-floating-button-container {\n    position: fixed;\n    background-color: transparent;\n    /*background-color: #323213;*/\n    padding: 40px;\n    right: 0;\n    top: 0;\n    z-index: 0;\n    height: 100%;\n}\n\n/*.ig-rotator {\n    transform: rotate(360deg);\n    transition-duration: 500ms;\n}*/\n", ""]);
 
 // exports
 
@@ -31801,7 +31935,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n.fixindex {\n    z-index: 7 !important;\n}\n", ""]);
+exports.push([module.i, "\n", ""]);
 
 // exports
 
@@ -31815,7 +31949,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n", ""]);
+exports.push([module.i, "\n.fixindex {\n    z-index: 7 !important;\n}\n", ""]);
 
 // exports
 
@@ -31857,7 +31991,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n.text-xs-left {\n    text-align: center !important;\n}\n", ""]);
+exports.push([module.i, "\n", ""]);
 
 // exports
 
@@ -31885,7 +32019,7 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n", ""]);
+exports.push([module.i, "\n.text-xs-left {\n    text-align: center !important;\n}\n", ""]);
 
 // exports
 
@@ -31899,13 +32033,41 @@ exports = module.exports = __webpack_require__(0)(undefined);
 
 
 // module
-exports.push([module.i, "\n  .main {\n    width: 100% !important;\n  }\n", ""]);
+exports.push([module.i, "\n", ""]);
 
 // exports
 
 
 /***/ }),
 /* 124 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 125 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n  .main {\n    width: 100% !important;\n  }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 126 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -32095,7 +32257,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 125 */
+/* 127 */
 /***/ (function(module, exports) {
 
 
@@ -32190,13 +32352,13 @@ module.exports = function (css) {
 
 
 /***/ }),
-/* 126 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(104);
+var content = __webpack_require__(105);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32216,13 +32378,13 @@ if(false) {
 }
 
 /***/ }),
-/* 127 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(105);
+var content = __webpack_require__(106);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32242,13 +32404,13 @@ if(false) {
 }
 
 /***/ }),
-/* 128 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(106);
+var content = __webpack_require__(107);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32268,13 +32430,13 @@ if(false) {
 }
 
 /***/ }),
-/* 129 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(107);
+var content = __webpack_require__(108);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32294,13 +32456,13 @@ if(false) {
 }
 
 /***/ }),
-/* 130 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(108);
+var content = __webpack_require__(109);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32320,13 +32482,13 @@ if(false) {
 }
 
 /***/ }),
-/* 131 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(109);
+var content = __webpack_require__(110);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32346,13 +32508,13 @@ if(false) {
 }
 
 /***/ }),
-/* 132 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(110);
+var content = __webpack_require__(111);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32372,13 +32534,13 @@ if(false) {
 }
 
 /***/ }),
-/* 133 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(111);
+var content = __webpack_require__(112);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32398,13 +32560,13 @@ if(false) {
 }
 
 /***/ }),
-/* 134 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(112);
+var content = __webpack_require__(113);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32424,13 +32586,13 @@ if(false) {
 }
 
 /***/ }),
-/* 135 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(113);
+var content = __webpack_require__(114);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32450,13 +32612,13 @@ if(false) {
 }
 
 /***/ }),
-/* 136 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(114);
+var content = __webpack_require__(115);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32476,13 +32638,13 @@ if(false) {
 }
 
 /***/ }),
-/* 137 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(115);
+var content = __webpack_require__(116);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32502,13 +32664,13 @@ if(false) {
 }
 
 /***/ }),
-/* 138 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(116);
+var content = __webpack_require__(117);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32528,13 +32690,13 @@ if(false) {
 }
 
 /***/ }),
-/* 139 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(117);
+var content = __webpack_require__(118);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32554,13 +32716,39 @@ if(false) {
 }
 
 /***/ }),
-/* 140 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(118);
+var content = __webpack_require__(119);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-68c3c8a8&file=empleados.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue", function() {
+			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-68c3c8a8&file=empleados.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 143 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(120);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32580,13 +32768,13 @@ if(false) {
 }
 
 /***/ }),
-/* 141 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(119);
+var content = __webpack_require__(121);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32606,13 +32794,13 @@ if(false) {
 }
 
 /***/ }),
-/* 142 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(120);
+var content = __webpack_require__(122);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32632,13 +32820,13 @@ if(false) {
 }
 
 /***/ }),
-/* 143 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(121);
+var content = __webpack_require__(123);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32658,13 +32846,13 @@ if(false) {
 }
 
 /***/ }),
-/* 144 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(122);
+var content = __webpack_require__(124);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32684,13 +32872,13 @@ if(false) {
 }
 
 /***/ }),
-/* 145 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(123);
+var content = __webpack_require__(125);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(1)(content, {});
@@ -32710,115 +32898,121 @@ if(false) {
 }
 
 /***/ }),
-/* 146 */
+/* 149 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div v-if=\"formato\">\n        <v-container class=\"white\">\n            <v-layout>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-layout>\n            <v-layout wrap>\n                <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand class=\"white\">\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        return-object\n                                        persistent-hint\n                                        dark\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <div v-if=\"item.tipo.name != 'title'\">\n                                        <v-text-field\n                                          label=\"Texto de ayuda\"\n                                          v-model=\"item.help\"\n                                            hint=\"Ayuda textual que acompaña el campo\"\n                                        ></v-text-field>\n                                        <br>\n                                        <v-layout wrap>\n                                            <v-flex md12><v-subheader>Referencias</v-subheader></v-flex>\n                                            <v-flex md6>\n                                                <v-subheader>Hombre</v-subheader>\n                                                <v-text-field\n                                                    label=\"Valores de referencia mínima (HOMBRE)\"\n                                                    v-model=\"item.referencias.M.minima\"\n                                                    type=\"number\"\n                                                    hint=\"Texto de referencia minima para el momento de poner el resultado (HOMBRE)\"\n                                                ></v-text-field>\n                                                <br>\n                                                <v-text-field\n                                                    label=\"Valores de referencia máxima (HOMBRE)\"\n                                                    v-model=\"item.referencias.M.maxima\"\n                                                    hint=\"Texto de referencia máxima para el momento de poner el resultado (HOMBRE)\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                            <v-flex md6>\n                                                <v-subheader>Mujer</v-subheader>\n                                                <v-text-field\n                                                    label=\"Valores de referencia mínima (MUJER)\"\n                                                    v-model=\"item.referencias.F.minima\"\n                                                    hint=\"Texto de referencia minima para el momento de poner el resultado (MUJER)\"\n                                                ></v-text-field>\n                                                <br>\n                                                <v-text-field\n                                                    label=\"Valores de referencia máxima (MUJER)\"\n                                                    v-model=\"item.referencias.F.maxima\"\n                                                    hint=\"Texto de referencia máxima para el momento de poner el resultado (MUJER)\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                        </v-layout>\n                                        <br>\n                                        <v-text-field\n                                            label=\"Unidades\"\n                                            v-model=\"item.unidades\"\n                                            hint=\"Medida en unidades de el resultado\"\n                                        ></v-text-field>\n                                        <br>\n                                        <v-text-field\n                                            v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'\"\n                                            :multi-line=\"item.tipo.name == 'textarea'\"\n                                            :label=\"item.nombre\"\n                                            :hint=\"item.help\"\n                                            v-model=\"item.model_text\"\n                                            :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                            persistent-hint\n                                        ></v-text-field>\n                                        <div v-else-if=\"item.tipo.name == 'select'\">\n                                            <v-layout>\n                                                <v-flex md10 xs10>\n                                                    <v-select\n                                                        :label=\"item.nombre\"\n                                                        :hint=\"item.help\"\n                                                        v-model=\"item.model_text\"\n                                                        :items=\"item.choices\"\n                                                        :rules=\"[item.choices.length >= 1 || 'Debes escoger una caracteristica', item.choices.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                        item-value=\"text\"\n                                                        :return-object=\"true\"\n                                                        persistent-hint\n                                                    ></v-select>\n                                                </v-flex>\n                                                <v-flex md2 xs2>\n                                                    <v-btn\n                                                        v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                        class=\"green--text darken-1\" icon=\"icon\"\n                                                        @click.native.stop=\"dialog = true; lastItem = item\">\n                                                        <v-icon>add</v-icon>\n                                                    </v-btn>\n                                                </v-flex>\n                                            </v-layout>\n                                            <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                                <v-flex xs7 md7>\n                                                    <v-text-field\n                                                      label=\"Texto para mostrar\"\n                                                      v-model=\"choice.text\"\n                                                    ></v-text-field>\n                                                </v-flex>\n                                                <v-flex xs5 md5>\n                                                    <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                        <v-icon>delete</v-icon>\n                                                    </v-btn>\n                                                    <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                        <v-icon>add</v-icon>\n                                                    </v-btn>\n                                                </v-flex>\n                                            </v-layout>\n                                        </div>\n                                    </div>\n                                </v-card-text>\n                                <v-card-row actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-row>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ }),
-/* 147 */
+/* 150 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n            <v-toolbar-side-icon @click.native.stop=\"sidebar = !sidebar\"></v-toolbar-side-icon>\n            <v-toolbar-title>Dasalud</v-toolbar-title>\n        </v-toolbar>\n        <main>\n            <v-sidebar v-model=\"sidebar\" drawer class=\"mt-0 scroll-y\" :mobile-break-point=\"576\">\n                <v-list dense>\n                    <v-list-item>\n                        <v-list-tile href=\"/\">\n                            <v-list-tile-avatar>\n                                <v-icon>accessibility</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Dashboard</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>people</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Pacientes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/pacientes/page/1/\">\n                                <v-list-tile-title>Lista Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/add/paciente/\">\n                                <v-list-tile-title>Crear Paciente</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>today</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Agendas</v-list-tile-title>\n                                </v-list-tile-content>\n                                    <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/\">\n                                <v-list-tile-title>Agenda del Dia</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/agenda/doctor/\">\n                                <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>open_in_browser</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenes/\">\n                                <v-list-tile-title>Lista de Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/ordenesReporte/\">\n                                <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"/portal_empresas/\">\n                            <v-list-tile-avatar>\n                                <v-icon>search</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Buscar Orden</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-divider light></v-divider>\n                    <v-subheader>Utilidades</v-subheader>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/medicos/\">\n                                <v-list-tile-title>Medicos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/instituciones/\">\n                                <v-list-tile-title>Instituciones</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>business_center</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Empresas y Planes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/empresas/\">\n                                <v-list-tile-title>Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/planes/\">\n                                <v-list-tile-title>Planes de Salud</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/procedimientos/\">\n                                <v-list-tile-title>Procedimientos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/plantillas/\">\n                                <v-list-tile-title>Plantillas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/servicios/\">\n                                <v-list-tile-title>Servicios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Usuarios</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuarios/\">\n                                <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"/usuariosEmpresa/\">\n                                <v-list-tile-title>Usuarios Empresas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                    <v-divider light></v-divider>\n                    <v-subheader>Laboratorio</v-subheader>\n                    <v-list-item>\n                        <v-list-tile ripple href=\"#/ordenes_laboratorios/\">\n                            <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>\n                        </v-list-tile>\n                    </v-list-item>\n                    <v-list-group>\n                        <v-list-item slot=\"item\">\n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Administración</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/bacteriologos/\">\n                              <v-list-tile-title>Bacteriologos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/laboratorios/\">\n                              <v-list-tile-title>Laboratorios</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/equipos/\">\n                                <v-list-tile-title>Equipos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/tecnicas/\">\n                                <v-list-tile-title>Tecnicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/secciones_trabajo/\">\n                                <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/reactivos/\">\n                                <v-list-tile-title>Reactivos</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/caracteristicas/\">\n                                <v-list-tile-title>Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                        <v-list-item>\n                            <v-list-tile ripple href=\"#/especificacion_caracteristicas/\">\n                                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n                        </v-list-item>\n                    </v-list-group>\n                </v-list>\n            </v-sidebar>\n            <div class=\"main\">\n                <v-content class=\"grey lighten-4\">\n                    <v-container fluid>\n                        <br>\n                        <v-spacer></v-spacer>\n                        <slot></slot>\n                    </v-container>\n                </v-content>\n            </div>\n        </main>\n    </div>\n";
 
 /***/ }),
-/* 148 */
+/* 151 */
 /***/ (function(module, exports) {
 
 module.exports = "\n\n";
 
 /***/ }),
-/* 149 */
+/* 152 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div class=\"\">\n        <slot></slot>\n        <div v-show=\"false\">\n          <slot name=\"input\"></slot>\n        </div>\n    </div>\n";
 
 /***/ }),
-/* 150 */
+/* 153 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <v-data-table\n            :pagination.sync=\"pagination\"\n            v-bind:headers=\"headers\"\n            :items=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            :rowsPerPage=\"10\"\n            :filter=\"filter\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"headers\" scope=\"props\">\n                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n            </template>\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                    <td class=\"text-xs-center\" v-else>\n                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                            <v-icon light>mode_edit</v-icon>\n                        </v-btn>\n                    </td>\n                </template>\n            </template>\n        </v-data-table>\n        <v-progress-linear indeterminate class=\"red--text\" height=\"3\" :active=\"loading\"></v-progress-linear>\n    </v-card>\n";
 
 /***/ }),
-/* 151 */
+/* 154 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Bacteriologos\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
-/* 152 */
+/* 155 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Caracteristicas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'descripcion']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
-/* 153 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Equipos\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
-
-/***/ }),
-/* 154 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Especificacion Caracteristica\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['nombre', 'caracteristica.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
-
-/***/ }),
-/* 155 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div v-if=\"formato\">\n        <v-layout>\n            <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n        </v-layout>\n        <v-layout wrap>\n            <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                <v-expansion-panel expand class=\"white\">\n                    <v-expansion-panel-content>\n                        <div slot=\"header\">{{ item.nombre }}</div>\n                        <v-card>\n                            <v-card-title>\n                            </v-card-title>\n                            <v-card-text class=\"grey lighten-5\">\n                                <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                    Asegurate de crear varias opciones.\n                                </v-alert>\n                                <v-select\n                                    label=\"Tipo\"\n                                    :hint=\"item.tipo.help\"\n                                    :items=\"tipoOpciones\"\n                                    v-model=\"item.tipo\"\n                                    item-value=\"text\"\n                                    :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                    required\n                                    return-object\n                                    persistent-hint\n                                    dark\n                                ></v-select>\n                                <br>\n                                <v-text-field\n                                    label=\"Nombre del Campo\"\n                                    v-model=\"item.nombre\"\n                                    hint=\"Con este nombre se identificará el campo\"\n                                    :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                    required\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Texto de ayuda\"\n                                    v-model=\"item.help\"\n                                    hint=\"Ayuda textual que acompaña el campo\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Valores de referencia\"\n                                    v-model=\"item.referencia\"\n                                    hint=\"Texto de referencia para el momento de poner el resultado\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Unidades\"\n                                    v-model=\"item.unidades\"\n                                    hint=\"Medida en unidades de el resultado\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                    :multi-line=\"item.tipo.name == 'textarea'\"\n                                    :label=\"item.nombre\"\n                                    :hint=\"item.help\"\n                                    v-model=\"item.model_text\"\n                                    persistent-hint\n                                ></v-text-field>\n                                <div v-else-if=\"item.tipo.name == 'select'\">\n                                    <v-layout>\n                                        <v-flex md10 xs10>\n                                            <v-select\n                                                :label=\"item.nombre\"\n                                                :hint=\"item.help\"\n                                                v-model=\"item.model_text\"\n                                                :items=\"item.choices_select\"\n                                                :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                item-value=\"text\"\n                                                persistent-hint\n                                            ></v-select>\n                                        </v-flex>\n                                        <v-flex md2 xs2>\n                                            <v-btn\n                                                v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                class=\"green--text darken-1\" icon=\"icon\"\n                                                @click.native.stop=\"dialog = true; lastItem = item\">\n                                                <v-icon>add</v-icon>\n                                            </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                                <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                    <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                        <v-flex xs7 md7>\n                                            <v-checkbox\n                                              v-if=\"!choice.edit\"\n                                              :label=\"choice.name\"\n                                              v-model=\"item.model_check\"\n                                              :value=\"choice.id\"\n                                              primary\n                                            ></v-checkbox>\n                                            <v-text-field\n                                              v-else\n                                              label=\"Texto para mostrar\"\n                                              v-model=\"choice.name\"\n                                            ></v-text-field>\n                                        </v-flex>\n                                        <v-flex xs5 md5>\n                                          <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                              <v-icon>mode_edit</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                              <v-icon>delete</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                              <v-icon>add</v-icon>\n                                          </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                                <div v-else-if=\"item.tipo.name == 'radio'\">\n                                    <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                        <v-flex xs7 md7>\n                                            <v-radio\n                                              v-if=\"!choice.edit\"\n                                              :label=\"choice.name\"\n                                              v-model=\"item.model_text\"\n                                              :value=\"choice.name\"\n                                              primary\n                                            ></v-radio>\n                                            <v-text-field\n                                              v-else\n                                              label=\"Texto para mostrar\"\n                                              v-model=\"choice.name\"\n                                            ></v-text-field>\n                                        </v-flex>\n                                        <v-flex xs5 md5>\n                                          <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                              <v-icon>mode_edit</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                              <v-icon>delete</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                              <v-icon>add</v-icon>\n                                          </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                            </v-card-text>\n                            <v-card-row actions>\n                                <v-btn\n                                  v-show=\"items.length > 1\"\n                                  flat\n                                  class=\"red--text darken-1\"\n                                  @click.native=\"removeItem(id)\"\n                                >Eliminar Campo</v-btn>\n                            </v-card-row>\n                        </v-card>\n                    </v-expansion-panel-content>\n                </v-expansion-panel>\n                <br>\n            </v-flex>\n        </v-layout>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
-
-/***/ }),
 /* 156 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Laboratorios\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']\"\n                  @selectedrow=\"customEventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-stepper v-model=\"stepper\" non-linear>\n            <v-stepper-header class=\"white\">\n                <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"2\" @click.native=\"secondStepClick\" :complete=\"stepper > 2\">Formato</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"3\" @click.native=\"thirdStepClick\">Insumos y Reactivos</v-stepper-step>\n            </v-stepper-header>\n            <v-stepper-content step=\"1\" class=\"white\">\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"_eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                >\n                    <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                        Continuar\n                    </v-btn>\n                </ig-form>\n            </v-stepper-content>\n            <v-stepper-content step=\"2\" class=\"white\">\n                <ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>\n            </v-stepper-content>\n            <v-stepper-content step=\"3\" class=\"white\">\n                <v-card>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                              <v-subheader>Insumos</v-subheader>\n                              <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                              <v-subheader>Reactivos</v-subheader>\n                              <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <!-- <v-card-row actions>\n                        <v-btn primary @click.native=\"stepper = 1\" light>Continue</v-btn>\n                        <v-btn flat dark>Cancel</v-btn>\n                    </v-card-row> -->\n                </v-card>\n            </v-stepper-content>\n        </v-stepper>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Empleados\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombres', 'usuario.email', 'documento']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 157 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Ordenes con laboratorios\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :total-items=\"totalItems\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        :filter=\"filter\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <template slot=\"headers\" scope=\"props\">\n                            <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of fields\">\n                                <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td class=\"text-xs-center\" v-else>\n                                    <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Equipos\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 158 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Productos\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'tipo_display', 'cantidad']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Especificacion Caracteristica\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['nombre', 'caracteristica.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 159 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"\">\n        <v-container v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                light>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-row actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                          <v-btn\n                            :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                            flat\n                            @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                              Guardar\n                          </v-btn>\n                        </v-card-row>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\">\n                <v-card>\n                    <v-card-row>\n                        <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    </v-card-row>\n                    <v-card-row actions>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-card-row>\n                        <v-toolbar class=\"cyan darken-4\">\n                            <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                                <v-icon class=\"white--text\">close</v-icon>\n                            </v-btn>\n                            <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                            <v-btn\n                              class=\"white--text\" flat=\"flat\"\n                              @click.native=\"preview = false\">\n                                Imprimir\n                            </v-btn>\n                        </v-toolbar>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-container>\n                          <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                              <div class=\"preloader\">\n                                  <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                              </div>\n                          </div>\n                          <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas>\n                        </v-container>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n        </v-container>\n        <v-container v-else>\n           <h5>403 Forbidden</h5>\n           <br>\n           <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn floating info small @click.native.stop=\"dialog = true\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon light>check</v-icon>\n                </v-btn>\n                <v-btn floating warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon light>fingerprint</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon light>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+module.exports = "\n    <div v-if=\"formato\">\n        <v-layout>\n            <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n        </v-layout>\n        <v-layout wrap>\n            <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                <v-expansion-panel expand class=\"white\">\n                    <v-expansion-panel-content>\n                        <div slot=\"header\">{{ item.nombre }}</div>\n                        <v-card>\n                            <v-card-title>\n                            </v-card-title>\n                            <v-card-text class=\"grey lighten-5\">\n                                <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                    Asegurate de crear varias opciones.\n                                </v-alert>\n                                <v-select\n                                    label=\"Tipo\"\n                                    :hint=\"item.tipo.help\"\n                                    :items=\"tipoOpciones\"\n                                    v-model=\"item.tipo\"\n                                    item-value=\"text\"\n                                    :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                    required\n                                    return-object\n                                    persistent-hint\n                                    dark\n                                ></v-select>\n                                <br>\n                                <v-text-field\n                                    label=\"Nombre del Campo\"\n                                    v-model=\"item.nombre\"\n                                    hint=\"Con este nombre se identificará el campo\"\n                                    :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                    required\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Texto de ayuda\"\n                                    v-model=\"item.help\"\n                                    hint=\"Ayuda textual que acompaña el campo\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Valores de referencia\"\n                                    v-model=\"item.referencia\"\n                                    hint=\"Texto de referencia para el momento de poner el resultado\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Unidades\"\n                                    v-model=\"item.unidades\"\n                                    hint=\"Medida en unidades de el resultado\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                    :multi-line=\"item.tipo.name == 'textarea'\"\n                                    :label=\"item.nombre\"\n                                    :hint=\"item.help\"\n                                    v-model=\"item.model_text\"\n                                    persistent-hint\n                                ></v-text-field>\n                                <div v-else-if=\"item.tipo.name == 'select'\">\n                                    <v-layout>\n                                        <v-flex md10 xs10>\n                                            <v-select\n                                                :label=\"item.nombre\"\n                                                :hint=\"item.help\"\n                                                v-model=\"item.model_text\"\n                                                :items=\"item.choices_select\"\n                                                :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                item-value=\"text\"\n                                                persistent-hint\n                                            ></v-select>\n                                        </v-flex>\n                                        <v-flex md2 xs2>\n                                            <v-btn\n                                                v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                class=\"green--text darken-1\" icon=\"icon\"\n                                                @click.native.stop=\"dialog = true; lastItem = item\">\n                                                <v-icon>add</v-icon>\n                                            </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                                <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                    <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                        <v-flex xs7 md7>\n                                            <v-checkbox\n                                              v-if=\"!choice.edit\"\n                                              :label=\"choice.name\"\n                                              v-model=\"item.model_check\"\n                                              :value=\"choice.id\"\n                                              primary\n                                            ></v-checkbox>\n                                            <v-text-field\n                                              v-else\n                                              label=\"Texto para mostrar\"\n                                              v-model=\"choice.name\"\n                                            ></v-text-field>\n                                        </v-flex>\n                                        <v-flex xs5 md5>\n                                          <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                              <v-icon>mode_edit</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                              <v-icon>delete</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                              <v-icon>add</v-icon>\n                                          </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                                <div v-else-if=\"item.tipo.name == 'radio'\">\n                                    <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                        <v-flex xs7 md7>\n                                            <v-radio\n                                              v-if=\"!choice.edit\"\n                                              :label=\"choice.name\"\n                                              v-model=\"item.model_text\"\n                                              :value=\"choice.name\"\n                                              primary\n                                            ></v-radio>\n                                            <v-text-field\n                                              v-else\n                                              label=\"Texto para mostrar\"\n                                              v-model=\"choice.name\"\n                                            ></v-text-field>\n                                        </v-flex>\n                                        <v-flex xs5 md5>\n                                          <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                              <v-icon>mode_edit</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                              <v-icon>delete</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                              <v-icon>add</v-icon>\n                                          </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                            </v-card-text>\n                            <v-card-row actions>\n                                <v-btn\n                                  v-show=\"items.length > 1\"\n                                  flat\n                                  class=\"red--text darken-1\"\n                                  @click.native=\"removeItem(id)\"\n                                >Eliminar Campo</v-btn>\n                            </v-card-row>\n                        </v-card>\n                    </v-expansion-panel-content>\n                </v-expansion-panel>\n                <br>\n            </v-flex>\n        </v-layout>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-row actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ }),
 /* 160 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Areas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'descripcion']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-stepper v-model=\"stepper\">\n            <v-stepper-header class=\"white\">\n                <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Área</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"2\" @click.native=\"secondStepClick\">Plantilla de Gasto</v-stepper-step>\n            </v-stepper-header>\n            <v-stepper-content step=\"1\" class=\"white\">\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                >\n                    <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                        Continuar\n                    </v-btn>\n                </ig-form>\n            </v-stepper-content>\n            <v-stepper-content step=\"2\" class=\"white\">\n                <v-card>\n                    <v-card-title>Lista de insumos por área</v-card-title>\n                    <v-card-row>\n                        <v-card-text>\n                            <ig-producto :area=\"area\" :plantillas=\"plantillas\"></ig-producto>\n                        </v-card-text>\n                    </v-card-row>\n                </v-card>\n            </v-stepper-content>\n        </v-stepper>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Laboratorios\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']\"\n                  @selectedrow=\"customEventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-stepper v-model=\"stepper\" non-linear>\n            <v-stepper-header class=\"white\">\n                <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"2\" @click.native=\"secondStepClick\" :complete=\"stepper > 2\">Formato</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"3\" @click.native=\"thirdStepClick\">Insumos y Reactivos</v-stepper-step>\n            </v-stepper-header>\n            <v-stepper-content step=\"1\" class=\"white\">\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"_eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                >\n                    <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                        Continuar\n                    </v-btn>\n                </ig-form>\n            </v-stepper-content>\n            <v-stepper-content step=\"2\" class=\"white\">\n                <ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>\n            </v-stepper-content>\n            <v-stepper-content step=\"3\" class=\"white\">\n                <v-card>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                              <v-subheader>Insumos</v-subheader>\n                              <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                              <v-subheader>Reactivos</v-subheader>\n                              <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <!-- <v-card-row actions>\n                        <v-btn primary @click.native=\"stepper = 1\" light>Continue</v-btn>\n                        <v-btn flat dark>Cancel</v-btn>\n                    </v-card-row> -->\n                </v-card>\n            </v-stepper-content>\n        </v-stepper>\n    </div>\n";
 
 /***/ }),
 /* 161 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Tecnicas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-form\n                      :fields=\"fields\"\n                      :url=\"urlForm\"\n                      @showsnack=\"showSnackBar\"\n                      @objectcreated=\"eventCreatedObject\"\n                      @clearselected=\"selected = false\"\n                      :selected=\"selected\"\n                    ></ig-form>\n                </v-flex>\n            </v-layout>\n        <br>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Ordenes con laboratorios\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :total-items=\"totalItems\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        :filter=\"filter\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <template slot=\"headers\" scope=\"props\">\n                            <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of fields\">\n                                <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td class=\"text-xs-center\" v-else>\n                                    <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 162 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container fluid>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes en Recepción\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo, ' | ') }}</td>\n                                <td>\n                                    <v-btn floating small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-row>\n                    <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                </v-card-row>\n                <v-card-row v-if=\"hasRecepcion\">\n                    <v-card-text>\n                        <v-card horizontal flat>\n                            <v-card-row :img=\"fotoPaciente\" height=\"325px\"></v-card-row>\n                            <v-card-column>\n                                <v-card-row height=\"100px\" class=\"\">\n                                    <v-card-text>\n                                      <v-layout>\n                                        <v-flex md6>\n                                            <strong>Nombre del paciente</strong>\n                                            <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                            <br>\n                                            <strong>Identificación</strong>\n                                            <div>{{ recepcion.paciente.cedula }}</div>\n                                            <br>\n                                            <strong>Edad del paciente</strong>\n                                            <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                        </v-flex>\n                                        <v-flex md6>\n                                            <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                        </v-flex>\n                                      </v-layout>\n                                    </v-card-text>\n                                </v-card-row>\n                                <v-card-row actions class=\"cyan darken-1\">\n                                    <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                        <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                    </v-btn>\n                                </v-card-row>\n                            </v-card-column>\n                        </v-card>\n                    </v-card-text>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Productos\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'tipo_display', 'cantidad']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 163 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"\">\n        <v-container v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                light>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-row actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                          <v-btn\n                            :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                            flat\n                            @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                              Guardar\n                          </v-btn>\n                        </v-card-row>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\">\n                <v-card>\n                    <v-card-row>\n                        <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    </v-card-row>\n                    <v-card-row actions>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-card-row>\n                        <v-toolbar class=\"cyan darken-4\">\n                            <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                                <v-icon class=\"white--text\">close</v-icon>\n                            </v-btn>\n                            <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                            <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                              <span class=\"btn__content\">Imprimir</span>\n                            </a>\n                        </v-toolbar>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-container>\n                          <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                              <div class=\"preloader\">\n                                  <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                              </div>\n                          </div>\n                          <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas>\n                        </v-container>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n        </v-container>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn floating info small @click.native.stop=\"dialog = true\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon light>check</v-icon>\n                </v-btn>\n                <v-btn floating warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon light>fingerprint</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon light>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+
+/***/ }),
+/* 164 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Areas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'descripcion']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-stepper v-model=\"stepper\">\n            <v-stepper-header class=\"white\">\n                <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Área</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"2\" @click.native=\"secondStepClick\">Plantilla de Gasto</v-stepper-step>\n            </v-stepper-header>\n            <v-stepper-content step=\"1\" class=\"white\">\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                >\n                    <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                        Continuar\n                    </v-btn>\n                </ig-form>\n            </v-stepper-content>\n            <v-stepper-content step=\"2\" class=\"white\">\n                <v-card>\n                    <v-card-title>Lista de insumos por área</v-card-title>\n                    <v-card-row>\n                        <v-card-text>\n                            <ig-producto :area=\"area\" :plantillas=\"plantillas\"></ig-producto>\n                        </v-card-text>\n                    </v-card-row>\n                </v-card>\n            </v-stepper-content>\n        </v-stepper>\n    </div>\n";
+
+/***/ }),
+/* 165 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Tecnicas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-form\n                      :fields=\"fields\"\n                      :url=\"urlForm\"\n                      @showsnack=\"showSnackBar\"\n                      @objectcreated=\"eventCreatedObject\"\n                      @clearselected=\"selected = false\"\n                      :selected=\"selected\"\n                    ></ig-form>\n                </v-flex>\n            </v-layout>\n        <br>\n    </div>\n";
+
+/***/ }),
+/* 166 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-container fluid>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes en Recepción\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo, ' | ') }}</td>\n                                <td>\n                                    <v-btn floating small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-row>\n                    <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                </v-card-row>\n                <v-card-row v-if=\"hasRecepcion\">\n                    <v-card-text>\n                        <v-card horizontal flat>\n                            <v-card-row :img=\"fotoPaciente\" height=\"325px\"></v-card-row>\n                            <v-card-column>\n                                <v-card-row height=\"100px\" class=\"\">\n                                    <v-card-text>\n                                      <v-layout>\n                                        <v-flex md6>\n                                            <strong>Nombre del paciente</strong>\n                                            <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                            <br>\n                                            <strong>Identificación</strong>\n                                            <div>{{ recepcion.paciente.cedula }}</div>\n                                            <br>\n                                            <strong>Edad del paciente</strong>\n                                            <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                        </v-flex>\n                                        <v-flex md6>\n                                            <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                        </v-flex>\n                                      </v-layout>\n                                    </v-card-text>\n                                </v-card-row>\n                                <v-card-row actions class=\"cyan darken-1\">\n                                    <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                        <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                    </v-btn>\n                                </v-card-row>\n                            </v-card-column>\n                        </v-card>\n                    </v-card-text>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+
+/***/ }),
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(130)
+__webpack_require__(132)
 __vue_script__ = __webpack_require__(52)
-__vue_template__ = __webpack_require__(146)
+__vue_template__ = __webpack_require__(149)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32835,13 +33029,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 164 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(136)
+__webpack_require__(138)
 __vue_script__ = __webpack_require__(56)
-__vue_template__ = __webpack_require__(149)
+__vue_template__ = __webpack_require__(152)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32858,13 +33052,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 165 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(133)
+__webpack_require__(135)
 __vue_script__ = __webpack_require__(58)
-__vue_template__ = __webpack_require__(151)
+__vue_template__ = __webpack_require__(154)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32881,13 +33075,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 166 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(139)
+__webpack_require__(141)
 __vue_script__ = __webpack_require__(59)
-__vue_template__ = __webpack_require__(152)
+__vue_template__ = __webpack_require__(155)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32904,13 +33098,36 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 167 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(143)
+__webpack_require__(142)
 __vue_script__ = __webpack_require__(60)
-__vue_template__ = __webpack_require__(153)
+__vue_template__ = __webpack_require__(156)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/static/static/laboratorios/pages/empleados.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 172 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(146)
+__vue_script__ = __webpack_require__(61)
+__vue_template__ = __webpack_require__(157)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32927,13 +33144,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 168 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(144)
-__vue_script__ = __webpack_require__(61)
-__vue_template__ = __webpack_require__(154)
+__webpack_require__(147)
+__vue_script__ = __webpack_require__(62)
+__vue_template__ = __webpack_require__(158)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32950,13 +33167,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 169 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(137)
-__vue_script__ = __webpack_require__(62)
-__vue_template__ = __webpack_require__(155)
+__webpack_require__(139)
+__vue_script__ = __webpack_require__(63)
+__vue_template__ = __webpack_require__(159)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32973,13 +33190,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 170 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(126)
-__vue_script__ = __webpack_require__(63)
-__vue_template__ = __webpack_require__(156)
+__webpack_require__(128)
+__vue_script__ = __webpack_require__(64)
+__vue_template__ = __webpack_require__(160)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -32996,13 +33213,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 171 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(141)
-__vue_script__ = __webpack_require__(64)
-__vue_template__ = __webpack_require__(157)
+__webpack_require__(144)
+__vue_script__ = __webpack_require__(65)
+__vue_template__ = __webpack_require__(161)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33019,13 +33236,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 172 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(127)
-__vue_script__ = __webpack_require__(65)
-__vue_template__ = __webpack_require__(158)
+__webpack_require__(129)
+__vue_script__ = __webpack_require__(66)
+__vue_template__ = __webpack_require__(162)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33042,13 +33259,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 173 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(131)
-__vue_script__ = __webpack_require__(66)
-__vue_template__ = __webpack_require__(159)
+__webpack_require__(133)
+__vue_script__ = __webpack_require__(67)
+__vue_template__ = __webpack_require__(163)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33065,13 +33282,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 174 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(132)
-__vue_script__ = __webpack_require__(67)
-__vue_template__ = __webpack_require__(160)
+__webpack_require__(134)
+__vue_script__ = __webpack_require__(68)
+__vue_template__ = __webpack_require__(164)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33088,13 +33305,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 175 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(140)
-__vue_script__ = __webpack_require__(68)
-__vue_template__ = __webpack_require__(161)
+__webpack_require__(143)
+__vue_script__ = __webpack_require__(69)
+__vue_template__ = __webpack_require__(165)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33111,13 +33328,13 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 176 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(135)
-__vue_script__ = __webpack_require__(69)
-__vue_template__ = __webpack_require__(162)
+__webpack_require__(137)
+__vue_script__ = __webpack_require__(70)
+__vue_template__ = __webpack_require__(166)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33134,7 +33351,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 177 */
+/* 182 */
 /***/ (function(module, exports) {
 
 var g;
@@ -33161,227 +33378,10 @@ module.exports = g;
 
 
 /***/ }),
-/* 178 */
+/* 183 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
-
-/***/ }),
-/* 179 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _igmixin = __webpack_require__(5);
-
-var _igmixin2 = _interopRequireDefault(_igmixin);
-
-var _table = __webpack_require__(8);
-
-var _table2 = _interopRequireDefault(_table);
-
-var _form = __webpack_require__(7);
-
-var _form2 = _interopRequireDefault(_form);
-
-var _urls = __webpack_require__(3);
-
-var _urls2 = _interopRequireDefault(_urls);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-  components: {
-    igTable: _table2.default,
-    igForm: _form2.default
-  },
-  mixins: [_igmixin2.default],
-  data: function data() {
-    return {
-      urlForm: _urls2.default.empleados,
-      selected: false,
-      headers: [{
-        text: 'Usuario',
-        value: 'username',
-        left: true
-      }, {
-        text: 'Nombre',
-        value: 'nombre',
-        left: true
-      }, {
-        text: 'Email',
-        value: 'usuario.email',
-        left: true
-      }, {
-        text: 'Documento',
-        value: 'documento',
-        left: true,
-        sortable: false
-      }],
-      fields: [{
-        name: 'username',
-        verbose_name: 'Usuario',
-        type: String,
-        hint: 'Este es el nombre de usuario de el bacteriologo.',
-        group: 'usuario'
-      }, {
-        name: 'password',
-        verbose_name: 'Contraseña',
-        type: String,
-        hint: 'Esta es la contraseña de el bacteriologo.',
-        required: false,
-        group: 'usuario',
-        kwargs: {
-          type: 'password'
-        }
-      }, {
-        name: 'email',
-        verbose_name: 'Email',
-        type: String,
-        hint: 'Este es el email de el bacteriologo.',
-        group: 'usuario',
-        kwargs: {
-          type: 'email'
-        }
-      }, {
-        name: 'nombres',
-        verbose_name: 'Nombre',
-        type: String,
-        hint: 'Nombres del empleado.'
-      }, {
-        name: 'apellidos',
-        verbose_name: 'Apellidos',
-        type: String,
-        hint: 'Apellidos de el empleado.'
-      }, {
-        name: 'documento',
-        verbose_name: 'Documento',
-        type: Number,
-        hint: 'Documento de el empleado.',
-        kwargs: {
-          type: 'number'
-        }
-      }]
-    };
-  },
-  mounted: function mounted() {
-    this.getElements(_urls2.default.empleados);
-  }
-};
-// </script>
-//
-// <style lang="css">
-// </style>
-//
-// <template lang="html">
-//     <div>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <ig-table
-//                   table-title="Empleados"
-//                   :headers="headers"
-//                   :data="elements"
-//                   :fields="['usuario.username', 'nombres', 'usuario.email', 'documento']"
-//                   @selectedrow="eventUpdatedForm"
-//                   :loading="loading"
-//                 ></ig-table>
-//             </v-flex>
-//         </v-layout>
-//         <br>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <ig-form
-//                 :fields="fields"
-//                 :url="urlForm"
-//                 @showsnack="showSnackBar"
-//                 @objectcreated="eventCreatedObject"
-//                 @clearselected="selected = false"
-//                 :selected="selected"
-//                 ></ig-form>
-//             </v-flex>
-//         </v-layout>
-//     </div>
-// </template>
-//
-// <script>
-
-/***/ }),
-/* 180 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 181 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(180);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-68c3c8a8&file=empleados.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-68c3c8a8&file=empleados.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 182 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Empleados\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombres', 'usuario.email', 'documento']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
-
-/***/ }),
-/* 183 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(181)
-__vue_script__ = __webpack_require__(179)
-__vue_template__ = __webpack_require__(182)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/home/german/Documentos/TecnoIngenium/siom/ipsiom/mysite/static/static/laboratorios/pages/empleados.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
 
 /***/ })
 /******/ ]);

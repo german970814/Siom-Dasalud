@@ -64,11 +64,9 @@
                                 <v-icon class="white--text">close</v-icon>
                             </v-btn>
                             <v-toolbar-title class="white--text">Settings</v-toolbar-title>
-                            <v-btn
-                              class="white--text" flat="flat"
-                              @click.native="preview = false">
-                                Imprimir
-                            </v-btn>
+                            <a class="white--text btn btn--dark btn--flat" :href="url_impresion">
+                              <span class="btn__content">Imprimir</span>
+                            </a>
                         </v-toolbar>
                     </v-card-row>
                     <v-card-row>
@@ -85,9 +83,9 @@
             </v-dialog>
         </v-container>
         <v-container v-else>
-           <h5>403 Forbidden</h5>
-           <br>
-           <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>
+           <!-- <h5>403 Forbidden</h5>
+           <br> -->
+           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>
         </v-container>
         <floating-button v-if="items.length">
             <template slot="child">
@@ -151,6 +149,7 @@ export default {
           preview: false,
           dialog: false,
           contentLoaded: true,
+          url_impresion: '',
         }
     },
     watch: {
@@ -192,6 +191,7 @@ export default {
                 this.preview = true;
                 this.contentLoaded = false;
                 var url = `/laboratorios/imprimir/${this.orden.id}/` + add;
+                this.url_impresion = url;
                 PDFJS.workerSrc = '/static/js/pdfjs/pdf.worker.js';
 
                 var loadingTask = PDFJS.getDocument(url);
