@@ -92,7 +92,7 @@ class ProductoSerializer(IGModelSerializer, serializers.ModelSerializer):
     tipo_display = serializers.SerializerMethodField()
 
     def get_tipo_display(sef, obj):
-        return obj.get_tipo_display()
+        return getattr(obj, 'get_tipo_display', lambda: '')()
 
     class Meta:
         model = Producto
@@ -231,20 +231,13 @@ class HojaGastoSerializer(IGSerializer):
 
 
 class RecargaSerializer(IGSerializer):
-    """"""
+    """Serializer de Recargas."""
 
     class Meta:
         model = Recarga
-        fields = ('id', 'producto', 'cantidad', )
-        # producto = models.ForeignKey(Producto, verbose_name=_('Producto'), related_name='recargas')
-        # cantidad = models.IntegerField(verbose_name=_('Cantidad'))
-        # fecha = models.DateField(auto_now_add=True)
-        # fecha_vencimiento = models.DateField(verbose_name=_('Fecha de vencimiento'), blank=True, null=True)
-        # lote = models.CharField(max_length=100, verbose_name=_('Lote'), blank=True)
-        # distribuidor = models.CharField(max_length=100, verbose_name=_('Distribuidor'), blank=True)
-        # fabricante = models.CharField(max_length=100, verbose_name=_('Fabricante'), blank=True)
-        # marca = models.CharField(max_length=100, verbose_name=_('Marca'), blank=True)
-        # # fecha en la que se crea el producto.
-        # fecha_distribucion =  models.DateField(verbose_name=_('Fecha de distribución'), blank=True, null=True)
-        # presentacion = models.CharField(max_length=100, verbose_name=_('Presentación'), blank=True)
-        # invima = models.CharField(max_length=100, verbose_name=_('Invima'), blank=True)
+        fields = (
+            'id', 'producto', 'cantidad', 'fecha', 'fecha_vencimiento',
+            'lote', 'distribuidor', 'fabricante', 'marca', 'fecha_distribucion',
+            'presentacion', 'invima',
+        )
+        extra_kwargs = {'fecha': {'read_only': True}}

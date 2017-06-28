@@ -24,10 +24,10 @@
                             <template slot="items" scope="props">
                                 <td>{{ props.item.id }}</td>
                                 <td>{{ props.item.paciente.nombre_completo }}</td>
-                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo, ' | ') }}</td>
+                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo.toUpperCase(), ' | ') }}</td>
                                 <td>
                                     <v-btn floating small class="cyan darken-1" @click.native.stop="selectRecepcion(props.item)">
-                                        <v-icon light>mode_edit</v-icon>
+                                        <v-icon light>content_paste</v-icon>
                                     </v-btn>
                                 </td>
                             </template>
@@ -44,20 +44,30 @@
                 <v-card-row v-if="hasRecepcion">
                     <v-card-text>
                         <v-card horizontal flat>
-                            <v-card-row :img="fotoPaciente" height="325px"></v-card-row>
+                            <v-card-row :img="fotoPaciente" height="345px"></v-card-row>
                             <v-card-column>
                                 <v-card-row height="100px" class="">
                                     <v-card-text>
                                       <v-layout>
                                         <v-flex md6>
-                                            <strong>Nombre del paciente</strong>
-                                            <div>{{ recepcion.paciente.nombre_completo }}</div>
-                                            <br>
-                                            <strong>Identificación</strong>
-                                            <div>{{ recepcion.paciente.cedula }}</div>
-                                            <br>
-                                            <strong>Edad del paciente</strong>
-                                            <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>
+                                            <div style="margin-bottom: 7px">
+                                                <strong>Nombre del paciente</strong>
+                                                <div>{{ recepcion.paciente.nombre_completo }}</div>
+                                            </div>
+                                            <div style="margin-bottom: 7px">
+                                                <strong>Identificación</strong>
+                                                <div>{{ recepcion.paciente.cedula }}</div>
+                                            </div>
+                                            <div style="margin-bottom: 7px">
+                                                <strong>Edad del paciente</strong>
+                                                <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>
+                                            </div>
+                                            <div style="margin-bottom: 7px">
+                                                <strong>Empresa cliente</strong>
+                                                <div>{{ recepcion.empresa_cliente }}</div>
+                                            </div>
+                                            <strong>Laboratorios a realizar</strong>
+                                            <div>{{ joinBy(recepcion.laboratorios, x => x.nombre.toUpperCase(), ', ') }}</div>
                                         </v-flex>
                                         <v-flex md6>
                                             <ig-producto :plantillas="plantillas" ref="hojaGasto" filter></ig-producto>
@@ -165,8 +175,10 @@ export default {
                       this.elements.splice(this.elements.indexOf(item), 1);
                   }
                   this.modalTomaMuestra = false;
+                  this.emit('mostrarsnackbar', 'Se ha guardado la toma de muestra.');
               }, response => {
                   // console.log(response)
+                  this.emit('mostrarsnackbar', 'Ocurrió un error al guardar la toma, contacta a administración.');
               })
         },
         joinBy (list, func, param) {

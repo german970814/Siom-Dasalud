@@ -12,7 +12,8 @@ urlpatterns = [
 urlpatterns += [
     url(r'^api/laboratorios/$', api.LaboratoriosListAPI.as_view(), name='laboratorios'),
     url(r'^api/laboratorios/(?P<pk>\d+)/$', api.detalle_laboratorio, name='detalle_laboratorio'),
-    url(r'^api/laboratorios/plantilla/(?P<pk>\d+)/$', api.plantillas_orden, name='plantilla_laboratorios'),
+    url(r'^api/laboratorios/plantilla/(?P<pk>\d+)/(?:(?P<id_laboratorio>\d+)\/)?$',
+        api.plantillas_orden, name='plantilla_laboratorios'),
     url(r'^api/laboratorios/plantilla_laboratorios/$', api.PlantillaLaboratorioAPI.as_view(), name='plantillas_laboratorio'),
     url(r'^api/laboratorios/plantilla_laboratorios/(?P<pk>\d+)/$', api.PlantillaLaboratorioDetailAPI.as_view(), name='detalle_plantillas_laboratorio'),
     url(r'^api/equipos/$', api.EquiposListAPI.as_view(), name='equipos'),

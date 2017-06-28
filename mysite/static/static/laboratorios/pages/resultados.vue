@@ -1,5 +1,15 @@
 <template lang="html">
     <div class="">
+        <v-layout>
+            <v-breadcrumbs icons divider="forward">
+                <v-breadcrumbs-item :disabled="false" href="/laboratorios/#/ordenes_laboratorios/">
+                    Lista ordenes
+                </v-breadcrumbs-item>
+                <v-breadcrumbs-item :disabled="true">
+                    Resultado
+                </v-breadcrumbs-item>
+            </v-breadcrumbs>
+        </v-layout>
         <v-container v-if="items.length">
             <v-tabs
                 id="tabs"
@@ -42,13 +52,27 @@
                 </v-tabs-content>
             </v-tabs>
             <v-layout></v-layout>
-            <v-dialog v-model="dialog">
+            <v-dialog v-model="dialog" width="80%">
                 <v-card>
                     <v-card-row>
                         <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>
                     </v-card-row>
                     <v-card-row>
                         <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>
+                    </v-card-row>
+                    <v-card-row>
+                        <v-card-text>
+                            <v-layout>
+                                <v-flex md6 xs12>
+                                  <v-subheader>Insumos</v-subheader>
+                                  <ig-producto :plantillas="plantillas_insumos" tipo="i"></ig-producto>
+                                </v-flex>
+                                <v-flex md6 xs12>
+                                  <v-subheader>Reactivos</v-subheader>
+                                  <ig-producto :plantillas="plantillas_reactivos" tipo="r"></ig-producto>
+                                </v-flex>
+                            </v-layout>
+                        </v-card-text>
                     </v-card-row>
                     <v-card-row actions>
                         <v-btn class="green--text darken-1" flat="flat" @click.native="cerrarPrueba">Aceptar</v-btn>
@@ -89,7 +113,7 @@
         </v-container>
         <floating-button v-if="items.length">
             <template slot="child">
-                <v-btn floating info small @click.native.stop="dialog = true" v-tooltip:left="{html: 'Cerrar Prueba'}">
+                <v-btn floating info small @click.native.stop="showModalCerrarPrueba" v-tooltip:left="{html: 'Cerrar Prueba'}">
                     <v-icon light>check</v-icon>
                 </v-btn>
                 <v-btn floating warning small @click.native.stop="showSingleResult" v-tooltip:left="{html: 'Imprimir individual'}">
@@ -113,6 +137,7 @@ import Vue from 'vue/dist/vue.js';
 
 import FormularioResultado from './../components/formulario-resultado.vue';
 import FloattingButton from './../components/floating-button.vue';
+import ProductoComponent from './../components/productos.vue';
 // import FormComponent from './../components/form.vue';
 import ErrorMixin from './../mixins/errormixin.js';
 
@@ -122,6 +147,7 @@ export default {
     components: {
         formularioResultado: FormularioResultado,
         floatingButton: FloattingButton,
+        igProducto: ProductoComponent,
     },
     mixins: [ErrorMixin],
     created: function () {
@@ -150,6 +176,8 @@ export default {
           dialog: false,
           contentLoaded: true,
           url_impresion: '',
+          plantillas_insumos: [],
+          plantillas_reactivos: []
         }
     },
     watch: {
@@ -157,13 +185,31 @@ export default {
         tab: function () {
         },
         preview: function () {
-
+        },
+        dialog: function () {
+            if (this.dialog) {
+                let laboratorio = this.items[parseInt(this.selected_tab)];
+                this.$http.get(URL.plantillasOrdenes.concat(this.$route.params.id.toString() + `/${laboratorio.laboratorio.id.toString()}/?tipo=R`))
+                  .then(response => {
+                      this.plantillas_reactivos = response.body;
+                  }, response => {
+                    console.error(response);
+                  })
+            }
         }
     },
     props: {
 
     },
     methods: {
+        showModalCerrarPrueba: function () {
+            let actualItem = this.items[parseInt(this.selected_tab)];
+            if (!('cerrado' in actualItem && actualItem.cerrado)) {
+                this.dialog = true;
+            } else {
+                this.$emit('mostrarsnackbar', 'La prueba actual ya se encuentra cerrada')
+            }
+        },
         cerrarPrueba: function () {
             let laboratorio = this.items[parseInt(this.selected_tab)];
             laboratorio.cerrado = true;
@@ -293,13 +339,20 @@ export default {
                 resultado: JSON.stringify('formato' in item ? item.formato: item.resultado),
                 cerrado: 'cerrado' in item ? item.cerrado : false
             };
+            let productos = [];
             if ('resultado' in item) {
                 data.id = item.id;
             }
             let error;
+
+            if ('cerrado' in item && item.cerrado) {
+                productos.push.apply(productos, this.plantillas_insumos);
+                productos.push.apply(productos, this.plantillas_reactivos);
+            }
+
             if (!this.someError(item)) {
                 // console.log(item)
-                this.$http.post(URL.resultados.concat(this.$route.params.id.toString() + '/'), data, {headers: {'X-CSRFToken': token.value}})
+                this.$http.post(URL.resultados.concat(this.$route.params.id.toString() + '/'), {resultado: data, productos: productos}, {headers: {'X-CSRFToken': token.value}})
                     .then(response => {
                         if (showsnack) {
                             this.$emit('mostrarsnackbar', 'Se ha guardado el resultado de el laboratorio '.concat(item.laboratorio.nombre.toString()));

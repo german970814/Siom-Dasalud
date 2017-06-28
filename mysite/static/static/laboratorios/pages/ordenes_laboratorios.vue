@@ -27,7 +27,7 @@
                                 <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
                                 <td class="text-xs-center" v-else>
                                     <v-btn floating small router class="cyan darken-1" :href="field.href.replace(':id', props.item.orden.id)">
-                                        <v-icon light>mode_edit</v-icon>
+                                        <v-icon light>content_paste</v-icon>
                                     </v-btn>
                                 </td>
                             </template>

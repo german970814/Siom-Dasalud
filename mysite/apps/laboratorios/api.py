@@ -376,16 +376,21 @@ def resultado_api_view(request, pk):
         args = (data, )
 
     if request.method == 'POST':
-        kwargs_serializer = {'data': request.data}
+        kwargs_serializer = {'data': request.data['resultado']}
 
-        if 'id' in request.data:
-            kwargs_serializer['instance'] = get_object_or_404(Resultado, pk=request.data['id'])
+        if 'id' in request.data['resultado']:
+            kwargs_serializer['instance'] = get_object_or_404(Resultado, pk=request.data['resultado']['id'])
 
         serializer = ResultadoSerializer(**kwargs_serializer)
 
         if serializer.is_valid():
             with reversion.create_revision():
-                serializer.save(bacteriologo=bacteriologo)
+                resultado = serializer.save(bacteriologo=bacteriologo)
+                if resultado.cerrado:
+                    data_productos = request.data['productos']
+                    serializer_plantilla = PlantillaSerializer(data=data_productos, many=True)
+                    if serializer_plantilla.is_valid():
+                        resultado.save_hojas_gasto(serializer_plantilla.data)
                 args = (serializer.data, )
                 kwargs['status'] = status.HTTP_201_CREATED
 
@@ -445,7 +450,7 @@ def especificacion_caracteristica_por_caracteristica(request, pk):
 
 
 @api_view(['GET'])
-def plantillas_orden(request, pk):
+def plantillas_orden(request, pk, **kwargs):
     """
     Permite ver las plantillas que posee una orden.
     """
@@ -453,6 +458,7 @@ def plantillas_orden(request, pk):
     _plantilla = {}
     data = []
     orden = get_object_or_404(Orden, pk=pk)
+    _laboratorio = kwargs.get('id_laboratorio', None)
 
     _filter = {}
     if request.GET.get('tipo', None):
@@ -460,6 +466,9 @@ def plantillas_orden(request, pk):
 
     servicios = orden.OrdenProducto_orden.all().values_list('servicio__nombre__laboratorio__id', flat=True)
     laboratorios = Laboratorio.objects.filter(id__in=servicios).select_related('seccion_trabajo').prefetch_related('plantillas')
+
+    if _laboratorio is not None:
+        laboratorios = laboratorios.filter(id=_laboratorio)
 
     # primero separamos los laboratorios por area.
     areas = SeccionTrabajo.objects.filter(

@@ -29568,7 +29568,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //                                 <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
 //                                 <td class="text-xs-center" v-else>
 //                                     <v-btn floating small router class="cyan darken-1" :href="field.href.replace(':id', props.item.orden.id)">
-//                                         <v-icon light>mode_edit</v-icon>
+//                                         <v-icon light>content_paste</v-icon>
 //                                     </v-btn>
 //                                 </td>
 //                             </template>
@@ -29986,6 +29986,10 @@ var _floatingButton = __webpack_require__(32);
 
 var _floatingButton2 = _interopRequireDefault(_floatingButton);
 
+var _productos = __webpack_require__(34);
+
+var _productos2 = _interopRequireDefault(_productos);
+
 var _errormixin = __webpack_require__(18);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
@@ -29997,119 +30001,11 @@ var _urls2 = _interopRequireDefault(_urls);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // import FormComponent from './../components/form.vue';
-// <template lang="html">
-//     <div class="">
-//         <v-container v-if="items.length">
-//             <v-tabs
-//                 id="tabs"
-//                 grow scroll-bars
-//                 v-model="tab"
-//                 light>
-//                 <v-tabs-bar slot="activators">
-//                     <v-tabs-item
-//                         class="cyan darken-2"
-//                         v-for="(item, id) of items" :key="id"
-//                         :href="'#tabs-' + id"
-//                         ripple>
-//                         {{ item.laboratorio.nombre }}
-//                     </v-tabs-item>
-//                     <v-tabs-slider class="cyan accent-4"></v-tabs-slider>
-//                 </v-tabs-bar>
-//                 <v-tabs-content
-//                     v-for="(item, id) of items" :key="id" :id="'tabs-' + id">
-//                     <v-card flat>
-//                         <v-card-title>
-//                         </v-card-title>
-//                         <v-card-text class="grey lighten-5">
-//                             <formulario-resultado
-//                               @input="error = hasError()"
-//                               :gender="orden.paciente.genero"
-//                               :value="{item, items: 'formato' in item ? item.formato: item.resultado}"
-//                               :disabled="formDisabled(item)"
-//                               >
-//                             </formulario-resultado>
-//                         </v-card-text>
-//                         <v-card-row actions v-if="'resultado' in item ? !item.resultado.cerrado: true">
-//                           <v-btn
-//                             :class="{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}"
-//                             flat
-//                             @click.native="someError(item) ? () => undefined: saveItem(item)">
-//                               Guardar
-//                           </v-btn>
-//                         </v-card-row>
-//                     </v-card>
-//                 </v-tabs-content>
-//             </v-tabs>
-//             <v-layout></v-layout>
-//             <v-dialog v-model="dialog">
-//                 <v-card>
-//                     <v-card-row>
-//                         <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>
-//                     </v-card-row>
-//                     <v-card-row>
-//                         <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>
-//                     </v-card-row>
-//                     <v-card-row actions>
-//                         <v-btn class="green--text darken-1" flat="flat" @click.native="cerrarPrueba">Aceptar</v-btn>
-//                         <v-btn class="green--text darken-1" flat="flat" @click.native="dialog = false">Cancelar</v-btn>
-//                     </v-card-row>
-//                 </v-card>
-//             </v-dialog>
-//             <v-dialog v-model="preview" fullscreen transition="v-dialog-bottom-transition" :overlay="false">
-//                 <v-card>
-//                     <v-card-row>
-//                         <v-toolbar class="cyan darken-4">
-//                             <v-btn icon="icon" @click.native="preview = false">
-//                                 <v-icon class="white--text">close</v-icon>
-//                             </v-btn>
-//                             <v-toolbar-title class="white--text">Settings</v-toolbar-title>
-//                             <a class="white--text btn btn--dark btn--flat" :href="url_impresion">
-//                               <span class="btn__content">Imprimir</span>
-//                             </a>
-//                         </v-toolbar>
-//                     </v-card-row>
-//                     <v-card-row>
-//                         <v-container>
-//                           <div class="wrap__all" v-if="!contentLoaded">
-//                               <div class="preloader">
-//                                   <v-progress-circular indeterminate class="blue--text" :size="50"></v-progress-circular>
-//                               </div>
-//                           </div>
-//                           <canvas id="the-canvas" style="border: 1px solid black"></canvas>
-//                         </v-container>
-//                     </v-card-row>
-//                 </v-card>
-//             </v-dialog>
-//         </v-container>
-//         <v-container v-else>
-//            <!-- <h5>403 Forbidden</h5>
-//            <br> -->
-//            <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>
-//         </v-container>
-//         <floating-button v-if="items.length">
-//             <template slot="child">
-//                 <v-btn floating info small @click.native.stop="dialog = true" v-tooltip:left="{html: 'Cerrar Prueba'}">
-//                     <v-icon light>check</v-icon>
-//                 </v-btn>
-//                 <v-btn floating warning small @click.native.stop="showSingleResult" v-tooltip:left="{html: 'Imprimir individual'}">
-//                     <v-icon light>fingerprint</v-icon>
-//                 </v-btn>
-//                 <v-btn floating success small @click.native.stop="showAllResults" v-tooltip:left="{html: 'Imprimir terminados'}">
-//                     <v-icon light>print</v-icon>
-//                 </v-btn>
-//             </template>
-//             <v-btn floating error v-tooltip:left="{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}">
-//                 <v-icon light>settings</v-icon>
-//             </v-btn>
-//         </floating-button>
-//     </div>
-// </template>
-//
-// <script>
 exports.default = {
     components: {
         formularioResultado: _formularioResultado2.default,
-        floatingButton: _floatingButton2.default
+        floatingButton: _floatingButton2.default,
+        igProducto: _productos2.default
     },
     mixins: [_errormixin2.default],
     created: function created() {
@@ -30139,16 +30035,38 @@ exports.default = {
             preview: false,
             dialog: false,
             contentLoaded: true,
-            url_impresion: ''
+            url_impresion: '',
+            plantillas_insumos: [],
+            plantillas_reactivos: []
         };
     },
     watch: {
         '$route': '_fetchData',
         tab: function tab() {},
-        preview: function preview() {}
+        preview: function preview() {},
+        dialog: function dialog() {
+            var _this2 = this;
+
+            if (this.dialog) {
+                var laboratorio = this.items[parseInt(this.selected_tab)];
+                this.$http.get(_urls2.default.plantillasOrdenes.concat(this.$route.params.id.toString() + ('/' + laboratorio.laboratorio.id.toString() + '/?tipo=R'))).then(function (response) {
+                    _this2.plantillas_reactivos = response.body;
+                }, function (response) {
+                    console.error(response);
+                });
+            }
+        }
     },
     props: {},
     methods: {
+        showModalCerrarPrueba: function showModalCerrarPrueba() {
+            var actualItem = this.items[parseInt(this.selected_tab)];
+            if (!('cerrado' in actualItem && actualItem.cerrado)) {
+                this.dialog = true;
+            } else {
+                this.$emit('mostrarsnackbar', 'La prueba actual ya se encuentra cerrada');
+            }
+        },
         cerrarPrueba: function cerrarPrueba() {
             var laboratorio = this.items[parseInt(this.selected_tab)];
             laboratorio.cerrado = true;
@@ -30164,7 +30082,7 @@ exports.default = {
             this.$emit('mostrarsnackbar', 'No se puede imprimir el laboratorio sin resultado.');
         },
         showAllResults: function showAllResults(event) {
-            var _this2 = this;
+            var _this3 = this;
 
             var add = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
@@ -30226,7 +30144,7 @@ exports.default = {
                         };
                         var renderTask = page.render(renderContext);
                         renderTask.then(function () {
-                            _this2.contentLoaded = true;
+                            _this3.contentLoaded = true;
                         });
                     });
                 }, function (reason) {
@@ -30317,12 +30235,12 @@ exports.default = {
             }
         },
         _fetchData: function _fetchData() {
-            var _this3 = this;
+            var _this4 = this;
 
             this.$http.get(_urls2.default.resultados.concat(this.$route.params.id.toString() + '/')).then(function (response) {
-                _this3.items = [];
+                _this4.items = [];
                 if ('resultados' in response.body && response.body.resultados) {
-                    _this3.items.push.apply(_this3.items, response.body.resultados);
+                    _this4.items.push.apply(_this4.items, response.body.resultados);
                     var _iteratorNormalCompletion4 = true;
                     var _didIteratorError4 = false;
                     var _iteratorError4 = undefined;
@@ -30332,7 +30250,7 @@ exports.default = {
                             var items = _step4.value;
 
                             // this.items(items)
-                            _this3.genValidationsForItem(items);
+                            _this4.genValidationsForItem(items);
                         }
                     } catch (err) {
                         _didIteratorError4 = true;
@@ -30350,7 +30268,7 @@ exports.default = {
                     }
                 }
                 if ('formatos' in response.body && response.body.formatos) {
-                    _this3.items.push.apply(_this3.items, response.body.formatos);
+                    _this4.items.push.apply(_this4.items, response.body.formatos);
                     var _iteratorNormalCompletion5 = true;
                     var _didIteratorError5 = false;
                     var _iteratorError5 = undefined;
@@ -30360,7 +30278,7 @@ exports.default = {
                             var _items = _step5.value;
 
                             // this.items(items)
-                            _this3.genValidationsForItem(_items);
+                            _this4.genValidationsForItem(_items);
                         }
                     } catch (err) {
                         _didIteratorError5 = true;
@@ -30377,14 +30295,14 @@ exports.default = {
                         }
                     }
                 }
-                _this3.orden = response.body.orden;
-                _this3.bacteriologo = response.body.bacteriologo;
+                _this4.orden = response.body.orden;
+                _this4.bacteriologo = response.body.bacteriologo;
             }, function (response) {
                 console.error(response);
             });
         },
         saveItem: function saveItem(item) {
-            var _this4 = this;
+            var _this5 = this;
 
             var showsnack = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
@@ -30395,15 +30313,22 @@ exports.default = {
                 resultado: (0, _stringify2.default)('formato' in item ? item.formato : item.resultado),
                 cerrado: 'cerrado' in item ? item.cerrado : false
             };
+            var productos = [];
             if ('resultado' in item) {
                 data.id = item.id;
             }
             var error = void 0;
+
+            if ('cerrado' in item && item.cerrado) {
+                productos.push.apply(productos, this.plantillas_insumos);
+                productos.push.apply(productos, this.plantillas_reactivos);
+            }
+
             if (!this.someError(item)) {
                 // console.log(item)
-                this.$http.post(_urls2.default.resultados.concat(this.$route.params.id.toString() + '/'), data, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
+                this.$http.post(_urls2.default.resultados.concat(this.$route.params.id.toString() + '/'), { resultado: data, productos: productos }, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
                     if (showsnack) {
-                        _this4.$emit('mostrarsnackbar', 'Se ha guardado el resultado de el laboratorio '.concat(item.laboratorio.nombre.toString()));
+                        _this5.$emit('mostrarsnackbar', 'Se ha guardado el resultado de el laboratorio '.concat(item.laboratorio.nombre.toString()));
                         error = false;
                     }
                     if (!('resultado' in item)) {
@@ -30414,7 +30339,7 @@ exports.default = {
                     item.id = response.body.id;
                 }, function (response) {
                     if (showsnack) {
-                        _this4.$emit('mostrarsnackbar', 'Ha ocurrido un error al guardar el resultado');
+                        _this5.$emit('mostrarsnackbar', 'Ha ocurrido un error al guardar el resultado');
                         error = true;
                     }
                 });
@@ -30474,6 +30399,139 @@ exports.default = {
 // <style lang="css">
 // </style>
 //
+// <template lang="html">
+//     <div class="">
+//         <v-layout>
+//             <v-breadcrumbs icons divider="forward">
+//                 <v-breadcrumbs-item :disabled="false" href="/laboratorios/#/ordenes_laboratorios/">
+//                     Lista ordenes
+//                 </v-breadcrumbs-item>
+//                 <v-breadcrumbs-item :disabled="true">
+//                     Resultado
+//                 </v-breadcrumbs-item>
+//             </v-breadcrumbs>
+//         </v-layout>
+//         <v-container v-if="items.length">
+//             <v-tabs
+//                 id="tabs"
+//                 grow scroll-bars
+//                 v-model="tab"
+//                 light>
+//                 <v-tabs-bar slot="activators">
+//                     <v-tabs-item
+//                         class="cyan darken-2"
+//                         v-for="(item, id) of items" :key="id"
+//                         :href="'#tabs-' + id"
+//                         ripple>
+//                         {{ item.laboratorio.nombre }}
+//                     </v-tabs-item>
+//                     <v-tabs-slider class="cyan accent-4"></v-tabs-slider>
+//                 </v-tabs-bar>
+//                 <v-tabs-content
+//                     v-for="(item, id) of items" :key="id" :id="'tabs-' + id">
+//                     <v-card flat>
+//                         <v-card-title>
+//                         </v-card-title>
+//                         <v-card-text class="grey lighten-5">
+//                             <formulario-resultado
+//                               @input="error = hasError()"
+//                               :gender="orden.paciente.genero"
+//                               :value="{item, items: 'formato' in item ? item.formato: item.resultado}"
+//                               :disabled="formDisabled(item)"
+//                               >
+//                             </formulario-resultado>
+//                         </v-card-text>
+//                         <v-card-row actions v-if="'resultado' in item ? !item.resultado.cerrado: true">
+//                           <v-btn
+//                             :class="{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}"
+//                             flat
+//                             @click.native="someError(item) ? () => undefined: saveItem(item)">
+//                               Guardar
+//                           </v-btn>
+//                         </v-card-row>
+//                     </v-card>
+//                 </v-tabs-content>
+//             </v-tabs>
+//             <v-layout></v-layout>
+//             <v-dialog v-model="dialog" width="80%">
+//                 <v-card>
+//                     <v-card-row>
+//                         <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>
+//                     </v-card-row>
+//                     <v-card-row>
+//                         <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>
+//                     </v-card-row>
+//                     <v-card-row>
+//                         <v-card-text>
+//                             <v-layout>
+//                                 <v-flex md6 xs12>
+//                                   <v-subheader>Insumos</v-subheader>
+//                                   <ig-producto :plantillas="plantillas_insumos" tipo="i"></ig-producto>
+//                                 </v-flex>
+//                                 <v-flex md6 xs12>
+//                                   <v-subheader>Reactivos</v-subheader>
+//                                   <ig-producto :plantillas="plantillas_reactivos" tipo="r"></ig-producto>
+//                                 </v-flex>
+//                             </v-layout>
+//                         </v-card-text>
+//                     </v-card-row>
+//                     <v-card-row actions>
+//                         <v-btn class="green--text darken-1" flat="flat" @click.native="cerrarPrueba">Aceptar</v-btn>
+//                         <v-btn class="green--text darken-1" flat="flat" @click.native="dialog = false">Cancelar</v-btn>
+//                     </v-card-row>
+//                 </v-card>
+//             </v-dialog>
+//             <v-dialog v-model="preview" fullscreen transition="v-dialog-bottom-transition" :overlay="false">
+//                 <v-card>
+//                     <v-card-row>
+//                         <v-toolbar class="cyan darken-4">
+//                             <v-btn icon="icon" @click.native="preview = false">
+//                                 <v-icon class="white--text">close</v-icon>
+//                             </v-btn>
+//                             <v-toolbar-title class="white--text">Settings</v-toolbar-title>
+//                             <a class="white--text btn btn--dark btn--flat" :href="url_impresion">
+//                               <span class="btn__content">Imprimir</span>
+//                             </a>
+//                         </v-toolbar>
+//                     </v-card-row>
+//                     <v-card-row>
+//                         <v-container>
+//                           <div class="wrap__all" v-if="!contentLoaded">
+//                               <div class="preloader">
+//                                   <v-progress-circular indeterminate class="blue--text" :size="50"></v-progress-circular>
+//                               </div>
+//                           </div>
+//                           <canvas id="the-canvas" style="border: 1px solid black"></canvas>
+//                         </v-container>
+//                     </v-card-row>
+//                 </v-card>
+//             </v-dialog>
+//         </v-container>
+//         <v-container v-else>
+//            <!-- <h5>403 Forbidden</h5>
+//            <br> -->
+//            <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>
+//         </v-container>
+//         <floating-button v-if="items.length">
+//             <template slot="child">
+//                 <v-btn floating info small @click.native.stop="showModalCerrarPrueba" v-tooltip:left="{html: 'Cerrar Prueba'}">
+//                     <v-icon light>check</v-icon>
+//                 </v-btn>
+//                 <v-btn floating warning small @click.native.stop="showSingleResult" v-tooltip:left="{html: 'Imprimir individual'}">
+//                     <v-icon light>fingerprint</v-icon>
+//                 </v-btn>
+//                 <v-btn floating success small @click.native.stop="showAllResults" v-tooltip:left="{html: 'Imprimir terminados'}">
+//                     <v-icon light>print</v-icon>
+//                 </v-btn>
+//             </template>
+//             <v-btn floating error v-tooltip:left="{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}">
+//                 <v-icon light>settings</v-icon>
+//             </v-btn>
+//         </floating-button>
+//     </div>
+// </template>
+//
+// <script>
 
 /***/ }),
 /* 68 */
@@ -30854,10 +30912,10 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //                             <template slot="items" scope="props">
 //                                 <td>{{ props.item.id }}</td>
 //                                 <td>{{ props.item.paciente.nombre_completo }}</td>
-//                                 <td>{{ joinBy(props.item.laboratorios, x => x.codigo, ' | ') }}</td>
+//                                 <td>{{ joinBy(props.item.laboratorios, x => x.codigo.toUpperCase(), ' | ') }}</td>
 //                                 <td>
 //                                     <v-btn floating small class="cyan darken-1" @click.native.stop="selectRecepcion(props.item)">
-//                                         <v-icon light>mode_edit</v-icon>
+//                                         <v-icon light>content_paste</v-icon>
 //                                     </v-btn>
 //                                 </td>
 //                             </template>
@@ -30874,20 +30932,30 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //                 <v-card-row v-if="hasRecepcion">
 //                     <v-card-text>
 //                         <v-card horizontal flat>
-//                             <v-card-row :img="fotoPaciente" height="325px"></v-card-row>
+//                             <v-card-row :img="fotoPaciente" height="345px"></v-card-row>
 //                             <v-card-column>
 //                                 <v-card-row height="100px" class="">
 //                                     <v-card-text>
 //                                       <v-layout>
 //                                         <v-flex md6>
-//                                             <strong>Nombre del paciente</strong>
-//                                             <div>{{ recepcion.paciente.nombre_completo }}</div>
-//                                             <br>
-//                                             <strong>Identificación</strong>
-//                                             <div>{{ recepcion.paciente.cedula }}</div>
-//                                             <br>
-//                                             <strong>Edad del paciente</strong>
-//                                             <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>
+//                                             <div style="margin-bottom: 7px">
+//                                                 <strong>Nombre del paciente</strong>
+//                                                 <div>{{ recepcion.paciente.nombre_completo }}</div>
+//                                             </div>
+//                                             <div style="margin-bottom: 7px">
+//                                                 <strong>Identificación</strong>
+//                                                 <div>{{ recepcion.paciente.cedula }}</div>
+//                                             </div>
+//                                             <div style="margin-bottom: 7px">
+//                                                 <strong>Edad del paciente</strong>
+//                                                 <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>
+//                                             </div>
+//                                             <div style="margin-bottom: 7px">
+//                                                 <strong>Empresa cliente</strong>
+//                                                 <div>{{ recepcion.empresa_cliente }}</div>
+//                                             </div>
+//                                             <strong>Laboratorios a realizar</strong>
+//                                             <div>{{ joinBy(recepcion.laboratorios, x => x.nombre.toUpperCase(), ', ') }}</div>
 //                                         </v-flex>
 //                                         <v-flex md6>
 //                                             <ig-producto :plantillas="plantillas" ref="hojaGasto" filter></ig-producto>
@@ -31004,8 +31072,10 @@ exports.default = {
                     _this2.elements.splice(_this2.elements.indexOf(item), 1);
                 }
                 _this2.modalTomaMuestra = false;
+                _this2.emit('mostrarsnackbar', 'Se ha guardado la toma de muestra.');
             }, function (response) {
                 // console.log(response)
+                _this2.emit('mostrarsnackbar', 'Ocurrió un error al guardar la toma, contacta a administración.');
             });
         },
         joinBy: function joinBy(list, func, param) {
@@ -32973,7 +33043,7 @@ module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12
 /* 161 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Ordenes con laboratorios\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :total-items=\"totalItems\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        :filter=\"filter\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <template slot=\"headers\" scope=\"props\">\n                            <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of fields\">\n                                <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td class=\"text-xs-center\" v-else>\n                                    <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Ordenes con laboratorios\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :total-items=\"totalItems\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        :filter=\"filter\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <template slot=\"headers\" scope=\"props\">\n                            <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of fields\">\n                                <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td class=\"text-xs-center\" v-else>\n                                    <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                        <v-icon light>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 162 */
@@ -32985,7 +33055,7 @@ module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12
 /* 163 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"\">\n        <v-container v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                light>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-row actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                          <v-btn\n                            :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                            flat\n                            @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                              Guardar\n                          </v-btn>\n                        </v-card-row>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\">\n                <v-card>\n                    <v-card-row>\n                        <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    </v-card-row>\n                    <v-card-row actions>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-card-row>\n                        <v-toolbar class=\"cyan darken-4\">\n                            <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                                <v-icon class=\"white--text\">close</v-icon>\n                            </v-btn>\n                            <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                            <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                              <span class=\"btn__content\">Imprimir</span>\n                            </a>\n                        </v-toolbar>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-container>\n                          <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                              <div class=\"preloader\">\n                                  <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                              </div>\n                          </div>\n                          <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas>\n                        </v-container>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n        </v-container>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn floating info small @click.native.stop=\"dialog = true\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon light>check</v-icon>\n                </v-btn>\n                <v-btn floating warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon light>fingerprint</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon light>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <v-container v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                light>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-row actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                          <v-btn\n                            :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                            flat\n                            @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                              Guardar\n                          </v-btn>\n                        </v-card-row>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-row>\n                        <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-card-text>\n                            <v-layout>\n                                <v-flex md6 xs12>\n                                  <v-subheader>Insumos</v-subheader>\n                                  <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                                </v-flex>\n                                <v-flex md6 xs12>\n                                  <v-subheader>Reactivos</v-subheader>\n                                  <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                                </v-flex>\n                            </v-layout>\n                        </v-card-text>\n                    </v-card-row>\n                    <v-card-row actions>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-card-row>\n                        <v-toolbar class=\"cyan darken-4\">\n                            <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                                <v-icon class=\"white--text\">close</v-icon>\n                            </v-btn>\n                            <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                            <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                              <span class=\"btn__content\">Imprimir</span>\n                            </a>\n                        </v-toolbar>\n                    </v-card-row>\n                    <v-card-row>\n                        <v-container>\n                          <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                              <div class=\"preloader\">\n                                  <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                              </div>\n                          </div>\n                          <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas>\n                        </v-container>\n                    </v-card-row>\n                </v-card>\n            </v-dialog>\n        </v-container>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn floating info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon light>check</v-icon>\n                </v-btn>\n                <v-btn floating warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon light>fingerprint</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon light>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
 
 /***/ }),
 /* 164 */
@@ -33003,7 +33073,7 @@ module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12
 /* 166 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-container fluid>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes en Recepción\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo, ' | ') }}</td>\n                                <td>\n                                    <v-btn floating small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon light>mode_edit</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-row>\n                    <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                </v-card-row>\n                <v-card-row v-if=\"hasRecepcion\">\n                    <v-card-text>\n                        <v-card horizontal flat>\n                            <v-card-row :img=\"fotoPaciente\" height=\"325px\"></v-card-row>\n                            <v-card-column>\n                                <v-card-row height=\"100px\" class=\"\">\n                                    <v-card-text>\n                                      <v-layout>\n                                        <v-flex md6>\n                                            <strong>Nombre del paciente</strong>\n                                            <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                            <br>\n                                            <strong>Identificación</strong>\n                                            <div>{{ recepcion.paciente.cedula }}</div>\n                                            <br>\n                                            <strong>Edad del paciente</strong>\n                                            <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                        </v-flex>\n                                        <v-flex md6>\n                                            <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                        </v-flex>\n                                      </v-layout>\n                                    </v-card-text>\n                                </v-card-row>\n                                <v-card-row actions class=\"cyan darken-1\">\n                                    <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                        <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                    </v-btn>\n                                </v-card-row>\n                            </v-card-column>\n                        </v-card>\n                    </v-card-text>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-container fluid>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes en Recepción\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <span style=\"text-align:before: center !important\">{{ props.item.text }}</span>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo.toUpperCase(), ' | ') }}</td>\n                                <td>\n                                    <v-btn floating small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon light>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-row>\n                    <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                </v-card-row>\n                <v-card-row v-if=\"hasRecepcion\">\n                    <v-card-text>\n                        <v-card horizontal flat>\n                            <v-card-row :img=\"fotoPaciente\" height=\"345px\"></v-card-row>\n                            <v-card-column>\n                                <v-card-row height=\"100px\" class=\"\">\n                                    <v-card-text>\n                                      <v-layout>\n                                        <v-flex md6>\n                                            <div style=\"margin-bottom: 7px\">\n                                                <strong>Nombre del paciente</strong>\n                                                <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                            </div>\n                                            <div style=\"margin-bottom: 7px\">\n                                                <strong>Identificación</strong>\n                                                <div>{{ recepcion.paciente.cedula }}</div>\n                                            </div>\n                                            <div style=\"margin-bottom: 7px\">\n                                                <strong>Edad del paciente</strong>\n                                                <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                            </div>\n                                            <div style=\"margin-bottom: 7px\">\n                                                <strong>Empresa cliente</strong>\n                                                <div>{{ recepcion.empresa_cliente }}</div>\n                                            </div>\n                                            <strong>Laboratorios a realizar</strong>\n                                            <div>{{ joinBy(recepcion.laboratorios, x => x.nombre.toUpperCase(), ', ') }}</div>\n                                        </v-flex>\n                                        <v-flex md6>\n                                            <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                        </v-flex>\n                                      </v-layout>\n                                    </v-card-text>\n                                </v-card-row>\n                                <v-card-row actions class=\"cyan darken-1\">\n                                    <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                        <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                    </v-btn>\n                                </v-card-row>\n                            </v-card-column>\n                        </v-card>\n                    </v-card-text>\n                </v-card-row>\n            </v-card>\n        </v-dialog>\n    </div>\n";
 
 /***/ }),
 /* 167 */

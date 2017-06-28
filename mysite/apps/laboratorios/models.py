@@ -171,7 +171,7 @@ class Recarga(models.Model):
     def __str__(self):
         return '{self.reactivo}: Recarga de {self.cantidad}'.format(self=self)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs):  # revisar
         with transaction.atomic():
             if not self.pk:
                 self.producto.cantidad += self.cantidad
@@ -257,14 +257,26 @@ class Resultado(models.Model):
     def __str__(self):
         return 'Orden #{self.orden.id} ({self.laboratorio})'.format(self=self)
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            plantillas = self.laboratorio.plantillas.filter(producto__tipo=Producto.REACTIVO)
+    @transaction.atomic
+    def save_hojas_gasto(self, plantillas):
+        """Método para guardar las hojas de gasto."""
+
+        if self._can_save_hojas_gasto:
             for plantilla in plantillas:
-                HojaGasto.objects.create(
-                    cantidad=plantilla.cantidad, producto=plantilla.producto, orden=self.orden
-                )
-        super(Resultado, self).save(*args, **kwargs)
+                plantilla.pop('model', None)  # PlantillaSerializer has a model prop, not use it here
+                try:
+                    plantilla['producto'] = Producto.objects.get(id=plantilla['producto']['id'])
+                    HojaGasto.objects.create(orden=self.orden, **plantilla)
+                    print("creo la hhoja de gasto")
+                except Producto.DoesNotExist:
+                    pass
+    @property
+    def _can_save_hojas_gasto(self):
+        """Retorna verdader si puede guardar las hojas de gasto."""
+
+        return (
+            self.cerrado and not self.orden.hojas_gasto.filter(producto__tipo=Producto.REACTIVO).exists()
+        )
 
 
 @python_2_unicode_compatible
