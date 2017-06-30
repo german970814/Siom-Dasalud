@@ -267,7 +267,6 @@ class Resultado(models.Model):
                 try:
                     plantilla['producto'] = Producto.objects.get(id=plantilla['producto']['id'])
                     HojaGasto.objects.create(orden=self.orden, **plantilla)
-                    print("creo la hhoja de gasto")
                 except Producto.DoesNotExist:
                     pass
     @property

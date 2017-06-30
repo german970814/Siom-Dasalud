@@ -29,6 +29,7 @@ export default {
     data: function () {
         return {
             models: {},  // los modelos
+            files: {},  // los archivos
             items: {},  // los items de los selects
             validateFields: false,
             appended: {},
@@ -145,19 +146,51 @@ export default {
         }
     },
     methods: {
+        dataURLToBlob: function(dataURL) {
+            let BASE64_MARKER = ';base64,';
+
+            if (dataURL.indexOf(BASE64_MARKER) == -1) {
+                let parts = dataURL.split(',');
+                let contentType = parts[0].split(':')[1];
+                let raw = parts[1];
+
+                return new Blob([raw], {type: contentType});
+            }
+
+            let parts = dataURL.split(BASE64_MARKER);
+            let contentType = parts[0].split(':')[1];
+            let raw = window.atob(parts[1]);
+            let rawLength = raw.length;
+
+            let uInt8Array = new Uint8Array(rawLength);
+
+            for (let i = 0; i < rawLength; ++i) {
+                uInt8Array[i] = raw.charCodeAt(i);
+            }
+
+            return new Blob([uInt8Array], {type: contentType});
+        },
         cleanFields: function () {
             for (let field of this.fields) {
                 if (field.group) {
-                    if (this.models[field.group][field.name] instanceof Array) {
-                        this.models[field.group][field.name] = new Array();
+                    if (field.type == 'file') {
+                        this.files[field.group][field.name].model = '';
                     } else {
-                        this.models[field.group][field.name] = '';
+                        if (this.models[field.group][field.name] instanceof Array) {
+                            this.models[field.group][field.name] = new Array();
+                        } else {
+                            this.models[field.group][field.name] = '';
+                        }
                     }
                 } else {
-                    if (this.models[field.name] instanceof Array) {
-                        this.models[field.name] = new Array();
+                    if (field.type == 'file') {
+                        this.files[field.name].model = '';
                     } else {
-                        this.models[field.name] = '';
+                        if (this.models[field.name] instanceof Array) {
+                            this.models[field.name] = new Array();
+                        } else {
+                            this.models[field.name] = '';
+                        }
                     }
                 }
 
@@ -201,14 +234,28 @@ export default {
                         fieldType = field.kwargs.multiple ? []: {};
                     }
                 }
-                if (field.group) {
-                    if (!this.models[field.group]) {
-                        Vue.set(this.models, field.group, {});
+                if (field.type == 'file') {
+                    if (!('url_file' in field) && _.isEmpty(field.url_file)) {
+                        throw new Error(`Not 'url_file' provided for ${field.name}, verify the field configuration.`);
                     }
-                    Vue.set(this.models[field.group], field.name, fieldType)
-                    // this.models[field.group][field.name] = fieldType;
+                    if (field.group) {
+                        if (!this.files[field.group]) {
+                            Vue.set(this.files, field.group, {});
+                        }
+                        Vue.set(this.files[field.group], field.name, {field, model: ''});
+                    } else {
+                        Vue.set(this.files, field.name, {field, model: ''});
+                    }
                 } else {
-                    Vue.set(this.models, field.name, fieldType);
+                    if (field.group) {
+                        if (!this.models[field.group]) {
+                            Vue.set(this.models, field.group, {});
+                        }
+                        Vue.set(this.models[field.group], field.name, fieldType)
+                        // this.models[field.group][field.name] = fieldType;
+                    } else {
+                        Vue.set(this.models, field.name, fieldType);
+                    }
                 }
             }
         },
@@ -267,17 +314,42 @@ export default {
                     data[field.name] = this.models[field.name].value;
                 }
             }
+
+            let payload = Object.assign({}, this.models, data);
+
             if (this._isValid()) {
-                this.$http[method](url, Object.assign({}, this.models, data), {headers: {'X-CSRFToken': token.value}})
+                this.$http[method](url, payload, {headers: {'X-CSRFToken': token.value}})
                     .then(response => {
                         if (response.status == 201) {
                             message = 'Elemento Creado Correctamente';
                         } else {
                             message = 'Elemento Editado Correctamente';
                         }
-                        this.$emit('objectcreated', response.body);
-                        if (message) {
-                            this.$emit('showsnack', message);
+
+                        if (!_.isEmpty(this.files)) {
+                            for (let fileField in this.files) {
+                                let _field = this.files[fileField];
+                                if (!_.isEmpty(_field.model.name)) {
+                                    // let filePayload = {}
+                                    // filePayload[fileField] = _field.model;
+                                    let filePayload = new FormData();
+                                    filePayload.append(fileField, _field.model, 'hola.png');
+                                    this.$http.put(_field.field.url_file.concat(response.body.id.toString() + '/'), filePayload, {headers: {'X-CSRFToken': token.value}})
+                                      .then(res => {
+                                          this.$emit('objectcreated', response.body);
+                                          if (message) {
+                                              this.$emit('showsnack', message);
+                                          }
+                                      }, res => {
+                                          console.log("ocurrio un error");
+                                      })
+                                }
+                            }
+                        } else {
+                            this.$emit('objectcreated', response.body);
+                            if (message) {
+                              this.$emit('showsnack', message);
+                            }
                         }
                     }, response => {
                         if (response.status == 400) {
@@ -346,9 +418,43 @@ export default {
             match[typeof String()] = 'v-text-field';
             match[typeof Number()] = 'v-text-field';
             match[typeof Array()] = 'v-select';
+            match['file'] = 'input';
 
             let childs = [];
             for (let field of this.fields) {
+
+                if (field.type == 'file') {
+                    childs.push(this.$createElement('v-flex', {attrs: {'md6': true, 'xs12': true}}, [
+                      this.$createElement('input',
+                        {
+                          attrs: {
+                              name: field.name,
+                              type: 'file',
+                              accept: 'image/*',
+                              value: this.files[field.name].model
+                          },
+                          on: {
+                              input: (event) => {
+                                  if (field.group) {
+                                      this.files[field.group][field.name].model = event.target.files[0];
+                                  } else {
+                                      this.files[field.name].model = event.target.files[0];
+                                  }
+                                  this.$emit('input', event.target.files[0]);
+                              },
+                              change: (event) => {
+                                  let file = event.target.files[0];
+                                  this.files[field.name].model = file;
+                              }
+                          }
+                        }, [
+
+                        ]
+                      )
+                    ]))
+                    continue;
+                }
+
                 let defaultProps = {
                     label: field.verbose_name || '',
                     hint: field.hint || '',
@@ -374,7 +480,10 @@ export default {
                             dark: true,
                         }, defaultProps),
                         domProps: {
-                          value: field.group ? this.models[field.group][field.name]: this.models[field.name]
+                          value: field.group ? this.models[field.group][field.name]: this.models[field.name],
+                        },
+                        attrs: {
+                            name: field.name,
                         },
                         on: {
                           input: (event) => {
@@ -449,6 +558,7 @@ export default {
       ]);
     }
 }
+
 </script>
 
 <style lang="css">

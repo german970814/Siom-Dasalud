@@ -141,6 +141,14 @@ export default {
                     multiple: true
                   }
                 },
+                {
+                  name: 'firma',
+                  verbose_name: 'Firma',
+                  type: 'file',
+                  hint: 'Esta es la firma de el bacteriologo, la cual saldrá en los resultados.',
+                  required: false,
+                  url_file: '/laboratorios/api/bacteriologos/firma/',
+                },
             ]
           }
     },

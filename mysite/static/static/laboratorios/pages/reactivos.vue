@@ -57,17 +57,17 @@ export default {
               headers: [
                 {
                   text: 'Código',
-                  value: 'tabla-codigo',
+                  value: 'codigo',
                   left: true,
                 },
                 {
                   text: 'Nombre',
-                  value: 'tabla-nombre',
+                  value: 'nombre',
                   left: true,
                 },
                 {
                   text: 'Tipo',
-                  value: 'tabla-laboratorio',
+                  value: 'tipo',
                   left: true,
                 },
                 {

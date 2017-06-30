@@ -30,6 +30,7 @@ urlpatterns += [
     url(r'^api/productos/(?P<pk>\d+)/$', api.ProductoDetailAPI.as_view(), name='detalle_producto'),
     url(r'^api/bacteriologos/$', api.BacteriologoListAPI.as_view(), name='bacteriologos'),
     url(r'^api/bacteriologos/(?P<pk>\d+)/$', api.BacteriologoDetailAPI.as_view(), name='detalle_bacteriologo'),
+    url(r'^api/bacteriologos/firma/(?P<pk>\d+)/$', api.cambiar_firma_bacteriologo, name='cambiar_firma_bacteriologo'),
     url(r'^api/caracteristicas/$', api.CaracteristicasListAPI.as_view(), name='caracteristicas'),
     url(r'^api/caracteristicas/(?P<pk>\d+)/$', api.CaracteristicaDetailAPI.as_view(), name='detalle_caracteristica'),
     url(r'^api/especificacion_caracteristicas/$', api.EspecificacionCaracteristicasListAPI.as_view(), name='especificacion_caracteristicas'),

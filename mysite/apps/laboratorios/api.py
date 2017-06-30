@@ -490,3 +490,21 @@ def plantillas_orden(request, pk, **kwargs):
         data.append({'producto': plantilla, 'cantidad': _plantilla[plantilla], 'model': True})
 
     return Response(PlantillaSerializer(data, many=True).data)
+
+
+@api_view(['PUT'])
+def cambiar_firma_bacteriologo(request, pk):
+    """Vista para cambiar la firma del bacteriologo."""
+
+    bacteriologo = get_object_or_404(Bacteriologo, pk=pk)
+
+    # kwargs_serializer = {'fields': ('firma', )}
+    request.data.setdefault('id', pk)
+    print(request.data)
+    print(request.FILES)
+    serializer = BacteriologoSerializer(fields=('firma', ), data=request.data, instance=bacteriologo)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors)

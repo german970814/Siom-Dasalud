@@ -25600,6 +25600,7 @@ exports.default = {
     data: function data() {
         return {
             models: {}, // los modelos
+            files: {}, // los archivos
             items: {}, // los items de los selects
             validateFields: false,
             appended: {},
@@ -25839,6 +25840,30 @@ exports.default = {
         }
     },
     methods: {
+        dataURLToBlob: function dataURLToBlob(dataURL) {
+            var BASE64_MARKER = ';base64,';
+
+            if (dataURL.indexOf(BASE64_MARKER) == -1) {
+                var _parts = dataURL.split(',');
+                var _contentType = _parts[0].split(':')[1];
+                var _raw = _parts[1];
+
+                return new Blob([_raw], { type: _contentType });
+            }
+
+            var parts = dataURL.split(BASE64_MARKER);
+            var contentType = parts[0].split(':')[1];
+            var raw = window.atob(parts[1]);
+            var rawLength = raw.length;
+
+            var uInt8Array = new Uint8Array(rawLength);
+
+            for (var i = 0; i < rawLength; ++i) {
+                uInt8Array[i] = raw.charCodeAt(i);
+            }
+
+            return new Blob([uInt8Array], { type: contentType });
+        },
         cleanFields: function cleanFields() {
             var _iteratorNormalCompletion5 = true;
             var _didIteratorError5 = false;
@@ -25849,16 +25874,24 @@ exports.default = {
                     var field = _step5.value;
 
                     if (field.group) {
-                        if (this.models[field.group][field.name] instanceof Array) {
-                            this.models[field.group][field.name] = new Array();
+                        if (field.type == 'file') {
+                            this.files[field.group][field.name].model = '';
                         } else {
-                            this.models[field.group][field.name] = '';
+                            if (this.models[field.group][field.name] instanceof Array) {
+                                this.models[field.group][field.name] = new Array();
+                            } else {
+                                this.models[field.group][field.name] = '';
+                            }
                         }
                     } else {
-                        if (this.models[field.name] instanceof Array) {
-                            this.models[field.name] = new Array();
+                        if (field.type == 'file') {
+                            this.files[field.name].model = '';
                         } else {
-                            this.models[field.name] = '';
+                            if (this.models[field.name] instanceof Array) {
+                                this.models[field.name] = new Array();
+                            } else {
+                                this.models[field.name] = '';
+                            }
                         }
                     }
 
@@ -25947,14 +25980,28 @@ exports.default = {
                             fieldType = field.kwargs.multiple ? [] : {};
                         }
                     }
-                    if (field.group) {
-                        if (!_this2.models[field.group]) {
-                            _vue2.default.set(_this2.models, field.group, {});
+                    if (field.type == 'file') {
+                        if (!('url_file' in field) && _underscore2.default.isEmpty(field.url_file)) {
+                            throw new Error('Not \'url_file\' provided for ' + field.name + ', verify the field configuration.');
                         }
-                        _vue2.default.set(_this2.models[field.group], field.name, fieldType);
-                        // this.models[field.group][field.name] = fieldType;
+                        if (field.group) {
+                            if (!_this2.files[field.group]) {
+                                _vue2.default.set(_this2.files, field.group, {});
+                            }
+                            _vue2.default.set(_this2.files[field.group], field.name, { field: field, model: '' });
+                        } else {
+                            _vue2.default.set(_this2.files, field.name, { field: field, model: '' });
+                        }
                     } else {
-                        _vue2.default.set(_this2.models, field.name, fieldType);
+                        if (field.group) {
+                            if (!_this2.models[field.group]) {
+                                _vue2.default.set(_this2.models, field.group, {});
+                            }
+                            _vue2.default.set(_this2.models[field.group], field.name, fieldType);
+                            // this.models[field.group][field.name] = fieldType;
+                        } else {
+                            _vue2.default.set(_this2.models, field.name, fieldType);
+                        }
                     }
                 };
 
@@ -26108,16 +26155,39 @@ exports.default = {
                 }
             }
 
+            var payload = (0, _assign2.default)({}, this.models, data);
+
             if (this._isValid()) {
-                this.$http[method](url, (0, _assign2.default)({}, this.models, data), { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
+                this.$http[method](url, payload, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
                     if (response.status == 201) {
                         message = 'Elemento Creado Correctamente';
                     } else {
                         message = 'Elemento Editado Correctamente';
                     }
-                    _this4.$emit('objectcreated', response.body);
-                    if (message) {
-                        _this4.$emit('showsnack', message);
+
+                    if (!_underscore2.default.isEmpty(_this4.files)) {
+                        for (var fileField in _this4.files) {
+                            var _field = _this4.files[fileField];
+                            if (!_underscore2.default.isEmpty(_field.model.name)) {
+                                // let filePayload = {}
+                                // filePayload[fileField] = _field.model;
+                                var filePayload = new FormData();
+                                filePayload.append(fileField, _field.model, 'hola.png');
+                                _this4.$http.put(_field.field.url_file.concat(response.body.id.toString() + '/'), filePayload, { headers: { 'X-CSRFToken': token.value } }).then(function (res) {
+                                    _this4.$emit('objectcreated', response.body);
+                                    if (message) {
+                                        _this4.$emit('showsnack', message);
+                                    }
+                                }, function (res) {
+                                    console.log("ocurrio un error");
+                                });
+                            }
+                        }
+                    } else {
+                        _this4.$emit('objectcreated', response.body);
+                        if (message) {
+                            _this4.$emit('showsnack', message);
+                        }
                     }
                 }, function (response) {
                     if (response.status == 400) {
@@ -26232,6 +26302,7 @@ exports.default = {
             match[(0, _typeof3.default)(String())] = 'v-text-field';
             match[(0, _typeof3.default)(Number())] = 'v-text-field';
             match[(0, _typeof3.default)(Array())] = 'v-select';
+            match['file'] = 'input';
 
             var childs = [];
             var _iteratorNormalCompletion13 = true;
@@ -26241,6 +26312,33 @@ exports.default = {
             try {
                 var _loop7 = function _loop7() {
                     var field = _step13.value;
+
+
+                    if (field.type == 'file') {
+                        childs.push(_this6.$createElement('v-flex', { attrs: { 'md6': true, 'xs12': true } }, [_this6.$createElement('input', {
+                            attrs: {
+                                name: field.name,
+                                type: 'file',
+                                accept: 'image/*',
+                                value: _this6.files[field.name].model
+                            },
+                            on: {
+                                input: function input(event) {
+                                    if (field.group) {
+                                        _this6.files[field.group][field.name].model = event.target.files[0];
+                                    } else {
+                                        _this6.files[field.name].model = event.target.files[0];
+                                    }
+                                    _this6.$emit('input', event.target.files[0]);
+                                },
+                                change: function change(event) {
+                                    var file = event.target.files[0];
+                                    _this6.files[field.name].model = file;
+                                }
+                            }
+                        }, [])]));
+                        return 'continue';
+                    }
 
                     var defaultProps = {
                         label: field.verbose_name || '',
@@ -26268,6 +26366,9 @@ exports.default = {
                         domProps: {
                             value: field.group ? _this6.models[field.group][field.name] : _this6.models[field.name]
                         },
+                        attrs: {
+                            name: field.name
+                        },
                         on: {
                             input: function input(event) {
                                 if (field.group) {
@@ -26292,7 +26393,9 @@ exports.default = {
                 };
 
                 for (var _iterator13 = (0, _getIterator3.default)(this.fields), _step13; !(_iteratorNormalCompletion13 = (_step13 = _iterator13.next()).done); _iteratorNormalCompletion13 = true) {
-                    _loop7();
+                    var _ret7 = _loop7();
+
+                    if (_ret7 === 'continue') continue;
                 }
             } catch (err) {
                 _didIteratorError13 = true;
@@ -26343,6 +26446,7 @@ exports.default = {
         return this.$createElement('v-card', [this._genCardHeader(), this._genCardBody(), this._genCardFooter()]);
     }
 };
+
 // </script>
 //
 // <style lang="css">
@@ -28065,6 +28169,13 @@ exports.default = {
         kwargs: {
           multiple: true
         }
+      }, {
+        name: 'firma',
+        verbose_name: 'Firma',
+        type: 'file',
+        hint: 'Esta es la firma de el bacteriologo, la cual saldrá en los resultados.',
+        required: false,
+        url_file: '/laboratorios/api/bacteriologos/firma/'
       }]
     };
   },
@@ -29878,15 +29989,15 @@ exports.default = {
       selected: false,
       headers: [{
         text: 'Código',
-        value: 'tabla-codigo',
+        value: 'codigo',
         left: true
       }, {
         text: 'Nombre',
-        value: 'tabla-nombre',
+        value: 'nombre',
         left: true
       }, {
         text: 'Tipo',
-        value: 'tabla-laboratorio',
+        value: 'tipo',
         left: true
       }, {
         text: 'Cantidad',
