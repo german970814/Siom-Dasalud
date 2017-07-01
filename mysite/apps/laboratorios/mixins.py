@@ -1,6 +1,7 @@
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models import ManyToManyField
 from django.db import transaction
+from django.utils import six
 
 from rest_framework import serializers
 
@@ -41,12 +42,19 @@ class IGModelSerializer(object):
         super(IGModelSerializer, self).__init__(*args, **kwargs)
         if fields is not None:
             self.nested = True
+            index_list = []
             for field in self.fields:
                 if field not in fields and field != 'id':
-                    self.fields.pop(field)
+                    if six.PY2:
+                        self.fields.pop(field)
+                    else:
+                        index_list.append(field)
                     continue
                 if field in read_only_fields:
                     self.fields[field].read_only = True
+            if six.PY3:
+                for field in index_list:
+                    self.fields.pop(field)
 
     def get_extra_kwargs(self):
         extra_kwargs = super(IGModelSerializer, self).get_extra_kwargs()
@@ -182,6 +190,7 @@ class IGModelSerializer(object):
             if key in getattr(field.Meta, 'fields', field.fields):
                 new_data[key] = data[key]
         return new_data
+
 
 class IGSerializer(IGModelSerializer, serializers.ModelSerializer):
     pass
