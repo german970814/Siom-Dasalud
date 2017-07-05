@@ -15,6 +15,7 @@ const plantillaArea = BASE.concat('seccion_trabajo/plantillas/');
 const plantillaLaboratorio = BASE.concat('laboratorios/plantilla_laboratorios/');
 const plantillasOrdenes = BASE.concat('laboratorios/plantilla/');
 const reactivos = BASE.concat('productos/');
+const recarga = BASE.concat('productos/recarga/');
 const resultados = BASE.concat('resultado/');
 const secciones_trabajo = BASE.concat('seccion_trabajo/');
 const servicios = BASE.concat('servicios/');
@@ -41,5 +42,6 @@ export default {
     plantillaArea,
     plantillasOrdenes,
     plantillaLaboratorio,
-    empleados
+    empleados,
+    recarga
 }

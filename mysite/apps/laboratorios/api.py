@@ -25,7 +25,7 @@ from .serializers import (
     EspecificacionCaracteristicaSerializer, FormatoSerializer, BacteriologoSerializer,
     ResultadoSerializer, PlantillaAreaSerializer, PlantillaSerializer,
     RecepcionSerializer, HojaGastoSerializer, PlantillaLaboratorioSerializer,
-    EmpleadoSerializer
+    EmpleadoSerializer, RecargaSerializer
 )
 from .utils import ListViewAPIMixin
 from .permissions import (
@@ -199,8 +199,17 @@ class PlantillaLaboratorioDetailAPI(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (ReadOnlyPermission,)
 
 
-# class RecargaAPI(generics.CreateAPIView):
-#     queryset = Recarga
+class RecargaAPI(generics.CreateAPIView):
+    queryset = Recarga.objects.all()
+    serializer_class = RecargaSerializer
+    permission_classes = (AdminPermission, )
+
+    def post(self, *args, **kwargs):
+        self.producto = get_object_or_404(Producto, pk=kwargs.get('pk'))
+        return super(RecargaAPI, self).post(*args, **kwargs)
+
+    def perform_create(self, serializer):
+        serializer.save(producto=self.producto)
 
 
 @api_view(['GET', 'POST'])
@@ -261,9 +270,6 @@ def ordenes_laboratorios(request):
     Lista las ordenes que tengan laboratorios.
     """
 
-    args = tuple()
-    kwargs = {}
-
     bacteriologo = request.user.bacteriologo
 
     pagination = PageNumberPagination()
@@ -299,7 +305,7 @@ def search_resultado_api_view(request):
         Q(orden__empresa_cliente__icontains=param)
     )
 
-    servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
+    # servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
 
     ordenes = Recepcion.objects.filter(querys).select_related('orden').order_by('-orden__fecha')
 
@@ -500,8 +506,6 @@ def cambiar_firma_bacteriologo(request, pk):
 
     # kwargs_serializer = {'fields': ('firma', )}
     request.data.setdefault('id', pk)
-    print(request.data)
-    print(request.FILES)
     serializer = BacteriologoSerializer(fields=('firma', ), data=request.data, instance=bacteriologo)
 
     if serializer.is_valid():

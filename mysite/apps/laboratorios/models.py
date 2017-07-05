@@ -164,27 +164,28 @@ class Recarga(models.Model):
     fabricante = models.CharField(max_length=100, verbose_name=_('Fabricante'), blank=True)
     marca = models.CharField(max_length=100, verbose_name=_('Marca'), blank=True)
     # fecha en la que se crea el producto.
-    fecha_distribucion =  models.DateField(verbose_name=_('Fecha de distribución'), blank=True, null=True)
+    fecha_distribucion = models.DateField(verbose_name=_('Fecha de distribución'), blank=True, null=True)
     presentacion = models.CharField(max_length=100, verbose_name=_('Presentación'), blank=True)
     invima = models.CharField(max_length=100, verbose_name=_('Invima'), blank=True)
+    casa_comercial = models.CharField(max_length=100, verbose_name=_('Casa comercial'), blank=True)
 
     def __str__(self):
-        return '{self.reactivo}: Recarga de {self.cantidad}'.format(self=self)
+        return '{self.producto}: Recarga de {self.cantidad}'.format(self=self)
 
     def save(self, *args, **kwargs):  # revisar
         with transaction.atomic():
+            producto = self.producto
             if not self.pk:
-                self.producto.cantidad += self.cantidad
+                producto.cantidad += self.cantidad
             else:
                 self_copy = copy.deepcopy(self)
                 self_copy.refresh_from_db()
-                produco = self.producto
+
                 if self.cantidad > self_copy.cantidad:  # si se ingresó más de lo que se había guardado
                     producto.cantidad += self.cantidad - self_copy.cantidad
-                    producto.save()
                 if self.cantidad < self_copy.cantidad:  # se se ingresó menos de lo que se había guardado
                     producto.cantidad -= self_copy.cantidad - self.cantidad
-                    producto.save()
+            producto.save()
             super(Recarga, self).save(*args, **kwargs)
 
 

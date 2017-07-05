@@ -20,6 +20,7 @@ export default {
             type: String,
             required: true
         },
+        flat: false,
         selected: {}
     },
     created: function () {
@@ -419,6 +420,7 @@ export default {
             match[typeof Number()] = 'v-text-field';
             match[typeof Array()] = 'v-select';
             match['file'] = 'input';
+            match['date'] = 'v-date-picker';
 
             let childs = [];
             for (let field of this.fields) {
@@ -551,7 +553,7 @@ export default {
         },
     },
     render: function () {
-      return this.$createElement('v-card', [
+      return this.$createElement('v-card', {props: {flat: this.flat}}, [
           this._genCardHeader(),
           this._genCardBody(),
           this._genCardFooter(),

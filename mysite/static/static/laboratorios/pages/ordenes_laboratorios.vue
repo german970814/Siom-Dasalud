@@ -164,7 +164,7 @@ export default {
             }
             let url = this.url || arguments[0];
             if (!url) {
-                throw new Error('URL no provehida para hacer consula de elementos');
+                throw new Error('URL no provehida para hacer consulta de elementos');
             }
             this.$http.get(url)
                 .then(response => {

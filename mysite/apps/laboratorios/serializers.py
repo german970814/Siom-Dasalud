@@ -233,11 +233,13 @@ class HojaGastoSerializer(IGSerializer):
 class RecargaSerializer(IGSerializer):
     """Serializer de Recargas."""
 
+    fecha_vencimiento = serializers.DateField(format='%M-%d-%YY')
+
     class Meta:
         model = Recarga
         fields = (
             'id', 'producto', 'cantidad', 'fecha', 'fecha_vencimiento',
             'lote', 'distribuidor', 'fabricante', 'marca', 'fecha_distribucion',
-            'presentacion', 'invima',
+            'presentacion', 'invima', 'casa_comercial'
         )
-        extra_kwargs = {'fecha': {'read_only': True}}
+        extra_kwargs = {'fecha': {'read_only': True}, 'producto': {'read_only': True}}
