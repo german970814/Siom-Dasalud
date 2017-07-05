@@ -48,7 +48,7 @@ class DictToObject(dict):
     def __getattr__(self, attr):
         data = self.get(attr, self.VOID)
         if data == self.VOID:
-            return super(DictToObject, self).__getattr__(attr)
+            raise TypeError('atributo "{}" no encontrado en "{}"'.format(attr, self))
         if isinstance(data, dict):
             try:
                 return DictToObject(data)

@@ -334,7 +334,7 @@ export default {
                                     // let filePayload = {}
                                     // filePayload[fileField] = _field.model;
                                     let filePayload = new FormData();
-                                    filePayload.append(fileField, _field.model, 'hola.png');
+                                    filePayload.append(fileField, _field.model);
                                     this.$http.put(_field.field.url_file.concat(response.body.id.toString() + '/'), filePayload, {headers: {'X-CSRFToken': token.value}})
                                       .then(res => {
                                           this.$emit('objectcreated', response.body);

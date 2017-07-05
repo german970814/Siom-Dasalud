@@ -254,7 +254,7 @@ export default {
         },
     },
     render () {
-        return this.$createElement('v-container', [
+        return this.$createElement('div', [
             this._genHeader(),
             this._genBody(),
         ])

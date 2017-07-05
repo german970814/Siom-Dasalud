@@ -10,7 +10,7 @@
                 </v-breadcrumbs-item>
             </v-breadcrumbs>
         </v-layout>
-        <v-container v-if="items.length">
+        <div v-if="items.length">
             <v-tabs
                 id="tabs"
                 grow scroll-bars
@@ -105,7 +105,7 @@
                     </v-card-row>
                 </v-card>
             </v-dialog>
-        </v-container>
+        </div>
         <v-container v-else>
            <!-- <h5>403 Forbidden</h5>
            <br> -->
