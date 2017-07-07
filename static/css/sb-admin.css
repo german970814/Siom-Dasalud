@@ -4,12 +4,12 @@
 
  body {
     background-color: #f8f8f8;
-    padding-top: 100px;
+    /*padding-top: 100px;*/
 }
 
 @media(min-width:768px) {
     body {
-        padding-top: 50px;
+        /*padding-top: 50px;*/
     }
 }
 
@@ -28,13 +28,13 @@
 }
 
 @media(min-width:768px) {
-    #page-wrapper {
+    /*#page-wrapper {
         position: inherit;
         margin: 0 0 0 250px;
         padding: 0 30px;
         min-height: 1300px;
         border-left: 1px solid #e7e7e7;
-    }
+    }*/
 }
 
 .navbar-static-side ul li {

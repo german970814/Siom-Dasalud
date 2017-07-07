@@ -95,26 +95,23 @@
                               {% include 'menu.html' %}
                           </v-list>
                       </v-navigation-drawer>
-                      <v-toolbar class="cyan darken-1" fixed>
+                      <v-toolbar class="cyan darken-1">
                           <v-toolbar-side-icon @click.native.stop="sidebar = !sidebar" class="white--text"></v-toolbar-side-icon>
                           <v-toolbar-title class="white--text">Dasalud</v-toolbar-title>
-                          <v-toolbar-items>
-                              <v-menu left bottom origin="top right" transition="v-scale-transition">
-                                  <v-btn dark icon slot="activator">
-                                      <v-icon class="white--text">more_vert</v-icon>
-                                  </v-btn>
-                                  <v-list>
-                                      <v-list-item>
-                                          <v-subheader>{{ user.username|upper }}</v-subheader>
-                                      </v-list-item>
-                                      <v-list-item>
-                                          <v-list-tile href="/logout/">
-                                              <v-list-tile-title>Desconexión</v-list-tile-title>
-                                          </v-list-tile>
-                                      </v-list-item>
-                                  </v-list>
-                              </v-menu>
-                          </v-toolbar-items>
+                          <v-spacer></v-spacer>
+                            <v-menu left bottom origin="top right" transition="v-scale-transition">
+                                <v-btn dark icon slot="activator">
+                                    <v-icon class="white--text">more_vert</v-icon>
+                                </v-btn>
+                                <v-list>
+                                    <v-list-tile>
+                                        <v-subheader>{{ user.username|upper }}</v-subheader>
+                                    </v-list-tile>
+                                    <v-list-tile href="/logout/">
+                                        <v-list-tile-title>Desconexión</v-list-tile-title>
+                                    </v-list-tile>
+                                </v-list>
+                            </v-menu>
                       </v-toolbar>
                       <main>
                           <div class="main">

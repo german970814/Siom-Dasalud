@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-BASE_DIR2 = os.path.dirname(__file__)
+# BASE_DIR2 = os.path.dirname(__file__)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -72,10 +72,10 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR2,'templates'),
+    os.path.join(BASE_DIR, 'mysite', 'templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -116,9 +116,9 @@ USE_TZ = False
 
 if DEBUG:
     MEDIA_URL = '/media/'
-    MEDIA_ROOT = os.path.join(BASE_DIR2, 'static', 'media')
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'mysite', 'media')
     STATICFILES_DIRS = (
-        os.path.join(BASE_DIR2, 'static', 'static'),
+        os.path.join(BASE_DIR, 'static'),
     )
 
 REST_FRAMEWORK = {
