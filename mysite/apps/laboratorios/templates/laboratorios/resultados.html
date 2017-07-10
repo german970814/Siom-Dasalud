@@ -8,109 +8,19 @@
     </head>
     <body>
         <div class="container">
-            <div class="row invoice">
-                <div class="card">
-                    <div class="card-body card-padding">
-                        <div class="row">
-                            <div class="">
-                                <table class="table table-responsive table-bordered">
-                                    {% with paciente=orden.paciente %}
-                                    <tr>
-                                        <th>Paciente</th>
-                                        <td>{{ paciente.pnombre|upper }} {{ paciente.snombre|upper }} {{ paciente.papellido|upper }} {{ paciente.sapellido|upper }}</td>
-                                        <th>No. Orden</th>
-                                        <td>{{ orden.id }}</td>
-                                        <th>Documento Identificación</th>
-                                        <td>{{ paciente.cedula }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Telefonos</th>
-                                        <td>{{ paciente.telefono }}{% if paciente.celular and paciente.telefono %} - {% endif %}{{ paciente.celular }}</td>
-                                        <th>Fecha RPC</th>
-                                        <td>01-06-2017 4:48:26 p.m.</td>
-                                        <th>Empresa</th>
-                                        <td>{{ orden.institucion.razon }}({{ orden.institucion.numero }})</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Medico</th>
-                                        <td>NO ASIGNADO</td>
-                                        <th>Edad</th>
-                                        <td>35 Años</td>
-                                        <th>Sede</th>
-                                        <td>PRINCIPAL</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Sexo</th>
-                                        <td>{% if paciente.genero == 'M' %}MASCULINO{% else %}FEMENINO{% endif %}</td>
-                                        <th>Fecha</th>
-                                        <td>01-06-2017</td>
-                                        <td></td>
-                                        <th></th>
-                                    </tr>
-                                    {% endwith %}
-                                </table>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <h4>Resultados</h4>
-                            <br>
-                            {% regroup resultados by laboratorio.seccion_trabajo as resultados_areas %}
-                            <!--<h1>{{ resultados_areas }}</h1>
-                            {% for re in resultados_areas %}
-                            <h2>{{ re }}</h2>
-                            {% endfor %}-->
-                            {% for resultado_area in resultados_areas %}
-                            <h6 class="title">{{ resultado_area.grouper|upper }}</h6>
-                            <table class="table table-responsive table-bordered">
-                                <thead>
-                                    <tr class="header">
-                                        <th></th>
-                                        <th>Resultado</th>
-                                        <th>Referencia Mínima</th>
-                                        <th>Referencia Máxima</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% regroup resultado_area.list by bacteriologo as resultados_bacteriologo %}
-                                    
-                                    {% for resultado_bacteriologo in resultados_bacteriologo %}
-                                        {% for resultado_inner in resultado_bacteriologo.list %}
-                                            <tr>
-                                                <th colspan="4">{{ resultado_inner.laboratorio.nombre|upper }} ({{ resultado_inner.laboratorio.codigo }})</th>
-                                            </tr>
-                                            {% with resultados_laboratorio=resultado_inner.resultado %}
-                                                {% for resultado_fin in resultados_laboratorio %}
-                                                    {% if resultado_fin.tipo.name == 'title' %}
-                                                    <tr>
-                                                        <th colspan="4">{{ resultado_fin.nombre|upper }}</th>
-                                                    </tr>
-                                                    {% else %}
-                                                    <tr>
-                                                        <td>{{ resultado_fin.nombre|upper }}</td>
-                                                        <td>{{ resultado_fin|get_resultado:orden.paciente.genero }}</td>
-                                                        <td>{% if orden.paciente.genero == 'M' %}{{ resultado_fin.referencias.M.minima }}{% else %}{{ resultado_fin.referencias.F.minima }}{% endif %} {{ resultado_fin.unidades }}</td>
-                                                        <td>{% if orden.paciente.genero == 'F' %}{{ resultado_fin.referencias.F.maxima }}{% else %}{{ resultado_fin.referencias.M.maxima }}{% endif %} {{ resultado_fin.unidades }}</td>
-                                                    </tr>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            {% endwith %}
-                                        {% endfor %}
-                                        <tr>
-                                            <td colspan="2"></td>
-                                            <td colspan="2" style="text-align: right;">
-                                                <div>
-                                                    <img class="firma" src="http://{{ request.META.HTTP_HOST }}{{ resultado_bacteriologo.grouper.firma.url }}" alt="" width="150px" height="90px"/>
-                                                    <br>
-                                                    <p>{{ resultado_bacteriologo.grouper }}</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            {% endfor %}
-                        </div>
+            <div class="card">
+                <div class="card-body card-padding">
+
+                    {% include 'laboratorios/header.html' %}
+
+                    <div class="row resultado-content">
+                        <h3>ANALISIS</h3>
+                        <br>
+                        
+                        {% include 'laboratorios/body.html' %}
                     </div>
+
+                    {% include 'laboratorios/footer.html' %}
                 </div>
             </div>
         </div>

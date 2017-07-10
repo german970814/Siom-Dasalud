@@ -153,3 +153,10 @@ class paciente(models.Model):
 	def __unicode__(self):
 		nombreCompleto = "%s %s  %s"%(self.pnombre,self.papellido,self.cedula)
 		return nombreCompleto.encode('utf-8')
+
+	def get_foto(self):
+		if self.foto:
+			import os
+			if os.path.exists(self.foto._get_path()):
+				return self.foto.url
+		return '/static/profile-none.jpg'

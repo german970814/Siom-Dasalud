@@ -1,0 +1,58 @@
+{% load staticfiles resultados %}
+
+{% regroup resultados by laboratorio.seccion_trabajo as resultados_areas %}
+
+{% for resultado_area in resultados_areas %}
+<h6 class="title">{{ resultado_area.grouper|upper }}</h6>
+<table class="table table-responsive table-bordered table-body">
+    <thead>
+        <tr class="header">
+            <th></th>
+            <th>Resultado</th>
+            <th>Referencia Mínima</th>
+            <th>Referencia Máxima</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% regroup resultado_area.list by bacteriologo as resultados_bacteriologo %}
+        
+        {% for resultado_bacteriologo in resultados_bacteriologo %}
+            {% for resultado_inner in resultado_bacteriologo.list %}
+                <tr>
+                    <th colspan="4">{{ resultado_inner.laboratorio.nombre|upper }} ({{ resultado_inner.laboratorio.codigo }})</th>
+                </tr>
+                {% with resultados_laboratorio=resultado_inner.resultado %}
+                    {% for resultado_fin in resultados_laboratorio %}
+                        {% if resultado_fin.tipo.name == 'title' %}
+                        <tr>
+                            <th colspan="4">{{ resultado_fin.nombre|upper }}</th>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td>{{ resultado_fin.nombre|upper }}</td>
+                            <td>{{ resultado_fin|get_resultado:orden.paciente.genero }}</td>
+                            <td>{% if orden.paciente.genero == 'M' %}{{ resultado_fin.referencias.M.minima }}{% else %}{{ resultado_fin.referencias.F.minima }}{% endif %} {{ resultado_fin.unidades }}</td>
+                            <td>{% if orden.paciente.genero == 'F' %}{{ resultado_fin.referencias.F.maxima }}{% else %}{{ resultado_fin.referencias.M.maxima }}{% endif %} {{ resultado_fin.unidades }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endwith %}
+            {% endfor %}
+            <tr>
+                <td colspan="2"></td>
+                <td colspan="2" style="text-align: right;">
+                    <div>
+                        {% if resultado_bacteriologo.grouper.firma.url %}
+                        <img class="firma-bacteriologo" src="http://{{ request.META.HTTP_HOST }}{{ resultado_bacteriologo.grouper.firma.url }}" alt="" width="150px" height="80px"/>
+                        <br>
+                        {% else %}
+                        <hr />
+                        {% endif %}
+                        <p>{{ resultado_bacteriologo.grouper }}</p>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endfor %}

@@ -30,6 +30,14 @@ def prueba(request, pk):
     for resultado in resultados:
         resultado.resultado = json.loads(resultado.resultado)
 
+    # weasyprint
+    to_html = render_to_string('laboratorios/prueba.html', {'resultados': resultados, 'orden': orden, 'request': request}, RequestContext(request))
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=lab-%d' % orden.id
+    HTML(string=to_html).write_pdf(
+        response, stylesheets=['static/css/bootstrap.min.css', 'static/css/print_laboratorios.css'])
+    return response
+
     return render(request, 'laboratorios/prueba.html', {'resultados': resultados, 'orden': orden, 'request': request})
 
 
