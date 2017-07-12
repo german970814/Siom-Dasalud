@@ -49,7 +49,6 @@ class UsuarioSerializer(IGModelSerializer, serializers.ModelSerializer):
         if 'instance' in kwargs:
             self.Meta.extra_kwargs['password']['required'] = False
         super(UsuarioSerializer, self).__init__(*args, **kwargs)
-        print(self.fields['password'].required)
 
     def _validate_username(self, value, instance=None):
         def validate(username=value):

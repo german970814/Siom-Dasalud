@@ -22,6 +22,9 @@ def ruta_imagen_bacteriologo(self, filename):
 def ruta_imagen_empleado(self, filename):
     return 'laboratorios/empleados/{}'.format(filename)
 
+def ruta_archivo_resultado(self, filename):
+    return 'laboratorios/resultados/{}_{}'.format(self.orden.id, filename)
+
 
 @python_2_unicode_compatible
 class Empleado(models.Model):
@@ -254,6 +257,7 @@ class Resultado(models.Model):
     fecha = models.DateField(auto_now_add=True)
     cerrado = models.NullBooleanField(default=False, verbose_name=_('Cerrado'))
     resultado = models.TextField(blank=True, null=True)
+    archivo = models.FileField(verbose_name=_('Archivo'), upload_to=ruta_archivo_resultado, blank=True, null=True)
 
     def __str__(self):
         return 'Orden #{self.orden.id} ({self.laboratorio})'.format(self=self)

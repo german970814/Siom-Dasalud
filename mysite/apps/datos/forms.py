@@ -16,6 +16,7 @@ class addmedicoForm(forms.ModelForm):
         self.fields['especialidad'].widget.attrs.update({'class' : 'form-control'})
         self.fields['registro'].widget.attrs.update({'class' : 'form-control'})
         self.fields['usuario'].widget.attrs.update({'class' : 'form-control'})			
+        self.fields['institucion'].widget.attrs.update({'class' : 'form-control'})			
 
 class addPacienteForm(forms.ModelForm):
     class Meta:

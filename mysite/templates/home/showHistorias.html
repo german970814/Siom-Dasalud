@@ -416,6 +416,37 @@
             <div class="col-lg-2"><p><label for="id_f_laboratorio">Laboratorio:</label>{{form1.f_laboratorio}}</p></div>
             <div class="col-lg-10"><p><label for="id_r_laboratorio">Resultados:</label>{{form1.r_laboratorio}}</p></div>
         </div>
+        <div class="row" id="data-table-vue">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Examen</th>
+                        <th>Estado</th>
+                        <th>Ver</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for laboratorio in laboratorios %}
+                <tr>
+                    <td>{{ laboratorio.nombre|upper }} ({{ laboratorio.codigo }})</td>
+                    <td>{% if laboratorio.resultado.cerrado %}RESULTADO EMITIDO{% else %}PENDIENTE{% endif %}</td>
+                    <td>
+                        {% if laboratorio.resultado.cerrado %}
+                        <a class="btn btn-primary btn-xs" target="_blank" href="{% url 'laboratorios:ver_resultado_laboratorio' getorden.id %}?laboratorio={{ laboratorio.resultado.id }}&format=html">
+                            <i class="glyphicon glyphicon-eye-open"></i>
+                        </a>
+                        <a class="btn btn-primary btn-xs" href="{% url 'laboratorios:ver_resultado_laboratorio' getorden.id %}?laboratorio={{ laboratorio.resultado.id }}&format=pdf">
+                            <i class="glyphicon glyphicon glyphicon-floppy-save"></i>
+                        </a>
+                        {% else %}
+                        No disponible
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     {% if altura == True %}
         <div class="tab-pane fade" id="tabaltura">
@@ -682,4 +713,18 @@
 <br>
 <br>  
 
-{% endblock %}    
+{% endblock %}
+
+{% block js %}
+<script>
+    new Vue({
+        name: 'data-table',
+        data: {
+
+        },
+        methods: {
+            
+        }
+    }).mount('#data-table-vue');
+</script>
+{% endblock %}

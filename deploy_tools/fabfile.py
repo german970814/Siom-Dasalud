@@ -28,6 +28,7 @@ def deploy():
     # _update_virtualenv(env.user, env.host, source_folder)
     # _update_static_files(source_folder, env.user, env.host)
     # update_database_info(source_folder)
+    _update_database(source_folder, env.user)
 
 
 def _set_database_production(source_folder):
@@ -36,7 +37,7 @@ def _set_database_production(source_folder):
     for conf in DATABASE_PRODUCTION:
         sed(settings, "'{}':.+$".format(conf), "'{}': '{}',".format(conf, DATABASE_PRODUCTION[conf]))
     # sed(settings_path, 'ALLOWED_HOSTS =.+$', 'ALLOWED_HOSTS = ["%s"]' % (site_name,))
-    sed(settings, "STATIC_ROOT =.+$", "STATIC_ROOT = os.path.join(BASE_DIR2, 'static', 'static')")
+    # sed(settings, "STATIC_ROOT =.+$", "STATIC_ROOT = os.path.join(BASE_DIR2, 'static', 'static')")
 
 
 def _create_directory_structure_if_necessary(site_folder):
@@ -69,5 +70,5 @@ def _update_static_files(source_folder, user, site_name):
     run('cd %s && /home/%s/.envs/siom/bin/python manage.py collectstatic --noinput' % (source_folder, user))
 
 
-def _update_database(source_folder, user, site_name):
+def _update_database(source_folder, user):
     run('cd %s && /home/%s/.envs/siom/bin/python manage.py migrate --noinput' % (source_folder, user))

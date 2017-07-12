@@ -1,4 +1,4 @@
-from django.shortcuts import render,render_to_response
+from django.shortcuts import render, render_to_response, get_object_or_404
 from django.template import RequestContext
 from mysite.apps.historias.models import orden,ordenesProducto,historia_clinica,test_altura,historia_procedimientos,posologias,remision,remisionlab
 from mysite.apps.historias.forms import addOrdenForm,addOrdenSiomForm,addOrdenAnulaForm,addOrdenProductoForm,addhistoria_clinicaForm,addtest_alturaForm,addhistoria_procedimientosForm,addposologiaForm,addremisionForm,addremisionlabForm,fechaRipsForm,filtroOrdenForm
@@ -21,6 +21,8 @@ from datetime import date, timedelta
 from django.db.models import Max,Q
 from reportlab.pdfgen import canvas
 
+from mysite.apps.laboratorios.models import Laboratorio
+
 @login_required(login_url=URL_LOGIN)
 def historias_view(request,pagina):
 	historias= historia_clinica.objects.all().order_by('orden__fecha')[:1000]
@@ -34,9 +36,21 @@ def add_historias_view(request,id_prod):
 	error = False
 	existe_historia = False
 	altura = False
+
+	getorden = orden.objects.get(pk=id_prod) #Se obtiene informacion de la orden
+
+	servicios = orden.objects.filter(id=getorden.id).servicios().values_list('id', flat=True)
+	laboratorios = Laboratorio.objects.filter(servicio__id__in=servicios)
+
+	resultados = getorden.resultados_laboratorio.all()
+
+	for laboratorio in laboratorios:
+		param = resultados.filter(laboratorio__id=laboratorio.id)
+		if param.exists():
+			laboratorio.resultado = param.get()
+
 	if request.method == "POST":
 		if 'btntabhistoria' in request.POST:
-			getorden = orden.objects.get(pk=id_prod)
 			try:#Verifica si la historia existe
 				gethistoria = historia_clinica.objects.get(orden=getorden)
 				existe_historia = True
@@ -87,11 +101,10 @@ def add_historias_view(request,id_prod):
 			historial = historia_clinica.objects.filter(paciente=getorden.paciente)
 			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
 			form2 = addposologiaForm()
-			ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
+			ctx = {'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
 			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 		if 'btntabhistoria_cerrar' in request.POST:
-			getorden= orden.objects.get(pk=id_prod)
 			try: #Verifica si existe para editarlo, de lo contrario se puede crear uno nuevo
 				gethistoria = historia_clinica.objects.get(orden=getorden)
 				form1 = addhistoria_clinicaForm(request.POST,instance=gethistoria)
@@ -130,10 +143,9 @@ def add_historias_view(request,id_prod):
 			historial = historia_clinica.objects.filter(paciente=getorden.paciente)
 			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
 			form2 = addposologiaForm()
-			ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'exito_cerrada':exito_cerrada,'error':error,'altura':altura}
+			ctx = {'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'exito_cerrada':exito_cerrada,'error':error,'altura':altura}
 			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
-	getorden = orden.objects.get(pk=id_prod) #Se obtiene informacion de la orden
 	try: #Verifica si la historia ya existe para cargarla y continuar editandola
 		gethistoria = historia_clinica.objects.get(orden=getorden)
 		form1 = addhistoria_clinicaForm(instance=gethistoria)
@@ -155,7 +167,7 @@ def add_historias_view(request,id_prod):
 	else:
 		altura = False
 		form3= addtest_alturaForm()
-	ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
+	ctx = {'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
 	return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 @login_required(login_url=URL_LOGIN)
@@ -217,21 +229,44 @@ def edit_historias_view(request,id_prod):
 	return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 @login_required(login_url=URL_LOGIN)
-def show_historias_view(request,id_prod):
-	getorden = orden.objects.get(pk=id_prod)	 #Se obtiene informacion de la orden
-	gethistoria = historia_clinica.objects.get(orden=getorden)
-	lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
-	form1 = addhistoria_clinicaForm(instance=gethistoria)
-	form2 = addposologiaForm()
-	if getorden.examen_adicional == '1':
-		altura = True
-		getaltura = test_altura.objects.get(orden=getorden)
-		form3= addtest_alturaForm(instance=getaltura)
-	else:
-		altura = False
-		form3= addtest_alturaForm()
-	ctx = {'getorden':getorden,'gethistoria':gethistoria,'form1':form1,'form2':form2,'form3':form3,'altura':altura}
-	return render_to_response('home/showHistorias.html',ctx,context_instance=RequestContext(request))
+def show_historias_view(request, id_prod):
+	"""Vista para ver las historias de una orden."""
+
+	Orden = orden
+	HistoriaClinica = historia_clinica
+	TestAltura = test_altura
+	# HistoriaProcedimiento = historia_procedimientos
+
+	_orden = get_object_or_404(Orden, pk=id_prod)
+	_historia = get_object_or_404(HistoriaClinica, orden=_orden)
+	# _procedimientos = HistoriaProcedimiento.objects.filter(paciente=_orden.paciente)
+
+	kwargs_form = {}
+	data = {
+		'getorden': _orden, 'gethistoria': _historia, 'altura': False
+	}
+
+	if _orden.examen_adicional == '1':
+		data['altura'] = True
+		kwargs_form['instance'] = TestAltura.objects.get(orden=_orden)
+	
+	data['form1'] = addhistoria_clinicaForm(instance=_historia)
+	data['form2'] = addposologiaForm()
+	data['form3'] = addtest_alturaForm(**kwargs_form)
+
+	servicios = Orden.objects.filter(id=_orden.id).servicios().values_list('id', flat=True)
+	laboratorios = Laboratorio.objects.filter(servicio__id__in=servicios)
+
+	resultados = _orden.resultados_laboratorio.all()
+
+	for laboratorio in laboratorios:
+		param = resultados.filter(laboratorio__id=laboratorio.id)
+		if param.exists():
+			laboratorio.resultado = param.get()
+	data['laboratorios'] = laboratorios
+
+	return render(request, 'home/showHistorias.html', data)
+
 
 @login_required(login_url=URL_LOGIN)
 def add_evolucion_view(request,id_prod):

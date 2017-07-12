@@ -5,7 +5,7 @@ from . import views, api
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^imprimir/(?P<pk>\d+)/$', views.imprimir_laboratorio, name='imprimir'),
-    url(r'^pr/(?P<pk>\d+)/$', views.prueba, name='imprimir_pras'),
+    url(r'^resultados_laboratorios/(?P<pk>\d+)/$', views.ver_resultado_laboratorio, name='ver_resultado_laboratorio'),
 ]
 
 # api

@@ -8,7 +8,7 @@ register = template.Library()
 @register.filter
 def get_resultado(instance, genero):
     """Funcion para mostrar los resultados en la tabla de resultados de la impresion de un laboratorio."""
-
+    print(instance)
     instance = DictToObject(instance)
     tipo = instance.tipo.name
     if tipo in ['number', 'text', 'textarea']:

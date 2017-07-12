@@ -23,11 +23,11 @@
                                 </tr>
                                 <tr>
                                     <th>Edad</th>
-                                    <td>35 Años</td>
+                                    <td>{{ paciente.edad }} {{ paciente.get_unidad_display|upper }}</td>
                                     <th>Documento Identificación</th>
                                     <td>{{ paciente.cedula }}</td>
                                     <th>Fecha RPC</th>
-                                    <td>01-06-2017 4:48:26 p.m.</td>
+                                    <td>{{ orden.fecha|date:"j-F-Y \a \l\a\s h:i A"|upper }}</td>
                                 </tr>
                                 <tr>
                                     <th>Telefonos</th>
@@ -39,7 +39,7 @@
                                     <th>Empresa</th>
                                     <td>{{ orden.institucion.razon }}({{ orden.institucion.numero }})</td>
                                     <th>Fecha</th>
-                                    <td>01-06-2017</td>
+                                    <td>{{ orden.fecha_atencion|date:"j-F-Y" }}</td>
                                     <td></td>
                                     <th></th>
                                 </tr>
