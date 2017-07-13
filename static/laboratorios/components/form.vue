@@ -71,11 +71,11 @@ export default {
                                             }
                                         }
                                         if (key) {
-                                            this.models[attr][subattr] = key;
+                                            // this.models[attr][subattr] = key;
                                         } else {  // support for OneToOneField and GroupField forms (models)
                                             key = this.fields.find(x => x.group == attr && x.name == subattr);
                                             if (key) {
-                                                this.selected[attr][subattr].text = this.selected[attr][subattr][key.key];
+                                                // this.selected[attr][subattr].text = this.selected[attr][subattr][key.key];
                                                 if (attr in this.appended && this.appended[attr]) {
                                                     this.items[attr].pop();
                                                     this.appended[attr] = false;
@@ -387,7 +387,7 @@ export default {
             }
         },
         _isGroupField: function (item) {
-            if (!_.isArray(this.models[item]) && !_.isObject(this.models[item])) {
+            if (!_.isArray(this.models[item]) && _.isObject(this.models[item])) {
                 for (let field of this.fields) {
                     if (field.group == item) {
                         return true;

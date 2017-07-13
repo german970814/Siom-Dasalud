@@ -25806,14 +25806,14 @@ exports.default = {
                                         }
 
                                         if (key) {
-                                            _this.models[attr][subattr] = key;
+                                            // this.models[attr][subattr] = key;
                                         } else {
                                             // support for OneToOneField and GroupField forms (models)
                                             key = _this.fields.find(function (x) {
                                                 return x.group == attr && x.name == subattr;
                                             });
                                             if (key) {
-                                                _this.selected[attr][subattr].text = _this.selected[attr][subattr][key.key];
+                                                // this.selected[attr][subattr].text = this.selected[attr][subattr][key.key];
                                                 if (attr in _this.appended && _this.appended[attr]) {
                                                     _this.items[attr].pop();
                                                     _this.appended[attr] = false;
@@ -26362,7 +26362,7 @@ exports.default = {
             }
         },
         _isGroupField: function _isGroupField(item) {
-            if (!_underscore2.default.isArray(this.models[item]) && !_underscore2.default.isObject(this.models[item])) {
+            if (!_underscore2.default.isArray(this.models[item]) && _underscore2.default.isObject(this.models[item])) {
                 var _iteratorNormalCompletion12 = true;
                 var _didIteratorError12 = false;
                 var _iteratorError12 = undefined;
