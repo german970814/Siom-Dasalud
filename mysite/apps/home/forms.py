@@ -69,13 +69,26 @@ class usuarioForm(forms.ModelForm):
     class Meta:
         model   = User
         fields = ['username', 'first_name', 'last_name','is_active', 'groups']	
-        def __init__(self, *args, **kwargs):
-            super(usuarioForm, self).__init__(*args, **kwargs)
-            self.fields['username'].widget.attrs.update({'class' : 'form-control'})
-            self.fields['first_name'].widget.attrs.update({'class' : 'form-control'})
-            self.fields['last_name'].widget.attrs.update({'class' : 'form-control'})
-            self.fields['is_active'].widget.attrs.update({'class' : 'form-control'})
-            self.fields['groups'].widget.attrs.update({'class' : 'form-control'})							
+    def __init__(self, *args, **kwargs):
+        super(usuarioForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['first_name'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['last_name'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['is_active'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['groups'].widget.attrs.update({'class' : 'form-control'})							
+
+    def save(self, *args, **kwargs):
+        data = self.cleaned_data
+        if not self.instance.pk:
+            data.setdefault('password', '123456')
+            active = data.pop('is_active', None)
+            groups = data.pop('groups', [])
+            user = User.objects.create_user(**data)
+            for group in groups:
+                user.groups.add(group)
+        else:
+            user = super(usuarioForm, self).save(*args, **kwargs)
+        return user
 
 class usuarioEmpresaForm(forms.ModelForm):
     class Meta:

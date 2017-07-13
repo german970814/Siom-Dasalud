@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.utils import timezone
-from django.utils.six import io
+from django.utils.six import BytesIO
 from django.core.files import File
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -87,7 +87,7 @@ def imprimir_laboratorio(request, pk):
         resultado._resultado = resultado.resultado
 
         if resultado.cerrado and not resultado.archivo:
-            with io.BytesIO() as _buffer:
+            with BytesIO() as _buffer:
             # _buffer = io.BytesIO()
                 _resultados = Resultado.objects.filter(id=resultado.id)
                 for result_object in _resultados:
