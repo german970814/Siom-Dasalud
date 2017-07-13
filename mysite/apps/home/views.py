@@ -274,9 +274,9 @@ def add_usuario_view(request):
         form = usuarioForm(request.POST)
         form2 = userProfileForm(request.POST)
         if form.is_valid():
-            nuevo = form.save(commit=False)
-            nuevo.password='123456'
-            nuevo.save()
+            nuevo = form.save()
+            # nuevo.set_password('123456')
+            # nuevo.save()
             perfil = form2.save(commit=False)
             perfil.user = nuevo
             perfil.save()
