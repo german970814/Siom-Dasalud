@@ -365,11 +365,7 @@ def resultado_api_view(request, pk):
         data['resultados'] = serializer_resultados.data
 
         laboratorios = Laboratorio.objects.filter(
-            id__in=list(filter(
-                lambda x: x is not None,
-                Orden.objects.filter(
-                    id=orden.id).servicios().values_list('laboratorio__id', flat=True)
-                ))
+            id__in=Orden.objects.filter(id=orden.id).servicios().values_list('laboratorio__id', flat=True)
             ).exclude(
                 id__in=resultados.values_list('laboratorio__id', flat=True)
             )

@@ -131,3 +131,31 @@ def imprimir_laboratorio(request, pk):
     HTML(string=to_html).write_pdf(response, stylesheets=stylesheets)
 
     return response
+
+
+def prueba(request, pk):
+    from .serializers import ResultadoSerializer, FormatoSerializer, BacteriologoSerializer
+    from .models import Formato
+    from mysite.apps.historias.serializers import OrdenSerializer
+    orden = get_object_or_404(Orden, pk=pk)
+    args = tuple()
+    kwargs = {}
+    data = {}
+    bacteriologo = request.user.bacteriologo
+    resultados = orden.resultados_laboratorio.all()
+    serializer_resultados = ResultadoSerializer(resultados, many=True)
+    data['resultados'] = serializer_resultados.data
+
+    laboratorios = Laboratorio.objects.filter(
+        id__in=Orden.objects.filter(id=orden.id).servicios().values_list('laboratorio__id', flat=True)
+        ).exclude(
+            id__in=resultados.values_list('laboratorio__id', flat=True)
+        )
+
+    formatos = Formato.objects.filter(id__in=laboratorios.values_list('formato__id', flat=True))
+    serializer = FormatoSerializer(formatos, many=True)
+    data['formatos'] = serializer.data
+    data['orden'] = OrdenSerializer(orden).data
+    data['bacteriologo'] = BacteriologoSerializer(bacteriologo).data
+    args = (data, )
+    return render(request, 'laboratorios/prueba.html', locals())
