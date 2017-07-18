@@ -6,8 +6,6 @@ from django.db import models, transaction
 from django.utils.six import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.forms.utils import flatatt
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 
 from mysite.apps.historias.models import orden as Orden
 from mysite.apps.parametros.models import servicios as Servicio

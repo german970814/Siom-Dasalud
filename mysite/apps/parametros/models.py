@@ -23,6 +23,9 @@ class serviciosEmpresa(models.Model):
 	def __unicode__(self):
 		return self.nombre.nombre
 
+	def __str__(self):
+		return self.nombre.nombre
+
 class items(models.Model):
 	nombre = models.CharField(max_length=30)
 	descripcion	=	models.TextField(max_length=300)

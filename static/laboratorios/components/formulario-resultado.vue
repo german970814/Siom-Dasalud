@@ -24,10 +24,7 @@ export default {
                     text: 'Abreviatura', value: 'tipo', left: true,
                 },
                 {
-                    text: 'Referencia Minima', value: 'paciente-pnombre', left: true,
-                },
-                {
-                    text: 'Referencia Maxima', value: 'paciente-pnombre', left: true,
+                    text: 'Referencias', value: 'paciente-pnombre', left: true,
                 },
             ],
         }
@@ -86,7 +83,7 @@ export default {
                               ]
                           }
                           return [
-                              this.$createElement('td', {'class': 'text-xs-left', attrs: {colspan: 6}}, [
+                              this.$createElement('td', {'class': 'text-xs-left', attrs: {colspan: 5}}, [
                                   this.$createElement('strong', {attrs: {style: 'font-size: 20px'}} , [props.item.nombre.toUpperCase()])
                               ])
                           ]
@@ -118,19 +115,21 @@ export default {
             if (item.tipo.name != 'number') {
                 unidades = '';
             }
-            if ('referencias' in item) {
+            if ('referencias' in item && item.tipo.name == 'number') {
+                let refs = item.referencias[gender].minima.toString().concat(' ') + unidades + ' - ' + item.referencias[gender].maxima.toString().concat(' ') + unidades;
+
                 childs.push(
-                    this._genTd(item, item.referencias[gender].minima.toString().concat(' ') + unidades)
+                    this._genTd(item, refs)
                 )
-                childs.push(
-                    this._genTd(item, item.referencias[gender].maxima.toString().concat(' ') + unidades)
-                )
+                // childs.push(
+                //     this._genTd(item, item.referencias[gender].maxima.toString().concat(' ') + unidades)
+                // )
             } else {
+                // childs.push(
+                //     this._genTd(item, 'undefined')
+                // )
                 childs.push(
-                    this._genTd(item, 'undefined')
-                )
-                childs.push(
-                    this._genTd(item, 'undefined')
+                    this._genTd(item, item.referencia)
                 )
             }
             return childs;

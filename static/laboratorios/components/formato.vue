@@ -45,36 +45,46 @@
                                         <br>
                                         <v-layout wrap>
                                             <v-flex md12><v-subheader>Referencias</v-subheader></v-flex>
-                                            <v-flex md6>
-                                                <v-subheader>Hombre</v-subheader>
+                                            <template v-if="item.tipo.name == 'number'">
+                                                <v-flex md6>
+                                                    <v-subheader>Hombre</v-subheader>
+                                                    <v-text-field
+                                                        label="Valores de referencia mínima (HOMBRE)"
+                                                        v-model="item.referencias.M.minima"
+                                                        :type="item.tipo.name == 'number' ? 'number': 'text'"
+                                                        hint="Texto de referencia minima para la visualización del resultado (HOMBRE)"
+                                                    ></v-text-field>
+                                                    <br>
+                                                    <v-text-field
+                                                        label="Valores de referencia máxima (HOMBRE)"
+                                                        v-model="item.referencias.M.maxima"
+                                                        :type="item.tipo.name == 'number' ? 'number': 'text'"
+                                                        hint="Texto de referencia máxima para la visualización del resultado (HOMBRE)"
+                                                    ></v-text-field>
+                                                </v-flex>
+                                                <v-flex md6>
+                                                    <v-subheader>Mujer</v-subheader>
+                                                    <v-text-field
+                                                        label="Valores de referencia mínima (MUJER)"
+                                                        v-model="item.referencias.F.minima"
+                                                        :type="item.tipo.name == 'number' ? 'number': 'text'"
+                                                        hint="Texto de referencia minima para la visualización del resultado (MUJER)"
+                                                    ></v-text-field>
+                                                    <br>
+                                                    <v-text-field
+                                                        label="Valores de referencia máxima (MUJER)"
+                                                        v-model="item.referencias.F.maxima"
+                                                        :type="item.tipo.name == 'number' ? 'number': 'text'"
+                                                        hint="Texto de referencia máxima para la visualización del resultado (MUJER)"
+                                                    ></v-text-field>
+                                                </v-flex>
+                                            </template>
+                                            <v-flex md12 v-else>
                                                 <v-text-field
-                                                    label="Valores de referencia mínima (HOMBRE)"
-                                                    v-model="item.referencias.M.minima"
-                                                    :type="item.tipo.name == 'number' ? 'number': 'text'"
-                                                    hint="Texto de referencia minima para el momento de poner el resultado (HOMBRE)"
-                                                ></v-text-field>
-                                                <br>
-                                                <v-text-field
-                                                    label="Valores de referencia máxima (HOMBRE)"
-                                                    v-model="item.referencias.M.maxima"
-                                                    :type="item.tipo.name == 'number' ? 'number': 'text'"
-                                                    hint="Texto de referencia máxima para el momento de poner el resultado (HOMBRE)"
-                                                ></v-text-field>
-                                            </v-flex>
-                                            <v-flex md6>
-                                                <v-subheader>Mujer</v-subheader>
-                                                <v-text-field
-                                                    label="Valores de referencia mínima (MUJER)"
-                                                    v-model="item.referencias.F.minima"
-                                                    :type="item.tipo.name == 'number' ? 'number': 'text'"
-                                                    hint="Texto de referencia minima para el momento de poner el resultado (MUJER)"
-                                                ></v-text-field>
-                                                <br>
-                                                <v-text-field
-                                                    label="Valores de referencia máxima (MUJER)"
-                                                    v-model="item.referencias.F.maxima"
-                                                    :type="item.tipo.name == 'number' ? 'number': 'text'"
-                                                    hint="Texto de referencia máxima para el momento de poner el resultado (MUJER)"
+                                                    label="Valores de Referencia"
+                                                    v-model="item.referencia"
+                                                    multi-line
+                                                    hint="Texto de referencia para la visualización de resultados."
                                                 ></v-text-field>
                                             </v-flex>
                                         </v-layout>
@@ -294,6 +304,7 @@ export default {
                 model_check: [],
                 unidades: '',
                 tipo: '',
+                referencia: '',
                 referencias: {
                     F: {
                         maxima: '',
