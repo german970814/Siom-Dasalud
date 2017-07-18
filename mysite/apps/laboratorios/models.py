@@ -118,7 +118,7 @@ class Laboratorio(models.Model):
     codigo = models.CharField(max_length=50, verbose_name=_('Código'))
     nombre = models.CharField(max_length=255, verbose_name=_('Nombre'))
     codigo_internacional = models.CharField(max_length=50, verbose_name=_('Código Internacional'), blank=True, null=True)
-    equipo = models.ForeignKey(Equipo, verbose_name=_('Equipo'), related_name='laboratorios')
+    equipo = models.ForeignKey(Equipo, verbose_name=_('Equipo'), related_name='laboratorios', blank=True, null=True)
     seccion_trabajo = models.ForeignKey(SeccionTrabajo, verbose_name=_('Seccion de Trabajo'), related_name=('laboratorios'))
     servicio = models.OneToOneField(Servicio, related_name='laboratorio')
 

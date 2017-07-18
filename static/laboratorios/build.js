@@ -27115,15 +27115,15 @@ exports.default = {
     data: function data() {
         return {
             headers: [{
-                text: 'Concepto', value: 'id', left: true
+                text: 'Concepto', value: 'id', align: 'left'
             }, {
-                text: 'Valor Resultado', value: 'tabla-cedula', left: true
+                text: 'Valor Resultado', value: 'tabla-cedula', align: 'left'
             }, {
-                text: 'Medida', value: 'paciente-pnombre', left: true
+                text: 'Medida', value: 'paciente-pnombre', align: 'left'
             }, {
-                text: 'Abreviatura', value: 'tipo', left: true
+                text: 'Abreviatura', value: 'tipo', align: 'left'
             }, {
-                text: 'Referencias', value: 'paciente-pnombre', left: true
+                text: 'Referencias', value: 'paciente-pnombre', align: 'left'
             }]
         };
     },
