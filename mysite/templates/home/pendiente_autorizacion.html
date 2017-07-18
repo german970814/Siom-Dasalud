@@ -1,0 +1,47 @@
+{% extends 'home/base.html' %}
+
+{% block title %} Editar Orden {% endblock %}
+{%block content %}
+
+<div class="row">
+	<div class="col-lg-12">
+	    <h1 class="page-header">Editar Orden</h1>
+	</div>
+</div>
+
+{% if form.errors %}
+<div class="alert alert-danger alert-dismissable">
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <strong>Corregir los siguientes errores!</strong> {{ form.errors }}
+</div>
+{% endif %}
+
+<div class="alert alert-warning">
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <strong>Orden pendiente por modificar su numero de autorización: </strong> Se ha indicado que esta historia necesita un numero de autorización válido. Ingresa el número correcto de autorización y has click sobre el campo "Pendiente de Autorización" para quitar la selección en dicho cuadro.
+</div>
+{% if exito %}
+	<div class="alert alert-success">
+	    <a href="#" class="close" data-dismiss="alert">&times;</a>
+	    <strong>La Orden ha sido Editada Satisfactoriamente!</strong> <p>Haz click en "Regresar al listado de Ordenes". </p>
+	</div>
+{% endif %}
+<br>
+<form action="." method="POST">
+{% csrf_token %}
+	<div class="row">
+		<div class="col-lg-6"><p><label for="id_autorizacion">No. Autorizacion:</label> {{form.autorizacion}}</p></div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6"><p><label for="id_pendiente_autoriza">Pendiente de Autorizacion:</label> {{form.pendiente_autoriza}}</p></div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-2">
+			<button type="submit" class="btn btn-primary btn-lg btn-block">Editar</button>
+		</div>	
+	</div>  	     
+</form>
+<br>
+<a href="/ordenes/"> << Regresar al listado de Ordenes  </a> 
+{% endblock %}
