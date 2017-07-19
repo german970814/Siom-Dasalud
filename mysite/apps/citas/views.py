@@ -29,7 +29,10 @@ def agenda_view(request):
 			ordenes = None
 		else:	
 			fi_format = datetime.datetime.strptime(t_fechai, '%Y-%m-%d').date() 
-			ordenes = orden.objects.filter(fecha__year=fi_format.year,fecha__month=fi_format.month,fecha__day=fi_format.day, medico=usuario_doctor,anulada=False)
+			ordenes = orden.objects.filter(
+				fecha__year=fi_format.year, fecha__month=fi_format.month,
+				fecha__day=fi_format.day, medico=usuario_doctor, anulada=False
+			).order_by('fecha')
 			lista=[]
 			for p in ordenes:
 				cadena = ""
@@ -48,7 +51,10 @@ def agenda_view(request):
 	else:
 		today = datetime.date.today()
 		#ordenes = orden.objects.filter(fecha__year=today.year,fecha__month=today.month,fecha__day=today.day, medico=usuario_doctor)
-		ordenes = orden.objects.filter(fecha__year=today.year,fecha__month=today.month,fecha__day=today.day, medico=usuario_doctor, anulada=False)
+		ordenes = orden.objects.filter(
+			fecha__year=today.year, fecha__month=today.month, fecha__day=today.day,
+			medico=usuario_doctor, anulada=False
+		).order_by('fecha')
 		lista=[]
 		for p in ordenes:
 			cadena = ""
@@ -78,7 +84,10 @@ def agenda_doctor_view(request):
 		else:
 			fi_format = datetime.datetime.strptime(t_fechai, '%Y-%m-%d').date()	
 			doctor = medico.objects.get(pk=t_medico)
-			ordenes = orden.objects.filter(fecha__year=fi_format.year,fecha__month=fi_format.month,fecha__day=fi_format.day, medico=doctor, anulada=False)
+			ordenes = orden.objects.filter(
+				fecha__year=fi_format.year, fecha__month=fi_format.month,
+				fecha__day=fi_format.day, medico=doctor, anulada=False
+			).order_by('fecha')
 			lista=[]
 			for p in ordenes:
 				cadena = ""
