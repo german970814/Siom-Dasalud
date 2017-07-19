@@ -44,7 +44,10 @@
 						</div>
 						<div class="col-lg-3">
 							<p><label for="id_imagen">Firma:</label>{{form.imagen}}</p>
-						</div>	
+						</div>
+						<div class="col-lg-3">
+							<p><label for="id_institucion">Institucion:</label>{{form.institucion}}</p>
+						</div>
 					</div>
 					<br> 
 					<p>Nota: Para editar un doctor, seleccionelo y luego proceda a editar sus campos. Al finalizar haga click en Crear / Editar</p>
@@ -119,7 +122,7 @@ $(document).ready(function() {
 		var numero3 = $('#tr'+Pid).find("td:eq(2)").text(); 
 		var numero4 = $('#tr'+Pid).find("td:eq(3)").text(); 
 		var numero5 = $('#tr'+Pid).find("td:eq(4)").text(); 
-		var numero6 = $('#tr'+Pid).find("td:eq(5)").text();   
+		var numero6 = $('#tr'+Pid).find("td:eq(5)").text();
 		$('#id_nombre').val(numero);
 		$('#id_papellido').val(numero2);
 		$('#id_sapellido').val(numero3);

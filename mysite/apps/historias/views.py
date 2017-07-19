@@ -1,4 +1,4 @@
-from django.shortcuts import render,render_to_response
+from django.shortcuts import render, render_to_response, get_object_or_404
 from django.template import RequestContext
 from mysite.apps.historias.models import orden,ordenesProducto,historia_clinica,test_altura,historia_procedimientos,posologias,remision,remisionlab
 from mysite.apps.historias.forms import addOrdenForm,addOrdenSiomForm,addOrdenAnulaForm,addOrdenProductoForm,addhistoria_clinicaForm,addtest_alturaForm,addhistoria_procedimientosForm,addposologiaForm,addremisionForm,addremisionlabForm,fechaRipsForm,filtroOrdenForm
@@ -21,6 +21,8 @@ from datetime import date, timedelta
 from django.db.models import Max,Q
 from reportlab.pdfgen import canvas
 
+from mysite.apps.laboratorios.models import Laboratorio
+
 @login_required(login_url=URL_LOGIN)
 def historias_view(request,pagina):
 	historias= historia_clinica.objects.all().order_by('orden__fecha')[:1000]
@@ -34,16 +36,28 @@ def add_historias_view(request,id_prod):
 	error = False
 	existe_historia = False
 	altura = False
+
+	getorden = orden.objects.get(pk=id_prod) #Se obtiene informacion de la orden
+
+	servicios = orden.objects.filter(id=getorden.id).servicios().values_list('id', flat=True)
+	laboratorios = Laboratorio.objects.filter(servicio__id__in=servicios)
+
+	resultados = getorden.resultados_laboratorio.all()
+
+	for laboratorio in laboratorios:
+		param = resultados.filter(laboratorio__id=laboratorio.id)
+		if param.exists():
+			laboratorio.resultado = param.get()
+
 	if request.method == "POST":
 		if 'btntabhistoria' in request.POST:
-			getorden = orden.objects.get(pk=id_prod)
 			try:#Verifica si la historia existe
 				gethistoria = historia_clinica.objects.get(orden=getorden)
 				existe_historia = True
 			except:
 				existe_historia = False
 
-			if existe_historia:	
+			if existe_historia:
 				form1 = addhistoria_clinicaForm(request.POST,instance=gethistoria)
 				if form1.is_valid():
 					exito = True
@@ -82,16 +96,15 @@ def add_historias_view(request,id_prod):
 					if getorden.examen_adicional == '1':
 						altura = True
 					else:
-						altura = False								
-										
+						altura = False
+
 			historial = historia_clinica.objects.filter(paciente=getorden.paciente)
-			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)			
+			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
 			form2 = addposologiaForm()
-			ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
+			ctx = {'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
 			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 		if 'btntabhistoria_cerrar' in request.POST:
-			getorden= orden.objects.get(pk=id_prod)
 			try: #Verifica si existe para editarlo, de lo contrario se puede crear uno nuevo
 				gethistoria = historia_clinica.objects.get(orden=getorden)
 				form1 = addhistoria_clinicaForm(request.POST,instance=gethistoria)
@@ -103,7 +116,7 @@ def add_historias_view(request,id_prod):
 					altura = False
 					form3= addtest_alturaForm()
 
-				if form1.is_valid():				
+				if form1.is_valid():
 					add = form1.save(commit=False)
 					#Aqui se colocan todas las validaciones************************
 					if add.concepto != '8':
@@ -115,8 +128,8 @@ def add_historias_view(request,id_prod):
 						exito = True
 					else:
 						exito_cerrada = False
-						error = True	
-			except:	
+						error = True
+			except:
 				form1 = addhistoria_clinicaForm(request.POST)
 				if form1.is_valid():
 					exito = False
@@ -125,25 +138,24 @@ def add_historias_view(request,id_prod):
 				if getorden.examen_adicional == '1':
 					altura = True
 				else:
-					altura = False	
+					altura = False
 
 			historial = historia_clinica.objects.filter(paciente=getorden.paciente)
-			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)			
+			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
 			form2 = addposologiaForm()
-			ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'exito_cerrada':exito_cerrada,'error':error,'altura':altura}
-			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))							
+			ctx = {'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'exito_cerrada':exito_cerrada,'error':error,'altura':altura}
+			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
-	getorden = orden.objects.get(pk=id_prod) #Se obtiene informacion de la orden
 	try: #Verifica si la historia ya existe para cargarla y continuar editandola
 		gethistoria = historia_clinica.objects.get(orden=getorden)
 		form1 = addhistoria_clinicaForm(instance=gethistoria)
 		existe = True
-	except:	
+	except:
 		form1 = addhistoria_clinicaForm()
 		existe = False
 
 	historial = historia_clinica.objects.filter(paciente=getorden.paciente) #Se obtiene informacion de la orden
-	lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)	
+	lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
 	form2 = addposologiaForm()
 	if getorden.examen_adicional == '1':
 		altura = True
@@ -151,11 +163,11 @@ def add_historias_view(request,id_prod):
 			getaltura = test_altura.objects.get(orden=getorden)
 			form3= addtest_alturaForm(instance=getaltura)
 		else:
-			form3= addtest_alturaForm()		
+			form3= addtest_alturaForm()
 	else:
 		altura = False
-		form3= addtest_alturaForm()	
-	ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
+		form3= addtest_alturaForm()
+	ctx = {'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
 	return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 @login_required(login_url=URL_LOGIN)
@@ -184,18 +196,18 @@ def edit_historias_view(request,id_prod):
 
 
 			historial = historia_clinica.objects.filter(paciente=getorden.paciente) #Se obtiene informacion de la orden
-			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)		
+			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
 			form2 = addposologiaForm()
 			if getorden.examen_adicional == '1':
 				altura = True
 				getaltura = test_altura.objects.get(orden=getorden)
-				form3= addtest_alturaForm(instance=getaltura)		
+				form3= addtest_alturaForm(instance=getaltura)
 			else:
 				altura = False
-				form3= addtest_alturaForm()	
+				form3= addtest_alturaForm()
 
 			ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'altura':altura}
-			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))				
+			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 	getorden = orden.objects.get(pk=id_prod)	 #Se obtiene informacion de la orden
 	gethistoria = historia_clinica.objects.get(orden=getorden)
@@ -208,30 +220,53 @@ def edit_historias_view(request,id_prod):
 	if getorden.examen_adicional == '1':
 		altura = True
 		getaltura = test_altura.objects.get(orden=getorden)
-		form3= addtest_alturaForm(instance=getaltura)	
+		form3= addtest_alturaForm(instance=getaltura)
 	else:
 		altura = False
-		form3= addtest_alturaForm()	
-	
+		form3= addtest_alturaForm()
+
 	ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'altura':altura}
 	return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 @login_required(login_url=URL_LOGIN)
-def show_historias_view(request,id_prod):
-	getorden = orden.objects.get(pk=id_prod)	 #Se obtiene informacion de la orden
-	gethistoria = historia_clinica.objects.get(orden=getorden)
-	lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
-	form1 = addhistoria_clinicaForm(instance=gethistoria)
-	form2 = addposologiaForm()
-	if getorden.examen_adicional == '1':
-		altura = True
-		getaltura = test_altura.objects.get(orden=getorden)
-		form3= addtest_alturaForm(instance=getaltura)
-	else:
-		altura = False
-		form3= addtest_alturaForm()			
-	ctx = {'getorden':getorden,'gethistoria':gethistoria,'form1':form1,'form2':form2,'form3':form3,'altura':altura}
-	return render_to_response('home/showHistorias.html',ctx,context_instance=RequestContext(request))
+def show_historias_view(request, id_prod):
+	"""Vista para ver las historias de una orden."""
+
+	Orden = orden
+	HistoriaClinica = historia_clinica
+	TestAltura = test_altura
+	# HistoriaProcedimiento = historia_procedimientos
+
+	_orden = get_object_or_404(Orden, pk=id_prod)
+	_historia = get_object_or_404(HistoriaClinica, orden=_orden)
+	# _procedimientos = HistoriaProcedimiento.objects.filter(paciente=_orden.paciente)
+
+	kwargs_form = {}
+	data = {
+		'getorden': _orden, 'gethistoria': _historia, 'altura': False
+	}
+
+	if _orden.examen_adicional == '1':
+		data['altura'] = True
+		kwargs_form['instance'] = TestAltura.objects.get(orden=_orden)
+	
+	data['form1'] = addhistoria_clinicaForm(instance=_historia)
+	data['form2'] = addposologiaForm()
+	data['form3'] = addtest_alturaForm(**kwargs_form)
+
+	servicios = Orden.objects.filter(id=_orden.id).servicios().values_list('id', flat=True)
+	laboratorios = Laboratorio.objects.filter(servicio__id__in=servicios)
+
+	resultados = _orden.resultados_laboratorio.all()
+
+	for laboratorio in laboratorios:
+		param = resultados.filter(laboratorio__id=laboratorio.id)
+		if param.exists():
+			laboratorio.resultado = param.get()
+	data['laboratorios'] = laboratorios
+
+	return render(request, 'home/showHistorias.html', data)
+
 
 @login_required(login_url=URL_LOGIN)
 def add_evolucion_view(request,id_prod):
@@ -250,7 +285,7 @@ def add_evolucion_view(request,id_prod):
 					form1 = addhistoria_clinicaForm(request.POST,instance=gethistoria)
 					if form1.is_valid():
 						exito = True
-				except:	
+				except:
 					form1 = addhistoria_clinicaForm(request.POST)
 					if form1.is_valid():
 						getdiagnostico = cie.objects.get(pk=t_diagnostico)
@@ -278,22 +313,22 @@ def add_evolucion_view(request,id_prod):
 						add.diagnostico = getdiagnostico
 						add.diagnostico1 = getdiagnostico1
 						add.diagnostico2 = getdiagnostico2
-						add.diagnostico3 = getdiagnostico3 
+						add.diagnostico3 = getdiagnostico3
 						add.save() # Guardamos la informacion
 						getorden.status = 'R' #Se coloca la orden como realizada
 						getorden.save()
 						exito = True
 
 			historial = historia_clinica.objects.filter(paciente=getorden.paciente) #Se obtiene informacion de la orden
-			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)		
+			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
 			posologia = posologias.objects.filter(orden = getorden)
 			remisiones = remision.objects.filter(orden = getorden)
-			remisioneslab = remisionlab.objects.filter(orden = getorden)		
+			remisioneslab = remisionlab.objects.filter(orden = getorden)
 			form2 = addposologiaForm()
 			form3 = addremisionForm(initial={'entidad':getorden.paciente.procede})
 			form4 = addremisionlabForm()
 			ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'form4':form4,'posologia':posologia,'remisiones':remisiones,'remisioneslab':remisioneslab,'exito':exito,'error':error}
-			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))				
+			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 	getorden = orden.objects.get(pk=id_prod) #Se obtiene informacion de la orden
 	historial = historia_clinica.objects.filter(paciente=getorden.paciente) #Se obtiene informacion de la orden
@@ -338,7 +373,7 @@ def add_procedimientoOrden_view(request,id_prod):
 				form1 = addhistoria_procedimientosForm(request.POST,instance=getprocedimiento)
 				if form1.is_valid():
 					exito = True
-			except:		
+			except:
 				form1 = addhistoria_procedimientosForm(request.POST)
 				if form1.is_valid():
 					t_diagnostico = request.POST['diagnostico']
@@ -370,23 +405,23 @@ def add_procedimientoOrden_view(request,id_prod):
 					getorden.status = 'R' #Se coloca la orden como realizada
 					getorden.save()
 					exito = True
-	
+
 			ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'exito':exito}
-			return render_to_response('home/addHistoriasProcedimiento.html',ctx,context_instance=RequestContext(request))				
+			return render_to_response('home/addHistoriasProcedimiento.html',ctx,context_instance=RequestContext(request))
 
 	getorden = orden.objects.get(pk=id_prod) #Se obtiene informacion de la orden
 	lista_items = getorden.procedimiento.items.all()
 	cadena = ""
 	first = True
 	for p in lista_items:
-		cadena = cadena + p.nombre + "\n" + p.descripcion + "\n\n" 
-		
+		cadena = cadena + p.nombre + "\n" + p.descripcion + "\n\n"
+
 	datos_items = {'hallazgos':cadena,'impresion':"", 'remision':""}
 	historial = historia_clinica.objects.filter(paciente=getorden.paciente) #Se obtiene informacion de la orden
 	lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
-	form1 = addhistoria_procedimientosForm(initial=datos_items)	
+	form1 = addhistoria_procedimientosForm(initial=datos_items)
 	ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'exito':exito}
-	return render_to_response('home/addHistoriasProcedimiento.html',ctx,context_instance=RequestContext(request))	
+	return render_to_response('home/addHistoriasProcedimiento.html',ctx,context_instance=RequestContext(request))
 
 @login_required(login_url=URL_LOGIN)
 def edit_procedimientoOrden_view(request,id_prod):
@@ -424,15 +459,15 @@ def edit_procedimientoOrden_view(request,id_prod):
 				add.complicacion = getcomplicacion
 				add.save() # Guardamos la informacion
 				exito = True
-	
+
 			ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'exito':exito,'info':info}
-			return render_to_response('home/addHistoriasProcedimiento.html',ctx,context_instance=RequestContext(request))				
+			return render_to_response('home/addHistoriasProcedimiento.html',ctx,context_instance=RequestContext(request))
 
 	getorden = orden.objects.get(pk=id_prod) #Se obtiene informacion de la orden
 	getprocedimiento = historia_procedimientos.objects.get(orden=getorden)
 	historial = historia_clinica.objects.filter(paciente=getorden.paciente) #Se obtiene informacion de la orden
 	lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
-	form1 = addhistoria_procedimientosForm(instance=getprocedimiento)	
+	form1 = addhistoria_procedimientosForm(instance=getprocedimiento)
 	ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'exito':exito,'info':info}
 	return render_to_response('home/addHistoriasProcedimiento.html',ctx,context_instance=RequestContext(request))
 
@@ -442,7 +477,7 @@ def show_procedimientoOrden_view(request,id_prod):
 	getprocedimiento = historia_procedimientos.objects.get(orden=getorden)
 	historial = historia_clinica.objects.filter(paciente=getorden.paciente) #Se obtiene informacion de la orden
 	lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
-	form1 = addhistoria_procedimientosForm(instance=getprocedimiento)	
+	form1 = addhistoria_procedimientosForm(instance=getprocedimiento)
 
 	ctx = {'getorden':getorden,'getprocedimiento':getprocedimiento,'historial':historial,'lista_proc':lista_proc,'form1':form1}
 	return render_to_response('home/showHistoriasProcedimiento.html',ctx,context_instance=RequestContext(request))
@@ -463,9 +498,9 @@ def add_orden_view(request,id_prod):
 		i_u = userProfile.objects.get(user=usuario)
 		form.fields["institucion"].queryset = instituciones.objects.filter(pk=i_u.institucion.id)
 		form.fields["empresa"].queryset = i_u.institucion.empresas
-		form.fields["medico"].queryset = medico.objects.filter(institucion = i_u.institucion)				
+		form.fields["medico"].queryset = medico.objects.filter(institucion = i_u.institucion)
 		ctx = {'form':form,'temp':temp}
-		return render_to_response('home/addordenSiom.html',ctx,context_instance=RequestContext(request))	
+		return render_to_response('home/addordenSiom.html',ctx,context_instance=RequestContext(request))
 	else:
 		form = addOrdenSiomForm()
 
@@ -473,7 +508,7 @@ def add_orden_view(request,id_prod):
 	i_u = userProfile.objects.get(user=usuario)
 	form.fields["institucion"].queryset = instituciones.objects.filter(pk=i_u.institucion.id)
 	form.fields["empresa"].queryset = i_u.institucion.empresas
-	form.fields["medico"].queryset = medico.objects.filter(institucion = i_u.institucion)	
+	form.fields["medico"].queryset = medico.objects.filter(institucion = i_u.institucion)
 	ctx = {'form':form,'temp':temp}
 	return render_to_response('home/addordenSiom.html',ctx,context_instance=RequestContext(request))
 
@@ -486,9 +521,9 @@ def add_servicios_view(request,id_prod,id_orden):
 		if form.is_valid():
 			add = form.save(commit=False)
 			add.orden = getorden
-			add.save() # Guardamos la informacion	
-		
-	form = addOrdenProductoForm()	
+			add.save() # Guardamos la informacion
+
+	form = addOrdenProductoForm()
 	form.fields["servicio"].queryset = serviciosEmpresa.objects.filter(empresa=getorden.empresa)
 	lista = ordenesProducto.objects.filter(orden = getorden)
 	ctx = {'getorden':getorden,'form':form,'temp':temp,'lista':lista}
@@ -498,14 +533,14 @@ def add_servicios_view(request,id_prod,id_orden):
 def borrar_servicio_view(request,id_orden,id_servicio):
 	getorden = orden.objects.get(pk=id_orden)
 	p = ordenesProducto.objects.get(pk=id_servicio)
-	p.delete() # Elinamos objeto de la base de datos	
+	p.delete() # Elinamos objeto de la base de datos
 	return HttpResponseRedirect('/add/servicios/%s/%s/' % (getorden.paciente.id,getorden.id))
 
 @login_required(login_url=URL_LOGIN)
 def finalizar_view(request,id_orden):
 	getorden = orden.objects.get(pk=id_orden)
 	#getorden.status = 'R'
-	#getorden.save() # Elinamos objeto de la base de datos	
+	#getorden.save() # Elinamos objeto de la base de datos
 	return HttpResponseRedirect('/pacientes/page/1/')
 
 @login_required(login_url=URL_LOGIN)
@@ -518,7 +553,7 @@ def ordenes_view(request):
 		usuario = User.objects.get(pk=request.user.id)
 		i_u = userProfile.objects.get(user=usuario)
 		form2 = filtroOrdenForm(request.POST)
-		form3 = serviciosForm(request.POST)	
+		form3 = serviciosForm(request.POST)
 		empresa = request.POST['empresa']
 		institucion = request.POST['institucion']
 		servicio = request.POST['nombre']
@@ -538,12 +573,12 @@ def ordenes_view(request):
 			if (empresa != "") & (institucion != ""):
 				if request.user.has_perm("home.es_administrador"): #Si es administrador le deben salir todas las ordenes
 					ordenes = orden.objects.filter(fecha__range=(fi_format,ff_format),empresa=empresa, institucion=institucion).order_by('fecha')
-				else:			
-					ordenes = orden.objects.filter(fecha__range=(fi_format,ff_format),institucion=i_u.institucion, empresa=empresa).order_by('fecha')				
-			else:	
+				else:
+					ordenes = orden.objects.filter(fecha__range=(fi_format,ff_format),institucion=i_u.institucion, empresa=empresa).order_by('fecha')
+			else:
 				if request.user.has_perm("home.es_administrador"): #Si es administrador le deben salir todas las ordenes
 					ordenes = orden.objects.filter(fecha__range=(fi_format,ff_format)).order_by('fecha')
-				else:			
+				else:
 					ordenes = orden.objects.filter(fecha__range=(fi_format,ff_format),institucion=i_u.institucion).order_by('fecha')
 			lista=[]
 			ordenes = ordenes.select_related(
@@ -565,12 +600,12 @@ def ordenes_view(request):
 					cadena = cadena + z.nombre.nombre + ' | '
 
 				if servicio != "":
-					if existe_servicio:	
+					if existe_servicio:
 						lista.append({'orden': p,'servicios':cadena})
 				else:
 					lista.append({'orden': p,'servicios':cadena})
 
-			form = fechaRipsForm(request.POST)	
+			form = fechaRipsForm(request.POST)
 			ctx = {'lista':lista,'form':form,'form2':form2,'form3':form3,'error':error}
 			return render_to_response('home/ordenes.html',ctx,context_instance=RequestContext(request))
 		else: #Se coloco un numero de orden, se ignoran las fechas y se hace la consulta
@@ -591,17 +626,17 @@ def ordenes_view(request):
 				_servicios = serviciosEmpresa.objects.filter(ordenProducto_servicio__in=p.OrdenProducto_orden.all()).select_related('nombre')
 				for z in _servicios:
 					cadena = cadena + z.nombre.nombre + ' | '
-				lista.append({'orden': p,'servicios':cadena})			
+				lista.append({'orden': p,'servicios':cadena})
 			form = fechaRipsForm()
 			form2 = filtroOrdenForm()
-			form3 = serviciosForm()		
+			form3 = serviciosForm()
 			ctx = {'lista':lista,'form':form,'form2':form2,'form3':form3,'error':error}
-			return render_to_response('home/ordenes.html',ctx,context_instance=RequestContext(request))	
-			
+			return render_to_response('home/ordenes.html',ctx,context_instance=RequestContext(request))
+
 	lista = []
 	form = fechaRipsForm()
 	form2 = filtroOrdenForm()
-	form3 = serviciosForm()	
+	form3 = serviciosForm()
 	ctx = {'lista':lista,'form':form,'form2':form2,'form3':form3,'error':error}
 	return render_to_response('home/ordenes.html',ctx,context_instance=RequestContext(request))
 
@@ -630,12 +665,12 @@ def ordenesReporte_view(request):
 			if (empresa != "") & (institucion != ""):
 				if request.user.has_perm("home.es_administrador"): #Si es administrador le deben salir todas las ordenes
 					ordenes = ordenesProducto.objects.filter(orden__fecha__range=(fi_format,ff_format),orden__empresa=empresa, orden__institucion=institucion).order_by('orden__fecha')
-				else:			
-					ordenes = ordenesProducto.objects.filter(orden__fecha__range=(fi_format,ff_format), orden__institucion=i_u.institucion, orden__empresa=empresa).order_by('orden_fecha')				
-			else:	
+				else:
+					ordenes = ordenesProducto.objects.filter(orden__fecha__range=(fi_format,ff_format), orden__institucion=i_u.institucion, orden__empresa=empresa).order_by('orden_fecha')
+			else:
 				if request.user.has_perm("home.es_administrador"): #Si es administrador le deben salir todas las ordenes
 					ordenes = ordenesProducto.objects.filter(orden__fecha__range=(fi_format,ff_format)).order_by('orden__fecha')
-				else:			
+				else:
 					ordenes = ordenesProducto.objects.filter(orden__fecha__range=(fi_format,ff_format), orden__institucion=i_u.institucion).order_by('orden__fecha')
 			ordenes = ordenes.select_related(
 				'orden', 'orden__paciente', 'orden__empresa', 'orden__institucion', 'servicio__nombre')#.only(
@@ -644,7 +679,7 @@ def ordenesReporte_view(request):
 						#'paciente__papellido', 'paciente__cedula'
 					#)
 			lista = ordenes
-			form = fechaRipsForm(request.POST)	
+			form = fechaRipsForm(request.POST)
 			ctx = {'lista':lista,'form':form,'form2':form2,'error':error}
 			return render_to_response('home/ordenesReporte.html',ctx,context_instance=RequestContext(request))
 		else: #Se coloco un numero de orden, se ignoran las fechas y se hace la consulta
@@ -655,12 +690,12 @@ def ordenesReporte_view(request):
 			#lista=[]
 			ordenes = ordenes.select_related(
 				'orden', 'orden__paciente', 'orden__empresa', 'orden__institucion', 'servicio__nombre')
-			lista = ordenes			
+			lista = ordenes
 			form = fechaRipsForm()
-			form2 = filtroOrdenForm()	
+			form2 = filtroOrdenForm()
 			ctx = {'lista':lista,'form':form,'form2':form2,'error':error}
-			return render_to_response('home/ordenesReporte.html',ctx,context_instance=RequestContext(request))	
-			
+			return render_to_response('home/ordenesReporte.html',ctx,context_instance=RequestContext(request))
+
 	lista = []
 	form = fechaRipsForm()
 	form2 = filtroOrdenForm()
@@ -728,14 +763,12 @@ def consulta_procedimiento_view(request):
 		total = honorario + valor_sala + valor_sutura
 		valor = '%.2f' % total
 	else:
-		print "************************************"
-		print "CALCULAR TARIFA DE ACUERDO A ISS2004"
-		print "************************************"	
+		pass
 
 	from django.core.serializers.json import DjangoJSONEncoder
 	data = []
 	data.append({'tarifa': valor,})
-	return HttpResponse(simplejson.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')	
+	return HttpResponse(simplejson.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
 	#data = serializers.serialize('json',prod,fields=('tarifa'))
 	#return HttpResponse(data, content_type='application/json')
 
@@ -748,16 +781,16 @@ def consulta_plan_view(request):
 	prod = empresas.objects.filter(pk = request.GET['valor'])
 	for p in prod:
 		t_plan = p
-	
+
 	prod2 = planes_salud.objects.filter(descripcion = t_plan.plan)
 	data = serializers.serialize('json',prod2,fields=('porcentaje'))
-	return HttpResponse(data, content_type='application/json')	
+	return HttpResponse(data, content_type='application/json')
 
 def consulta_empresa_view(request):
 	#En el front se hizo validacion para que siempre exista empresa en esta consulta
 	t_empresa = empresas.objects.filter(pk = request.GET['id_empresa'])
 	data = serializers.serialize('json',t_empresa,fields=('valor_sedacion'))
-	return HttpResponse(data, content_type='application/json')	
+	return HttpResponse(data, content_type='application/json')
 
 def rango_procedimiento_view(request):
 	prod = rango_procedimiento.objects.filter(descripcion = request.GET['id'])
@@ -818,8 +851,8 @@ def borrar_remision_view(request):
 			return HttpResponse(simplejson.dumps(mensaje),content_type='application/json')
 		except:
 			mensaje = {"status":"False"}
-			return HttpResponse(simplejson.dumps(mensaje),content_type='application/json')										
-	
+			return HttpResponse(simplejson.dumps(mensaje),content_type='application/json')
+
 def agregar_laboratorio_view(request):
 	if request.method=="POST":
 		try:
@@ -843,7 +876,7 @@ def borrar_laboratorio_view(request):
 			return HttpResponse(simplejson.dumps(mensaje),content_type='application/json')
 		except:
 			mensaje = {"status":"False"}
-			return HttpResponse(simplejson.dumps(mensaje),content_type='application/json')	
+			return HttpResponse(simplejson.dumps(mensaje),content_type='application/json')
 
 def consulta_cie_view(request):
 	buscar = request.GET['term']
@@ -853,7 +886,7 @@ def consulta_cie_view(request):
 		descripcion = '%s %s' % (p.codigo,p.descripcion)
 		data.append({'id': p.id,'text':descripcion,})
 
-	from django.core.serializers.json import DjangoJSONEncoder	
+	from django.core.serializers.json import DjangoJSONEncoder
 	return HttpResponse(simplejson.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')
 
 #Consultas ajax que se hacen para conocer los historiales de los pacientes
@@ -881,7 +914,7 @@ def muestra_historia_view(request):
 		'temperatura':gethistoria.temperatura,'pulso':gethistoria.pulso,
 	}
 	json_data = json.dumps(data) #Convierte diccionario python a json
-	return HttpResponse(json_data,content_type='application/json')	
+	return HttpResponse(json_data,content_type='application/json')
 
 def muestra_procedimiento_view(request):
 	getprocedimiento = historia_procedimientos.objects.filter(pk = request.GET['id_historia'])
@@ -895,7 +928,7 @@ def imprimir_recibo_view(request,id_prod):
 	t_orden = orden.objects.get(pk = id_prod)
 	response = HttpResponse(content_type='application/pdf')
 	response['Content-Disposition'] = 'attachment; filename="Orden_%s.pdf"' % t_orden.id
-	
+
 	ips = instituciones.objects.get(pk='1')
 
 	t_titulo = ips.razon
@@ -910,11 +943,11 @@ def imprimir_recibo_view(request,id_prod):
 	t_cancela = 0
 
 	t_particular = 0
-	#************************************************************	
-	t_sala = 0 #Aqui hay que ver que es lo que se debe consultar	
+	#************************************************************
+	t_sala = 0 #Aqui hay que ver que es lo que se debe consultar
 	# Pues no entiendo este item
 	#************************************************************
-	t_generadapor = t_orden.generadapor	
+	t_generadapor = t_orden.generadapor
 
 	ImprimeRecibo(response, t_titulo, t_nit, t_no_orden, t_pageinfo, t_telefono, t_fecha, t_cedula, t_procedimiento, t_empresa, t_cancela, t_particular, t_sala, t_generadapor)
 	return response
@@ -926,7 +959,7 @@ def imprimir_historia_view(request,id_prod):
 	response = HttpResponse(content_type='application/pdf')
 	response['Content-Disposition'] = 'attachment; filename="Historia_Clinica_%s.pdf"' % t_historia.id
 	ImprimeHistoria(response, id_prod)
-	'''	
+	'''
 	except:
 		response = HttpResponse(content_type='application/pdf')
 		response['Content-Disposition'] = 'attachment; filename="Historia_Clinica_Sin_Datos.pdf"'
@@ -934,8 +967,8 @@ def imprimir_historia_view(request,id_prod):
 		p.drawString(100, 800, "No hay datos para mostrar, verificar configuracion.")
 		p.showPage()
 		p.save()
-	'''	
-	
+	'''
+
 	return response
 
 def imprimir_concepto_view(request,id_prod):
@@ -953,7 +986,7 @@ def imprimir_concepto_view(request,id_prod):
 		p.showPage()
 		p.save()
 
-	return response	
+	return response
 
 def imprimir_medicamentos_view(request,id_prod):
 	t_orden = orden.objects.get(pk = id_prod)  #Buscar si la historia existe
@@ -970,7 +1003,7 @@ def imprimir_medicamentos_view(request,id_prod):
 		p.showPage()
 		p.save()
 
-	return response	
+	return response
 
 def imprimir_ordenamientos_view(request,id_prod):
 	t_orden = orden.objects.get(pk = id_prod) #Buscar si la historia existe
@@ -987,7 +1020,7 @@ def imprimir_ordenamientos_view(request,id_prod):
 		p.showPage()
 		p.save()
 
-	return response	
+	return response
 
 def imprimir_laboratorios_view(request,id_prod):
 	t_orden = orden.objects.get(pk = id_prod) #Buscar si la historia existe
@@ -1021,7 +1054,7 @@ def imprimir_remision_view(request,id_prod):
 		p.showPage()
 		p.save()
 
-	return response			
+	return response
 
 def imprimir_procedimiento_view(request,id_prod):
 	#Buscar si la historia existe
@@ -1039,7 +1072,7 @@ def imprimir_procedimiento_view(request,id_prod):
 		p.showPage()
 		p.save()
 
-	return response	
+	return response
 
 #Creacion de Rips
 def crear_rips_view(request):
@@ -1065,13 +1098,13 @@ def crear_rips_view(request):
 				fr_format = datetime.datetime.strptime(fr, '%Y-%m-%d').date()
 				fi_format = fi_format.strftime("%d/%m/%Y")
 				ff_format = ff_format.strftime("%d/%m/%Y")
-				fr_format = fr_format.strftime("%d/%m/%Y")				
+				fr_format = fr_format.strftime("%d/%m/%Y")
 				listado = orden.objects.filter(status = 'R', fecha__gte = fi, fecha__lte = ff, institucion = t_inst, empresa = t_empr, tipo_usuario = t_tipo).exclude(pendiente_autoriza = False)
 				if not listado: #No existen ordenes pendientes, se puede generar rips
 					#Se Generan Rips de acuerdo a opciones escogidas******************************************
 					opcion_escogida = request.POST['archivo']
 					if opcion_escogida == '1': #Se escogio archivo de consultas
-						listado = historia_clinica.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo)	
+						listado = historia_clinica.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo)
 						response = HttpResponse(content_type='text/csv')
 						t_archivo = 'attachment; filename="AC%s.txt"' %(t_consecutivo)
 						response['Content-Disposition'] = t_archivo
@@ -1080,17 +1113,17 @@ def crear_rips_view(request):
 							if not p.diagnostico1:
 								diagnostico1 = ""
 							else:
-								diagnostico1 = p.diagnostico1.codigo	
+								diagnostico1 = p.diagnostico1.codigo
 
 							if not p.diagnostico2:
 								diagnostico2 = ""
 							else:
-								diagnostico2 = p.diagnostico2.codigo	
+								diagnostico2 = p.diagnostico2.codigo
 
 							if not p.diagnostico3:
 								diagnostico3 = ""
 							else:
-								diagnostico3 = p.diagnostico3.codigo			
+								diagnostico3 = p.diagnostico3.codigo
 
 							writer.writerow([p.orden.id,p.orden.empresa.codigo,p.paciente.documento,p.paciente.cedula,
 								p.orden.fecha_atencion.strftime("%d/%m/%Y"),p.orden.id,p.orden.consulta.codigo,p.finalidad,
@@ -1098,7 +1131,7 @@ def crear_rips_view(request):
 								p.tipo_diagnostico,p.orden.valor,p.orden.couta,p.orden.total])
 						return response
 					elif opcion_escogida == '2': #Se escogio archivo de procedimientos
-						listado = historia_procedimientos.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo)	
+						listado = historia_procedimientos.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo)
 						response = HttpResponse(content_type='text/csv')
 						t_archivo = 'attachment; filename="AP%s.txt"' %(t_consecutivo)
 						response['Content-Disposition'] = t_archivo
@@ -1107,18 +1140,18 @@ def crear_rips_view(request):
 							if not p.diagnostico:
 								diagnostico = ""
 							else:
-								diagnostico = p.diagnostico.codigo	
+								diagnostico = p.diagnostico.codigo
 
 							if not p.diagnostico1:
 								diagnostico1 = ""
 							else:
-								diagnostico1 = p.diagnostico1.codigo	
+								diagnostico1 = p.diagnostico1.codigo
 
 							if not p.complicacion:
 								complicacion = ""
 							else:
-								complicacion = p.complicacion.codigo	
-									
+								complicacion = p.complicacion.codigo
+
 							writer.writerow([p.orden.id,p.orden.empresa.codigo,p.paciente.documento,p.paciente.cedula,
 								p.orden.fecha_atencion	,p.orden.id,p.orden.procedimiento.codigo,p.ambito,p.finalidad,
 								p.personal,diagnostico,diagnostico1,complicacion, p.forma,p.orden.valor])
@@ -1129,7 +1162,7 @@ def crear_rips_view(request):
 						t_archivo = 'attachment; filename="AF%s.txt"' %(t_consecutivo)
 						response['Content-Disposition'] = t_archivo
 						writer = csv.writer(response)
-						for p in listado:	
+						for p in listado:
 							num = "%s-%s" %(p.letra_factura,p.numero)
 							writer.writerow([p.orden.institucion.codigo,p.orden.institucion.razon,p.orden.institucion.documento,
 								p.orden.institucion.numero,num,p.fecha_emision.strftime("%d/%m/%Y"),fi_format,ff_format,p.orden.empresa.codigo,p.orden.empresa.razon,
@@ -1148,8 +1181,8 @@ def crear_rips_view(request):
 									if z["paciente"] == q.paciente:
 										coincidencia = True
 								if not coincidencia:
-									usuarios.append({"empresa":q.orden.empresa,'paciente':q.paciente,'tipo':q.orden.tipo_usuario})		
-						temp = historia_procedimientos.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo)		
+									usuarios.append({"empresa":q.orden.empresa,'paciente':q.paciente,'tipo':q.orden.tipo_usuario})
+						temp = historia_procedimientos.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo)
 						for q in temp:
 							coincidencia = False
 							if not usuarios:
@@ -1159,20 +1192,20 @@ def crear_rips_view(request):
 									if z["paciente"] == q.paciente:
 										coincidencia = True
 								if not coincidencia:
-									usuarios.append({"empresa":q.orden.empresa,'paciente':q.paciente,'tipo':q.orden.tipo_usuario})		
+									usuarios.append({"empresa":q.orden.empresa,'paciente':q.paciente,'tipo':q.orden.tipo_usuario})
 						response = HttpResponse(content_type='text/csv')
 						t_archivo = 'attachment; filename="US%s.txt"' %(t_consecutivo)
 						response['Content-Disposition'] = t_archivo
 						writer = csv.writer(response)
-						for p in usuarios:	
+						for p in usuarios:
 							writer.writerow([p["paciente"].documento,p["paciente"].cedula,p["empresa"].codigo,p["tipo"],p["paciente"].papellido,
 								p["paciente"].sapellido,p["paciente"].pnombre,p["paciente"].snombre,p["paciente"].edad,p["paciente"].unidad,
 								p["paciente"].genero,p["paciente"].ciudad.codigo,p["paciente"].ciudad.codigo_municipio,p["paciente"].zona])
 						return response
 					elif opcion_escogida =='5':
-						temp = historia_clinica.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo).count()	
+						temp = historia_clinica.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo).count()
 						t_hclinicas = temp
-						temp = historia_procedimientos.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo).count()			
+						temp = historia_procedimientos.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo).count()
 						t_hprocedimiento = temp
 						temp = factura.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo).count()
 						t_factura = temp
@@ -1187,8 +1220,8 @@ def crear_rips_view(request):
 									if z["paciente"] == q.paciente:
 										coincidencia = True
 								if not coincidencia:
-									usuarios.append({"empresa":q.orden.empresa,'paciente':q.paciente,'tipo':q.orden.tipo_usuario})			
-						temp = historia_procedimientos.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo)		
+									usuarios.append({"empresa":q.orden.empresa,'paciente':q.paciente,'tipo':q.orden.tipo_usuario})
+						temp = historia_procedimientos.objects.filter(orden__status = 'R', orden__fecha__gte = fi, orden__fecha__lte = ff, orden__institucion = t_inst, orden__empresa = t_empr, orden__tipo_usuario = t_tipo)
 						for q in temp:
 							coincidencia = False
 							if not usuarios:
@@ -1198,7 +1231,7 @@ def crear_rips_view(request):
 									if z["paciente"] == q.paciente:
 										coincidencia = True
 								if not coincidencia:
-									usuarios.append({"empresa":q.orden.empresa,'paciente':q.paciente,'tipo':q.orden.tipo_usuario})			
+									usuarios.append({"empresa":q.orden.empresa,'paciente':q.paciente,'tipo':q.orden.tipo_usuario})
 						t_usuarios = len(usuarios)
 						t_institucion = instituciones.objects.get(pk=t_inst)
 						response = HttpResponse(content_type='text/csv')
@@ -1214,23 +1247,23 @@ def crear_rips_view(request):
 						writer.writerow([t_institucion.codigo,fr_format,s_usuario,t_usuarios])
 						writer.writerow([t_institucion.codigo,fr_format,s_facturacion,t_factura])
 						return response
-					#******************************************************************************************	
+					#******************************************************************************************
 				else: #Se encontraron ordenes pendientes por numero de autorizacion, no se puede generar el rips
 					pendiente = True
 					lista_instituciones = instituciones.objects.all()
-					form = fechaRipsForm(request.POST)	
+					form = fechaRipsForm(request.POST)
 					ctx = {'form':form,'lista_instituciones':lista_instituciones,'error':error,'pendiente':pendiente}
 					return render_to_response('home/crearRips.html',ctx,context_instance=RequestContext(request))
 
 		if error:
 			lista_instituciones = instituciones.objects.all()
-			form = fechaRipsForm(request.POST)	
+			form = fechaRipsForm(request.POST)
 			ctx = {'form':form,'lista_instituciones':lista_instituciones,'error':error,'pendiente':pendiente}
 			return render_to_response('home/crearRips.html',ctx,context_instance=RequestContext(request))
 	#Es un GET*****************************************************
-	else:	
+	else:
 		lista_instituciones = instituciones.objects.all()
-		form = fechaRipsForm()	
+		form = fechaRipsForm()
 		ctx = {'form':form,'lista_instituciones':lista_instituciones,'error':error,'pendiente':pendiente}
 		return render_to_response('home/crearRips.html',ctx,context_instance=RequestContext(request))
 
@@ -1243,4 +1276,4 @@ def empresas_institucion_view(request):
 	for p in empresas:
 		data.append({'id': p.id,'razon':p.razon,})
 	from django.core.serializers.json import DjangoJSONEncoder
-	return HttpResponse(simplejson.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')												
+	return HttpResponse(simplejson.dumps(data, cls=DjangoJSONEncoder), content_type='application/json')

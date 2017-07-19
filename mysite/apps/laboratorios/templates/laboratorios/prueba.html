@@ -1,0 +1,33 @@
+{% load staticfiles resultados %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Laboratorios</title>
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/print_laboratorios.css' %}">
+    </head>
+    <body>
+        <div class="container">
+            
+            <div class="card">
+
+                <div class="card-body card-padding">
+
+                    {% include 'laboratorios/header.html' %}
+
+                    <div class="row resultado-content">
+                        <h3>ANALISIS</h3>
+                        <br>
+                        
+                        
+                    </div>
+
+                    {% include 'laboratorios/footer.html' %}
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

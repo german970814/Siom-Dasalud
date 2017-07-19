@@ -173,7 +173,7 @@ def citas_consultas_view(request):
 							t_paciente.celular = request.POST['celular']
 							t_paciente.save()
 						except:
-							print "No existe"
+							pass
 						return HttpResponseRedirect('/citas/consultas/')							
 
 		lista_medicos = medico.objects.all()
@@ -277,7 +277,7 @@ def citas_procedimientos_view(request):
 							t_paciente.celular = request.POST['celular']
 							t_paciente.save()
 						except:
-							print "No existe"
+							pass
 						return HttpResponseRedirect('/citas/procedimiento/')							
 
 		lista_medicos = medico.objects.all()

@@ -1,0 +1,270 @@
+{% if perms.home.es_administrador or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %}
+
+    <v-list-tile ripple href="/">
+        <v-list-tile-action>
+            <v-icon light>accessibility</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+            <v-list-tile-title>Dashboard</v-list-tile-title>
+        </v-list-tile-content>
+    </v-list-tile>
+
+<v-list-group>
+
+        <v-list-tile slot="item" ripple>
+            <v-list-tile-action>
+                <v-icon light>people</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+                <v-list-tile-title>Pacientes</v-list-tile-title>
+            </v-list-tile-content>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="/pacientes/page/1/">
+            <v-list-tile-title>Lista Paciente</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="{% url "vista_agregar_paciente" %}">
+            <v-list-tile-title>Crear Paciente</v-list-tile-title>
+        </v-list-tile>
+    
+</v-list-group>
+{% endif %}
+{% if perms.home.es_administrador or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia or perms.home.es_doctor %}
+<v-list-group>
+
+        <v-list-tile slot="item" ripple>
+            <v-list-tile-action>
+                <v-icon light>today</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+                <v-list-tile-title>Agendas</v-list-tile-title>
+            </v-list-tile-content>
+        </v-list-tile>
+    
+    {% if perms.home.es_doctor %}
+    
+        <v-list-tile ripple href="/agenda/">
+            <v-list-tile-title>Agenda del Dia</v-list-tile-title>
+        </v-list-tile>
+    
+    {% endif %}
+    {% if perms.home.es_administrador or perms.home.es_coordinador_general or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %}
+    
+        <v-list-tile ripple href="/agenda/doctor/">
+            <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>
+        </v-list-tile>
+    
+    {% endif %}
+</v-list-group>
+{% endif %}
+{% if perms.home.es_administrador or perms.home.es_coordinador_general or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %}
+<v-list-group>
+
+        <v-list-tile slot="item" ripple>
+            <v-list-tile-action>
+                <v-icon light>open_in_browser</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+                <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>
+            </v-list-tile-content>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="/ordenes/">
+            <v-list-tile-title>Lista de Ordenes</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="/ordenesReporte/">
+            <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>
+        </v-list-tile>
+    
+</v-list-group>
+{% endif %}
+{% if perms.home.es_coordinador_general or perms.home.es_auxiliar_contabilidad %}
+
+    <v-list-tile ripple href="{% if perms.home.es_coordinador_general %}/portal_empresas/{% else %}/buscar_orden/{% endif %}">
+        <v-list-tile-action>
+            <v-icon light>search</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+            <v-list-tile-title>Buscar Orden</v-list-tile-title>
+        </v-list-tile-content>
+    </v-list-tile>
+
+{% endif %}
+{% if user.is_staff or perms.home.es_administrador %}
+<v-divider light></v-divider>
+<v-subheader light>Utilidades</v-subheader>
+<v-list-group>
+
+        <v-list-tile slot="item" ripple>
+            <v-list-tile-action>
+                <v-icon light>local_hospital</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+                <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>
+            </v-list-tile-content>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="/medicos/">
+            <v-list-tile-title>Medicos</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="/instituciones/">
+            <v-list-tile-title>Instituciones</v-list-tile-title>
+        </v-list-tile>
+    
+</v-list-group>
+<v-list-group>
+
+        <v-list-tile slot="item" ripple>
+            <v-list-tile-action>
+                <v-icon light>business_center</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+                <v-list-tile-title>Empresas y Planes</v-list-tile-title>
+            </v-list-tile-content>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="/empresas/">
+            <v-list-tile-title>Empresas</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="/planes/">
+            <v-list-tile-title>Planes de Salud</v-list-tile-title>
+        </v-list-tile>
+    
+</v-list-group>
+<v-list-group>
+
+        <v-list-tile slot="item" ripple>
+            <v-list-tile-action>
+                <v-icon light>featured_play_list</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+                <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>
+            </v-list-tile-content>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="/procedimientos/">
+            <v-list-tile-title>Procedimientos</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="/plantillas/">
+            <v-list-tile-title>Plantillas</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="/servicios/">
+            <v-list-tile-title>Servicios</v-list-tile-title>
+        </v-list-tile>
+    
+</v-list-group>
+<v-list-group>
+
+        <v-list-tile slot="item" ripple>
+            <v-list-tile-action>
+                <v-icon light>featured_play_list</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+                <v-list-tile-title>Usuarios</v-list-tile-title>
+            </v-list-tile-content>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="/usuarios/">
+            <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="/usuariosEmpresa/">
+            <v-list-tile-title>Usuarios Empresas</v-list-tile-title>
+        </v-list-tile>
+    
+</v-list-group>
+<v-divider light></v-divider>
+{% endif %}
+<v-subheader light>Laboratorio</v-subheader>
+{% if user.bacteriologo %}
+
+    <v-list-tile ripple href="{% url 'laboratorios:index' %}#/ordenes_laboratorios/">
+        <v-list-tile-title>Laboratorios</v-list-tile-title>
+    </v-list-tile>
+
+{% endif %}
+{% if user.empleado %}
+
+    <v-list-tile ripple href="{% url 'laboratorios:index' %}#/toma_muestra/">
+        <v-list-tile-title>Ordenes Toma Muestra</v-list-tile-title>
+    </v-list-tile>
+
+{% endif %}
+{% if perms.home.es_administrador %}
+<v-list-group>
+
+        <v-list-tile slot="item" ripple>
+            <v-list-tile-action>
+                <v-icon light>local_hospital</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+                <v-list-tile-title>Administración</v-list-tile-title>
+            </v-list-tile-content>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/bacteriologos/">
+          <v-list-tile-title>Bacteriologos</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/empleados/">
+          <v-list-tile-title>Empleados</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/laboratorios/">
+          <v-list-tile-title>Laboratorios</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/equipos/">
+            <v-list-tile-title>Equipos</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/tecnicas/">
+            <v-list-tile-title>Tecnicas</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/secciones_trabajo/">
+            <v-list-tile-title>Areas</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/reactivos/">
+            <v-list-tile-title>Productos</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/caracteristicas/">
+            <v-list-tile-title>Caracteristicas</v-list-tile-title>
+        </v-list-tile>
+    
+    
+        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/especificacion_caracteristicas/">
+            <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>
+        </v-list-tile>
+    
+</v-list-group>
+{% endif %}

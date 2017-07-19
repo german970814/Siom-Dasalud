@@ -1,373 +1,241 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>IPS SIOM</title>
+        <!--<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">-->
+        <link rel="stylesheet" href="{% static 'laboratorios/node_modules/vuetify/dist/vuetify.min.css' %}">
+        <link href="{% static 'laboratorios/fonts.css' %}" rel="stylesheet" type="text/css">
 
-<head>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/font-awesome/css/font-awesome.css" rel="stylesheet">
+        <link href="/static/css/redmond/jquery-ui-1.10.4.custom.css" rel="stylesheet">
+        <link href="/static/css/geova.css" rel="stylesheet">
+        <link href='/static/css/fullcalendar.css' rel='stylesheet' />
+        <link href='/static/css/fullcalendar.print.css' rel='stylesheet' media='print' />
 
-    <title>IPS SIOM</title>
+        <!-- http://fontawesome.io/icons/    -->
 
-    <!-- Core CSS - Include with every page -->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/font-awesome/css/font-awesome.css" rel="stylesheet">
-    <link href="/static/css/redmond/jquery-ui-1.10.4.custom.css" rel="stylesheet">
-    <link href="/static/css/geova.css" rel="stylesheet">
-    <link href='/static/css/fullcalendar.css' rel='stylesheet' />
-    <link href='/static/css/fullcalendar.print.css' rel='stylesheet' media='print' />
+        <!-- Page-Level Plugin CSS - Tables -->
+        <link href="/static/css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+        <link href="/static/css/plugins/dataTables/dataTables.tableTools.css" rel="stylesheet">
+        <link href="/static/css/select2.css" rel="stylesheet">
+        <link href="/static/css/select2-bootstrap.css" rel="stylesheet">
+        <!-- SB Admin CSS - Include with every page -->
+        <link href="/static/css/sb-admin.css" rel="stylesheet">
 
-    <!-- http://fontawesome.io/icons/    -->
 
-    <!-- Page-Level Plugin CSS - Tables -->
-    <link href="/static/css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
-    <link href="/static/css/plugins/dataTables/dataTables.tableTools.css" rel="stylesheet">
-    <link href="/static/css/select2.css" rel="stylesheet">
-    <link href="/static/css/select2-bootstrap.css" rel="stylesheet">
-    <!-- SB Admin CSS - Include with every page -->
-    <link href="/static/css/sb-admin.css" rel="stylesheet">
-
-</head>
-
-<body>
-
-    <div id="wrapper">
-
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">IPS SIOM</a>
-            </div>
-            <!-- /.navbar-header -->
-
-            <ul class="nav navbar-top-links navbar-right">
-                <a href="#">{{user}}</a>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> Perfil de Usuario</a>
-                        </li>
-                        <li><a href="/cambiarPassword/"><i class="fa fa-gear fa-fw"></i> Cambiar Clave</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a href="{% url "vista_logout" %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                        </li>
-                    </ul>
-                    <!-- /.dropdown-user -->
-                </li>
-                <!-- /.dropdown -->
-            </ul>
-            <!-- /.navbar-top-links -->
-
-            <div class="navbar-default navbar-static-side" role="navigation">
-                <div class="sidebar-collapse">
-                    <ul class="nav" id="side-menu">
-                        {% if perms.home.es_administrador or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %}
-                        <li>
-                            <a href="/"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                        </li>                      
-                        <li>
-                            <a href="#"><i class="fa fa-users fa-fw"></i> Pacientes<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="/pacientes/page/1/">Listado de Pacientes</a>
-                                </li>
-                                <li>
-                                    <a href="{% url "vista_agregar_paciente" %}">Crear Paciente</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        {% endif %}
-
-                        <!--
-                        {% if perms.home.es_administrador or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %} 
-                        <li>
-                            <a href="#"><i class="fa fa-book fa-fw"></i> Citas<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                {% if perms.home.es_administrador or perms.home.es_coordinador_general or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma %} 
-                                <li>
-                                    <a href="/citas/consultas/">Citas de Consultas</a>
-                                </li>
-                                {% endif %}
-                                {% if perms.home.es_administrador or perms.home.es_coordinador_general or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_endoscopia %} 
-                                <li>
-                                    <a href="/citas/procedimientos/">Citas de Procedimientos</a>
-                                </li>
-                                {% endif %}
-                                <li>
-                                    <a href="/citas/listado/">Listado de Citas</a>
-                                </li>
-                                {% if perms.home.es_administrador or perms.home.es_coordinador_general or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia %} 
-                                <li>
-                                    <a href="/citas/reservaciones/">Reservaciones</a>
-                                </li>
-                                <li>
-                                    <a href="/citas/disponibilidad/consultas">Disponibilidad Consultas</a>
-                                </li>
-                                <li>
-                                    <a href="/citas/disponibilidad/procedimientos">Disponibilidad Procedimientos</a>
-                                </li>
-                                {% endif %}
-                            </ul>
-                        </li>
-                        {% endif %}
-                        -->
-
-                        {% if perms.home.es_administrador or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia or perms.home.es_doctor %} 
-                        <li>
-                            <a href="#"><i class="fa fa-calendar fa-fw"></i> Agendas<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                {% if perms.home.es_doctor %}
-                                <li>
-                                    <a href="/agenda/">Agenda del Dia</a>
-                                </li>
-                                {% endif %}
-                                {% if perms.home.es_administrador or perms.home.es_coordinador_general or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %} 
-                                <li>
-                                    <a href="/agenda/doctor/">Agenda por Doctor</a>
-                                </li>
-                                {% endif %}
-                            </ul>
-                        </li>
-                        {% endif %}
-
-                        {% if perms.home.es_administrador or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %} 
-                        <li>
-                            <a href="#"><i class="fa fa-edit fa-fw"></i> Ordenes de Servicio<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                {% if perms.home.es_administrador or perms.home.es_coordinador_general or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %} 
-                                <li>
-                                    <a href="/ordenes/">Ordenes de Servicio</a>
-                                </li>
-                                <li>
-                                    <a href="/ordenesReporte/">Filtrado de Ordenes</a>
-                                </li>
-                                {% endif %}
-                            </ul>
-                        </li>
-                        {% endif %}
-
-                        <!--
-                        {% if perms.home.es_administrador or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia or perms.home.es_auxiliar_contabilidad %} 
-                        <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Modulos<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                {% if perms.home.es_administrador or perms.home.es_coordinador_general or perms.home.es_auxiliar_contabilidad %} 
-                                <li>
-                                    <a href="#">Facturas</a>
-                                </li>
-                                {% endif %}
-                                {% if perms.home.es_administrador or perms.home.es_coordinador_general or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia or perms.home.es_auxiliar_contabilidad %} 
-                                <li>
-                                    <a href="#">Contabilidad <span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        {% if perms.home.es_administrador or perms.home.es_coordinador_general or perms.home.es_auxiliar_contabilidad %}
-                                        <li>
-                                            <a href="#">Informes</a>
-                                        </li>
-                                        {% endif %}
-                                        <li>
-                                            <a href="#">Cuadre de Caja</a>
-                                        </li>
-                                    </ul>
-
-                                </li>
-                                {% endif %}
-                                {% if perms.home.es_administrador or perms.home.es_coordinador_general %} 
-                                <li>
-                                    <a href="/crear/rips/">Crear Rips</span></a>
-                                </li>
-                                {% endif %}
-                            </ul>
-
-                        </li>
-                        {% endif %}
-                        -->    
-
-                        {% if user.is_staff or perms.home.es_administrador %}
-                        <li>
-                            <a href="#"><i class="fa fa-wrench fa-fw"></i> Utilidades<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">Medicos e Instituciones<span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="/medicos/">Medicos</a>
-                                        </li>
-                                        <li>
-                                            <a href="/instituciones/">Instituciones</a>
-                                        </li>
-                                    </ul>
-                                    <!-- /.nav-third-level -->
-                                </li> 
-                                <li>
-                                    <a href="#">Empresas y Planes<span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="/empresas/">Empresas</a>
-                                        </li>
-                                        <li>
-                                            <a href="/planes/">Planes Salud</a>
-                                        </li>
-                                    </ul>
-                                    <!-- /.nav-third-level -->
-                                </li> 
-                                <li>
-                                    <a href="/procedimientos/">Procedimientos y Plantillas<span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="/procedimientos/">Procedimientos</a>
-                                        </li>
-                                        <li>
-                                            <a href="/plantillas/">Plantillas</a>
-                                        </li>
-                                        <li>
-                                            <a href="/servicios/">Servicios</a>
-                                        </li>
-                                    </ul>
-                                    <!-- /.nav-third-level -->
-                                </li>
-                                <li>
-                                    <a href="#">Usuarios<span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="/usuarios/">Usuarios del sistema</a>
-                                        </li>
-                                        <li>
-                                            <a href="/usuariosEmpresa/">Usuarios empresas</a>
-                                        </li>
-                                    </ul>
-                                    <!-- /.nav-third-level -->
-                                </li>   
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        {% endif %}
-
-                        {% if perms.home.es_coordinador_general %}
-                            <li>
-                                <a href="#"><i class="fa fa-users fa-fw"></i> Ordenes de Servicio<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="/portal_empresas/">Buscar Orden</a>
-                                    </li>
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>                        
-                        {% endif %}
-                        {% if perms.home.es_auxiliar_contabilidad %}
-                            <li>
-                                <a href="#"><i class="fa fa-users fa-fw"></i> Ordenes de Servicio<span class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level">
-                                    <li>
-                                        <a href="/buscar_orden/">Buscar Orden</a>
-                                    </li>
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>                         
-                        {% endif %}                          
-                    </ul>
-                    <!-- /#side-menu -->
-                </div>
-                <!-- /.sidebar-collapse -->
-            </div>
-            <!-- /.navbar-static-side -->
-        </nav>
-
-        <div id="page-wrapper">
-            {% block content %}
-            {% endblock %}
-        </div>
-        <!-- /#page-wrapper -->
-
-    </div>
-    <!-- /#wrapper -->
-
-    <!-- Core Scripts - Include with every page -->
-    <script src="/static/js/jquery-1.10.2.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
-    <script src="/static/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="/static/js/jquery-ui-1.10.4.custom.js"></script>
-
-    <!-- Page-Level Plugin Scripts - Tables -->
-    <script src="/static/js/plugins/dataTables/jquery.dataTables.js"></script>
-    <script src="/static/js/plugins/dataTables/dataTables.bootstrap.js"></script>
-    <script src="/static/js/plugins/dataTables/dataTables.tableTools.js"></script>
-
-    <!-- SB Admin Scripts - Include with every page -->
-    <script src="/static/js/sb-admin.js"></script>
-    <script src="/static/js/select2-3.5.1/select2.js"></script>
-    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
-    <script>
-    $(document).ready(function() {
-        $('#dataTables-example').dataTable( {
-            "iDisplayLength": 25,
-            "bSort": false,
-            "dom": 'T<"clear">lfrtip',
-            "tableTools": {
-                "sSwfPath": "/static/js/plugins/dataTables/swf/copy_csv_xls_pdf.swf"
-            },
-            "language": {
-                "sProcessing":    "Procesando...",
-                "sLengthMenu":    "Mostrar _MENU_ registros",
-                "sZeroRecords":   "No se encontraron resultados",
-                "sEmptyTable":    "Ningún dato disponible en esta tabla",
-                "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix":   "",
-                "sSearch":        "Buscar:",
-                "sUrl":           "",
-                "sInfoThousands":  ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst":    "Primero",
-                    "sLast":    "Último",
-                    "sNext":    "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                }
+        <style media="screen">
+            body {
+              background-color: #f5f5f5;
             }
 
-        } );
-        $('select').select2();
-        $('.numerico').keypress(function(tecla) {
-            if(tecla.charCode == 0){
-                return true;
-            }else if(tecla.charCode == 46){
-              return true;      
-            }else if(tecla.charCode < 48 || tecla.charCode > 57){
-              return false;  
+            .sidebar .material-icons.icon {
+                line-height: inherit !important;
+            }
+
+            table tbody td:first-child, table tbody td:not(:first-child), table tbody th:first-child, table tbody th:not(:first-child), table thead td:first-child, table thead td:not(:first-child), table thead th:first-child, table thead th:not(:first-child) {
+                padding: inherit;
+            }
+
+            table.table tbody td:first-child, table.table tbody td:not(:first-child), table.table tbody th:first-child, table.table tbody th:not(:first-child), table.table thead td:first-child, table.table thead td:not(:first-child), table.table thead th:first-child, table.table thead th:not(:first-child) {
+                padding: 8px;
+            }
+
+            table tbody td, table tbody th {
+                height: inherit;
+            }
+
+            .alert {
+                display: inherit;
+            }
+
+            .row {
+                display: inherit;
+                flex: inherit;
+            }
+
+            .btn {
+                height: inherit;
+                margin: inherit;
+                text-transform: inherit;
+                transition: inherit;
+                min-width: inherit;
+            }
+
+            a.btn.btn-xs:not(.btn-primary) {
+                background: inherit;
+                color: inherit;
+            }
+            a:hover, a:focus {
+                text-decoration: none;
+            }
+
+            a.btn {
+                height: initial;
+            }
+
+            .btn-primary {
+                color: #fff !important;
+                background-color: #428bca !important;
+                border-color: #357ebd !important;
+            }
+        </style>
+    </head>
+
+    <body>
+        {% csrf_token %}
+        <div id="app">
+            <v-app>
+              <template>
+                  <div>
+                      <v-navigation-drawer
+                          v-model="sidebar"
+                          temporary
+                          enable-resize-watcher
+                          class="mt-0 scroll-y" :mobile-break-point="576">
+                          <v-list dense>
+                              {% include 'menu.html' %}
+                          </v-list>
+                      </v-navigation-drawer>
+                      <v-toolbar class="cyan darken-1">
+                          <v-toolbar-side-icon @click.native.stop="sidebar = !sidebar" class="white--text"></v-toolbar-side-icon>
+                          <v-toolbar-title class="white--text">Dasalud</v-toolbar-title>
+                          <v-spacer></v-spacer>
+                            <v-menu left bottom origin="top right" transition="v-scale-transition">
+                                <v-btn dark icon slot="activator">
+                                    <v-icon class="white--text">more_vert</v-icon>
+                                </v-btn>
+                                <v-list>
+                                    <v-list-tile>
+                                        <v-subheader>{{ user.username|upper }}</v-subheader>
+                                    </v-list-tile>
+                                    <v-list-tile href="/logout/">
+                                        <v-list-tile-title>Desconexión</v-list-tile-title>
+                                    </v-list-tile>
+                                </v-list>
+                            </v-menu>
+                      </v-toolbar>
+                      <main class="grey lighten-4">
+                          <div class="main">
+                              <div class="grey lighten-4">
+                                  <v-container fluid>
+                                      <br>
+                                      <v-spacer></v-spacer>
+                                      <v-container fluid>
+                                          <br>
+                                          <div id="page-wrapper">
+                                              {% block content %}
+                                              {% endblock %}
+                                          </div>
+                                      </v-container>
+                                  </v-container>
+                              </div>
+                          </div>
+                      </main>
+                  </div>
+              </template>
+            </v-app>
+        </div>
+        <!--<script type="text/javascript" src="{% static 'laboratorios/build.js' %}"></script>-->
+        <script type="text/javascript" src="{% static 'laboratorios/node_modules/vue/dist/vue.js' %}"></script>
+        <script type="text/javascript" src="{% static 'laboratorios/node_modules/vuetify/dist/vuetify.js' %}"></script>
+        <script type="text/javascript">
+        Vue.use(Vuetify)
+        var app = new Vue({
+            el: '#app',
+            components: [],
+            data: {
+                sidebar: false
             }
         });
-        $('.numerico_sin_punto').keypress(function(tecla) {
-            if(tecla.charCode == 0){
-                return true;    
-            }else if(tecla.charCode < 48 || tecla.charCode > 57){
-              return false;  
+        </script>
+
+        <!-- Core Scripts - Include with every page -->
+        <script src="/static/js/jquery-1.10.2.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+        <script src="/static/js/jquery-ui-1.10.4.custom.js"></script>
+
+        <!-- Page-Level Plugin Scripts - Tables -->
+        <script src="/static/js/plugins/dataTables/jquery.dataTables.js"></script>
+        <script src="/static/js/plugins/dataTables/dataTables.bootstrap.js"></script>
+        <script src="/static/js/plugins/dataTables/dataTables.tableTools.js"></script>
+
+        <!-- SB Admin Scripts - Include with every page -->
+        <script src="/static/js/sb-admin.js"></script>
+        <script src="/static/js/select2-3.5.1/select2.js"></script>
+        <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+        <script>
+        $(document).ready(function() {
+            $('input[type="text"], input[type="number"], input[type="email"], textarea, select').each(function (obj, indx) {
+                if (!$(this).hasClass('form-control')) {
+                    $(this).addClass('form-control');
+                }
+            });
+            $('#dataTables-example').dataTable( {
+                "iDisplayLength": 25,
+                "bSort": false,
+                "dom": 'T<"clear">lfrtip',
+                "tableTools": {
+                    "sSwfPath": "/static/js/plugins/dataTables/swf/copy_csv_xls_pdf.swf"
+                },
+                "language": {
+                    "sProcessing":    "Procesando...",
+                    "sLengthMenu":    "Mostrar _MENU_ registros",
+                    "sZeroRecords":   "No se encontraron resultados",
+                    "sEmptyTable":    "Ningún dato disponible en esta tabla",
+                    "sInfo":          "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty":     "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered":  "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix":   "",
+                    "sSearch":        "Buscar:",
+                    "sUrl":           "",
+                    "sInfoThousands":  ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst":    "Primero",
+                        "sLast":    "Último",
+                        "sNext":    "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                }
+
+            } );
+            $('select').select2();
+            $('.numerico').keypress(function(tecla) {
+                if(tecla.charCode == 0){
+                    return true;
+                }else if(tecla.charCode == 46){
+                  return true;
+                }else if(tecla.charCode < 48 || tecla.charCode > 57){
+                  return false;
+                }
+            });
+            $('.numerico_sin_punto').keypress(function(tecla) {
+                if(tecla.charCode == 0){
+                    return true;
+                }else if(tecla.charCode < 48 || tecla.charCode > 57){
+                  return false;
+                }
+            });
+            $('.mayuscula').on('change keyup paste',convierte);
+            function convierte(){
+                var valor = $(this).val();
+                valor = valor.toUpperCase();
+                $(this).val(valor);
             }
-        });        
-        $('.mayuscula').on('change keyup paste',convierte);
-        function convierte(){
-            var valor = $(this).val();
-            valor = valor.toUpperCase();
-            $(this).val(valor);
-        }        
-    });
-    </script>
-    {% block js %}
-    {% endblock %}
+        });
+        </script>
+        {% block js %}
+        {% endblock %}
 
-</body>
-
+    </body>
 </html>

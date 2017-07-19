@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 from django.db import models
 from mysite.apps.home.models import departamentos
 from django.contrib.auth.models import User
@@ -15,13 +15,13 @@ class planes_salud(models.Model):
 	porcentaje = models.DecimalField(max_digits=3,decimal_places=3)
 
 	def __unicode__(self):
-		return self.descripcion			
+		return self.descripcion
 
 class empresas(models.Model):
 	opciones = (
 		('C', 'Comun'),
  		('S', 'Simplificado'),
- 		('N', 'No Aplica'),		
+ 		('N', 'No Aplica'),
     )
 
 	opciones2 = (
@@ -54,6 +54,7 @@ class empresas(models.Model):
 
 	def __unicode__(self):
 		return "%s   %s"%(self.razon,self.nit)
+	__str__ = lambda self: self.__unicode__()
 
 
 class usuario_empresa(models.Model):
@@ -61,7 +62,7 @@ class usuario_empresa(models.Model):
 	empresa     = models.ForeignKey(empresas,related_name='usuario_empresa_empresas',verbose_name="Empresa")
 	nombre		= models.CharField(max_length=30)
 	usuario		= models.ForeignKey(User) #
-	
+
 	def __unicode__(self):
 		nombreCompleto = "Empresa: %s - %s"%(self.empresa,self.usuario)
 		return nombreCompleto
@@ -137,7 +138,7 @@ class arp(models.Model):
 	fax    = models.CharField(max_length=20, null=True, blank=True)
 
 	def __unicode__(self):
-		return "%s" % self.razon			
+		return "%s" % self.razon
 
 class afp(models.Model):
 	opciones = (
@@ -156,4 +157,4 @@ class afp(models.Model):
 	fax    = models.CharField(max_length=20, null=True, blank=True)
 
 	def __unicode__(self):
-		return "%s" % self.razon			
+		return "%s" % self.razon

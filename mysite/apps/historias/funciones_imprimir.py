@@ -209,7 +209,7 @@ class ImprimeHistoria(SimpleDocTemplate):
 			bogustext = ("<strong>ANTECEDENTES DE TRABAJO U OFICIO:</strong> EMPRESA: %s , OCUPACION: %s,"
 					" TIEMPO: %s, R.BIOLOG: %s, R.MECAN: %s, R.FISICO: %s, R.ERGON: %s, R.PSICOL: %s,"
 					" R.QUIMICO: %s, PROTECCION EMPLEADA: %s"
-					% (h.a_empresa1,h.a_ocupacion1,h.a_tiempo1,h.a_biolog1,h.a_mec1,h.a_fis1,h.a_erg1,h.a_psi1,h.a_qui1,h.a_prot1))
+					% (h.a_empresa1,h.a_ocupacion1,h.a_tiempo1,h.get_a_biolog1_display(),h.get_a_mec1_display(),h.get_a_fis1_display(),h.get_a_erg1_display(),h.get_a_psi1_display(),h.get_a_qui1_display(),h.get_a_prot1_display()))
 			p = Paragraph(bogustext, styles["Justify"])
 			Story.append(p)
 			Story.append(Spacer(1,0.08*inch))
@@ -218,12 +218,12 @@ class ImprimeHistoria(SimpleDocTemplate):
 			bogustext = ("<strong>ANTECEDENTES DE TRABAJO U OFICIO:</strong> EMPRESA: %s , OCUPACION: %s,"
 					" TIEMPO: %s, R.BIOLOG: %s, R.MECAN: %s, R.FISICO: %s, R.ERGON: %s, R.PSICOL: %s,"
 					" R.QUIMICO: %s, PROTECCION EMPLEADA: %s"
-					% (h.a_empresa2,h.a_ocupacion2,h.a_tiempo2,h.a_biolog2,h.a_mec2,h.a_fis2,h.a_erg2,h.a_psi2,h.a_qui2,h.a_prot2))
+					% (h.a_empresa2,h.a_ocupacion2,h.a_tiempo2,h.get_a_biolog2_display(),h.get_a_mec2_display(),h.get_a_fis2_display(),h.get_a_erg2_display(),h.get_a_psi2_display(),h.get_a_qui2_display(),h.get_a_prot2_display()))
 			p = Paragraph(bogustext, styles["Justify"])
 			Story.append(p)
 			Story.append(Spacer(1,0.08*inch))	
 
-		bogustext = ("<strong>ACCIDENTE DE TRABAJO:</strong> ACCIDENTES: %s , ENFERMEDAD PROFESIONAL: %s. %s"
+		bogustext = ("<strong>ACCIDENTE DE TRABAJO:</strong> ACCIDENTES: %s , ENFERMEDAD PROFESIONAL: %s. <strong>OBSERVACIONES:</strong> %s"
 					% (h.get_accidente_display(),h.get_enfermedad_profesional_display(),h.detalle))
 		p = Paragraph(bogustext, styles["Justify"])
 		Story.append(p)
@@ -246,6 +246,19 @@ class ImprimeHistoria(SimpleDocTemplate):
 		p = Paragraph(bogustext, styles["Justify"])
 		Story.append(p)
 		Story.append(Spacer(1,0.08*inch))
+
+		if h.descripcion_antecedente != "":
+			bogustext = ("<strong>DESCRIPCION ANTECEDENTES PATOLOGICOS FAMILIARES Y PERSONALES:</strong> %s"
+						% (h.descripcion_antecedente))
+			p = Paragraph(bogustext, styles["Justify"])
+			Story.append(p)
+			Story.append(Spacer(1,0.08*inch))
+		else:
+			bogustext = ("<strong>DESCRIPCION ANTECEDENTES PATOLOGICOS FAMILIARES Y PERSONALES:</strong> Ninguna")
+			p = Paragraph(bogustext, styles["Justify"])
+			Story.append(p)
+			Story.append(Spacer(1,0.08*inch))			
+
 
 		bogustext = ("<strong>HABITOS:</strong> ALCOHOL: %s , DEPORTES: %s, FRECUENCIA: %s"
 					% (h.get_alcohol_display(),h.get_deportes_display(),h.frecuencia))
@@ -289,6 +302,24 @@ class ImprimeHistoria(SimpleDocTemplate):
 				h.get_columna_cervical_display(),h.get_columna_dorsal_display(),h.get_columna_lumbo_display(),h.get_m_superiores_display(),h.get_m_inferiores_display()))
 		p = Paragraph(bogustext, styles["Justify"])
 		Story.append(p)
+		Story.append(Spacer(1,0.08*inch))
+
+
+		if h.descripcion_osteomuscular != "":
+			bogustext = ("<strong>OBSERVACIONES:</strong> %s"
+						% (h.descripcion_osteomuscular))
+			p = Paragraph(bogustext, styles["Justify"])
+			Story.append(p)
+			Story.append(Spacer(1,0.08*inch))
+		else:
+			bogustext = ("<strong>OBSERVACIONES:</strong> Ninguna")
+			p = Paragraph(bogustext, styles["Justify"])
+			Story.append(p)
+			Story.append(Spacer(1,0.08*inch))	
+
+
+		Story.append(Spacer(1,0.08*inch))
+		Story.append(Spacer(1,0.08*inch))
 		Story.append(Spacer(1,0.08*inch))
 
 		bogustext = ("<strong>DINAMICA (MOVIMIENTOS ARTICULARES)</strong>")
@@ -442,6 +473,20 @@ class ImprimeHistoria(SimpleDocTemplate):
 		p = Paragraph(bogustext, styles["Justify"])
 		Story.append(p)
 		Story.append(Spacer(1,0.08*inch))
+
+
+		if h.recomendacion != "":
+			bogustext = ("<strong>RECOMENDACIONES:</strong> %s"
+						% (h.recomendacion))
+			p = Paragraph(bogustext, styles["Justify"])
+			Story.append(p)
+			Story.append(Spacer(1,0.08*inch))
+		else:
+			bogustext = ("<strong>RECOMENDACIONES:</strong> Ninguna")
+			p = Paragraph(bogustext, styles["Justify"])
+			Story.append(p)
+			Story.append(Spacer(1,0.08*inch))	
+
 
 		bogustext = ("<strong>REMITIR A:</strong> %s" % h.get_remitir_display())
 		p = Paragraph(bogustext, styles["Justify"])

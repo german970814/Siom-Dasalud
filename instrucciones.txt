@@ -1,0 +1,7 @@
+# Se debe borrar la tabla de ContentTypes para que funcione la migracion
+# arrenged from https://www.calazan.com/migrating-django-app-from-mysql-to-postgresql/
+
+python manage.py migrate --no-initial-data --database=postgres
+python manage.py sqlflush --database=postgres
+./manage.py dumpdata --all --natural --indent=4 > post.json
+./manage.py loaddata post.json --database=postgres

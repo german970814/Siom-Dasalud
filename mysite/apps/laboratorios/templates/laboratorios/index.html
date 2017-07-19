@@ -1,0 +1,113 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Laboratorios</title>
+        <link rel="stylesheet" href="{% static 'laboratorios/node_modules/vuetify/dist/vuetify.min.css' %}">
+        <link href="{% static 'laboratorios/fonts.css' %}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="{% static '/static/css/animate.css' %}">
+        <style media="screen">
+            .sidebar .material-icons.icon {
+                line-height: inherit !important;
+            }
+
+            body {
+              background-color: #f5f5f5;
+            }
+
+            .wrap__all {
+              background-color: #fff;
+              width: 100%;
+              height: 100%;
+              top: 0;
+              left: 0;
+              display: block;
+              position: fixed;
+              z-index: 100000;
+            }
+
+            .preloader {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                margin-left: -25px;
+                margin-top: -55px;
+            }
+        </style>
+    </head>
+
+    <body>
+        {% csrf_token %}
+        <div id="app" class="grey lighten-4">
+            <v-app>
+                <div>
+                    <v-navigation-drawer
+                        v-model="sidebar"
+                        temporary
+                        enable-resize-watcher
+                        class="mt-0 scroll-y" :mobile-break-point="576">
+                        <v-list dense>
+                            {% include 'menu.html' %}
+                        </v-list>
+                    </v-navigation-drawer>
+                    <v-toolbar class="cyan darken-1" fixed>
+                        <v-toolbar-side-icon @click.native.stop="sidebar = !sidebar" class="white--text"></v-toolbar-side-icon>
+                        <v-toolbar-title class="white--text">Dasalud</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-menu left bottom origin="top right" transition="v-scale-transition">
+                            <v-btn dark icon slot="activator">
+                                <v-icon class="white--text">more_vert</v-icon>
+                            </v-btn>
+                            <v-list>
+                                <v-list-tile>
+                                    <v-subheader>{{ user.username|upper }}</v-subheader>
+                                </v-list-tile>
+                                <v-list-tile href="/logout/">
+                                    <v-list-tile-content>
+                                        <v-list-tile-title>Desconexión</v-list-tile-title>
+                                    </v-list-tile-content>
+                                </v-list-tile>
+                            </v-list>
+                        </v-menu>
+                    </v-toolbar>
+                    <main class="grey lighten-4">
+                        <div class="main">
+                            <div class="grey lighten-4">
+                                <br>
+                                <v-spacer></v-spacer>
+                                <v-container fluid>
+                                    <br>
+                                    <v-spacer></v-spacer>
+                                    <!--Start-->
+                                    <v-container v-if="http403">
+                                       <h5>403 Forbidden</h5>
+                                       <br>
+                                       <p>Si estas viendo esta página, es que no tienes permisos para estar aquí.</p>
+                                    </v-container>
+                                    <router-view v-else @http403="http403 = $event"@mostrarsnackbar="mostrarSnackBar"></router-view>
+                                    <!--End-->
+                                </v-container>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+                <v-snackbar v-model="snackbar">
+                    {[ snackbarText ]}
+                    <v-btn flat class="pink--text" @click.native="snackbar = false">Cerrar</v-btn>
+                </v-snackbar>
+                <div class="wrap__all" v-if="!contentLoaded">
+                    <div class="preloader">
+                        <v-progress-circular indeterminate class="blue--text" :size="50"></v-progress-circular>
+                    </div>
+                </div>
+            </v-app>
+        </div>
+        <script type="text/javascript" src="{% static 'js/pdfjs/pdf.js' %}"></script>
+        <script type="text/javascript" src="{% static 'laboratorios/build.js' %}"></script>
+        <script type="text/javascript">
+
+        </script>
+    </body>
+</html>

@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^laboratorios/', include('mysite.apps.laboratorios.urls', namespace='laboratorios')),
     url(r'^',include('mysite.apps.citas.urls')),
     url(r'^',include('mysite.apps.home.urls')),
     url(r'^',include('mysite.apps.historias.urls')),
@@ -20,3 +21,10 @@ urlpatterns = patterns('',
     url(r'^',include('mysite.apps.parametros.urls')),
     url(r'^__debug__/', include(debug_toolbar.urls)),
 )
+
+if settings.DEBUG:
+    urlpatterns += patterns(
+        '',
+        url(r'^static/(?P<path>.*)', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+        url(r'^media/(?P<path>.*)', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+    )

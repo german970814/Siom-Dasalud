@@ -1,0 +1,7 @@
+*.pyc
+node_modules/
+.vscode/
+npm-debug.log
+.idea/
+.DS_Store
+media/

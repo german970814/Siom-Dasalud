@@ -9,10 +9,6 @@
 	</div>
 </div>
 
-{% if user.is_authenticated and user.is_staff %}
-	<a href="{% url "vista_agregar_procedimiento" %}" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i> Nuevo</a><br><br>
-{% endif %}
-
 <div class="row">
   <div class="col-lg-12">
 	{% if servicios %}
@@ -23,7 +19,7 @@
 		    <!-- /.panel-heading -->
 		    <div class="panel-body">
 		        <div class="table-responsive">
-		            <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+		            <table class="table table-striped table-bordered table-hover">
 			    	<thead>
 				        <tr>
 				          <th>Nombre</th>
@@ -39,8 +35,12 @@
 						<td>{{ p.nombre}}</td>
 						<td>{{ p.tipo }}</td>
 						<td>{{ p.costo }}</td>
-						<td>{{ p.historia }}</td>
-						<td><a class="btn btn-primary btn-xs" href="/edit/procedimientos/{{p.id}}/"><i class="icon-pencil"></i>  Ver </a></td>
+						{% if p.historia %}
+							<td>Este servicio genera un tipo de historia</td>
+						{% else %}
+							<td>No es generada ninguna historia con este servicio</td>
+						{% endif %}
+						<td><a class="btn btn-primary btn-xs actualiza" href="#" name={{p.id}}><i class="glyphicon glyphicon-refresh"></i></a></td>
 					</tr>
 					{% endfor %}
 					</tbody>
@@ -55,4 +55,24 @@
 	</div>
 </div>	
 
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.actualiza').on('click',actualiza_servicio);
+        function actualiza_servicio(){
+        	var id_servicio = $(this).attr('name');
+            $.ajax({
+                async : false,
+                data : {'id_servicio':id_servicio},
+                url : '/actualizar/servicio/',
+                type : 'get',
+                success : function(data){
+					alert("Se actualizo el servicio en todas las empresas de forma exitosa");                     
+                }
+            });
+        }                                             
+    });
+</script>
 {% endblock %}

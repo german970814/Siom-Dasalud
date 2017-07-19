@@ -1,0 +1,57 @@
+{% load staticfiles %}
+
+<header>
+    <div class="row">
+        <div class="invoice">
+            <div class="">
+                <img id="main-logo" src="http://{{ request.META.HTTP_HOST }}{% static 'siomlab_icon.png' %}" alt="Image Not Found" width="350px" height="125px">
+                <div class="">
+                    <div class="title-centered">
+                        <h2 class="">RESULTADOS DE LABORATORIOS</h2>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <table class="table table-responsive table-bordered table-header">
+                                {% with paciente=orden.paciente %}
+                                <tr>
+                                    <th>Paciente</th>
+                                    <td>{{ paciente.pnombre|upper }} {{ paciente.snombre|upper }} {{ paciente.papellido|upper }} {{ paciente.sapellido|upper }}</td>
+                                    <th>No. Orden</th>
+                                    <td>{{ orden.id }}</td>
+                                    <th>Sexo</th>
+                                    <td>{% if paciente.genero == 'M' %}MASCULINO{% else %}FEMENINO{% endif %}</td>
+                                </tr>
+                                <tr>
+                                    <th>Edad</th>
+                                    <td>{{ paciente.edad }} {{ paciente.get_unidad_display|upper }}</td>
+                                    <th>Documento Identificación</th>
+                                    <td>{{ paciente.cedula }}</td>
+                                    <th>Fecha RPC</th>
+                                    <td>{{ orden.fecha|date:"j-F-Y \a \l\a\s h:i A"|upper }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Telefonos</th>
+                                    <td>{{ paciente.telefono }}{% if paciente.celular and paciente.telefono %} - {% endif %}{{ paciente.celular }}</td>
+                                    <th>Medico</th>
+                                    <td>NO ASIGNADO</td>
+                                </tr>
+                                <tr>
+                                    <th>Empresa</th>
+                                    <td>{{ orden.institucion.razon }}({{ orden.institucion.numero }})</td>
+                                    <th>Fecha</th>
+                                    <td>{{ orden.fecha_atencion|date:"j-F-Y" }}</td>
+                                    <td></td>
+                                    <th></th>
+                                </tr>
+                                {% endwith %}
+                            </table>
+                        </div>
+                        <div class="col-md-3">
+                            <img id="foto-paciente" src="http://{{ request.META.HTTP_HOST }}{{ orden.paciente.get_foto }}" alt="Foto Paciente" width="150" height="150" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
