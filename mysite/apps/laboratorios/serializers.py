@@ -74,7 +74,7 @@ class LaboratorioSerializer(IGModelSerializer, serializers.ModelSerializer):
     Serializer para los laboratorios.
     """
 
-    equipo = EquipoSerializer(fields=('codigo', 'nombre', ))
+    equipo = EquipoSerializer(fields=('codigo', 'nombre', ), required=False)
     seccion_trabajo = SeccionTrabajoSerializer(fields=('codigo', 'descripcion', ))
     servicio = ServicioSerializer(fields=('nombre'))
 

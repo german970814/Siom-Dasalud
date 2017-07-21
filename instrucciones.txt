@@ -5,3 +5,6 @@ python manage.py migrate --no-initial-data --database=postgres
 python manage.py sqlflush --database=postgres
 ./manage.py dumpdata --all --natural --indent=4 > post.json
 ./manage.py loaddata post.json --database=postgres
+
+Verificar que la base de datos de mysql tenga todas las migraciones, si no ir haciendolas, con fake initial y luego con fake
+Y por ultimo añadir permisos a grupos

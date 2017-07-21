@@ -133,6 +133,7 @@ export default {
                 {
                   name: 'equipo',
                   verbose_name: 'Equipo',
+                  required: false,
                   type: Array,
                   url: URL.equipos,
                   hint: 'Este es el equipo que sera usado en este laboratorio.',

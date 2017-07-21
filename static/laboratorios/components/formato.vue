@@ -247,11 +247,11 @@ export default {
                   name: 'title',
                   help: 'Con este campo se creará un titulo, el cual servirá de separador.'
                 },
-                {
-                  text: 'Laboratorio',
-                  name: 'lab',
-                  help: 'Con este campo podrá extender de un formato de laboratorio ya creado.'
-                },
+                // {
+                //   text: 'Laboratorio',
+                //   name: 'lab',
+                //   help: 'Con este campo podrá extender de un formato de laboratorio ya creado.'
+                // },
                 {
                   text: 'Caracteristicas',
                   name: 'select',

@@ -26854,11 +26854,13 @@ exports.default = {
                 text: 'Titulo',
                 name: 'title',
                 help: 'Con este campo se creará un titulo, el cual servirá de separador.'
-            }, {
-                text: 'Laboratorio',
-                name: 'lab',
-                help: 'Con este campo podrá extender de un formato de laboratorio ya creado.'
-            }, {
+            },
+            // {
+            //   text: 'Laboratorio',
+            //   name: 'lab',
+            //   help: 'Con este campo podrá extender de un formato de laboratorio ya creado.'
+            // },
+            {
                 text: 'Caracteristicas',
                 name: 'select',
                 help: 'Con este campo se muestran solo las opciones a partir de una caracteristica escogida.'
@@ -29632,6 +29634,7 @@ exports.default = {
             }, {
                 name: 'equipo',
                 verbose_name: 'Equipo',
+                required: false,
                 type: Array,
                 url: _urls2.default.equipos,
                 hint: 'Este es el equipo que sera usado en este laboratorio.',

@@ -1,5 +1,5 @@
 from fabric.contrib.files import append, exists, sed
-from fabric.api import env, local, run
+from fabric.api import env, local, run, hosts
 
 
 REPO_URL = 'https://german970814@bitbucket.org/ingeniarte/ipsiom.git'
@@ -7,8 +7,6 @@ FOLDER_ROOT = 'dasaludsiom'
 STRUCTURE_PROJECT = ('static', 'source', 'media', )
 ACTUAL_BRANCH = 'feature/laboratorios'
 
-env.user = 'tecno'
-env.hosts = 'dasaludsiom.tecno.webfactional.com'
 
 DATABASE_PRODUCTION = {
     'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -19,8 +17,28 @@ DATABASE_PRODUCTION = {
     'PORT': '5432',
 }
 
-def deploy():
+
+@hosts('dasaludsiom.tecno.webfactional.com')
+def staging():
+    env.user = 'tecno'
+
     site_folder = '/home/%s/webapps/%s' % (env.user, FOLDER_ROOT)
+    source_folder = site_folder + '/source'
+    _create_directory_structure_if_necessary(site_folder)
+    _get_latest_source(source_folder)
+    _set_database_production(source_folder)
+    # _update_virtualenv(env.user, env.host, source_folder)
+    # _update_static_files(source_folder, env.user, env.host)
+    # update_database_info(source_folder)
+    _update_database(source_folder, env.user)
+
+
+@hosts('staging.siom.webfactional.com')
+def deploy():
+    ACTUAL_BRANCH = 'master'
+    env.user = 'siom'
+
+    site_folder = '/home/%s/webapps/%s' % (env.user, 'siom')
     source_folder = site_folder + '/source'
     _create_directory_structure_if_necessary(site_folder)
     _get_latest_source(source_folder)
