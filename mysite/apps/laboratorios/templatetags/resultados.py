@@ -15,8 +15,11 @@ def get_resultado(instance, genero):
         result = instance.model_text
         if tipo == 'number':
             number = float(result)
-            result = '* %.2f' % number if number <= float(instance.referencias[genero.upper()]['minima']) or \
-                number >= float(instance.referencias[genero.upper()]['maxima']) else '%.2f' % number
+            if instance.referencias[genero.upper()]['minima'] and instance.referencias[genero.upper()]['minima']:
+                result = '* %.2f' % number if number <= float(instance.referencias[genero.upper()]['minima']) or \
+                    number >= float(instance.referencias[genero.upper()]['maxima']) else '%.2f' % number
+            else:
+                result = '%.2f' % number
             result += ' {}'.format(instance.unidades)
         else:
             result = result.upper()

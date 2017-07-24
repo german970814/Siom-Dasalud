@@ -53,7 +53,8 @@ def _set_database_production(source_folder):
     settings = '{}/mysite/settings.py'.format(source_folder)
     # sed(settings, "'USER':.+$", "'USER': ")
     for conf in DATABASE_PRODUCTION:
-        sed(settings, "'{}':.+$".format(conf), "'{}': '{}',".format(conf, DATABASE_PRODUCTION[conf]))
+        text = "\'{}\':.+$".format(conf)
+        sed(settings, text, "\'{}\': \'{}\',".format(conf, DATABASE_PRODUCTION[conf]))
     # sed(settings_path, 'ALLOWED_HOSTS =.+$', 'ALLOWED_HOSTS = ["%s"]' % (site_name,))
     # sed(settings, "STATIC_ROOT =.+$", "STATIC_ROOT = os.path.join(BASE_DIR2, 'static', 'static')")
 

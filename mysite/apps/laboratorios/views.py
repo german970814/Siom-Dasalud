@@ -77,7 +77,7 @@ def imprimir_laboratorio(request, pk):
 
     orden = get_object_or_404(Orden, pk=pk)
     _print = request.GET.get('print', None)
-    resultados = orden.resultados_laboratorio.all()
+    resultados = orden.resultados_laboratorio.all().order_by('laboratorio__seccion_trabajo', 'bacteriologo')
 
     stylesheets = ['static/css/bootstrap.min.css', 'static/css/print_laboratorios.css']
 
@@ -114,16 +114,15 @@ def imprimir_laboratorio(request, pk):
                 for line in f.readlines():
                     response.write(line)
             return response
-        resultados = Resultado.objects.filter(id=laboratorio.id)
-
+        resultados = Resultado.objects.filter(id=laboratorio.id).order_by('laboratorio__seccion_trabajo', 'bacteriologo')
+        for resultado in resultados:
+            resultado.resultado = json.loads(resultado.resultado)
     else:
         if _print is not None and orden.recepcion.estado != Recepcion.RESULTADO_EMITIDO:
             recepcion = orden.recepcion
             recepcion.estado = Recepcion.RESULTADO_EMITIDO
             recepcion.save()
 
-    # if 'imprimir' in request.POST:
-    # ruta = settings.STATIC_ROOT + '/%s'
     to_html = render_to_string(
         'laboratorios/resultados.html',
         {'resultados': resultados, 'orden': orden, 'request': request},

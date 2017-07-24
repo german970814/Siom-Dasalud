@@ -47,7 +47,7 @@
                 <td colspan="1"></td>
                 <td colspan="2" style="text-align: right;">
                     <div>
-                        {% if resultado_bacteriologo.grouper.firma.url %}
+                        {% if resultado_bacteriologo.grouper.firma and resultado_bacteriologo.grouper.firma.url %}
                         <img class="firma-bacteriologo" src="http://{{ request.META.HTTP_HOST }}{{ resultado_bacteriologo.grouper.firma.url }}" alt="" width="150px" height="80px"/>
                         <br>
                         {% else %}
