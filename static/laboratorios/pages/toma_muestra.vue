@@ -78,6 +78,10 @@
                                                     <strong>Empresa cliente</strong>
                                                     <div>{{ recepcion.empresa_cliente }}</div>
                                                 </div>
+                                                <div style="margin-bottom: 7px">
+                                                    <strong>Contacto</strong>
+                                                    <div>{{ recepcion.paciente.telefono }}</div>
+                                                </div>
                                                 <strong>Laboratorios a realizar</strong>
                                                 <div>{{ joinBy(recepcion.laboratorios, x => x.nombre.toUpperCase(), ', ') }}</div>
                                             </v-flex>

@@ -229,6 +229,7 @@ export default {
             caracteristicas: [],
             modalchoice: '',
             items: [],
+            observaciones: '',
             lastItem: {},
             tipoHelpText: 'Escoja un tipo de campo para los resultados.',
             tipoOpciones: [
