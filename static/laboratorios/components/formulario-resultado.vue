@@ -1,6 +1,7 @@
 <script>
 import _ from 'underscore';
 import IGSlotInput from './slot-input.vue';
+import Vue from 'vue/dist/vue.js';
 
 export default {
     name: 'formulario-resultado',
@@ -21,7 +22,7 @@ export default {
                     text: 'Medida', value: 'paciente-pnombre', align: 'left',
                 },
                 {
-                    text: 'Abreviatura', value: 'tipo', align: 'left',
+                    text: 'Comentarios', value: 'tipo', align: 'left',
                 },
                 {
                     text: 'Referencias', value: 'paciente-pnombre', align: 'left',
@@ -37,7 +38,72 @@ export default {
             default: true
         },
     },
+    watch: {
+        value: {
+            handler: function () {
+                this.$emit('empty', this._hasEmptyValues());
+            },
+            deep: true
+        }
+    },
     methods: {
+        _hasEmptyValues () {
+            const MODEL_TEXT = ['select', 'text', 'number', 'textarea'];
+            const MODEL_OBJ = [];
+            for (let item of this.value.items) {
+                if (MODEL_TEXT.indexOf(item.tipo.name.toLowerCase()) !== -1) {
+                    let result = typeof item.model_text === "string"? item.model_text.trim(): !_.isEmpty(item.model_text);
+                    if (!Boolean(result)) {
+                        return true;
+                    }
+                } else if (MODEL_OBJ.indexOf(item.tipo.name.toLowerCase()) !== -1) {
+                    if (_.isEmpty(item.model_check)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        },
+        _genEditDialog (item) {
+            let dialog = 'v-edit-dialog';
+            if (this.disabled) {
+                dialog = 'ig-slot-input';
+            }
+            if (!('observaciones' in item)) {
+                // item.observaciones = '';
+                Vue.set(item, 'observaciones', '');
+            }
+            return this.$createElement(dialog,
+            {
+                on: {
+                    open: () => {
+                        item._observaciones = item.observaciones
+                    },
+                    cancel: () => {
+                        item.observaciones = item._observaciones || item.observaciones
+                    }
+                },
+                props: {large: true, cancelText: 'Cancelar', saveText: 'Guardar'}
+            }, [
+                Boolean(item.observaciones.trim()) ? item.observaciones: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Comentario']),
+                this.$createElement('v-text-field', {
+                    slot: 'input',
+                    props: {
+                        label: 'Comentario', 'multi-line': true, type: 'text',
+                    },
+                    on: {
+                        input: (event) => {
+                            item.observaciones = event;
+                            this.$emit('input', event);
+                        },
+                        blur: (event) => {
+                            item.observaciones = item.observaciones;
+                            this.$emit('blur', event);
+                        }
+                    },
+                }, [])
+            ])
+        },
         validateErrorItem (item) {
             let gender = this.gender.toUpperCase();
             if (item.tipo.name == 'number' && 'referencias' in item) {
@@ -78,7 +144,7 @@ export default {
                                   this._genTd(props.item, props.item.nombre),
                                   this._genTd(props.item, this.createTdWithProp(props.item)),
                                   this._genTd(props.item, props.item.unidades),
-                                  this._genTd(props.item, props.item.nombre),
+                                  this._genTd(props.item, this._genEditDialog(props.item)),
                                   ...this.calculaReferencias(props.item),
                               ]
                           }
@@ -156,97 +222,77 @@ export default {
                     unidades = ' '.concat(item.unidades)
                 }
                 return this.$createElement(dialog,
-                  {
-                    'class': 'text-xs-center',
-                    on: {
-                        open: () => {
-                            item._model_text = item.model_text
-                        },
-                        cancel: () => {
-                            item.model_text = item._model_text || item.model_text
-                        }
-                    },
-                    props: {large: true, 'cancel-text': 'Cancelar', 'save-text': 'Guardar'}
-                  },
-                  [
-                    Boolean(item.model_text) ? item.model_text + unidades: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Resultado']),
-                    this.$createElement(MATCH[item.tipo.name], {
-                        slot: 'input',
-                        props: {
-                            label: 'Resultado', 'multi-line': item.tipo.name == 'textarea',
-                            type: item.tipo.name == 'number' ? 'number': 'text',
-                            hint: item.help, 'persistent-hint': true
-                        },
+                    {
                         on: {
-                            input: (event) => {
-                                item.model_text = event;
-                                this.$emit('input', event);
+                            open: () => {
+                                item._model_text = item.model_text
                             },
-                            blur: (event) => {
-                                item.model_text = item.model_text;
-                                this.$emit('blur', event);
+                            cancel: () => {
+                                item.model_text = item._model_text || item.model_text
                             }
                         },
-                      }, [])
-                  ]
+                        props: {large: true, cancelText: 'Cancelar', saveText: 'Guardar'}
+                    },
+                    [
+                        Boolean(item.model_text) ? item.model_text + unidades: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Resultado']),
+                        this.$createElement(MATCH[item.tipo.name], {
+                            slot: 'input',
+                            props: {
+                                label: 'Resultado', 'multi-line': item.tipo.name == 'textarea',
+                                type: item.tipo.name == 'number' ? 'number': 'text',
+                                hint: item.help, 'persistent-hint': true
+                            },
+                            on: {
+                                input: (event) => {
+                                    item.model_text = event;
+                                    this.$emit('input', event);
+                                },
+                                blur: (event) => {
+                                    item.model_text = item.model_text;
+                                    this.$emit('blur', event);
+                                }
+                            },
+                        }, [])
+                    ]
                 )
             } else if (MATCH[item.tipo.name] == 'v-select') {
-                return this.$createElement(dialog, {
-                    'class': 'text-xs-center',
-                    props: {large: true, 'cancel-text': 'Cancelar', 'save-text': 'Guardar'},
-                    on: {
-                        open: () => {
-                            item._model_text = item.model_text;
-                            // fix z-index
-                            if (!_.isEmpty(this.$refs.select)) {
-                                if (this.$refs.select instanceof Array) {
-                                    this.$refs.select.forEach(select => {
-                                        select.$refs.menu.$el.classList.add('fixindex');
-                                    })
-                                } else {
-                                    // console.log(this.$refs.select.$refs.menu.$ refs.content)
-                                    this.$refs.select.$refs.menu.$refs.content.classList.add('fixindex');
-                                }
-                            }
-                        },
-                        cancel: () => {
-                            item.model_text = item._model_text || item.model_text;
-                            // fix z-index
-                            if (!_.isEmpty(this.$refs.select)) {
-                                if (this.$refs.select instanceof Array) {
-                                    this.$refs.select.forEach(select => {
-                                        select.$refs.menu.$el.classList.add('fixindex');
-                                    })
-                                } else {
-                                    // console.log(this.$refs.select.$refs.menu.$ refs.content)
-                                    this.$refs.select.$refs.menu.$refs.content.classList.add('fixindex');
-                                }
+                return this.$createElement(dialog,
+                    {
+                        props: {large: true, cancelText: 'Cancelar', saveText: 'Guardar'},
+                        on: {
+                            open: () => {
+                                item._model_text = item.model_text;
+                            },
+                            cancel: () => {
+                                item.model_text = item._model_text || item.model_text;
                             }
                         }
-                    }
-                  },
-                  [
-                    !_.isEmpty(item.model_text) ? item.model_text.text: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Resultado']),
-                    this.$createElement(MATCH[item.tipo.name], {
-                        slot: 'input',
-                        ref: 'select',
-                        props: {
-                            label: 'Resultado', 'item-value': 'text',
-                            hint: item.help, 'persistent-hint': true,
-                            items: item.choices, 'return-object': true
-                        },
-                        on: {
-                            input: (event) => {
-                                item.model_text = event;
-                                this.$emit('input', event);
-                            },
-                            blur: (event) => {
-                                item.model_text = item.model_text;
-                                this.$emit('blur', event);
-                            }
-                        },
-                      }, [])
-                  ]
+                    },
+                    [
+                        !_.isEmpty(item.model_text) ? item.model_text.text: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Resultado']),
+                        this.$createElement(
+                            MATCH[item.tipo.name],
+                            {
+                                slot: 'input',
+                                ref: 'select',
+                                props: {
+                                    label: 'Resultado', 'item-value': 'text',
+                                    hint: item.help, 'persistent-hint': true,
+                                    items: item.choices, 'return-object': true
+                                },
+                                on: {
+                                    input: (event) => {
+                                        item.model_text = event;
+                                        this.$emit('input', event);
+                                    },
+                                    blur: (event) => {
+                                        item.model_text = item.model_text;
+                                        this.$emit('blur', event);
+                                    }
+                                },
+                            }, []
+                        )
+                    ]
                 )
             }
             return 'hola';

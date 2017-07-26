@@ -2056,95 +2056,6 @@ const tecnicas = BASE.concat('tecnicas/');
 
 /***/ }),
 /* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    data: function () {
-        return {
-          elements: [],
-          __parent_: undefined,
-          loading: false,
-        }
-    },
-    methods: {
-        getElements: function () {
-            if ('loading' in this) {
-                if (!this.loading) {
-                  this.toggleLoading()
-                }
-            }
-            let url = this.url || arguments[0];
-            if (!url) {
-                throw new Error('URL no provehida para hacer consula de elementos');
-            }
-            this.$http.get(url)
-                .then(response => {
-                    this.$emit('http403', false);
-                    this.elements = [];
-                    for (let object of response.body) {
-                        object.selected = false;
-                        this.elements.push(object);
-                    }
-                    this.toggleLoading()
-                }, response => {
-                    if (response.status == 403) {
-                        this.$emit('http403', true);
-                    }
-                    this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
-                    this.toggleLoading()
-                });
-        },
-        __getParent__: function () {
-            if (!this.__parent_) {  // singleton
-                let parent = this.$parent;
-                while (parent !== undefined) {
-                    if (parent.$parent === undefined) {
-                        break;
-                    }
-                    parent = parent.$parent;
-                }
-                this.__parent_ = parent;
-            }
-            return this.__parent_;
-        },
-        getParent: function () {
-            return this.__getParent__().$options.methods;
-        },
-        showSnackBar: function (value) {
-            this.$emit('mostrarsnackbar', value);
-        },
-        eventCreatedObject: function (value) {
-            value.selected = false;
-            let exists = this.elements.find(x => x.id == value.id);
-            if (exists) {
-                for (let attr in exists) {
-                    this.elements[this.elements.indexOf(exists)][attr] = value[attr] || exists[attr];
-                }
-            } else {
-                this.elements.push(value);
-            }
-            this.selected = value;
-        },
-        eventUpdatedForm: function (value) {
-            this.selected = value;
-        },
-        toggleLoading: function () {
-            if ('loading' in this) {
-                this.loading = !this.loading;
-            }
-        }
-    }
-});
-
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -11467,6 +11378,95 @@ return Vue$3;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(182)))
 
 /***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function () {
+        return {
+          elements: [],
+          __parent_: undefined,
+          loading: false,
+        }
+    },
+    methods: {
+        getElements: function () {
+            if ('loading' in this) {
+                if (!this.loading) {
+                  this.toggleLoading()
+                }
+            }
+            let url = this.url || arguments[0];
+            if (!url) {
+                throw new Error('URL no provehida para hacer consula de elementos');
+            }
+            this.$http.get(url)
+                .then(response => {
+                    this.$emit('http403', false);
+                    this.elements = [];
+                    for (let object of response.body) {
+                        object.selected = false;
+                        this.elements.push(object);
+                    }
+                    this.toggleLoading()
+                }, response => {
+                    if (response.status == 403) {
+                        this.$emit('http403', true);
+                    }
+                    this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
+                    this.toggleLoading()
+                });
+        },
+        __getParent__: function () {
+            if (!this.__parent_) {  // singleton
+                let parent = this.$parent;
+                while (parent !== undefined) {
+                    if (parent.$parent === undefined) {
+                        break;
+                    }
+                    parent = parent.$parent;
+                }
+                this.__parent_ = parent;
+            }
+            return this.__parent_;
+        },
+        getParent: function () {
+            return this.__getParent__().$options.methods;
+        },
+        showSnackBar: function (value) {
+            this.$emit('mostrarsnackbar', value);
+        },
+        eventCreatedObject: function (value) {
+            value.selected = false;
+            let exists = this.elements.find(x => x.id == value.id);
+            if (exists) {
+                for (let attr in exists) {
+                    this.elements[this.elements.indexOf(exists)][attr] = value[attr] || exists[attr];
+                }
+            } else {
+                this.elements.push(value);
+            }
+            this.selected = value;
+        },
+        eventUpdatedForm: function (value) {
+            this.selected = value;
+        },
+        toggleLoading: function () {
+            if ('loading' in this) {
+                this.loading = !this.loading;
+            }
+        }
+    }
+});
+
+
+/***/ }),
 /* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -13024,6 +13024,12 @@ if (typeof window !== 'undefined' && window.Vue) {
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = { "default": __webpack_require__(75), __esModule: true };
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var __vue_script__, __vue_template__
 __webpack_require__(140)
 __vue_script__ = __webpack_require__(51)
@@ -13043,7 +13049,7 @@ if (false) {(function () {  module.hot.accept()
 })()}
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
@@ -13064,12 +13070,6 @@ if (false) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, __vue_template__)
   }
 })()}
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(75), __esModule: true };
 
 /***/ }),
 /* 10 */
@@ -25406,7 +25406,7 @@ const router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuetify__);
@@ -25414,11 +25414,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_router__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_menu_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_table_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__components_form_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__mixins_igmixin_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__mixins_igmixin_js__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__routes__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__urls_js__ = __webpack_require__(3);
 
@@ -25494,11 +25494,11 @@ var _toConsumableArray2 = __webpack_require__(24);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(7);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -25661,11 +25661,11 @@ var _assign = __webpack_require__(72);
 
 var _assign2 = _interopRequireDefault(_assign);
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(7);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -26586,7 +26586,7 @@ var _stringify = __webpack_require__(23);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(7);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -26594,7 +26594,7 @@ var _urls = __webpack_require__(3);
 
 var _urls2 = _interopRequireDefault(_urls);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -26840,7 +26840,6 @@ exports.default = {
             caracteristicas: [],
             modalchoice: '',
             items: [],
-            observaciones: '',
             lastItem: {},
             tipoHelpText: 'Escoja un tipo de campo para los resultados.',
             tipoOpciones: [{
@@ -26912,6 +26911,7 @@ exports.default = {
                 choices_count: 0,
                 model_text: '',
                 model_check: [],
+                observaciones: '',
                 unidades: '',
                 tipo: '',
                 referencia: '',
@@ -27100,6 +27100,10 @@ var _toConsumableArray2 = __webpack_require__(24);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
+var _getIterator2 = __webpack_require__(7);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
 var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
@@ -27108,9 +27112,12 @@ var _slotInput = __webpack_require__(168);
 
 var _slotInput2 = _interopRequireDefault(_slotInput);
 
+var _vue = __webpack_require__(4);
+
+var _vue2 = _interopRequireDefault(_vue);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// <script>
 exports.default = {
     name: 'formulario-resultado',
     components: { 'ig-slot-input': _slotInput2.default },
@@ -27124,7 +27131,7 @@ exports.default = {
             }, {
                 text: 'Medida', value: 'paciente-pnombre', align: 'left'
             }, {
-                text: 'Abreviatura', value: 'tipo', align: 'left'
+                text: 'Comentarios', value: 'tipo', align: 'left'
             }, {
                 text: 'Referencias', value: 'paciente-pnombre', align: 'left'
             }]
@@ -27138,7 +27145,92 @@ exports.default = {
             default: true
         }
     },
+    watch: {
+        value: {
+            handler: function handler() {
+                this.$emit('empty', this._hasEmptyValues());
+            },
+            deep: true
+        }
+    },
     methods: {
+        _hasEmptyValues: function _hasEmptyValues() {
+            var MODEL_TEXT = ['select', 'text', 'number', 'textarea'];
+            var MODEL_OBJ = [];
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = (0, _getIterator3.default)(this.value.items), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var item = _step.value;
+
+                    if (MODEL_TEXT.indexOf(item.tipo.name.toLowerCase()) !== -1) {
+                        var result = typeof item.model_text === "string" ? item.model_text.trim() : !_underscore2.default.isEmpty(item.model_text);
+                        if (!Boolean(result)) {
+                            return true;
+                        }
+                    } else if (MODEL_OBJ.indexOf(item.tipo.name.toLowerCase()) !== -1) {
+                        if (_underscore2.default.isEmpty(item.model_check)) {
+                            return true;
+                        }
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            return false;
+        },
+        _genEditDialog: function _genEditDialog(item) {
+            var _this = this;
+
+            var dialog = 'v-edit-dialog';
+            if (this.disabled) {
+                dialog = 'ig-slot-input';
+            }
+            if (!('observaciones' in item)) {
+                // item.observaciones = '';
+                _vue2.default.set(item, 'observaciones', '');
+            }
+            return this.$createElement(dialog, {
+                on: {
+                    open: function open() {
+                        item._observaciones = item.observaciones;
+                    },
+                    cancel: function cancel() {
+                        item.observaciones = item._observaciones || item.observaciones;
+                    }
+                },
+                props: { large: true, cancelText: 'Cancelar', saveText: 'Guardar' }
+            }, [Boolean(item.observaciones.trim()) ? item.observaciones : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Comentario']), this.$createElement('v-text-field', {
+                slot: 'input',
+                props: {
+                    label: 'Comentario', 'multi-line': true, type: 'text'
+                },
+                on: {
+                    input: function input(event) {
+                        item.observaciones = event;
+                        _this.$emit('input', event);
+                    },
+                    blur: function blur(event) {
+                        item.observaciones = item.observaciones;
+                        _this.$emit('blur', event);
+                    }
+                }
+            }, [])]);
+        },
         validateErrorItem: function validateErrorItem(item) {
             var gender = this.gender.toUpperCase();
             if (item.tipo.name == 'number' && 'referencias' in item) {
@@ -27155,7 +27247,7 @@ exports.default = {
             return this.$createElement('v-layout', [this.$createElement('h1', { 'class': 'title' }, ['Formulario de Resultado'])]);
         },
         _genBody: function _genBody() {
-            var _this = this;
+            var _this2 = this;
 
             var childs = this.$createElement('v-data-table', {
                 props: {
@@ -27172,9 +27264,9 @@ exports.default = {
                     items: function items(props) {
                         var tds = [];
                         if (props.item.tipo.name != 'title') {
-                            return [_this._genTd(props.item, props.item.nombre), _this._genTd(props.item, _this.createTdWithProp(props.item)), _this._genTd(props.item, props.item.unidades), _this._genTd(props.item, props.item.nombre)].concat((0, _toConsumableArray3.default)(_this.calculaReferencias(props.item)));
+                            return [_this2._genTd(props.item, props.item.nombre), _this2._genTd(props.item, _this2.createTdWithProp(props.item)), _this2._genTd(props.item, props.item.unidades), _this2._genTd(props.item, _this2._genEditDialog(props.item))].concat((0, _toConsumableArray3.default)(_this2.calculaReferencias(props.item)));
                         }
-                        return [_this.$createElement('td', { 'class': 'text-xs-left', attrs: { colspan: 5 } }, [_this.$createElement('strong', { attrs: { style: 'font-size: 20px' } }, [props.item.nombre.toUpperCase()])])];
+                        return [_this2.$createElement('td', { 'class': 'text-xs-left', attrs: { colspan: 5 } }, [_this2.$createElement('strong', { attrs: { style: 'font-size: 20px' } }, [props.item.nombre.toUpperCase()])])];
                     }
                 }
             }, []);
@@ -27217,7 +27309,7 @@ exports.default = {
             return childs;
         },
         createTdWithProp: function createTdWithProp(item) {
-            var _this2 = this;
+            var _this3 = this;
 
             var MATCH = {
                 'text': 'v-text-field',
@@ -27240,7 +27332,6 @@ exports.default = {
                     unidades = ' '.concat(item.unidades);
                 }
                 return this.$createElement(dialog, {
-                    'class': 'text-xs-center',
                     on: {
                         open: function open() {
                             item._model_text = item.model_text;
@@ -27249,7 +27340,7 @@ exports.default = {
                             item.model_text = item._model_text || item.model_text;
                         }
                     },
-                    props: { large: true, 'cancel-text': 'Cancelar', 'save-text': 'Guardar' }
+                    props: { large: true, cancelText: 'Cancelar', saveText: 'Guardar' }
                 }, [Boolean(item.model_text) ? item.model_text + unidades : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Resultado']), this.$createElement(MATCH[item.tipo.name], {
                     slot: 'input',
                     props: {
@@ -27260,46 +27351,23 @@ exports.default = {
                     on: {
                         input: function input(event) {
                             item.model_text = event;
-                            _this2.$emit('input', event);
+                            _this3.$emit('input', event);
                         },
                         blur: function blur(event) {
                             item.model_text = item.model_text;
-                            _this2.$emit('blur', event);
+                            _this3.$emit('blur', event);
                         }
                     }
                 }, [])]);
             } else if (MATCH[item.tipo.name] == 'v-select') {
                 return this.$createElement(dialog, {
-                    'class': 'text-xs-center',
-                    props: { large: true, 'cancel-text': 'Cancelar', 'save-text': 'Guardar' },
+                    props: { large: true, cancelText: 'Cancelar', saveText: 'Guardar' },
                     on: {
                         open: function open() {
                             item._model_text = item.model_text;
-                            // fix z-index
-                            if (!_underscore2.default.isEmpty(_this2.$refs.select)) {
-                                if (_this2.$refs.select instanceof Array) {
-                                    _this2.$refs.select.forEach(function (select) {
-                                        select.$refs.menu.$el.classList.add('fixindex');
-                                    });
-                                } else {
-                                    // console.log(this.$refs.select.$refs.menu.$ refs.content)
-                                    _this2.$refs.select.$refs.menu.$refs.content.classList.add('fixindex');
-                                }
-                            }
                         },
                         cancel: function cancel() {
                             item.model_text = item._model_text || item.model_text;
-                            // fix z-index
-                            if (!_underscore2.default.isEmpty(_this2.$refs.select)) {
-                                if (_this2.$refs.select instanceof Array) {
-                                    _this2.$refs.select.forEach(function (select) {
-                                        select.$refs.menu.$el.classList.add('fixindex');
-                                    });
-                                } else {
-                                    // console.log(this.$refs.select.$refs.menu.$ refs.content)
-                                    _this2.$refs.select.$refs.menu.$refs.content.classList.add('fixindex');
-                                }
-                            }
                         }
                     }
                 }, [!_underscore2.default.isEmpty(item.model_text) ? item.model_text.text : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Resultado']), this.$createElement(MATCH[item.tipo.name], {
@@ -27313,11 +27381,11 @@ exports.default = {
                     on: {
                         input: function input(event) {
                             item.model_text = event;
-                            _this2.$emit('input', event);
+                            _this3.$emit('input', event);
                         },
                         blur: function blur(event) {
                             item.model_text = item.model_text;
-                            _this2.$emit('blur', event);
+                            _this3.$emit('blur', event);
                         }
                     }
                 }, [])]);
@@ -27337,6 +27405,7 @@ exports.default = {
 // }
 // </style>
 //
+// <script>
 
 /***/ }),
 /* 54 */
@@ -27700,11 +27769,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(7);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -28000,7 +28069,7 @@ var _typeof2 = __webpack_require__(15);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(7);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -28253,15 +28322,15 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(9);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(8);
 
 var _form2 = _interopRequireDefault(_form);
 
@@ -28428,7 +28497,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -28444,15 +28513,15 @@ var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(9);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(8);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -28555,15 +28624,15 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(9);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(8);
 
 var _form2 = _interopRequireDefault(_form);
 
@@ -28703,7 +28772,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -28719,15 +28788,15 @@ var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(9);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(8);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -28843,7 +28912,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -28859,15 +28928,15 @@ var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(9);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(8);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -28978,7 +29047,7 @@ var _stringify = __webpack_require__(23);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(7);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -28986,7 +29055,7 @@ var _urls = __webpack_require__(3);
 
 var _urls2 = _interopRequireDefault(_urls);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -29476,7 +29545,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(7);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -29484,7 +29553,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -29500,11 +29569,11 @@ var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(9);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(8);
 
 var _form2 = _interopRequireDefault(_form);
 
@@ -29516,7 +29585,7 @@ var _productos = __webpack_require__(22);
 
 var _productos2 = _interopRequireDefault(_productos);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -29789,7 +29858,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(7);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -29805,7 +29874,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -29821,15 +29890,15 @@ var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(9);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(8);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -30118,7 +30187,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(7);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -30126,7 +30195,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -30142,15 +30211,15 @@ var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(9);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(8);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -30541,7 +30610,7 @@ var _stringify = __webpack_require__(23);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(7);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -30549,7 +30618,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -30634,6 +30703,16 @@ exports.default = {
     },
     props: {},
     methods: {
+        toggleClass: function toggleClass(event, id) {
+            var element = document.getElementById('tabItem-'.concat(id));
+            if (event) {
+                element.classList.add('yellow');
+                element.classList.remove('cyan');
+            } else {
+                element.classList.add('cyan');
+                element.classList.remove('yellow');
+            }
+        },
         showModalCerrarPrueba: function showModalCerrarPrueba() {
             var actualItem = this.items[parseInt(this.selected_tab)];
             if (!('cerrado' in actualItem && actualItem.cerrado)) {
@@ -30997,6 +31076,7 @@ exports.default = {
 //                         class="cyan darken-2"
 //                         v-for="(item, id) of items" :key="id"
 //                         :href="'#tabs-' + id"
+//                         :id="'tabItem-' + id"
 //                         ripple>
 //                         {{ item.laboratorio.nombre }}
 //                     </v-tabs-item>
@@ -31010,6 +31090,7 @@ exports.default = {
 //                         <v-card-text class="grey lighten-5">
 //                             <formulario-resultado
 //                               @input="error = hasError()"
+//                               @empty="toggleClass($event, id)"
 //                               :gender="orden.paciente.genero"
 //                               :value="{item, items: 'formato' in item ? item.formato: item.resultado}"
 //                               :disabled="formDisabled(item)"
@@ -31116,7 +31197,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -31132,11 +31213,11 @@ var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(9);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(8);
 
 var _form2 = _interopRequireDefault(_form);
 
@@ -31144,7 +31225,7 @@ var _productos = __webpack_require__(22);
 
 var _productos2 = _interopRequireDefault(_productos);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -31294,7 +31375,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -31310,15 +31391,15 @@ var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(9);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(8);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -31417,7 +31498,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(7);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -31425,7 +31506,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -31437,7 +31518,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -33651,7 +33732,7 @@ module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12
 /* 163 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <div v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                dark>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                            <v-spacer></v-spacer>\n                            <v-btn\n                                :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                                flat\n                                @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                                Guardar\n                            </v-btn>\n                        </v-card-actions>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-toolbar class=\"cyan darken-4\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <v-spacer></v-spacer>\n                        <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                            <span class=\"btn__content\">Imprimir</span>\n                        </a>\n                    </v-toolbar>\n                    <v-container>\n                        <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                            <div class=\"preloader\">\n                                <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                            </div>\n                        </div>\n                        <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas>\n                    </v-container>\n                </v-card>\n            </v-dialog>\n        </div>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn fab dark info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon dark>check</v-icon>\n                </v-btn>\n                <v-btn fab dark warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon dark>fingerprint</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon dark>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <div v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                dark>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        :id=\"'tabItem-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              @empty=\"toggleClass($event, id)\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                            <v-spacer></v-spacer>\n                            <v-btn\n                                :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                                flat\n                                @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                                Guardar\n                            </v-btn>\n                        </v-card-actions>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-toolbar class=\"cyan darken-4\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <v-spacer></v-spacer>\n                        <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                            <span class=\"btn__content\">Imprimir</span>\n                        </a>\n                    </v-toolbar>\n                    <v-container>\n                        <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                            <div class=\"preloader\">\n                                <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                            </div>\n                        </div>\n                        <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas>\n                    </v-container>\n                </v-card>\n            </v-dialog>\n        </div>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn fab dark info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon dark>check</v-icon>\n                </v-btn>\n                <v-btn fab dark warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon dark>fingerprint</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon dark>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
 
 /***/ }),
 /* 164 */

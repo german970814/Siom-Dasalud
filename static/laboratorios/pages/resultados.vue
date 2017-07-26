@@ -21,6 +21,7 @@
                         class="cyan darken-2"
                         v-for="(item, id) of items" :key="id"
                         :href="'#tabs-' + id"
+                        :id="'tabItem-' + id"
                         ripple>
                         {{ item.laboratorio.nombre }}
                     </v-tabs-item>
@@ -34,6 +35,7 @@
                         <v-card-text class="grey lighten-5">
                             <formulario-resultado
                               @input="error = hasError()"
+                              @empty="toggleClass($event, id)"
                               :gender="orden.paciente.genero"
                               :value="{item, items: 'formato' in item ? item.formato: item.resultado}"
                               :disabled="formDisabled(item)"
@@ -195,6 +197,16 @@ export default {
 
     },
     methods: {
+        toggleClass: function (event, id) {
+            let element = document.getElementById('tabItem-'.concat(id));
+            if (event) {
+                element.classList.add('yellow');
+                element.classList.remove('cyan');
+            } else {
+                element.classList.add('cyan');
+                element.classList.remove('yellow');
+            }
+        },
         showModalCerrarPrueba: function () {
             let actualItem = this.items[parseInt(this.selected_tab)];
             if (!('cerrado' in actualItem && actualItem.cerrado)) {

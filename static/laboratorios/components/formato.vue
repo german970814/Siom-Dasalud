@@ -229,7 +229,6 @@ export default {
             caracteristicas: [],
             modalchoice: '',
             items: [],
-            observaciones: '',
             lastItem: {},
             tipoHelpText: 'Escoja un tipo de campo para los resultados.',
             tipoOpciones: [
@@ -303,6 +302,7 @@ export default {
                 choices_count: 0,
                 model_text: '',
                 model_check: [],
+                observaciones: '',
                 unidades: '',
                 tipo: '',
                 referencia: '',

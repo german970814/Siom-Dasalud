@@ -28,7 +28,7 @@ def index(request):
 
 def ver_resultado_laboratorio(request, pk):
     orden = get_object_or_404(Orden, pk=pk)
-    resultados = orden.resultados_laboratorio.all()
+    resultados = orden.resultados_laboratorio.all().order_by('laboratorio__seccion_trabajo', 'bacteriologo')
 
     _verified_formats = ['html', 'pdf']
 
@@ -49,7 +49,7 @@ def ver_resultado_laboratorio(request, pk):
                     response.write(line)
             return response
         else:
-            resultados = Resultado.objects.filter(id=laboratorio.id)
+            resultados = Resultado.objects.filter(id=laboratorio.id).order_by('laboratorio__seccion_trabajo', 'bacteriologo')
 
 
     for resultado in resultados:
