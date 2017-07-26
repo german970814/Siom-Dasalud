@@ -27294,17 +27294,17 @@ exports.default = {
                 unidades = '';
             }
             if ('referencias' in item && item.tipo.name == 'number') {
-                var refs = item.referencias[gender].minima.toString().concat(' ') + unidades + ' - ' + item.referencias[gender].maxima.toString().concat(' ') + unidades;
-
+                var refs = item.referencias[gender].minima.toString().concat(' - ') + item.referencias[gender].maxima.toString();
                 childs.push(this._genTd(item, refs));
-                // childs.push(
-                //     this._genTd(item, item.referencias[gender].maxima.toString().concat(' ') + unidades)
-                // )
             } else {
                 // childs.push(
-                //     this._genTd(item, 'undefined')
+                //     this._genTd(item, item.referencia)
                 // )
-                childs.push(this._genTd(item, item.referencia));
+                var render = _vue2.default.component('template-x', {
+                    props: [],
+                    template: '<div>0</div>'.replace('0', item.referencia)
+                });
+                childs.push(this._genTd(item, this.$createElement('template-x', {}, [])));
             }
             return childs;
         },
@@ -30731,13 +30731,11 @@ exports.default = {
             var sub = this.tab.substring(this.tab.length, this.tab.length - 1);
             var laboratorio = this.items[parseInt(sub)];
             if ('resultado' in laboratorio) {
-                return this.showAllResults(event, '?laboratorio=' + laboratorio.id);
+                return this.showAllResults(event, '&laboratorio=' + laboratorio.id);
             }
             this.$emit('mostrarsnackbar', 'No se puede imprimir el laboratorio sin resultado.');
         },
         showAllResults: function showAllResults(event) {
-            var _this3 = this;
-
             var add = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
             var validated = false;
@@ -30771,40 +30769,41 @@ exports.default = {
 
             if (validated) {
                 this.preview = true;
-                this.contentLoaded = false;
-                var url = '/laboratorios/imprimir/' + this.orden.id + '/' + add;
+                this.contentLoaded = true;
+                var url = '/laboratorios/imprimir/' + this.orden.id + '/?inline=true' + add;
                 this.url_impresion = url;
-                PDFJS.workerSrc = '/static/js/pdfjs/pdf.worker.js';
+                var visor = document.getElementById('object-visor');
+                // PDFJS.workerSrc = '/static/js/pdfjs/pdf.worker.js';
 
-                var loadingTask = PDFJS.getDocument(url);
+                // var loadingTask = PDFJS.getDocument(url);
 
-                loadingTask.promise.then(function (pdf) {
-                    // Fetch the first page
-                    var pageNumber = 1;
-                    pdf.getPage(pageNumber).then(function (page) {
-                        var scale = 1.5;
-                        var viewport = page.getViewport(scale);
-                        // Prepare canvas using PDF page dimensions
-                        var canvas = document.getElementById('the-canvas');
-                        var context = canvas.getContext('2d');
+                // loadingTask.promise.then((pdf) => {
+                //     // Fetch the first page
+                //     var pageNumber = 1;
+                //     pdf.getPage(pageNumber).then((page) => {
+                //         var scale = 1.5;
+                //         var viewport = page.getViewport(scale);
+                //         // Prepare canvas using PDF page dimensions
+                //         var canvas = document.getElementById('the-canvas');
+                //         var context = canvas.getContext('2d');
 
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
+                //         canvas.height = viewport.height;
+                //         canvas.width = viewport.width;
 
-                        // Render PDF page into canvas context
-                        var renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        };
-                        var renderTask = page.render(renderContext);
-                        renderTask.then(function () {
-                            _this3.contentLoaded = true;
-                        });
-                    });
-                }, function (reason) {
-                    // PDF loading error
-                    console.error(reason);
-                });
+                //         // Render PDF page into canvas context
+                //         var renderContext = {
+                //             canvasContext: context,
+                //             viewport: viewport
+                //         };
+                //         var renderTask = page.render(renderContext);
+                //         renderTask.then(() => {
+                //             this.contentLoaded = true;
+                //         });
+                //     });
+                // }, function (reason) {
+                //     // PDF loading error
+                //     console.error(reason);
+                // });
             } else {
                 this.$emit('mostrarsnackbar', 'No hay resultados para imprimir');
                 return undefined;
@@ -30889,12 +30888,12 @@ exports.default = {
             }
         },
         _fetchData: function _fetchData() {
-            var _this4 = this;
+            var _this3 = this;
 
             this.$http.get(_urls2.default.resultados.concat(this.$route.params.id.toString() + '/')).then(function (response) {
-                _this4.items = [];
+                _this3.items = [];
                 if ('resultados' in response.body && response.body.resultados) {
-                    _this4.items.push.apply(_this4.items, response.body.resultados);
+                    _this3.items.push.apply(_this3.items, response.body.resultados);
                     var _iteratorNormalCompletion4 = true;
                     var _didIteratorError4 = false;
                     var _iteratorError4 = undefined;
@@ -30904,7 +30903,7 @@ exports.default = {
                             var items = _step4.value;
 
                             // this.items(items)
-                            _this4.genValidationsForItem(items);
+                            _this3.genValidationsForItem(items);
                         }
                     } catch (err) {
                         _didIteratorError4 = true;
@@ -30922,7 +30921,7 @@ exports.default = {
                     }
                 }
                 if ('formatos' in response.body && response.body.formatos) {
-                    _this4.items.push.apply(_this4.items, response.body.formatos);
+                    _this3.items.push.apply(_this3.items, response.body.formatos);
                     var _iteratorNormalCompletion5 = true;
                     var _didIteratorError5 = false;
                     var _iteratorError5 = undefined;
@@ -30932,7 +30931,7 @@ exports.default = {
                             var _items = _step5.value;
 
                             // this.items(items)
-                            _this4.genValidationsForItem(_items);
+                            _this3.genValidationsForItem(_items);
                         }
                     } catch (err) {
                         _didIteratorError5 = true;
@@ -30949,14 +30948,14 @@ exports.default = {
                         }
                     }
                 }
-                _this4.orden = response.body.orden;
-                _this4.bacteriologo = response.body.bacteriologo;
+                _this3.orden = response.body.orden;
+                _this3.bacteriologo = response.body.bacteriologo;
             }, function (response) {
                 console.error(response);
             });
         },
         saveItem: function saveItem(item) {
-            var _this5 = this;
+            var _this4 = this;
 
             var showsnack = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
@@ -30982,7 +30981,7 @@ exports.default = {
                 // console.log(item)
                 this.$http.post(_urls2.default.resultados.concat(this.$route.params.id.toString() + '/'), { resultado: data, productos: productos }, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
                     if (showsnack) {
-                        _this5.$emit('mostrarsnackbar', 'Se ha guardado el resultado de el laboratorio '.concat(item.laboratorio.nombre.toString()));
+                        _this4.$emit('mostrarsnackbar', 'Se ha guardado el resultado de el laboratorio '.concat(item.laboratorio.nombre.toString()));
                         error = false;
                     }
                     if (!('resultado' in item)) {
@@ -30993,7 +30992,7 @@ exports.default = {
                     item.id = response.body.id;
                 }, function (response) {
                     if (showsnack) {
-                        _this5.$emit('mostrarsnackbar', 'Ha ocurrido un error al guardar el resultado');
+                        _this4.$emit('mostrarsnackbar', 'Ha ocurrido un error al guardar el resultado');
                         error = true;
                     }
                 });
@@ -31139,11 +31138,11 @@ exports.default = {
 //                         <v-btn icon="icon" @click.native="preview = false">
 //                             <v-icon class="white--text">close</v-icon>
 //                         </v-btn>
-//                         <v-toolbar-title class="white--text">Settings</v-toolbar-title>
+//                         <v-toolbar-title class="white--text">Previsualización</v-toolbar-title>
 //                         <v-spacer></v-spacer>
-//                         <a class="white--text btn btn--dark btn--flat" :href="url_impresion">
+//                         <!-- <a class="white--text btn btn--dark btn--flat" :href="url_impresion">
 //                             <span class="btn__content">Imprimir</span>
-//                         </a>
+//                         </a> -->
 //                     </v-toolbar>
 //                     <v-container>
 //                         <div class="wrap__all" v-if="!contentLoaded">
@@ -31151,7 +31150,8 @@ exports.default = {
 //                                 <v-progress-circular indeterminate class="blue--text" :size="50"></v-progress-circular>
 //                             </div>
 //                         </div>
-//                         <canvas id="the-canvas" style="border: 1px solid black"></canvas>
+//                         <!-- <canvas id="the-canvas" style="border: 1px solid black"></canvas> -->
+//                         <object id="object-visor" width="100%" height="800px" :data="url_impresion" type="application/pdf"></object>
 //                     </v-container>
 //                 </v-card>
 //             </v-dialog>
@@ -33732,7 +33732,7 @@ module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12
 /* 163 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <div v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                dark>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        :id=\"'tabItem-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              @empty=\"toggleClass($event, id)\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                            <v-spacer></v-spacer>\n                            <v-btn\n                                :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                                flat\n                                @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                                Guardar\n                            </v-btn>\n                        </v-card-actions>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-toolbar class=\"cyan darken-4\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <v-spacer></v-spacer>\n                        <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                            <span class=\"btn__content\">Imprimir</span>\n                        </a>\n                    </v-toolbar>\n                    <v-container>\n                        <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                            <div class=\"preloader\">\n                                <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                            </div>\n                        </div>\n                        <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas>\n                    </v-container>\n                </v-card>\n            </v-dialog>\n        </div>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn fab dark info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon dark>check</v-icon>\n                </v-btn>\n                <v-btn fab dark warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon dark>fingerprint</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon dark>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <div v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                dark>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        :id=\"'tabItem-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              @empty=\"toggleClass($event, id)\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                            <v-spacer></v-spacer>\n                            <v-btn\n                                :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                                flat\n                                @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                                Guardar\n                            </v-btn>\n                        </v-card-actions>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-toolbar class=\"cyan darken-4\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Previsualización</v-toolbar-title>\n                        <v-spacer></v-spacer>\n                        <!-- <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                            <span class=\"btn__content\">Imprimir</span>\n                        </a> -->\n                    </v-toolbar>\n                    <v-container>\n                        <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                            <div class=\"preloader\">\n                                <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                            </div>\n                        </div>\n                        <!-- <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas> -->\n                        <object id=\"object-visor\" width=\"100%\" height=\"800px\" :data=\"url_impresion\" type=\"application/pdf\"></object>\n                    </v-container>\n                </v-card>\n            </v-dialog>\n        </div>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn fab dark info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon dark>check</v-icon>\n                </v-btn>\n                <v-btn fab dark warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon dark>fingerprint</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon dark>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
 
 /***/ }),
 /* 164 */

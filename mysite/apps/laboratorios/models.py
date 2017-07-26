@@ -238,7 +238,8 @@ class Formato(models.Model):
     formato = models.TextField()
     laboratorio = models.OneToOneField(Laboratorio, related_name='formato', verbose_name=_('Laboratorio'))
 
-    __str__ = lambda self: '({self.id})'.format(self=self)
+    def __str__(self):
+        return 'Formato para: {self.laboratorio})'.format(self=self)
 
 
 @reversion.register()

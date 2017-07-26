@@ -182,20 +182,20 @@ export default {
                 unidades = '';
             }
             if ('referencias' in item && item.tipo.name == 'number') {
-                let refs = item.referencias[gender].minima.toString().concat(' ') + unidades + ' - ' + item.referencias[gender].maxima.toString().concat(' ') + unidades;
-
+                let refs = item.referencias[gender].minima.toString().concat(' - ') + item.referencias[gender].maxima.toString();
                 childs.push(
                     this._genTd(item, refs)
                 )
-                // childs.push(
-                //     this._genTd(item, item.referencias[gender].maxima.toString().concat(' ') + unidades)
-                // )
             } else {
                 // childs.push(
-                //     this._genTd(item, 'undefined')
+                //     this._genTd(item, item.referencia)
                 // )
+                let render = Vue.component('template-x', {
+                    props: [],
+                    template: '<div>0</div>'.replace('0', item.referencia)
+                });
                 childs.push(
-                    this._genTd(item, item.referencia)
+                    this._genTd(item, this.$createElement('template-x', {}, []))
                 )
             }
             return childs;

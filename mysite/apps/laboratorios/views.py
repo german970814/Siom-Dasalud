@@ -43,7 +43,7 @@ def ver_resultado_laboratorio(request, pk):
         laboratorio = get_object_or_404(Resultado, pk=_laboratorio)
         if laboratorio.archivo and spec == 'pdf':
             response = HttpResponse(content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename=lab-%d' % orden.id
+            response['Content-Disposition'] = 'attachment; filename=lab-%d.pdf' % orden.id
             with open(laboratorio.archivo.file.file.name, 'rb') as f:
                 for line in f.readlines():
                     response.write(line)
@@ -59,7 +59,7 @@ def ver_resultado_laboratorio(request, pk):
     if spec == 'pdf':
         to_html = render_to_string('laboratorios/prueba.html', {'resultados': resultados, 'orden': orden, 'request': request}, RequestContext(request))
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename=lab-%d' % orden.id
+        response['Content-Disposition'] = 'attachment; filename=lab-%d.pdf' % orden.id
         HTML(string=to_html).write_pdf(
             response, stylesheets=['static/css/bootstrap.min.css', 'static/css/print_laboratorios.css'])
         return response
@@ -77,12 +77,13 @@ def imprimir_laboratorio(request, pk):
 
     orden = get_object_or_404(Orden, pk=pk)
     _print = request.GET.get('print', None)
+    mode = request.GET.get('inline', 'attachment')
     resultados = orden.resultados_laboratorio.all().order_by('laboratorio__seccion_trabajo', 'bacteriologo')
 
     stylesheets = ['static/css/bootstrap.min.css', 'static/css/print_laboratorios.css']
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename=lab-%d' % orden.id
+    response['Content-Disposition'] = '%s; filename=lab-%d.pdf' % (mode, orden.id)
 
     for resultado in resultados:
         resultado._resultado = resultado.resultado

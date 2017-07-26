@@ -84,11 +84,11 @@
                         <v-btn icon="icon" @click.native="preview = false">
                             <v-icon class="white--text">close</v-icon>
                         </v-btn>
-                        <v-toolbar-title class="white--text">Settings</v-toolbar-title>
+                        <v-toolbar-title class="white--text">Previsualización</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <a class="white--text btn btn--dark btn--flat" :href="url_impresion">
+                        <!-- <a class="white--text btn btn--dark btn--flat" :href="url_impresion">
                             <span class="btn__content">Imprimir</span>
-                        </a>
+                        </a> -->
                     </v-toolbar>
                     <v-container>
                         <div class="wrap__all" v-if="!contentLoaded">
@@ -96,7 +96,8 @@
                                 <v-progress-circular indeterminate class="blue--text" :size="50"></v-progress-circular>
                             </div>
                         </div>
-                        <canvas id="the-canvas" style="border: 1px solid black"></canvas>
+                        <!-- <canvas id="the-canvas" style="border: 1px solid black"></canvas> -->
+                        <object id="object-visor" width="100%" height="800px" :data="url_impresion" type="application/pdf"></object>
                     </v-container>
                 </v-card>
             </v-dialog>
@@ -225,7 +226,7 @@ export default {
             let sub = this.tab.substring(this.tab.length, this.tab.length - 1);
             let laboratorio = this.items[parseInt(sub)];
             if ('resultado' in laboratorio) {
-                return this.showAllResults(event, `?laboratorio=${laboratorio.id}`);
+                return this.showAllResults(event, `&laboratorio=${laboratorio.id}`);
             }
             this.$emit('mostrarsnackbar', 'No se puede imprimir el laboratorio sin resultado.');
         },
@@ -240,40 +241,41 @@ export default {
 
             if (validated) {
                 this.preview = true;
-                this.contentLoaded = false;
-                var url = `/laboratorios/imprimir/${this.orden.id}/` + add;
+                this.contentLoaded = true;
+                var url = `/laboratorios/imprimir/${this.orden.id}/?inline=true` + add;
                 this.url_impresion = url;
-                PDFJS.workerSrc = '/static/js/pdfjs/pdf.worker.js';
+                let visor = document.getElementById('object-visor');
+                // PDFJS.workerSrc = '/static/js/pdfjs/pdf.worker.js';
 
-                var loadingTask = PDFJS.getDocument(url);
+                // var loadingTask = PDFJS.getDocument(url);
 
-                loadingTask.promise.then((pdf) => {
-                  // Fetch the first page
-                  var pageNumber = 1;
-                  pdf.getPage(pageNumber).then((page) => {
-                    var scale = 1.5;
-                    var viewport = page.getViewport(scale);
-                    // Prepare canvas using PDF page dimensions
-                    var canvas = document.getElementById('the-canvas');
-                    var context = canvas.getContext('2d');
+                // loadingTask.promise.then((pdf) => {
+                //     // Fetch the first page
+                //     var pageNumber = 1;
+                //     pdf.getPage(pageNumber).then((page) => {
+                //         var scale = 1.5;
+                //         var viewport = page.getViewport(scale);
+                //         // Prepare canvas using PDF page dimensions
+                //         var canvas = document.getElementById('the-canvas');
+                //         var context = canvas.getContext('2d');
 
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
+                //         canvas.height = viewport.height;
+                //         canvas.width = viewport.width;
 
-                    // Render PDF page into canvas context
-                    var renderContext = {
-                      canvasContext: context,
-                      viewport: viewport
-                    };
-                    var renderTask = page.render(renderContext);
-                    renderTask.then(() => {
-                      this.contentLoaded = true;
-                    });
-                  });
-                }, function (reason) {
-                  // PDF loading error
-                  console.error(reason);
-                });
+                //         // Render PDF page into canvas context
+                //         var renderContext = {
+                //             canvasContext: context,
+                //             viewport: viewport
+                //         };
+                //         var renderTask = page.render(renderContext);
+                //         renderTask.then(() => {
+                //             this.contentLoaded = true;
+                //         });
+                //     });
+                // }, function (reason) {
+                //     // PDF loading error
+                //     console.error(reason);
+                // });
             } else {
                 this.$emit('mostrarsnackbar', 'No hay resultados para imprimir');
                 return undefined;

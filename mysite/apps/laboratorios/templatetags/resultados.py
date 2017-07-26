@@ -20,7 +20,6 @@ def get_resultado(instance, genero):
                     number >= float(instance.referencias[genero.upper()]['maxima']) else '%.2f' % number
             else:
                 result = '%.2f' % number
-            result += ' {}'.format(instance.unidades)
         else:
             result = result.upper()
     elif tipo == 'select':

@@ -18,7 +18,7 @@
         position: fixed;
         bottom: 0;
         height: 2.9cm;
-        margin-bottom: -3cm;
+         margin-bottom: -3cm; 
     }
 
     #main-logo {
@@ -133,7 +133,7 @@
     }
 
     .footer-content {
-        font-size: 6px;
+        font-size: 8px;
     }
 
     footer p {
