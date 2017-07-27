@@ -78,9 +78,9 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-            <v-dialog v-model="preview" fullscreen transition="v-dialog-bottom-transition" :overlay="false">
-                <v-card>
-                    <v-toolbar class="cyan darken-4">
+            <v-dialog v-model="preview" fullscreen transition="v-dialog-bottom-transition" :overlay="false" @keyup.esc="preview = false">
+                <v-card @keyup.esc="preview = false">
+                    <v-toolbar class="cyan darken-4" @keyup.esc="preview = false" fixed>
                         <v-btn icon="icon" @click.native="preview = false">
                             <v-icon class="white--text">close</v-icon>
                         </v-btn>
@@ -90,14 +90,14 @@
                             <span class="btn__content">Imprimir</span>
                         </a> -->
                     </v-toolbar>
-                    <v-container>
+                    <v-container @keyup.esc="preview = false">
                         <div class="wrap__all" v-if="!contentLoaded">
                             <div class="preloader">
                                 <v-progress-circular indeterminate class="blue--text" :size="50"></v-progress-circular>
                             </div>
                         </div>
                         <!-- <canvas id="the-canvas" style="border: 1px solid black"></canvas> -->
-                        <object id="object-visor" width="100%" height="800px" :data="url_impresion" type="application/pdf"></object>
+                        <object style="margin-top: 60px" id="object-visor" width="100%" height="800px" :data="url_impresion" type="application/pdf" @keyup.esc="preview = false"></object>
                     </v-container>
                 </v-card>
             </v-dialog>
@@ -117,6 +117,9 @@
                 </v-btn>
                 <v-btn fab dark success small @click.native.stop="showAllResults" v-tooltip:left="{html: 'Imprimir terminados'}">
                     <v-icon dark>print</v-icon>
+                </v-btn>
+                <v-btn fab dark error small @click.native.stop="showPreview" v-tooltip:left="{html: 'Previsualización'}">
+                    <v-icon dark>panorama</v-icon>
                 </v-btn>
             </template>
             <v-btn fab dark error v-tooltip:left="{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}">
@@ -221,6 +224,10 @@ export default {
             laboratorio.cerrado = true;
             this.saveItem(laboratorio);
             this.dialog = false;
+        },
+        showPreview: function () {
+            this.url_impresion = URL.preview.concat(this.orden.id.toString()) + '/';
+            this.preview = true;
         },
         showSingleResult: function (event) {
             let sub = this.tab.substring(this.tab.length, this.tab.length - 1);

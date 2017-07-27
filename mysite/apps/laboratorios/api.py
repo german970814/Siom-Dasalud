@@ -389,6 +389,17 @@ def resultado_api_view(request, pk):
             with reversion.create_revision():
                 resultado = serializer.save(bacteriologo=bacteriologo)
                 if resultado.cerrado:
+                    _resultados = resultado.orden.resultados_laboratorio
+                    if not _resultados.filter(cerrado=False).exists():
+                        laboratorios = Laboratorio.objects.filter(
+                            id__in=Orden.objects.filter(id=orden.id).servicios().values_list('laboratorio__id', flat=True)
+                        ).exclude(
+                            id__in=_resultados.values_list('laboratorio__id', flat=True)
+                        )
+                        if not laboratorios.exists() and orden.recepcion.estado != Recepcion.RESULTADO_EMITIDO:
+                            recepcion = orden.recepcion
+                            recepcion.estado = Recepcion.RESULTADO_EMITIDO
+                            recepcion.save()
                     data_productos = request.data['productos']
                     serializer_plantilla = PlantillaSerializer(data=data_productos, many=True)
                     if serializer_plantilla.is_valid():

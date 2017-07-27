@@ -29,6 +29,7 @@
                                     ></v-select>
                                     <br>
                                     <v-text-field
+                                        v-if="item.tipo.name !== 'lab'"
                                         label="Nombre del Campo"
                                         v-model="item.nombre"
                                         hint="Con este nombre se identificará el campo"
@@ -36,7 +37,7 @@
                                         required
                                     ></v-text-field>
                                     <br>
-                                    <div v-if="item.tipo.name != 'title'">
+                                    <div v-if="item.tipo.name != 'title' && item.tipo.name != 'lab'">
                                         <v-text-field
                                           label="Texto de ayuda"
                                           v-model="item.help"
@@ -145,6 +146,16 @@
                                             </v-layout>
                                         </div>
                                     </div>
+                                    <div v-if="item.tipo.name == 'lab'">
+                                        <v-flex md2 xs2>
+                                            <v-btn
+                                                v-tooltip:top="{html: 'Agregar Laboratorio'}"
+                                                class="green--text darken-1" icon="icon"
+                                                @click.native.stop="dialog_lab = true; lastItem = item">
+                                                <v-icon>add</v-icon>
+                                            </v-btn>
+                                        </v-flex>
+                                    </div>
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-btn
@@ -197,6 +208,27 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="dialog_lab" scrollable>
+            <v-card>
+                <v-card-title>Seleccione un Laboratorio</v-card-title>
+                <v-divider></v-divider>
+                    <v-card-text>
+                        <v-radio
+                            v-for="(lab, labId) of laboratorios"
+                            :key="lab.id"
+                            :label="lab.nombre"
+                            v-model="modalChoiceLab"
+                            :value="lab.id"
+                            primary>
+                        </v-radio>
+                    </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-btn class="blue--text darken-1" flat @click.native="dialog_lab = false">Cerrar</v-btn>
+                    <v-btn class="blue--text darken-1" flat @click.native="llenarLaboratorios">Escoger</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -213,7 +245,8 @@ export default {
     props: {
         laboratorio: {
             required: true
-        }
+        },
+        laboratorios: Array
     },
     components: {
         floatingButton: FloattingButton,
@@ -226,8 +259,10 @@ export default {
         return {
             formato: {laboratorio: {nombre: '', codigo: '', id: ''}},
             dialog: false,
+            dialog_lab: false,
             caracteristicas: [],
             modalchoice: '',
+            modalChoiceLab: '',
             items: [],
             lastItem: {},
             tipoHelpText: 'Escoja un tipo de campo para los resultados.',
@@ -247,11 +282,11 @@ export default {
                   name: 'title',
                   help: 'Con este campo se creará un titulo, el cual servirá de separador.'
                 },
-                // {
-                //   text: 'Laboratorio',
-                //   name: 'lab',
-                //   help: 'Con este campo podrá extender de un formato de laboratorio ya creado.'
-                // },
+                {
+                  text: 'Laboratorio',
+                  name: 'lab',
+                  help: 'Con este campo podrá extender de un formato de laboratorio ya creado.'
+                },
                 {
                   text: 'Caracteristicas',
                   name: 'select',
@@ -357,6 +392,22 @@ export default {
                   });
             }
             this.dialog = false;
+        },
+        llenarLaboratorios: function () {
+            let item = this.lastItem;
+            if (this.modalChoiceLab) {
+                this.$http.get(URL.formatos.concat(this.modalChoiceLab).concat('/'))
+                    .then(response => {
+                        this.removeItem(item);
+                        for (let field of response.body.formato) {
+                            this.items.push(field);
+                            this.addValidation(this.genValidationsForItem(field));
+                        }
+                    }, response => {
+
+                    })
+            }
+            this.dialog_lab = false;
         },
         getFormato: function () {
             // let idLaboratorio = this.$route.params.id;

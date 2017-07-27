@@ -13,7 +13,7 @@ from django.conf import settings
 
 from weasyprint import HTML
 
-from .models import Laboratorio, Resultado, Recepcion
+from .models import Laboratorio, Resultado, Recepcion, Formato
 from mysite.apps.historias.models import orden as Orden, ordenesProducto as OrdenProducto
 
 import datetime
@@ -28,6 +28,10 @@ def index(request):
 
 @login_required
 def ver_resultado_laboratorio(request, pk):
+    """
+    Vista para ver los resultados de los examenes de laboratorios, de manera individual o coletiva,
+    permite visualizar el resultado como HTML o PDF.
+    """
     orden = get_object_or_404(Orden, pk=pk)
     resultados = orden.resultados_laboratorio.all().order_by('laboratorio__seccion_trabajo', 'bacteriologo')
 
@@ -118,7 +122,8 @@ def imprimir_laboratorio(request, pk):
                 for line in f.readlines():
                     response.write(line)
             return response
-        resultados = Resultado.objects.filter(id=laboratorio.id).order_by('laboratorio__seccion_trabajo', 'bacteriologo')
+        resultados = Resultado.objects.filter(
+            id=laboratorio.id).order_by('laboratorio__seccion_trabajo', 'bacteriologo')
         for resultado in resultados:
             resultado.resultado = json.loads(resultado.resultado)
     else:
@@ -137,29 +142,40 @@ def imprimir_laboratorio(request, pk):
     return response
 
 
-def prueba(request, pk):
-    from .serializers import ResultadoSerializer, FormatoSerializer, BacteriologoSerializer
-    from .models import Formato
-    from mysite.apps.historias.serializers import OrdenSerializer
+@login_required
+def preview(request, pk):
+    """
+    Vista para previsualizar los resultados de los laboratorios de manera que se puedan ver aún los
+    resultados de los laboratorios que no han sido digitados.
+    """
+
     orden = get_object_or_404(Orden, pk=pk)
-    args = tuple()
-    kwargs = {}
-    data = {}
-    bacteriologo = request.user.bacteriologo
-    resultados = orden.resultados_laboratorio.all()
-    serializer_resultados = ResultadoSerializer(resultados, many=True)
-    data['resultados'] = serializer_resultados.data
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename=lab-%d.pdf' % orden.id
+
+    resultados = orden.resultados_laboratorio.all().order_by('laboratorio__seccion_trabajo', 'bacteriologo')
 
     laboratorios = Laboratorio.objects.filter(
         id__in=Orden.objects.filter(id=orden.id).servicios().values_list('laboratorio__id', flat=True)
-        ).exclude(
-            id__in=resultados.values_list('laboratorio__id', flat=True)
-        )
-
+    ).exclude(
+        id__in=resultados.values_list('laboratorio__id', flat=True)
+    )
     formatos = Formato.objects.filter(id__in=laboratorios.values_list('formato__id', flat=True))
-    serializer = FormatoSerializer(formatos, many=True)
-    data['formatos'] = serializer.data
-    data['orden'] = OrdenSerializer(orden).data
-    data['bacteriologo'] = BacteriologoSerializer(bacteriologo).data
-    args = (data, )
-    return render(request, 'laboratorios/prueba.html', locals())
+
+    resultados = list(resultados)
+    for formato in formatos:
+        resultados.append(
+            Resultado(orden=orden, laboratorio=formato.laboratorio, resultado=formato.formato)
+        )
+    for resultado in resultados:
+        resultado.resultado = json.loads(resultado.resultado)
+
+    stylesheets = ['static/css/bootstrap.min.css', 'static/css/print_laboratorios.css']
+
+    to_html = render_to_string(
+        'laboratorios/resultados.html',
+        {'resultados': resultados, 'orden': orden, 'request': request},
+        RequestContext(request)
+    )
+    HTML(string=to_html).write_pdf(response, stylesheets=stylesheets)
+    return response

@@ -14,12 +14,13 @@ def get_resultado(instance, genero):
     if tipo in ['number', 'text', 'textarea']:
         result = instance.model_text
         if tipo == 'number':
-            number = float(result)
-            if instance.referencias[genero.upper()]['minima'] and instance.referencias[genero.upper()]['minima']:
-                result = '* %.2f' % number if number <= float(instance.referencias[genero.upper()]['minima']) or \
-                    number >= float(instance.referencias[genero.upper()]['maxima']) else '%.2f' % number
-            else:
-                result = '%.2f' % number
+            if result.strip():
+                number = float(result.strip())
+                if instance.referencias[genero.upper()]['minima'] and instance.referencias[genero.upper()]['minima']:
+                    result = '* %.2f' % number if number <= float(instance.referencias[genero.upper()]['minima']) or \
+                        number >= float(instance.referencias[genero.upper()]['maxima']) else '%.2f' % number
+                else:
+                    result = '%.2f' % number
         else:
             result = result.upper()
     elif tipo == 'select':

@@ -6,7 +6,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^imprimir/(?P<pk>\d+)/$', views.imprimir_laboratorio, name='imprimir'),
     url(r'^resultados_laboratorios/(?P<pk>\d+)/$', views.ver_resultado_laboratorio, name='ver_resultado_laboratorio'),
-    url(r'^prueba/(?P<pk>\d+)/$', views.prueba),
+    url(r'^preview/(?P<pk>\d+)/$', views.preview, name='preview'),
 ]
 
 # api

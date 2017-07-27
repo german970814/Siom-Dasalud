@@ -36,7 +36,7 @@
                 </ig-form>
             </v-stepper-content>
             <v-stepper-content step="2" class="white">
-                <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
+                <ig-formato :laboratorio="laboratorio" :laboratorios="elements" @mostrarsnackbar="showSnackBar"></ig-formato>
             </v-stepper-content>
             <v-stepper-content step="3" class="white">
                 <v-card>
