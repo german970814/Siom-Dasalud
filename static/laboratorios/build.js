@@ -30770,7 +30770,7 @@ exports.default = {
             if (validated) {
                 this.preview = true;
                 this.contentLoaded = true;
-                var url = '/laboratorios/imprimir/' + this.orden.id + '/?inline=true' + add;
+                var url = '/laboratorios/imprimir/' + this.orden.id + '/?inline=inline' + add;
                 this.url_impresion = url;
                 var visor = document.getElementById('object-visor');
                 // PDFJS.workerSrc = '/static/js/pdfjs/pdf.worker.js';

@@ -26,16 +26,18 @@ def index(request):
     return render(request, 'laboratorios/index.html', {})
 
 
+@login_required
 def ver_resultado_laboratorio(request, pk):
     orden = get_object_or_404(Orden, pk=pk)
     resultados = orden.resultados_laboratorio.all().order_by('laboratorio__seccion_trabajo', 'bacteriologo')
 
     _verified_formats = ['html', 'pdf']
-
+    _verified_modes = ['inline', 'attachment']
+    _mode = request.GET.get('inline', 'attachment')
     _laboratorio = request.GET.get('laboratorio', None)
     spec = request.GET.get('format', 'html').lower()
 
-    if spec not in _verified_formats:
+    if spec not in _verified_formats or _mode not in _verified_modes:
         from django.http import HttpResponseNotAllowed
         return HttpResponseNotAllowed('Spect or format not allowed for: {}'.format(spec))
 
@@ -43,7 +45,7 @@ def ver_resultado_laboratorio(request, pk):
         laboratorio = get_object_or_404(Resultado, pk=_laboratorio)
         if laboratorio.archivo and spec == 'pdf':
             response = HttpResponse(content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename=lab-%d.pdf' % orden.id
+            response['Content-Disposition'] = '%s; filename=lab-%d.pdf' % (_mode, orden.id)
             with open(laboratorio.archivo.file.file.name, 'rb') as f:
                 for line in f.readlines():
                     response.write(line)
@@ -55,16 +57,17 @@ def ver_resultado_laboratorio(request, pk):
     for resultado in resultados:
         resultado.resultado = json.loads(resultado.resultado)
 
+    data = {'resultados': resultados, 'orden': orden, 'request': request}
     # weasyprint
     if spec == 'pdf':
-        to_html = render_to_string('laboratorios/prueba.html', {'resultados': resultados, 'orden': orden, 'request': request}, RequestContext(request))
+        to_html = render_to_string('laboratorios/prueba.html', data, RequestContext(request))
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename=lab-%d.pdf' % orden.id
+        response['Content-Disposition'] = '%s; filename=lab-%d.pdf' % (_mode, orden.id)
         HTML(string=to_html).write_pdf(
             response, stylesheets=['static/css/bootstrap.min.css', 'static/css/print_laboratorios.css'])
         return response
 
-    return render(request, 'laboratorios/prueba.html', {'resultados': resultados, 'orden': orden, 'request': request})
+    return render(request, 'laboratorios/prueba.html', data)
 
 
 @login_required
