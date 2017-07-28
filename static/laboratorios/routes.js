@@ -13,6 +13,7 @@ import Bacteriologos from './pages/bacteriologos.vue';
 import Resultados from './pages/resultados.vue';
 import TomaMuestra from './pages/toma_muestra.vue';
 import Empleados from './pages/empleados.vue';
+import Recepciones from './pages/recepciones.vue';
 
 const routes = [
     {path: '/laboratorios/', component: Laboratorios},
@@ -28,6 +29,7 @@ const routes = [
     {path: '/resultados/:id/', component: Resultados},
     {path: '/toma_muestra/', component: TomaMuestra},
     {path: '/empleados/', component: Empleados},
+    {path: '/recepciones/', component: Recepciones},
 ]
 
 // router.beforeEach((to, from, next) => {

@@ -81,12 +81,13 @@
                                                 </v-flex>
                                             </template>
                                             <v-flex md12 v-else>
-                                                <v-text-field
+                                                <!-- <v-text-field
                                                     label="Valores de Referencia"
                                                     v-model="item.referencia"
                                                     multi-line
                                                     hint="Texto de referencia para la visualización de resultados."
-                                                ></v-text-field>
+                                                ></v-text-field> -->
+                                                <wysiwyg v-model="item.referencia"></wysiwyg>
                                             </v-flex>
                                         </v-layout>
                                         <br>
@@ -233,12 +234,17 @@
 </template>
 
 <script>
+import Vue from 'vue/dist/vue.js';
 import URL from './../urls.js';
 import IgMixin from './../mixins/igmixin.js';
 import ErrorMixin from './../mixins/errormixin.js';
 import FloattingButton from './../components/floating-button.vue';
 import FormularioResultado from './../components/formulario-resultado.vue';
 import _ from 'underscore';
+
+import wysiwgy from './../vue-wysiwyg/dist/vueWysiwyg'
+
+Vue.use(wysiwgy, {hideModules: {hyperlink: true, image: true, table: true}});
 
 export default {
     mixins: [IgMixin, ErrorMixin],

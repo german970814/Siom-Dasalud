@@ -20,6 +20,7 @@ const resultados = BASE.concat('resultado/');
 const secciones_trabajo = BASE.concat('seccion_trabajo/');
 const servicios = BASE.concat('servicios/');
 const tecnicas = BASE.concat('tecnicas/');
+const recepciones = BASE.concat('recepciones/');
 const preview = '/laboratorios/preview/';
 
 
@@ -45,5 +46,6 @@ export default {
     plantillaLaboratorio,
     empleados,
     recarga,
-    preview
+    preview,
+    recepciones
 }

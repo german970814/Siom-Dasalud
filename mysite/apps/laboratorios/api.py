@@ -27,7 +27,7 @@ from .serializers import (
     RecepcionSerializer, HojaGastoSerializer, PlantillaLaboratorioSerializer,
     EmpleadoSerializer, RecargaSerializer
 )
-from .utils import ListViewAPIMixin
+from .utils import ListViewAPIMixin, Pagination
 from .permissions import (
     AdminPermission, BacteriologoPermission, AdminOrBacteriologoPermission,
     ReadOnlyPermission, EmpleadoPermission
@@ -210,6 +210,13 @@ class RecargaAPI(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(producto=self.producto)
+
+
+class RecepcionesTerminadas(generics.ListAPIView):
+    queryset = Recepcion.objects.all()
+    serializer_class = RecepcionSerializer
+    filter_fields = ['estado']
+    pagination_class = Pagination
 
 
 @api_view(['GET', 'POST'])

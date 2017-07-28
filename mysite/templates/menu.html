@@ -198,9 +198,12 @@
 {% if user.bacteriologo %}
 
     <v-list-tile ripple href="{% url 'laboratorios:index' %}#/ordenes_laboratorios/">
-        <v-list-tile-title>Laboratorios</v-list-tile-title>
+        <v-list-tile-title>Ordenes Pendientes</v-list-tile-title>
     </v-list-tile>
 
+    <v-list-tile ripple href="{% url 'laboratorios:index' %}#/recepciones/">
+        <v-list-tile-title>Ordenes Resultado Emitido</v-list-tile-title>
+    </v-list-tile>
 {% endif %}
 {% if user.empleado %}
 
