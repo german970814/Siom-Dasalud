@@ -60,6 +60,11 @@ export default {
         },
     },
 
+    watch: {
+        html: function () {
+            this.$refs.content.innerHTML = this.html;
+        }
+    },
 
     components: { Btn  },
 
