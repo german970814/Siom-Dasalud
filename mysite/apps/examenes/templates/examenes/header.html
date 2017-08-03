@@ -1,0 +1,68 @@
+{% load staticfiles %}
+
+<header>
+    <div class="row">
+        <div class="invoice">
+            <table class="table table-responsive table-bordered join table-header">
+                <tbody>
+                    <tr>
+                        <td rowspan="2"><img id="main-logo" src="http://{{ request.META.HTTP_HOST }}{% static 'siomoptica_icon.png' %}" alt="Image Not Found" width="350px" height="125px"></td>
+                        <td colspan="2" style="text-align: center"><h1>Certificado de Aptitud Visual</h1></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center">
+                            <small>Cra. 48 No. 75 - 156 Local 3 · PBX 3688151 Celulares: 301-320 5553 · 304-205 4787</small><br>
+                            <small>E-mail: info@ipssiom.com · Página web: www.ipssiom.com</small>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-responsive table-bordered join table-body">
+                <tr>
+                    <th>CIUDAD</th>
+                    <td>{{ orden.institucion.ciudad.nombre_municipio|upper }}</td>
+                    <th>FECHA</th>
+                    <td>{{ orden.fecha }}</td>
+                    <th>EMPRESA</th>
+                    <td>{{ orden.empresa|upper }}</td>
+                </tr>
+            </table>
+            <table class="table table-responsive table-bordered join table-body">
+                <tr>
+                    <th>EMPRESA CLIENTE</th>
+                    <td>{{ orden.empresa_cliente|upper }}</td>
+                    <th>TIPO DE EXAMEN</th>
+                    <td>{{ orden.get_examen_display|upper }}</td>
+                </tr>
+            </table>
+            <table class="table table-responsive table-bordered table-body">
+                <thead>
+                    <tr>
+                        <th colspan="6" style="text-align: center">INFORMACION DEL TRABAJOR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% with orden.paciente as paciente %}
+                    <tr>
+                        <th>PRIMER APELLIDO</th>
+                        <td>{{ paciente.papellido|upper }}</td>
+                        <th>SEGUNDO APELLIDO</th>
+                        <td>{{ paciente.sapellido|upper }}</td>
+                        <th>NOMBRES</th>
+                        <td>{{ paciente.pnombre|upper }} {{ paciente.snombre|upper }}</td>
+                    </tr>
+                    <tr>
+                        <th>SEXO</th>
+                        <td>{{ paciente.get_genero_display|upper }}</td>
+                        <th>TIPO DE DOCUMENTO</th>
+                        <td>{{ paciente.get_documento_display|upper }}</td>
+                        <th>FECHA DE NACIMIENTO</th>
+                        <td>{{ paciente.fecha_nacimiento|upper }}</td>
+                    </tr>
+                    {% endwith %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</header>

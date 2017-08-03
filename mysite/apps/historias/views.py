@@ -44,6 +44,8 @@ def add_historias_view(request,id_prod):
 
 	resultados = getorden.resultados_laboratorio.all()
 
+	visiometria = getattr(getorden, 'visiometria', None)
+
 	for laboratorio in laboratorios:
 		param = resultados.filter(laboratorio__id=laboratorio.id)
 		if param.exists():
@@ -101,7 +103,7 @@ def add_historias_view(request,id_prod):
 			historial = historia_clinica.objects.filter(paciente=getorden.paciente)
 			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
 			form2 = addposologiaForm()
-			ctx = {'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
+			ctx = {'visiometria': visiometria, 'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
 			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 		if 'btntabhistoria_cerrar' in request.POST:
@@ -143,7 +145,7 @@ def add_historias_view(request,id_prod):
 			historial = historia_clinica.objects.filter(paciente=getorden.paciente)
 			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
 			form2 = addposologiaForm()
-			ctx = {'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'exito_cerrada':exito_cerrada,'error':error,'altura':altura}
+			ctx = {'visiometria': visiometria, 'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'exito_cerrada':exito_cerrada,'error':error,'altura':altura}
 			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 	try: #Verifica si la historia ya existe para cargarla y continuar editandola
@@ -167,7 +169,7 @@ def add_historias_view(request,id_prod):
 	else:
 		altura = False
 		form3= addtest_alturaForm()
-	ctx = {'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
+	ctx = {'visiometria': visiometria, 'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
 	return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 @login_required(login_url=URL_LOGIN)
@@ -240,10 +242,11 @@ def show_historias_view(request, id_prod):
 	_orden = get_object_or_404(Orden, pk=id_prod)
 	_historia = get_object_or_404(HistoriaClinica, orden=_orden)
 	# _procedimientos = HistoriaProcedimiento.objects.filter(paciente=_orden.paciente)
+	visiometria = getattr(_orden, 'visiometria', None)
 
 	kwargs_form = {}
 	data = {
-		'getorden': _orden, 'gethistoria': _historia, 'altura': False
+		'getorden': _orden, 'gethistoria': _historia, 'altura': False, 'visiometria': visiometria
 	}
 
 	if _orden.examen_adicional == '1':

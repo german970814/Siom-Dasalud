@@ -33,9 +33,6 @@
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
-/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -63,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 49);
+/******/ 	return __webpack_require__(__webpack_require__.s = 48);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -186,7 +183,7 @@ var stylesInDom = {},
 	singletonElement = null,
 	singletonCounter = 0,
 	styleElementsInsertedAtTop = [],
-	fixUrls = __webpack_require__(127);
+	fixUrls = __webpack_require__(54);
 
 module.exports = function(list, options) {
 	if(typeof DEBUG !== "undefined" && DEBUG) {
@@ -2056,95 +2053,6 @@ const tecnicas = BASE.concat('tecnicas/');
 
 /***/ }),
 /* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    data: function () {
-        return {
-          elements: [],
-          __parent_: undefined,
-          loading: false,
-        }
-    },
-    methods: {
-        getElements: function () {
-            if ('loading' in this) {
-                if (!this.loading) {
-                  this.toggleLoading()
-                }
-            }
-            let url = this.url || arguments[0];
-            if (!url) {
-                throw new Error('URL no provehida para hacer consula de elementos');
-            }
-            this.$http.get(url)
-                .then(response => {
-                    this.$emit('http403', false);
-                    this.elements = [];
-                    for (let object of response.body) {
-                        object.selected = false;
-                        this.elements.push(object);
-                    }
-                    this.toggleLoading()
-                }, response => {
-                    if (response.status == 403) {
-                        this.$emit('http403', true);
-                    }
-                    this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
-                    this.toggleLoading()
-                });
-        },
-        __getParent__: function () {
-            if (!this.__parent_) {  // singleton
-                let parent = this.$parent;
-                while (parent !== undefined) {
-                    if (parent.$parent === undefined) {
-                        break;
-                    }
-                    parent = parent.$parent;
-                }
-                this.__parent_ = parent;
-            }
-            return this.__parent_;
-        },
-        getParent: function () {
-            return this.__getParent__().$options.methods;
-        },
-        showSnackBar: function (value) {
-            this.$emit('mostrarsnackbar', value);
-        },
-        eventCreatedObject: function (value) {
-            value.selected = false;
-            let exists = this.elements.find(x => x.id == value.id);
-            if (exists) {
-                for (let attr in exists) {
-                    this.elements[this.elements.indexOf(exists)][attr] = value[attr] || exists[attr];
-                }
-            } else {
-                this.elements.push(value);
-            }
-            this.selected = value;
-        },
-        eventUpdatedForm: function (value) {
-            this.selected = value;
-        },
-        toggleLoading: function () {
-            if ('loading' in this) {
-                this.loading = !this.loading;
-            }
-        }
-    }
-});
-
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/*!
@@ -11464,7 +11372,96 @@ return Vue$3;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(182)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(49)))
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function () {
+        return {
+          elements: [],
+          __parent_: undefined,
+          loading: false,
+        }
+    },
+    methods: {
+        getElements: function () {
+            if ('loading' in this) {
+                if (!this.loading) {
+                  this.toggleLoading()
+                }
+            }
+            let url = this.url || arguments[0];
+            if (!url) {
+                throw new Error('URL no provehida para hacer consula de elementos');
+            }
+            this.$http.get(url)
+                .then(response => {
+                    this.$emit('http403', false);
+                    this.elements = [];
+                    for (let object of response.body) {
+                        object.selected = false;
+                        this.elements.push(object);
+                    }
+                    this.toggleLoading()
+                }, response => {
+                    if (response.status == 403) {
+                        this.$emit('http403', true);
+                    }
+                    this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.')
+                    this.toggleLoading()
+                });
+        },
+        __getParent__: function () {
+            if (!this.__parent_) {  // singleton
+                let parent = this.$parent;
+                while (parent !== undefined) {
+                    if (parent.$parent === undefined) {
+                        break;
+                    }
+                    parent = parent.$parent;
+                }
+                this.__parent_ = parent;
+            }
+            return this.__parent_;
+        },
+        getParent: function () {
+            return this.__getParent__().$options.methods;
+        },
+        showSnackBar: function (value) {
+            this.$emit('mostrarsnackbar', value);
+        },
+        eventCreatedObject: function (value) {
+            value.selected = false;
+            let exists = this.elements.find(x => x.id == value.id);
+            if (exists) {
+                for (let attr in exists) {
+                    this.elements[this.elements.indexOf(exists)][attr] = value[attr] || exists[attr];
+                }
+            } else {
+                this.elements.push(value);
+            }
+            this.selected = value;
+        },
+        eventUpdatedForm: function (value) {
+            this.selected = value;
+        },
+        toggleLoading: function () {
+            if ('loading' in this) {
+                this.loading = !this.loading;
+            }
+        }
+    }
+});
+
 
 /***/ }),
 /* 6 */
@@ -12557,7 +12554,7 @@ var xhrClient = function (request) {
 
 var nodeClient = function (request) {
 
-    var client = __webpack_require__(183);
+    var client = __webpack_require__(50);
 
     return new PromiseObj(function (resolve) {
 
@@ -13025,8 +13022,9 @@ if (typeof window !== 'undefined' && window.Vue) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(140)
-__vue_script__ = __webpack_require__(51)
+__webpack_require__(57)
+__vue_script__ = __webpack_require__(59)
+__vue_template__ = __webpack_require__(82)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -13034,7 +13032,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/components/form.vue"
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/table.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -13046,10 +13044,15 @@ if (false) {(function () {  module.hot.accept()
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = { "default": __webpack_require__(73), __esModule: true };
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var __vue_script__, __vue_template__
-__webpack_require__(137)
-__vue_script__ = __webpack_require__(57)
-__vue_template__ = __webpack_require__(153)
+__webpack_require__(83)
+__vue_script__ = __webpack_require__(85)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -13057,19 +13060,13 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/components/table.vue"
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/form.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
     hotAPI.update(id, module.exports, __vue_template__)
   }
 })()}
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(75), __esModule: true };
 
 /***/ }),
 /* 10 */
@@ -22203,9 +22200,9 @@ function load(cb) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(128)
-__vue_script__ = __webpack_require__(54)
-__vue_template__ = __webpack_require__(150)
+__webpack_require__(52)
+__vue_script__ = __webpack_require__(55)
+__vue_template__ = __webpack_require__(56)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22213,7 +22210,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/components/menu.vue"
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/menu.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22250,9 +22247,9 @@ module.exports = {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store  = __webpack_require__(43)('wks')
-  , uid    = __webpack_require__(45)
-  , Symbol = __webpack_require__(20).Symbol;
+var store  = __webpack_require__(40)('wks')
+  , uid    = __webpack_require__(41)
+  , Symbol = __webpack_require__(18).Symbol;
 module.exports = function(name){
   return store[name] || (store[name] =
     Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
@@ -22262,22 +22259,7 @@ module.exports = function(name){
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-var _Symbol = __webpack_require__(73)["default"];
-
-exports["default"] = function (obj) {
-  return obj && obj.constructor === _Symbol ? "symbol" : typeof obj;
-};
-
-exports.__esModule = true;
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var global    = __webpack_require__(20)
+var global    = __webpack_require__(18)
   , core      = __webpack_require__(12)
   , ctx       = __webpack_require__(37)
   , PROTOTYPE = 'prototype';
@@ -22325,6 +22307,21 @@ $export.W = 32; // wrap
 module.exports = $export;
 
 /***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Symbol = __webpack_require__(64)["default"];
+
+exports["default"] = function (obj) {
+  return obj && obj.constructor === _Symbol ? "symbol" : typeof obj;
+};
+
+exports.__esModule = true;
+
+/***/ }),
 /* 17 */
 /***/ (function(module, exports) {
 
@@ -22332,6 +22329,38 @@ module.exports = {};
 
 /***/ }),
 /* 18 */
+/***/ (function(module, exports) {
+
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
+if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+module.exports = function(exec){
+  try {
+    return !!exec();
+  } catch(e){
+    return true;
+  }
+};
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// to indexed object, toObject with fallback for non-array-like ES3 strings
+var IObject = __webpack_require__(42)
+  , defined = __webpack_require__(24);
+module.exports = function(it){
+  return IObject(defined(it));
+};
+
+/***/ }),
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -22421,45 +22450,13 @@ var x = {
 
 
 /***/ }),
-/* 19 */
-/***/ (function(module, exports) {
-
-module.exports = function(exec){
-  try {
-    return !!exec();
-  } catch(e){
-    return true;
-  }
-};
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports) {
-
-// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-var global = module.exports = typeof window != 'undefined' && window.Math == Math
-  ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
-if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(39)
-  , defined = __webpack_require__(27);
-module.exports = function(it){
-  return IObject(defined(it));
-};
-
-/***/ }),
 /* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(136)
-__vue_script__ = __webpack_require__(55)
-__vue_template__ = __webpack_require__(151)
+__webpack_require__(119)
+__vue_script__ = __webpack_require__(121)
+__vue_template__ = __webpack_require__(122)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22467,7 +22464,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/components/productos.vue"
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/productos.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22479,10 +22476,91 @@ if (false) {(function () {  module.hot.accept()
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(76), __esModule: true };
+// 7.1.13 ToObject(argument)
+var defined = __webpack_require__(24);
+module.exports = function(it){
+  return Object(defined(it));
+};
 
 /***/ }),
 /* 24 */
+/***/ (function(module, exports) {
+
+// 7.2.1 RequireObjectCoercible(argument)
+module.exports = function(it){
+  if(it == undefined)throw TypeError("Can't call method on  " + it);
+  return it;
+};
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+var hasOwnProperty = {}.hasOwnProperty;
+module.exports = function(it, key){
+  return hasOwnProperty.call(it, key);
+};
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var $          = __webpack_require__(13)
+  , createDesc = __webpack_require__(27);
+module.exports = __webpack_require__(38) ? function(object, key, value){
+  return $.setDesc(object, key, createDesc(1, value));
+} : function(object, key, value){
+  object[key] = value;
+  return object;
+};
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports) {
+
+module.exports = function(bitmap, value){
+  return {
+    enumerable  : !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable    : !(bitmap & 4),
+    value       : value
+  };
+};
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var def = __webpack_require__(13).setDesc
+  , has = __webpack_require__(25)
+  , TAG = __webpack_require__(14)('toStringTag');
+
+module.exports = function(it, tag, stat){
+  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
+};
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = function(it){
+  return toString.call(it).slice(8, -1);
+};
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(71);
+module.exports = function(it){
+  if(!isObject(it))throw TypeError(it + ' is not an object!');
+  return it;
+};
+
+/***/ }),
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22490,7 +22568,7 @@ module.exports = { "default": __webpack_require__(76), __esModule: true };
 
 exports.__esModule = true;
 
-var _from = __webpack_require__(71);
+var _from = __webpack_require__(86);
 
 var _from2 = _interopRequireDefault(_from);
 
@@ -22509,99 +22587,18 @@ exports.default = function (arr) {
 };
 
 /***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isObject = __webpack_require__(87);
-module.exports = function(it){
-  if(!isObject(it))throw TypeError(it + ' is not an object!');
-  return it;
-};
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = function(it){
-  return toString.call(it).slice(8, -1);
-};
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-// 7.2.1 RequireObjectCoercible(argument)
-module.exports = function(it){
-  if(it == undefined)throw TypeError("Can't call method on  " + it);
-  return it;
-};
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports) {
-
-var hasOwnProperty = {}.hasOwnProperty;
-module.exports = function(it, key){
-  return hasOwnProperty.call(it, key);
-};
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var $          = __webpack_require__(13)
-  , createDesc = __webpack_require__(30);
-module.exports = __webpack_require__(38) ? function(object, key, value){
-  return $.setDesc(object, key, createDesc(1, value));
-} : function(object, key, value){
-  object[key] = value;
-  return object;
-};
-
-/***/ }),
-/* 30 */
-/***/ (function(module, exports) {
-
-module.exports = function(bitmap, value){
-  return {
-    enumerable  : !(bitmap & 1),
-    configurable: !(bitmap & 2),
-    writable    : !(bitmap & 4),
-    value       : value
-  };
-};
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var def = __webpack_require__(13).setDesc
-  , has = __webpack_require__(28)
-  , TAG = __webpack_require__(14)('toStringTag');
-
-module.exports = function(it, tag, stat){
-  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
-};
-
-/***/ }),
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// 7.1.13 ToObject(argument)
-var defined = __webpack_require__(27);
-module.exports = function(it){
-  return Object(defined(it));
-};
+module.exports = { "default": __webpack_require__(106), __esModule: true };
 
 /***/ }),
 /* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(147)
-__vue_script__ = __webpack_require__(50)
+__webpack_require__(107)
+__vue_script__ = __webpack_require__(109)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22609,7 +22606,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/components/floating-button.vue"
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/floating-button.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22622,8 +22619,8 @@ if (false) {(function () {  module.hot.accept()
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(144)
-__vue_script__ = __webpack_require__(53)
+__webpack_require__(110)
+__vue_script__ = __webpack_require__(112)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -22631,7 +22628,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/components/formulario-resultado.vue"
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/formulario-resultado.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -25109,20 +25106,20 @@ if (inBrowser && window.Vue) {
 
 /* harmony default export */ __webpack_exports__["a"] = (VueRouter);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(126)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(51)))
 
 /***/ }),
 /* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = { "default": __webpack_require__(78), __esModule: true };
+module.exports = { "default": __webpack_require__(60), __esModule: true };
 
 /***/ }),
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // optional / simple context binding
-var aFunction = __webpack_require__(80);
+var aFunction = __webpack_require__(63);
 module.exports = function(fn, that, length){
   aFunction(fn);
   if(that === undefined)return fn;
@@ -25155,26 +25152,59 @@ module.exports = !__webpack_require__(19)(function(){
 /* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = __webpack_require__(26);
-module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
-  return cof(it) == 'String' ? it.split('') : Object(it);
-};
+module.exports = __webpack_require__(26);
 
 /***/ }),
 /* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var global = __webpack_require__(18)
+  , SHARED = '__core-js_shared__'
+  , store  = global[SHARED] || (global[SHARED] = {});
+module.exports = function(key){
+  return store[key] || (store[key] = {});
+};
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports) {
+
+var id = 0
+  , px = Math.random();
+module.exports = function(key){
+  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+};
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// fallback for non-array-like ES3 and non-enumerable old V8 strings
+var cof = __webpack_require__(29);
+module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
+  return cof(it) == 'String' ? it.split('') : Object(it);
+};
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports) {
+
+module.exports = true;
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
-var LIBRARY        = __webpack_require__(41)
-  , $export        = __webpack_require__(16)
-  , redefine       = __webpack_require__(42)
-  , hide           = __webpack_require__(29)
-  , has            = __webpack_require__(28)
+var LIBRARY        = __webpack_require__(43)
+  , $export        = __webpack_require__(15)
+  , redefine       = __webpack_require__(39)
+  , hide           = __webpack_require__(26)
+  , has            = __webpack_require__(25)
   , Iterators      = __webpack_require__(17)
-  , $iterCreate    = __webpack_require__(89)
-  , setToStringTag = __webpack_require__(31)
+  , $iterCreate    = __webpack_require__(78)
+  , setToStringTag = __webpack_require__(28)
   , getProto       = __webpack_require__(13).getProto
   , ITERATOR       = __webpack_require__(14)('iterator')
   , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
@@ -25234,72 +25264,15 @@ module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED
 };
 
 /***/ }),
-/* 41 */
-/***/ (function(module, exports) {
-
-module.exports = true;
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(29);
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__(20)
-  , SHARED = '__core-js_shared__'
-  , store  = global[SHARED] || (global[SHARED] = {});
-module.exports = function(key){
-  return store[key] || (store[key] = {});
-};
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports) {
-
-// 7.1.4 ToInteger
-var ceil  = Math.ceil
-  , floor = Math.floor;
-module.exports = function(it){
-  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
-};
-
-/***/ }),
 /* 45 */
-/***/ (function(module, exports) {
-
-var id = 0
-  , px = Math.random();
-module.exports = function(key){
-  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
-};
-
-/***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var classof   = __webpack_require__(82)
-  , ITERATOR  = __webpack_require__(14)('iterator')
-  , Iterators = __webpack_require__(17);
-module.exports = __webpack_require__(12).getIteratorMethod = function(it){
-  if(it != undefined)return it[ITERATOR]
-    || it['@@iterator']
-    || Iterators[classof(it)];
-};
-
-/***/ }),
-/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var $at  = __webpack_require__(95)(true);
+var $at  = __webpack_require__(79)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
-__webpack_require__(40)(String, 'String', function(iterated){
+__webpack_require__(44)(String, 'String', function(iterated){
   this._t = String(iterated); // target
   this._i = 0;                // next index
 // 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -25314,99 +25287,38 @@ __webpack_require__(40)(String, 'String', function(iterated){
 });
 
 /***/ }),
-/* 48 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 46 */
+/***/ (function(module, exports) {
 
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__ = __webpack_require__(175);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__ = __webpack_require__(172);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__ = __webpack_require__(180);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__ = __webpack_require__(179);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__ = __webpack_require__(177);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__ = __webpack_require__(170);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__ = __webpack_require__(173);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__ = __webpack_require__(176);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__ = __webpack_require__(174);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__ = __webpack_require__(169);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__ = __webpack_require__(178);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__ = __webpack_require__(181);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue__ = __webpack_require__(171);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue__);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const routes = [
-    {path: '/laboratorios/', component: __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue___default.a},
-    {path: '/equipos/', component: __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue___default.a},
-    {path: '/tecnicas/', component: __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue___default.a},
-    {path: '/secciones_trabajo/', component: __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue___default.a},
-    {path: '/reactivos/', component: __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue___default.a},
-    {path: '/caracteristicas/', component: __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue___default.a},
-    {path: '/especificacion_caracteristicas/', component: __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue___default.a},
-    {path: '/ordenes_laboratorios/', component: __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue___default.a},
-    {path: '/formatos/:id/', component: __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue___default.a},
-    {path: '/bacteriologos/', component: __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue___default.a},
-    {path: '/resultados/:id/', component: __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue___default.a},
-    {path: '/toma_muestra/', component: __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue___default.a},
-    {path: '/empleados/', component: __WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue___default.a},
-]
-
-// router.beforeEach((to, from, next) => {
-//     if (to.matched.some(record => record.meta.requiresAuth)) {
-//       // this route requires auth, check if logged in
-//       // if not, redirect to login page.
-//       if (!auth.loggedIn()) {
-//         next({
-//           path: '/login',
-//           query: { redirect: to.fullPath }
-//         })
-//       } else {
-//         next()
-//       }
-//     } else {
-//       next() // make sure to always call next()!
-//     }
-// })
-
-const router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({routes});
-/* harmony default export */ __webpack_exports__["a"] = (router);
-
+// 7.1.4 ToInteger
+var ceil  = Math.ceil
+  , floor = Math.floor;
+module.exports = function(it){
+  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
+};
 
 /***/ }),
-/* 49 */
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var classof   = __webpack_require__(81)
+  , ITERATOR  = __webpack_require__(14)('iterator')
+  , Iterators = __webpack_require__(17);
+module.exports = __webpack_require__(12).getIteratorMethod = function(it){
+  if(it != undefined)return it[ITERATOR]
+    || it['@@iterator']
+    || Iterators[classof(it)];
+};
+
+/***/ }),
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuetify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuetify__);
@@ -25414,12 +25326,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vue_router__ = __webpack_require__(35);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_menu_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_menu_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_table_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_table_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_form_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__components_form_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__mixins_igmixin_js__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__routes__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__mixins_igmixin_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__routes__ = __webpack_require__(97);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__urls_js__ = __webpack_require__(3);
 
 
@@ -25480,7 +25392,762 @@ const app = new __WEBPACK_IMPORTED_MODULE_1_vue_dist_vue_js___default.a({
 
 
 /***/ }),
+/* 49 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
 /* 50 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(53);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-36ae8848&file=menu.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-36ae8848&file=menu.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n  .main {\n    width: 100% !important;\n  }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports) {
+
+
+/**
+ * When source maps are enabled, `style-loader` uses a link element with a data-uri to
+ * embed the css on the page. This breaks all relative urls because now they are relative to a
+ * bundle instead of the current page.
+ *
+ * One solution is to only use full urls, but that may be impossible.
+ *
+ * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
+ *
+ * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
+ *
+ */
+
+module.exports = function (css) {
+  // get current location
+  var location = typeof window !== "undefined" && window.location;
+
+  if (!location) {
+    throw new Error("fixUrls requires window.location");
+  }
+
+	// blank or null?
+	if (!css || typeof css !== "string") {
+	  return css;
+  }
+
+  var baseUrl = location.protocol + "//" + location.host;
+  var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
+
+	// convert each url(...)
+	/*
+	This regular expression is just a way to recursively match brackets within
+	a string.
+
+	 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
+	   (  = Start a capturing group
+	     (?:  = Start a non-capturing group
+	         [^)(]  = Match anything that isn't a parentheses
+	         |  = OR
+	         \(  = Match a start parentheses
+	             (?:  = Start another non-capturing groups
+	                 [^)(]+  = Match anything that isn't a parentheses
+	                 |  = OR
+	                 \(  = Match a start parentheses
+	                     [^)(]*  = Match anything that isn't a parentheses
+	                 \)  = Match a end parentheses
+	             )  = End Group
+              *\) = Match anything and then a close parens
+          )  = Close non-capturing group
+          *  = Match anything
+       )  = Close capturing group
+	 \)  = Match a close parens
+
+	 /gi  = Get all matches, not the first.  Be case insensitive.
+	 */
+	var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function(fullMatch, origUrl) {
+		// strip quotes (if they exist)
+		var unquotedOrigUrl = origUrl
+			.trim()
+			.replace(/^"(.*)"$/, function(o, $1){ return $1; })
+			.replace(/^'(.*)'$/, function(o, $1){ return $1; });
+
+		// already a full url? no change
+		if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/)/i.test(unquotedOrigUrl)) {
+		  return fullMatch;
+		}
+
+		// convert the url to a full url
+		var newUrl;
+
+		if (unquotedOrigUrl.indexOf("//") === 0) {
+		  	//TODO: should we add protocol?
+			newUrl = unquotedOrigUrl;
+		} else if (unquotedOrigUrl.indexOf("/") === 0) {
+			// path should be relative to the base url
+			newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
+		} else {
+			// path should be relative to current directory
+			newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
+		}
+
+		// send back the fixed url(...)
+		return "url(" + JSON.stringify(newUrl) + ")";
+	});
+
+	// send back the fixed css
+	return fixedCss;
+};
+
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+// <v-list-group v-else-if="item.children" v-model="item.model" no-action>
+//     <v-list-tile slot="item">
+//         <v-list-tile-action>
+//         <v-icon>{{ item.model ? item.icon : item['icon-alt'] }}</v-icon>
+//         </v-list-tile-action>
+//         <v-list-tile-content>
+//         <v-list-tile-title>
+//             {{ item.text }}
+//         </v-list-tile-title>
+//         </v-list-tile-content>
+//     </v-list-tile>
+//     <v-list-tile
+//         v-for="(child, i) in item.children"
+//         :key="i"
+//     >
+//         <v-list-tile-action v-if="child.icon">
+//         <v-icon>{{ child.icon }}</v-icon>
+//         </v-list-tile-action>
+//         <v-list-tile-content>
+//         <v-list-tile-title>
+//             {{ child.text }}
+//         </v-list-tile-title>
+//         </v-list-tile-content>
+//     </v-list-tile>
+// </v-list-group>
+// <v-list-tile v-else>
+//     <v-list-tile-action>
+//         <v-icon>{{ item.icon }}</v-icon>
+//     </v-list-tile-action>
+//     <v-list-tile-content>
+//         <v-list-tile-title>
+//         {{ item.text }}
+//         </v-list-tile-title>
+//     </v-list-tile-content>
+// </v-list-tile>
+//
+//
+// <template>
+//     <div>
+//         <v-toolbar class="cyan darken-1">
+//             <v-toolbar-side-icon @click.native.stop="sidebar = !sidebar"></v-toolbar-side-icon>
+//             <v-toolbar-title>Dasalud</v-toolbar-title>
+//         </v-toolbar>
+//         <main>
+//             <v-sidebar v-model="sidebar" drawer class="mt-0 scroll-y" :mobile-break-point="576">
+//                 <v-list dense>
+//
+//                         <v-list-tile href="/">
+//                             <v-list-tile-avatar>
+//                                 <v-icon>accessibility</v-icon>
+//                             </v-list-tile-avatar>
+//                             <v-list-tile-content>
+//                                 <v-list-tile-title>Dashboard</v-list-tile-title>
+//                             </v-list-tile-content>
+//                         </v-list-tile>
+//
+//                     <v-list-group>
+//
+//                             <v-list-tile ripple>
+//                                 <v-list-tile-avatar>
+//                                     <v-icon>people</v-icon>
+//                                 </v-list-tile-avatar>
+//                                 <v-list-tile-content>
+//                                     <v-list-tile-title>Pacientes</v-list-tile-title>
+//                                 </v-list-tile-content>
+//                                 <v-list-tile-action>
+//                                     <v-icon>keyboard_arrow_down</v-icon>
+//                                 </v-list-tile-action>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/pacientes/page/1/">
+//                                 <v-list-tile-title>Lista Paciente</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/add/paciente/">
+//                                 <v-list-tile-title>Crear Paciente</v-list-tile-title>
+//                             </v-list-tile>
+//
+//                     </v-list-group>
+//                     <v-list-group>
+//
+//                             <v-list-tile ripple>
+//                                 <v-list-tile-avatar>
+//                                     <v-icon>today</v-icon>
+//                                 </v-list-tile-avatar>
+//                                 <v-list-tile-content>
+//                                     <v-list-tile-title>Agendas</v-list-tile-title>
+//                                 </v-list-tile-content>
+//                                     <v-list-tile-action>
+//                                     <v-icon>keyboard_arrow_down</v-icon>
+//                                 </v-list-tile-action>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/agenda/">
+//                                 <v-list-tile-title>Agenda del Dia</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/agenda/doctor/">
+//                                 <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>
+//                             </v-list-tile>
+//
+//                     </v-list-group>
+//                     <v-list-group>
+//
+//                             <v-list-tile ripple>
+//                                 <v-list-tile-avatar>
+//                                     <v-icon>open_in_browser</v-icon>
+//                                 </v-list-tile-avatar>
+//                                 <v-list-tile-content>
+//                                     <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>
+//                                 </v-list-tile-content>
+//                                 <v-list-tile-action>
+//                                     <v-icon>keyboard_arrow_down</v-icon>
+//                                 </v-list-tile-action>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/ordenes/">
+//                                 <v-list-tile-title>Lista de Ordenes</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/ordenesReporte/">
+//                                 <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>
+//                             </v-list-tile>
+//
+//                     </v-list-group>
+//
+//                         <v-list-tile ripple href="/portal_empresas/">
+//                             <v-list-tile-avatar>
+//                                 <v-icon>search</v-icon>
+//                             </v-list-tile-avatar>
+//                             <v-list-tile-content>
+//                                 <v-list-tile-title>Buscar Orden</v-list-tile-title>
+//                             </v-list-tile-content>
+//                         </v-list-tile>
+//
+//                     <v-divider light></v-divider>
+//                     <v-subheader>Utilidades</v-subheader>
+//                     <v-list-group>
+//
+//                             <v-list-tile ripple>
+//                                 <v-list-tile-avatar>
+//                                     <v-icon>local_hospital</v-icon>
+//                                 </v-list-tile-avatar>
+//                                 <v-list-tile-content>
+//                                     <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>
+//                                 </v-list-tile-content>
+//                                 <v-list-tile-action>
+//                                     <v-icon>keyboard_arrow_down</v-icon>
+//                                 </v-list-tile-action>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/medicos/">
+//                                 <v-list-tile-title>Medicos</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/instituciones/">
+//                                 <v-list-tile-title>Instituciones</v-list-tile-title>
+//                             </v-list-tile>
+//
+//                     </v-list-group>
+//                     <v-list-group>
+//
+//                             <v-list-tile ripple>
+//                                 <v-list-tile-avatar>
+//                                     <v-icon>business_center</v-icon>
+//                                 </v-list-tile-avatar>
+//                                 <v-list-tile-content>
+//                                     <v-list-tile-title>Empresas y Planes</v-list-tile-title>
+//                                 </v-list-tile-content>
+//                                 <v-list-tile-action>
+//                                     <v-icon>keyboard_arrow_down</v-icon>
+//                                 </v-list-tile-action>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/empresas/">
+//                                 <v-list-tile-title>Empresas</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/planes/">
+//                                 <v-list-tile-title>Planes de Salud</v-list-tile-title>
+//                             </v-list-tile>
+//
+//                     </v-list-group>
+//                     <v-list-group>
+//
+//                             <v-list-tile ripple>
+//                                 <v-list-tile-avatar>
+//                                     <v-icon>featured_play_list</v-icon>
+//                                 </v-list-tile-avatar>
+//                                 <v-list-tile-content>
+//                                     <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>
+//                                 </v-list-tile-content>
+//                                 <v-list-tile-action>
+//                                     <v-icon>keyboard_arrow_down</v-icon>
+//                                 </v-list-tile-action>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/procedimientos/">
+//                                 <v-list-tile-title>Procedimientos</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/plantillas/">
+//                                 <v-list-tile-title>Plantillas</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/servicios/">
+//                                 <v-list-tile-title>Servicios</v-list-tile-title>
+//                             </v-list-tile>
+//
+//                     </v-list-group>
+//                     <v-list-group>
+//
+//                             <v-list-tile ripple>
+//                                 <v-list-tile-avatar>
+//                                     <v-icon>featured_play_list</v-icon>
+//                                 </v-list-tile-avatar>
+//                                 <v-list-tile-content>
+//                                     <v-list-tile-title>Usuarios</v-list-tile-title>
+//                                 </v-list-tile-content>
+//                                 <v-list-tile-action>
+//                                     <v-icon>keyboard_arrow_down</v-icon>
+//                                 </v-list-tile-action>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/usuarios/">
+//                                 <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="/usuariosEmpresa/">
+//                                 <v-list-tile-title>Usuarios Empresas</v-list-tile-title>
+//                             </v-list-tile>
+//
+//                     </v-list-group>
+//                     <v-divider light></v-divider>
+//                     <v-subheader>Laboratorio</v-subheader>
+//
+//                         <v-list-tile ripple href="#/ordenes_laboratorios/">
+//                             <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>
+//                         </v-list-tile>
+//
+//                     <v-list-group>
+//
+//                             <v-list-tile ripple>
+//                                 <v-list-tile-avatar>
+//                                     <v-icon>local_hospital</v-icon>
+//                                 </v-list-tile-avatar>
+//                                 <v-list-tile-content>
+//                                     <v-list-tile-title>Administración</v-list-tile-title>
+//                                 </v-list-tile-content>
+//                                 <v-list-tile-action>
+//                                     <v-icon>keyboard_arrow_down</v-icon>
+//                                 </v-list-tile-action>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="#/bacteriologos/">
+//                               <v-list-tile-title>Bacteriologos</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="#/laboratorios/">
+//                               <v-list-tile-title>Laboratorios</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="#/equipos/">
+//                                 <v-list-tile-title>Equipos</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="#/tecnicas/">
+//                                 <v-list-tile-title>Tecnicas</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="#/secciones_trabajo/">
+//                                 <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="#/reactivos/">
+//                                 <v-list-tile-title>Reactivos</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="#/caracteristicas/">
+//                                 <v-list-tile-title>Caracteristicas</v-list-tile-title>
+//                             </v-list-tile>
+//
+//
+//                             <v-list-tile ripple href="#/especificacion_caracteristicas/">
+//                                 <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>
+//                             </v-list-tile>
+//
+//                     </v-list-group>
+//                 </v-list>
+//             </v-sidebar>
+//             <div class="main">
+//                 <v-content class="grey lighten-4">
+//                     <v-container fluid>
+//                         <br>
+//                         <v-spacer></v-spacer>
+//                         <slot></slot>
+//                     </v-container>
+//                 </v-content>
+//             </div>
+//         </main>
+//     </div>
+// </template>
+//
+// <script>
+module.exports = {
+    name: 'igMenu',
+    props: {},
+    data: function data() {
+        return {
+            sidebar: false
+        };
+    }
+};
+// </script>
+//
+// <style>
+//   .main {
+//     width: 100% !important;
+//   }
+// </style>
+//
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n            <v-toolbar-side-icon @click.native.stop=\"sidebar = !sidebar\"></v-toolbar-side-icon>\n            <v-toolbar-title>Dasalud</v-toolbar-title>\n        </v-toolbar>\n        <main>\n            <v-sidebar v-model=\"sidebar\" drawer class=\"mt-0 scroll-y\" :mobile-break-point=\"576\">\n                <v-list dense>\n                \n                        <v-list-tile href=\"/\">\n                            <v-list-tile-avatar>\n                                <v-icon>accessibility</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Dashboard</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n    \n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>people</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Pacientes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/pacientes/page/1/\">\n                                <v-list-tile-title>Lista Paciente</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/add/paciente/\">\n                                <v-list-tile-title>Crear Paciente</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>today</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Agendas</v-list-tile-title>\n                                </v-list-tile-content>\n                                    <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/agenda/\">\n                                <v-list-tile-title>Agenda del Dia</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/agenda/doctor/\">\n                                <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>open_in_browser</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/ordenes/\">\n                                <v-list-tile-title>Lista de Ordenes</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/ordenesReporte/\">\n                                <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                \n                        <v-list-tile ripple href=\"/portal_empresas/\">\n                            <v-list-tile-avatar>\n                                <v-icon>search</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Buscar Orden</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n    \n                    <v-divider light></v-divider>\n                    <v-subheader>Utilidades</v-subheader>\n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/medicos/\">\n                                <v-list-tile-title>Medicos</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/instituciones/\">\n                                <v-list-tile-title>Instituciones</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>business_center</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Empresas y Planes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/empresas/\">\n                                <v-list-tile-title>Empresas</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/planes/\">\n                                <v-list-tile-title>Planes de Salud</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/procedimientos/\">\n                                <v-list-tile-title>Procedimientos</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/plantillas/\">\n                                <v-list-tile-title>Plantillas</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/servicios/\">\n                                <v-list-tile-title>Servicios</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Usuarios</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/usuarios/\">\n                                <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/usuariosEmpresa/\">\n                                <v-list-tile-title>Usuarios Empresas</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                    <v-divider light></v-divider>\n                    <v-subheader>Laboratorio</v-subheader>\n                \n                        <v-list-tile ripple href=\"#/ordenes_laboratorios/\">\n                            <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>\n                        </v-list-tile>\n    \n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Administración</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/bacteriologos/\">\n                              <v-list-tile-title>Bacteriologos</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/laboratorios/\">\n                              <v-list-tile-title>Laboratorios</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/equipos/\">\n                                <v-list-tile-title>Equipos</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/tecnicas/\">\n                                <v-list-tile-title>Tecnicas</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/secciones_trabajo/\">\n                                <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/reactivos/\">\n                                <v-list-tile-title>Reactivos</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/caracteristicas/\">\n                                <v-list-tile-title>Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/especificacion_caracteristicas/\">\n                                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                </v-list>\n            </v-sidebar>\n            <div class=\"main\">\n                <v-content class=\"grey lighten-4\">\n                    <v-container fluid>\n                        <br>\n                        <v-spacer></v-spacer>\n                        <slot></slot>\n                    </v-container>\n                </v-content>\n            </div>\n        </main>\n    </div>\n";
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(58);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d0edeebe&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d0edeebe&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.text-xs-left {\n    text-align: center !important;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25490,72 +26157,124 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _toConsumableArray2 = __webpack_require__(24);
+var _keys = __webpack_require__(36);
 
-var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+var _keys2 = _interopRequireDefault(_keys);
 
-var _getIterator2 = __webpack_require__(9);
+var _typeof2 = __webpack_require__(16);
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _getIterator2 = __webpack_require__(8);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vue = __webpack_require__(5);
-
-var _vue2 = _interopRequireDefault(_vue);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// <template lang="html">
+//     <v-card>
+//         <v-card-title>
+//             {{ tableTitle }}
+//             <v-spacer></v-spacer>
+//             <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
+//         </v-card-title>
+//         <v-data-table
+//             :pagination.sync="pagination"
+//             v-bind:headers="headers"
+//             :items="data"
+//             v-bind:search="buscador"
+//             :rows-per-page-items="[10]"
+//             :rowsPerPage="10"
+//             :filter="filter"
+//             rows-per-page-text="Filas por Página"
+//             no-results-text="No se encontraron resultados"
+//             ref="dataTable">
+//             <template slot="headers" scope="props">
+//                 <!--<span style="text-align:before: center !important">{{ props.item }}</span>-->
+//                 <tr>
+//                     <th v-for="header in props.headers" :key="header"
+//                        :class="['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']"
+//                         @click="changeSort(header)"
+//                        >
+//                         <v-icon>arrow_upward</v-icon>
+//                         {{ header.text }}
+//                     </th>
+//                 </tr>
+//             </template>
+//             <template slot="items" scope="props">
+//                 <!-- <td @click="updateForm(props.item)">
+//                     <v-checkbox primary v-model="props.item.selected" ></v-checkbox>
+//                 </td> -->
+//                 <template v-for="field of fields">
+//                     <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
+//                     <td class="text-xs-center" v-else>
+//                         <v-btn floating small router class="cyan darken-1" :href="field.href.replace(':id', props.item.id)">
+//                             <v-icon light>mode_edit</v-icon>
+//                         </v-btn>
+//                     </td>
+//                 </template>
+//             </template>
+//         </v-data-table>
+//         <v-progress-linear indeterminate class="red--text" height="3" :active="loading"></v-progress-linear>
+//     </v-card>
+// </template>
+//
+// <script>
 exports.default = {
-    name: 'floating-button',
+    name: 'igTable',
+    props: {
+        tableTitle: {
+            type: String,
+            default: 'Lista',
+            required: false
+        },
+        headers: {
+            type: Array,
+            required: true
+        },
+        data: {
+            type: Array,
+            default: function _default() {
+                return [];
+            },
+            required: false
+        },
+        fields: {
+            type: Array,
+            required: true
+        },
+        loading: true
+    },
     data: function data() {
         return {
-            animated: false
+            buscador: '',
+            pagination: {
+                page: 1,
+                rowsPerPage: 10,
+                descending: false,
+                totalItems: 0
+            }
         };
     },
-    created: function created() {
-        // console.log(this.$slots.default);
-    },
-    computed: {
-        classesMain: function classesMain() {
-            return {
-                animated: true,
-                // fadeIn: this.animated,
-                // fadeOut: !this.animated,
-                'ig-floating-button-main': true
-            };
-        },
-        classesChildren: function classesChildren() {
-            return {
-                animated: true,
-                fadeInUp: this.animated,
-                fadeOutDown: !this.animated,
-                'ig-floating-button': true
-            };
-        }
+    mounted: function mounted() {
+        // this.$refs.dataTable.rowsPerPage = 10;
     },
     methods: {
-        genButtons: function genButtons() {
-            var children = [];
-            var index = 1;
-            var margin = 0;
-            var base = 80;
-            if (this.animated && this.$slots.child) {
+        getHrefField: function getHrefField(field, item) {
+            var href = void 0;
+            if (!'patrons' in field) {
+                href = field.href.replace(/\/\:[a-zA-Z]*\//g, '/' + item.id + '/');
+            } else {
+                href = field.href;
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
 
                 try {
-                    for (var _iterator = (0, _getIterator3.default)(this.$slots.child), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var node = _step.value;
+                    for (var _iterator = (0, _getIterator3.default)(field.patrons), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var patron = _step.value;
 
-                        if (node.tag) {
-                            children.push(this.$createElement('div', {
-                                'class': this.classesChildren,
-                                style: {
-                                    'margin-bottom': (base + margin * index).toString() + 'px'
-                                }
-                            }, [node]));
-                            margin += 45;
-                        }
+                        href = href.replace(':'.concat(patron.identifier), typeof patron.replace == 'function' ? patron(item) : patron);
                     }
                 } catch (err) {
                     _didIteratorError = true;
@@ -25572,74 +26291,684 @@ exports.default = {
                     }
                 }
             }
-            return children;
-        }
-    },
-    render: function render() {
-        var _this = this;
+            return href;
+        },
+        _validValue: function _validValue(val) {
+            return val !== null && ['undefined', 'boolean'].indexOf(typeof val === 'undefined' ? 'undefined' : (0, _typeof3.default)(val)) === -1;
+        },
+        customFilter: function customFilter(val, search) {
+            return val.toString().toLowerCase().indexOf(search) !== -1;
+        },
+        filter: function filter(val, search) {
+            var _this = this;
 
-        return this.$createElement('div', {
-            on: {
-                mouseover: function mouseover() {
-                    _this.animated = true;
-                },
-                mouseleave: function mouseleave() {
-                    _this.animated = false;
+            var valid = this._validValue(val);
+            if (valid) {
+                valid = valid && this.customFilter(val, search);
+                if (['object'].indexOf(typeof val === 'undefined' ? 'undefined' : (0, _typeof3.default)(val)) === 0 && !valid) {
+                    valid = (0, _keys2.default)(val).some(function (j) {
+                        return _this._validValue(val[j]) && _this.customFilter(val[j], search);
+                    });
                 }
             }
-        }, [this.$createElement('div', {
-            'class': this.classesMain
-        }, [this.$slots.default]), this.$createElement('div', { class: { 'ig-floating-button-container': this.animated } }, [].concat((0, _toConsumableArray3.default)(this.genButtons())))]);
+            return valid;
+        },
+        getattr: function getattr(obj, attr) {
+            var attrs = attr.split('.');
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = (0, _getIterator3.default)(attrs), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var at = _step2.value;
+
+                    if (at in obj) {
+                        obj = obj[at];
+                    }
+                    if (obj instanceof Array) {
+                        var mix = '';
+                        var _iteratorNormalCompletion3 = true;
+                        var _didIteratorError3 = false;
+                        var _iteratorError3 = undefined;
+
+                        try {
+                            for (var _iterator3 = (0, _getIterator3.default)(obj), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                                var elem = _step3.value;
+
+                                attr = attrs[attrs.length - 1];
+                                if (mix) {
+                                    mix += ', ';
+                                }
+                                mix += elem[attr];
+                            }
+                        } catch (err) {
+                            _didIteratorError3 = true;
+                            _iteratorError3 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                                    _iterator3.return();
+                                }
+                            } finally {
+                                if (_didIteratorError3) {
+                                    throw _iteratorError3;
+                                }
+                            }
+                        }
+
+                        return mix;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
+
+            return obj;
+        },
+        updateForm: function updateForm(item) {
+            this.$emit('selectedrow', item);
+        },
+        changeSort: function changeSort(column) {
+            if ('sortable' in column && !column.sortable) {
+                return;
+            }
+            column = column.value;
+            if (this.pagination.sortBy === column) {
+                this.pagination.descending = !this.pagination.descending;
+            } else {
+                this.pagination.sortBy = column;
+                this.pagination.descending = false;
+            }
+        }
     }
 };
 // </script>
 //
 // <style lang="css">
-// .ig-floating-button {
-//     position: fixed;
-//     bottom: 0;
-//     right: 0;
-//     margin-right: 22px;
-//     /*margin-bottom: 90px;*/
-//     transition-duration: 50ms !important;
-//     animation-duration: 500ms;
+// .text-xs-left {
+//     text-align: center !important;
 // }
-//
-// .ig-floating-button-main {
-//     position: fixed;
-//     bottom: 0;
-//     right: 0;
-//     margin: 15px;
-//     transition-duration: 500ms;
-//     z-index: 10;
-// }
-//
-// .ig-floating-button-main:hover {
-//     transform: rotate(360deg);
-//     transition-duration: 500ms;
-// }
-//
-// .ig-floating-button-container {
-//     position: fixed;
-//     background-color: transparent;
-//     /*background-color: #323213;*/
-//     padding: 40px;
-//     right: 0;
-//     top: 0;
-//     z-index: 0;
-//     height: 100%;
-// }
-//
-// /*.ig-rotator {
-//     transform: rotate(360deg);
-//     transition-duration: 500ms;
-// }*/
 // </style>
 //
-// <script>
 
 /***/ }),
-/* 51 */
+/* 60 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(61);
+module.exports = __webpack_require__(12).Object.keys;
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.14 Object.keys(O)
+var toObject = __webpack_require__(23);
+
+__webpack_require__(62)('keys', function($keys){
+  return function keys(it){
+    return $keys(toObject(it));
+  };
+});
+
+/***/ }),
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// most Object methods by ES6 should accept primitives
+var $export = __webpack_require__(15)
+  , core    = __webpack_require__(12)
+  , fails   = __webpack_require__(19);
+module.exports = function(KEY, exec){
+  var fn  = (core.Object || {})[KEY] || Object[KEY]
+    , exp = {};
+  exp[KEY] = exec(fn);
+  $export($export.S + $export.F * fails(function(){ fn(1); }), 'Object', exp);
+};
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports) {
+
+module.exports = function(it){
+  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
+  return it;
+};
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(65), __esModule: true };
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(66);
+__webpack_require__(72);
+module.exports = __webpack_require__(12).Symbol;
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// ECMAScript 6 symbols shim
+var $              = __webpack_require__(13)
+  , global         = __webpack_require__(18)
+  , has            = __webpack_require__(25)
+  , DESCRIPTORS    = __webpack_require__(38)
+  , $export        = __webpack_require__(15)
+  , redefine       = __webpack_require__(39)
+  , $fails         = __webpack_require__(19)
+  , shared         = __webpack_require__(40)
+  , setToStringTag = __webpack_require__(28)
+  , uid            = __webpack_require__(41)
+  , wks            = __webpack_require__(14)
+  , keyOf          = __webpack_require__(67)
+  , $names         = __webpack_require__(68)
+  , enumKeys       = __webpack_require__(69)
+  , isArray        = __webpack_require__(70)
+  , anObject       = __webpack_require__(30)
+  , toIObject      = __webpack_require__(20)
+  , createDesc     = __webpack_require__(27)
+  , getDesc        = $.getDesc
+  , setDesc        = $.setDesc
+  , _create        = $.create
+  , getNames       = $names.get
+  , $Symbol        = global.Symbol
+  , $JSON          = global.JSON
+  , _stringify     = $JSON && $JSON.stringify
+  , setter         = false
+  , HIDDEN         = wks('_hidden')
+  , isEnum         = $.isEnum
+  , SymbolRegistry = shared('symbol-registry')
+  , AllSymbols     = shared('symbols')
+  , useNative      = typeof $Symbol == 'function'
+  , ObjectProto    = Object.prototype;
+
+// fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
+var setSymbolDesc = DESCRIPTORS && $fails(function(){
+  return _create(setDesc({}, 'a', {
+    get: function(){ return setDesc(this, 'a', {value: 7}).a; }
+  })).a != 7;
+}) ? function(it, key, D){
+  var protoDesc = getDesc(ObjectProto, key);
+  if(protoDesc)delete ObjectProto[key];
+  setDesc(it, key, D);
+  if(protoDesc && it !== ObjectProto)setDesc(ObjectProto, key, protoDesc);
+} : setDesc;
+
+var wrap = function(tag){
+  var sym = AllSymbols[tag] = _create($Symbol.prototype);
+  sym._k = tag;
+  DESCRIPTORS && setter && setSymbolDesc(ObjectProto, tag, {
+    configurable: true,
+    set: function(value){
+      if(has(this, HIDDEN) && has(this[HIDDEN], tag))this[HIDDEN][tag] = false;
+      setSymbolDesc(this, tag, createDesc(1, value));
+    }
+  });
+  return sym;
+};
+
+var isSymbol = function(it){
+  return typeof it == 'symbol';
+};
+
+var $defineProperty = function defineProperty(it, key, D){
+  if(D && has(AllSymbols, key)){
+    if(!D.enumerable){
+      if(!has(it, HIDDEN))setDesc(it, HIDDEN, createDesc(1, {}));
+      it[HIDDEN][key] = true;
+    } else {
+      if(has(it, HIDDEN) && it[HIDDEN][key])it[HIDDEN][key] = false;
+      D = _create(D, {enumerable: createDesc(0, false)});
+    } return setSymbolDesc(it, key, D);
+  } return setDesc(it, key, D);
+};
+var $defineProperties = function defineProperties(it, P){
+  anObject(it);
+  var keys = enumKeys(P = toIObject(P))
+    , i    = 0
+    , l = keys.length
+    , key;
+  while(l > i)$defineProperty(it, key = keys[i++], P[key]);
+  return it;
+};
+var $create = function create(it, P){
+  return P === undefined ? _create(it) : $defineProperties(_create(it), P);
+};
+var $propertyIsEnumerable = function propertyIsEnumerable(key){
+  var E = isEnum.call(this, key);
+  return E || !has(this, key) || !has(AllSymbols, key) || has(this, HIDDEN) && this[HIDDEN][key]
+    ? E : true;
+};
+var $getOwnPropertyDescriptor = function getOwnPropertyDescriptor(it, key){
+  var D = getDesc(it = toIObject(it), key);
+  if(D && has(AllSymbols, key) && !(has(it, HIDDEN) && it[HIDDEN][key]))D.enumerable = true;
+  return D;
+};
+var $getOwnPropertyNames = function getOwnPropertyNames(it){
+  var names  = getNames(toIObject(it))
+    , result = []
+    , i      = 0
+    , key;
+  while(names.length > i)if(!has(AllSymbols, key = names[i++]) && key != HIDDEN)result.push(key);
+  return result;
+};
+var $getOwnPropertySymbols = function getOwnPropertySymbols(it){
+  var names  = getNames(toIObject(it))
+    , result = []
+    , i      = 0
+    , key;
+  while(names.length > i)if(has(AllSymbols, key = names[i++]))result.push(AllSymbols[key]);
+  return result;
+};
+var $stringify = function stringify(it){
+  if(it === undefined || isSymbol(it))return; // IE8 returns string on undefined
+  var args = [it]
+    , i    = 1
+    , $$   = arguments
+    , replacer, $replacer;
+  while($$.length > i)args.push($$[i++]);
+  replacer = args[1];
+  if(typeof replacer == 'function')$replacer = replacer;
+  if($replacer || !isArray(replacer))replacer = function(key, value){
+    if($replacer)value = $replacer.call(this, key, value);
+    if(!isSymbol(value))return value;
+  };
+  args[1] = replacer;
+  return _stringify.apply($JSON, args);
+};
+var buggyJSON = $fails(function(){
+  var S = $Symbol();
+  // MS Edge converts symbol values to JSON as {}
+  // WebKit converts symbol values to JSON as null
+  // V8 throws on boxed symbols
+  return _stringify([S]) != '[null]' || _stringify({a: S}) != '{}' || _stringify(Object(S)) != '{}';
+});
+
+// 19.4.1.1 Symbol([description])
+if(!useNative){
+  $Symbol = function Symbol(){
+    if(isSymbol(this))throw TypeError('Symbol is not a constructor');
+    return wrap(uid(arguments.length > 0 ? arguments[0] : undefined));
+  };
+  redefine($Symbol.prototype, 'toString', function toString(){
+    return this._k;
+  });
+
+  isSymbol = function(it){
+    return it instanceof $Symbol;
+  };
+
+  $.create     = $create;
+  $.isEnum     = $propertyIsEnumerable;
+  $.getDesc    = $getOwnPropertyDescriptor;
+  $.setDesc    = $defineProperty;
+  $.setDescs   = $defineProperties;
+  $.getNames   = $names.get = $getOwnPropertyNames;
+  $.getSymbols = $getOwnPropertySymbols;
+
+  if(DESCRIPTORS && !__webpack_require__(43)){
+    redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
+  }
+}
+
+var symbolStatics = {
+  // 19.4.2.1 Symbol.for(key)
+  'for': function(key){
+    return has(SymbolRegistry, key += '')
+      ? SymbolRegistry[key]
+      : SymbolRegistry[key] = $Symbol(key);
+  },
+  // 19.4.2.5 Symbol.keyFor(sym)
+  keyFor: function keyFor(key){
+    return keyOf(SymbolRegistry, key);
+  },
+  useSetter: function(){ setter = true; },
+  useSimple: function(){ setter = false; }
+};
+// 19.4.2.2 Symbol.hasInstance
+// 19.4.2.3 Symbol.isConcatSpreadable
+// 19.4.2.4 Symbol.iterator
+// 19.4.2.6 Symbol.match
+// 19.4.2.8 Symbol.replace
+// 19.4.2.9 Symbol.search
+// 19.4.2.10 Symbol.species
+// 19.4.2.11 Symbol.split
+// 19.4.2.12 Symbol.toPrimitive
+// 19.4.2.13 Symbol.toStringTag
+// 19.4.2.14 Symbol.unscopables
+$.each.call((
+  'hasInstance,isConcatSpreadable,iterator,match,replace,search,' +
+  'species,split,toPrimitive,toStringTag,unscopables'
+).split(','), function(it){
+  var sym = wks(it);
+  symbolStatics[it] = useNative ? sym : wrap(sym);
+});
+
+setter = true;
+
+$export($export.G + $export.W, {Symbol: $Symbol});
+
+$export($export.S, 'Symbol', symbolStatics);
+
+$export($export.S + $export.F * !useNative, 'Object', {
+  // 19.1.2.2 Object.create(O [, Properties])
+  create: $create,
+  // 19.1.2.4 Object.defineProperty(O, P, Attributes)
+  defineProperty: $defineProperty,
+  // 19.1.2.3 Object.defineProperties(O, Properties)
+  defineProperties: $defineProperties,
+  // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
+  getOwnPropertyDescriptor: $getOwnPropertyDescriptor,
+  // 19.1.2.7 Object.getOwnPropertyNames(O)
+  getOwnPropertyNames: $getOwnPropertyNames,
+  // 19.1.2.8 Object.getOwnPropertySymbols(O)
+  getOwnPropertySymbols: $getOwnPropertySymbols
+});
+
+// 24.3.2 JSON.stringify(value [, replacer [, space]])
+$JSON && $export($export.S + $export.F * (!useNative || buggyJSON), 'JSON', {stringify: $stringify});
+
+// 19.4.3.5 Symbol.prototype[@@toStringTag]
+setToStringTag($Symbol, 'Symbol');
+// 20.2.1.9 Math[@@toStringTag]
+setToStringTag(Math, 'Math', true);
+// 24.3.3 JSON[@@toStringTag]
+setToStringTag(global.JSON, 'JSON', true);
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var $         = __webpack_require__(13)
+  , toIObject = __webpack_require__(20);
+module.exports = function(object, el){
+  var O      = toIObject(object)
+    , keys   = $.getKeys(O)
+    , length = keys.length
+    , index  = 0
+    , key;
+  while(length > index)if(O[key = keys[index++]] === el)return key;
+};
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
+var toIObject = __webpack_require__(20)
+  , getNames  = __webpack_require__(13).getNames
+  , toString  = {}.toString;
+
+var windowNames = typeof window == 'object' && Object.getOwnPropertyNames
+  ? Object.getOwnPropertyNames(window) : [];
+
+var getWindowNames = function(it){
+  try {
+    return getNames(it);
+  } catch(e){
+    return windowNames.slice();
+  }
+};
+
+module.exports.get = function getOwnPropertyNames(it){
+  if(windowNames && toString.call(it) == '[object Window]')return getWindowNames(it);
+  return getNames(toIObject(it));
+};
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// all enumerable object keys, includes symbols
+var $ = __webpack_require__(13);
+module.exports = function(it){
+  var keys       = $.getKeys(it)
+    , getSymbols = $.getSymbols;
+  if(getSymbols){
+    var symbols = getSymbols(it)
+      , isEnum  = $.isEnum
+      , i       = 0
+      , key;
+    while(symbols.length > i)if(isEnum.call(it, key = symbols[i++]))keys.push(key);
+  }
+  return keys;
+};
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.2.2 IsArray(argument)
+var cof = __webpack_require__(29);
+module.exports = Array.isArray || function(arg){
+  return cof(arg) == 'Array';
+};
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports) {
+
+module.exports = function(it){
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
+};
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports) {
+
+
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(74);
+__webpack_require__(45);
+module.exports = __webpack_require__(80);
+
+/***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(75);
+var Iterators = __webpack_require__(17);
+Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var addToUnscopables = __webpack_require__(76)
+  , step             = __webpack_require__(77)
+  , Iterators        = __webpack_require__(17)
+  , toIObject        = __webpack_require__(20);
+
+// 22.1.3.4 Array.prototype.entries()
+// 22.1.3.13 Array.prototype.keys()
+// 22.1.3.29 Array.prototype.values()
+// 22.1.3.30 Array.prototype[@@iterator]()
+module.exports = __webpack_require__(44)(Array, 'Array', function(iterated, kind){
+  this._t = toIObject(iterated); // target
+  this._i = 0;                   // next index
+  this._k = kind;                // kind
+// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
+}, function(){
+  var O     = this._t
+    , kind  = this._k
+    , index = this._i++;
+  if(!O || index >= O.length){
+    this._t = undefined;
+    return step(1);
+  }
+  if(kind == 'keys'  )return step(0, index);
+  if(kind == 'values')return step(0, O[index]);
+  return step(0, [index, O[index]]);
+}, 'values');
+
+// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
+Iterators.Arguments = Iterators.Array;
+
+addToUnscopables('keys');
+addToUnscopables('values');
+addToUnscopables('entries');
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports) {
+
+module.exports = function(){ /* empty */ };
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports) {
+
+module.exports = function(done, value){
+  return {value: value, done: !!done};
+};
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $              = __webpack_require__(13)
+  , descriptor     = __webpack_require__(27)
+  , setToStringTag = __webpack_require__(28)
+  , IteratorPrototype = {};
+
+// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
+__webpack_require__(26)(IteratorPrototype, __webpack_require__(14)('iterator'), function(){ return this; });
+
+module.exports = function(Constructor, NAME, next){
+  Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
+  setToStringTag(Constructor, NAME + ' Iterator');
+};
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var toInteger = __webpack_require__(46)
+  , defined   = __webpack_require__(24);
+// true  -> String#at
+// false -> String#codePointAt
+module.exports = function(TO_STRING){
+  return function(that, pos){
+    var s = String(defined(that))
+      , i = toInteger(pos)
+      , l = s.length
+      , a, b;
+    if(i < 0 || i >= l)return TO_STRING ? '' : undefined;
+    a = s.charCodeAt(i);
+    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
+      ? TO_STRING ? s.charAt(i) : a
+      : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
+  };
+};
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var anObject = __webpack_require__(30)
+  , get      = __webpack_require__(47);
+module.exports = __webpack_require__(12).getIterator = function(it){
+  var iterFn = get(it);
+  if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
+  return anObject(iterFn.call(it));
+};
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// getting tag from 19.1.3.6 Object.prototype.toString()
+var cof = __webpack_require__(29)
+  , TAG = __webpack_require__(14)('toStringTag')
+  // ES3 wrong here
+  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
+
+module.exports = function(it){
+  var O, T, B;
+  return it === undefined ? 'Undefined' : it === null ? 'Null'
+    // @@toStringTag case
+    : typeof (T = (O = Object(it))[TAG]) == 'string' ? T
+    // builtinTag case
+    : ARG ? cof(O)
+    // ES3 arguments fallback
+    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
+};
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <v-data-table\n            :pagination.sync=\"pagination\"\n            v-bind:headers=\"headers\"\n            :items=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            :rowsPerPage=\"10\"\n            :filter=\"filter\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"headers\" scope=\"props\">\n                <!--<span style=\"text-align:before: center !important\">{{ props.item }}</span>-->\n                <tr>\n                    <th v-for=\"header in props.headers\" :key=\"header\"\n                       :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                        @click=\"changeSort(header)\"\n                       >\n                        <v-icon>arrow_upward</v-icon>\n                        {{ header.text }}\n                    </th>\n                </tr>\n            </template>\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                    <td class=\"text-xs-center\" v-else>\n                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                            <v-icon light>mode_edit</v-icon>\n                        </v-btn>\n                    </td>\n                </template>\n            </template>\n        </v-data-table>\n        <v-progress-linear indeterminate class=\"red--text\" height=\"3\" :active=\"loading\"></v-progress-linear>\n    </v-card>\n";
+
+/***/ }),
+/* 83 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(84);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-24e178c1&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-24e178c1&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25649,23 +26978,23 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _toConsumableArray2 = __webpack_require__(24);
+var _toConsumableArray2 = __webpack_require__(31);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
-var _typeof2 = __webpack_require__(15);
+var _typeof2 = __webpack_require__(16);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _assign = __webpack_require__(72);
+var _assign = __webpack_require__(93);
 
 var _assign2 = _interopRequireDefault(_assign);
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(8);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -25673,7 +27002,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _errormixin = __webpack_require__(18);
+var _errormixin = __webpack_require__(21);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
 
@@ -26568,7 +27897,339 @@ exports.default = {
 //
 
 /***/ }),
-/* 52 */
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(87), __esModule: true };
+
+/***/ }),
+/* 87 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(45);
+__webpack_require__(88);
+module.exports = __webpack_require__(12).Array.from;
+
+/***/ }),
+/* 88 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var ctx         = __webpack_require__(37)
+  , $export     = __webpack_require__(15)
+  , toObject    = __webpack_require__(23)
+  , call        = __webpack_require__(89)
+  , isArrayIter = __webpack_require__(90)
+  , toLength    = __webpack_require__(91)
+  , getIterFn   = __webpack_require__(47);
+$export($export.S + $export.F * !__webpack_require__(92)(function(iter){ Array.from(iter); }), 'Array', {
+  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
+  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
+    var O       = toObject(arrayLike)
+      , C       = typeof this == 'function' ? this : Array
+      , $$      = arguments
+      , $$len   = $$.length
+      , mapfn   = $$len > 1 ? $$[1] : undefined
+      , mapping = mapfn !== undefined
+      , index   = 0
+      , iterFn  = getIterFn(O)
+      , length, result, step, iterator;
+    if(mapping)mapfn = ctx(mapfn, $$len > 2 ? $$[2] : undefined, 2);
+    // if object isn't iterable or it's array with default iterator - use simple case
+    if(iterFn != undefined && !(C == Array && isArrayIter(iterFn))){
+      for(iterator = iterFn.call(O), result = new C; !(step = iterator.next()).done; index++){
+        result[index] = mapping ? call(iterator, mapfn, [step.value, index], true) : step.value;
+      }
+    } else {
+      length = toLength(O.length);
+      for(result = new C(length); length > index; index++){
+        result[index] = mapping ? mapfn(O[index], index) : O[index];
+      }
+    }
+    result.length = index;
+    return result;
+  }
+});
+
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// call something on iterator step with safe closing on error
+var anObject = __webpack_require__(30);
+module.exports = function(iterator, fn, value, entries){
+  try {
+    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
+  // 7.4.6 IteratorClose(iterator, completion)
+  } catch(e){
+    var ret = iterator['return'];
+    if(ret !== undefined)anObject(ret.call(iterator));
+    throw e;
+  }
+};
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// check on default Array iterator
+var Iterators  = __webpack_require__(17)
+  , ITERATOR   = __webpack_require__(14)('iterator')
+  , ArrayProto = Array.prototype;
+
+module.exports = function(it){
+  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
+};
+
+/***/ }),
+/* 91 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 7.1.15 ToLength
+var toInteger = __webpack_require__(46)
+  , min       = Math.min;
+module.exports = function(it){
+  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
+};
+
+/***/ }),
+/* 92 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var ITERATOR     = __webpack_require__(14)('iterator')
+  , SAFE_CLOSING = false;
+
+try {
+  var riter = [7][ITERATOR]();
+  riter['return'] = function(){ SAFE_CLOSING = true; };
+  Array.from(riter, function(){ throw 2; });
+} catch(e){ /* empty */ }
+
+module.exports = function(exec, skipClosing){
+  if(!skipClosing && !SAFE_CLOSING)return false;
+  var safe = false;
+  try {
+    var arr  = [7]
+      , iter = arr[ITERATOR]();
+    iter.next = function(){ return {done: safe = true}; };
+    arr[ITERATOR] = function(){ return iter; };
+    exec(arr);
+  } catch(e){ /* empty */ }
+  return safe;
+};
+
+/***/ }),
+/* 93 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(94), __esModule: true };
+
+/***/ }),
+/* 94 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(95);
+module.exports = __webpack_require__(12).Object.assign;
+
+/***/ }),
+/* 95 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.3.1 Object.assign(target, source)
+var $export = __webpack_require__(15);
+
+$export($export.S + $export.F, 'Object', {assign: __webpack_require__(96)});
+
+/***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.2.1 Object.assign(target, source, ...)
+var $        = __webpack_require__(13)
+  , toObject = __webpack_require__(23)
+  , IObject  = __webpack_require__(42);
+
+// should work with symbols and should have deterministic property order (V8 bug)
+module.exports = __webpack_require__(19)(function(){
+  var a = Object.assign
+    , A = {}
+    , B = {}
+    , S = Symbol()
+    , K = 'abcdefghijklmnopqrst';
+  A[S] = 7;
+  K.split('').forEach(function(k){ B[k] = k; });
+  return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
+}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
+  var T     = toObject(target)
+    , $$    = arguments
+    , $$len = $$.length
+    , index = 1
+    , getKeys    = $.getKeys
+    , getSymbols = $.getSymbols
+    , isEnum     = $.isEnum;
+  while($$len > index){
+    var S      = IObject($$[index++])
+      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
+      , length = keys.length
+      , j      = 0
+      , key;
+    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
+  }
+  return T;
+} : Object.assign;
+
+/***/ }),
+/* 97 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_router__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__ = __webpack_require__(98);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__ = __webpack_require__(129);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__ = __webpack_require__(134);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__ = __webpack_require__(139);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__ = __webpack_require__(144);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__ = __webpack_require__(149);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__ = __webpack_require__(154);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__ = __webpack_require__(159);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__ = __webpack_require__(164);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__ = __webpack_require__(169);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__ = __webpack_require__(174);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue__ = __webpack_require__(179);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue__);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const routes = [
+    {path: '/laboratorios/', component: __WEBPACK_IMPORTED_MODULE_1__pages_laboratorios_vue___default.a},
+    {path: '/equipos/', component: __WEBPACK_IMPORTED_MODULE_2__pages_equipos_vue___default.a},
+    {path: '/tecnicas/', component: __WEBPACK_IMPORTED_MODULE_3__pages_tecnicas_vue___default.a},
+    {path: '/secciones_trabajo/', component: __WEBPACK_IMPORTED_MODULE_4__pages_secciones_trabajo_vue___default.a},
+    {path: '/reactivos/', component: __WEBPACK_IMPORTED_MODULE_5__pages_reactivos_vue___default.a},
+    {path: '/caracteristicas/', component: __WEBPACK_IMPORTED_MODULE_6__pages_caracteristicas_vue___default.a},
+    {path: '/especificacion_caracteristicas/', component: __WEBPACK_IMPORTED_MODULE_7__pages_especificacion_caracteristica_vue___default.a},
+    {path: '/ordenes_laboratorios/', component: __WEBPACK_IMPORTED_MODULE_8__pages_ordenes_laboratorios_vue___default.a},
+    {path: '/formatos/:id/', component: __WEBPACK_IMPORTED_MODULE_9__pages_formatos_vue___default.a},
+    {path: '/bacteriologos/', component: __WEBPACK_IMPORTED_MODULE_10__pages_bacteriologos_vue___default.a},
+    {path: '/resultados/:id/', component: __WEBPACK_IMPORTED_MODULE_11__pages_resultados_vue___default.a},
+    {path: '/toma_muestra/', component: __WEBPACK_IMPORTED_MODULE_12__pages_toma_muestra_vue___default.a},
+    {path: '/empleados/', component: __WEBPACK_IMPORTED_MODULE_13__pages_empleados_vue___default.a},
+]
+
+// router.beforeEach((to, from, next) => {
+//     if (to.matched.some(record => record.meta.requiresAuth)) {
+//       // this route requires auth, check if logged in
+//       // if not, redirect to login page.
+//       if (!auth.loggedIn()) {
+//         next({
+//           path: '/login',
+//           query: { redirect: to.fullPath }
+//         })
+//       } else {
+//         next()
+//       }
+//     } else {
+//       next() // make sure to always call next()!
+//     }
+// })
+
+const router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({routes});
+/* harmony default export */ __webpack_exports__["a"] = (router);
+
+
+/***/ }),
+/* 98 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(99)
+__vue_script__ = __webpack_require__(101)
+__vue_template__ = __webpack_require__(123)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/laboratorios.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 99 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(100);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-425a4abe&file=laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-425a4abe&file=laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 100 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.stepper__wrapper .card {\n    box-shadow: inherit;\n}\n\n.stepper__step--active, .stepper__step--complete {\n    cursor: pointer !important;\n    transition: ease 1s all;\n}\n\n.stepper__step--active:hover, .stepper__step--complete:hover {\n    background-color: #f0f0f0;\n}\n/*.stepper__wrapper .card .card__title{\n    display: none;\n}*/\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26578,15 +28239,390 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _typeof2 = __webpack_require__(15);
+var _getIterator2 = __webpack_require__(8);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _vue = __webpack_require__(4);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _vuetify = __webpack_require__(10);
+
+var _vuetify2 = _interopRequireDefault(_vuetify);
+
+var _vueResource = __webpack_require__(6);
+
+var _vueResource2 = _interopRequireDefault(_vueResource);
+
+var _menu = __webpack_require__(11);
+
+var _menu2 = _interopRequireDefault(_menu);
+
+var _table = __webpack_require__(7);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _form = __webpack_require__(9);
+
+var _form2 = _interopRequireDefault(_form);
+
+var _formato = __webpack_require__(102);
+
+var _formato2 = _interopRequireDefault(_formato);
+
+var _productos = __webpack_require__(22);
+
+var _productos2 = _interopRequireDefault(_productos);
+
+var _igmixin = __webpack_require__(5);
+
+var _igmixin2 = _interopRequireDefault(_igmixin);
+
+var _urls = __webpack_require__(3);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Vue.use(VueRouter);
+_vue2.default.use(_vueResource2.default); // <template lang="html">
+//     <div>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-table
+//                   table-title="Laboratorios"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
+//                   @selectedrow="customEventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
+//             </v-flex>
+//         </v-layout>
+//         <br>
+//         <v-stepper v-model="stepper" non-linear>
+//             <v-stepper-header class="white">
+//                 <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Laboratorio</v-stepper-step>
+//                 <v-divider></v-divider>
+//                 <v-stepper-step step="2" @click.native="secondStepClick" :complete="stepper > 2">Formato</v-stepper-step>
+//                 <v-divider></v-divider>
+//                 <v-stepper-step step="3" @click.native="thirdStepClick">Insumos y Reactivos</v-stepper-step>
+//             </v-stepper-header>
+//             <v-stepper-content step="1" class="white">
+//                 <ig-form
+//                 :fields="fields"
+//                 :url="urlForm"
+//                 @showsnack="showSnackBar"
+//                 @objectcreated="_eventCreatedObject"
+//                 @clearselected="selected = false"
+//                 :selected="selected"
+//                 >
+//                     <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
+//                         Continuar
+//                     </v-btn>
+//                 </ig-form>
+//             </v-stepper-content>
+//             <v-stepper-content step="2" class="white">
+//                 <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
+//             </v-stepper-content>
+//             <v-stepper-content step="3" class="white">
+//                 <v-card>
+//                     <v-card-text>
+//                         <v-layout>
+//                             <v-flex md6 xs12>
+//                               <v-subheader>Insumos</v-subheader>
+//                               <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_insumos" tipo="i"></ig-producto>
+//                             </v-flex>
+//                             <v-flex md6 xs12>
+//                               <v-subheader>Reactivos</v-subheader>
+//                               <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_reactivos" tipo="r"></ig-producto>
+//                             </v-flex>
+//                         </v-layout>
+//                     </v-card-text>
+//                 </v-card>
+//             </v-stepper-content>
+//         </v-stepper>
+//     </div>
+// </template>
+//
+// <script>
+
+_vue2.default.use(_vuetify2.default);
+
+var BASE_URL = _urls2.default.BASE;
+
+exports.default = {
+    mixins: [_igmixin2.default],
+    data: function data() {
+        return {
+            laboratorio: {},
+            stepper: 1,
+            urlForm: _urls2.default.laboratorios,
+            selected: false,
+            plantillas_insumos: [],
+            plantillas_reactivos: [],
+            headers: [{
+                text: 'Código',
+                left: true,
+                value: 'codigo'
+            }, {
+                text: 'Nombre', value: 'nombre', left: true
+            }, {
+                text: 'Código Internacional', value: 'codigo_internacional', left: true
+            }, {
+                text: 'Equipo', value: 'equipo', left: true
+            }, {
+                text: 'Sección de Trabajo', value: 'seccion_trabajo', left: true,
+                sortable: false
+            }],
+            fields: [{
+                name: 'codigo',
+                verbose_name: 'Código',
+                type: String,
+                hint: 'Este es el código que identifica a cada laboratorio.'
+            }, {
+                name: 'nombre',
+                verbose_name: 'Nombre',
+                type: String,
+                hint: 'Este es el nombre del equipo.'
+            }, {
+                name: 'codigo_internacional',
+                verbose_name: 'Código Internacional',
+                type: String,
+                hint: 'Este es el código de representacion internacional del laboratorio.'
+            }, {
+                name: 'equipo',
+                verbose_name: 'Equipo',
+                type: Array,
+                url: _urls2.default.equipos,
+                hint: 'Este es el equipo que sera usado en este laboratorio.',
+                key: 'nombre'
+            }, {
+                name: 'seccion_trabajo',
+                verbose_name: 'Sección de Trabajo',
+                type: Array,
+                url: _urls2.default.secciones_trabajo,
+                hint: 'Este es el area o sección de trabajo de este laboratorio.',
+                key: 'codigo'
+            }, {
+                name: 'servicio',
+                verbose_name: 'Servicio',
+                type: Array,
+                url: _urls2.default.servicios,
+                hint: 'Este es el servicio asociado, con el cual se hará la relación en la orden.',
+                key: 'nombre'
+            }]
+        };
+    },
+    components: {
+        igMenu: _menu2.default,
+        igTable: _table2.default,
+        igForm: _form2.default,
+        igFormato: _formato2.default,
+        igProducto: _productos2.default
+    },
+    watch: {
+        selected: function selected() {
+            var _this = this;
+
+            this.plantillas_insumos = [];
+            this.plantillas_reactivos = [];
+
+            if (!this.selected) {
+                this.laboratorio = {};
+            } else {
+                this.laboratorio = this.selected;
+                this.$http.get(_urls2.default.plantillaLaboratorio.concat('?laboratorio=' + this.laboratorio.id.toString())).then(function (response) {
+                    if (response.body instanceof Array) {
+                        var _iteratorNormalCompletion = true;
+                        var _didIteratorError = false;
+                        var _iteratorError = undefined;
+
+                        try {
+                            for (var _iterator = (0, _getIterator3.default)(response.body), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                var plantilla = _step.value;
+
+                                if (plantilla.producto.tipo.toLowerCase() == 'i') {
+                                    _this.plantillas_insumos.push(plantilla);
+                                } else {
+                                    _this.plantillas_reactivos.push(plantilla);
+                                }
+                            }
+                        } catch (err) {
+                            _didIteratorError = true;
+                            _iteratorError = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion && _iterator.return) {
+                                    _iterator.return();
+                                }
+                            } finally {
+                                if (_didIteratorError) {
+                                    throw _iteratorError;
+                                }
+                            }
+                        }
+                    }
+                }, function (response) {});
+            }
+        }
+    },
+    methods: {
+        validateFirstStep: function validateFirstStep() {
+            return !_underscore2.default.isEmpty(this.laboratorio);
+        },
+        secondStepClick: function secondStepClick() {
+            if (this.validateFirstStep()) {
+                this.stepper = 2;
+            }
+        },
+        thirdStepClick: function thirdStepClick() {
+            if (this.validateFirstStep()) {
+                this.stepper = 3;
+            }
+        },
+        customEventUpdatedForm: function customEventUpdatedForm(value) {
+            var _this2 = this;
+
+            this.laboratorio = value;
+            this.$http.get(_urls2.default.servicios.concat(value.servicio.id.toString() + '/')).then(function (response) {
+                value.servicio = response.body;
+                _this2.eventUpdatedForm(value);
+            }, function (response) {
+                console.error(response);
+                _this2.showSnackBar(response.detail || 'Ha ocurrido un error');
+            });
+        },
+        _eventCreatedObject: function _eventCreatedObject(value) {
+            this.laboratorio = value;
+            value.selected = false;
+            var exists = this.elements.find(function (x) {
+                return x.id == value.id;
+            });
+            if (exists) {
+                for (var attr in exists) {
+                    this.elements[this.elements.indexOf(exists)][attr] = value[attr] || exists[attr];
+                }
+            } else {
+                this.elements.push(value);
+            }
+            this.selected = value;
+            this.stepper = 3;
+        }
+    },
+    mounted: function mounted() {
+        this.getElements(_urls2.default.laboratorios);
+    }
+};
+// </script>
+//
+// <style lang="css">
+// .stepper__wrapper .card {
+//     box-shadow: inherit;
+// }
+//
+// .stepper__step--active, .stepper__step--complete {
+//     cursor: pointer !important;
+//     transition: ease 1s all;
+// }
+//
+// .stepper__step--active:hover, .stepper__step--complete:hover {
+//     background-color: #f0f0f0;
+// }
+// /*.stepper__wrapper .card .card__title{
+//     display: none;
+// }*/
+// </style>
+//
+
+/***/ }),
+/* 102 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(103)
+__vue_script__ = __webpack_require__(105)
+__vue_template__ = __webpack_require__(118)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/formato.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 103 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(104);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-606b9c6b&file=formato.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-606b9c6b&file=formato.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 104 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 105 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof2 = __webpack_require__(16);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _stringify = __webpack_require__(23);
+var _stringify = __webpack_require__(32);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(8);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -26594,11 +28630,11 @@ var _urls = __webpack_require__(3);
 
 var _urls2 = _interopRequireDefault(_urls);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _errormixin = __webpack_require__(18);
+var _errormixin = __webpack_require__(21);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
 
@@ -27083,7 +29119,56 @@ exports.default = {
 //
 
 /***/ }),
-/* 53 */
+/* 106 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var core = __webpack_require__(12);
+module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
+  return (core.JSON && core.JSON.stringify || JSON.stringify).apply(JSON, arguments);
+};
+
+/***/ }),
+/* 107 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(108);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4d1a4f28&file=floating-button.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4d1a4f28&file=floating-button.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 108 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.ig-floating-button {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin-right: 22px;\n    /*margin-bottom: 90px;*/\n    transition-duration: 50ms !important;\n    -webkit-animation-duration: 500ms;\n            animation-duration: 500ms;\n}\n\n.ig-floating-button-main {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin: 15px;\n    transition-duration: 500ms;\n    z-index: 10;\n}\n\n.ig-floating-button-main:hover {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg);\n    transition-duration: 500ms;\n}\n\n.ig-floating-button-container {\n    position: fixed;\n    background-color: transparent;\n    /*background-color: #323213;*/\n    padding: 40px;\n    right: 0;\n    top: 0;\n    z-index: 0;\n    height: 100%;\n}\n\n/*.ig-rotator {\n    transform: rotate(360deg);\n    transition-duration: 500ms;\n}*/\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27093,7 +29178,206 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _toConsumableArray2 = __webpack_require__(24);
+var _toConsumableArray2 = __webpack_require__(31);
+
+var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+
+var _getIterator2 = __webpack_require__(8);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _vue = __webpack_require__(4);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    name: 'floating-button',
+    data: function data() {
+        return {
+            animated: false
+        };
+    },
+    created: function created() {
+        // console.log(this.$slots.default);
+    },
+    computed: {
+        classesMain: function classesMain() {
+            return {
+                animated: true,
+                // fadeIn: this.animated,
+                // fadeOut: !this.animated,
+                'ig-floating-button-main': true
+            };
+        },
+        classesChildren: function classesChildren() {
+            return {
+                animated: true,
+                fadeInUp: this.animated,
+                fadeOutDown: !this.animated,
+                'ig-floating-button': true
+            };
+        }
+    },
+    methods: {
+        genButtons: function genButtons() {
+            var children = [];
+            var index = 1;
+            var margin = 0;
+            var base = 80;
+            if (this.animated && this.$slots.child) {
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = (0, _getIterator3.default)(this.$slots.child), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var node = _step.value;
+
+                        if (node.tag) {
+                            children.push(this.$createElement('div', {
+                                'class': this.classesChildren,
+                                style: {
+                                    'margin-bottom': (base + margin * index).toString() + 'px'
+                                }
+                            }, [node]));
+                            margin += 45;
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            }
+            return children;
+        }
+    },
+    render: function render() {
+        var _this = this;
+
+        return this.$createElement('div', {
+            on: {
+                mouseover: function mouseover() {
+                    _this.animated = true;
+                },
+                mouseleave: function mouseleave() {
+                    _this.animated = false;
+                }
+            }
+        }, [this.$createElement('div', {
+            'class': this.classesMain
+        }, [this.$slots.default]), this.$createElement('div', { class: { 'ig-floating-button-container': this.animated } }, [].concat((0, _toConsumableArray3.default)(this.genButtons())))]);
+    }
+};
+// </script>
+//
+// <style lang="css">
+// .ig-floating-button {
+//     position: fixed;
+//     bottom: 0;
+//     right: 0;
+//     margin-right: 22px;
+//     /*margin-bottom: 90px;*/
+//     transition-duration: 50ms !important;
+//     animation-duration: 500ms;
+// }
+//
+// .ig-floating-button-main {
+//     position: fixed;
+//     bottom: 0;
+//     right: 0;
+//     margin: 15px;
+//     transition-duration: 500ms;
+//     z-index: 10;
+// }
+//
+// .ig-floating-button-main:hover {
+//     transform: rotate(360deg);
+//     transition-duration: 500ms;
+// }
+//
+// .ig-floating-button-container {
+//     position: fixed;
+//     background-color: transparent;
+//     /*background-color: #323213;*/
+//     padding: 40px;
+//     right: 0;
+//     top: 0;
+//     z-index: 0;
+//     height: 100%;
+// }
+//
+// /*.ig-rotator {
+//     transform: rotate(360deg);
+//     transition-duration: 500ms;
+// }*/
+// </style>
+//
+// <script>
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(111);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-11bc495e&file=formulario-resultado.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formulario-resultado.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-11bc495e&file=formulario-resultado.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formulario-resultado.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 111 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.fixindex {\n    z-index: 7 !important;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 112 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _toConsumableArray2 = __webpack_require__(31);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
@@ -27101,7 +29385,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _slotInput = __webpack_require__(168);
+var _slotInput = __webpack_require__(113);
 
 var _slotInput2 = _interopRequireDefault(_slotInput);
 
@@ -27336,358 +29620,149 @@ exports.default = {
 //
 
 /***/ }),
-/* 54 */
+/* 113 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(114)
+__vue_script__ = __webpack_require__(116)
+__vue_template__ = __webpack_require__(117)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/slot-input.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(115);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6e79d7f8&file=slot-input.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6e79d7f8&file=slot-input.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 115 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-// <v-list-group v-else-if="item.children" v-model="item.model" no-action>
-//     <v-list-tile slot="item">
-//         <v-list-tile-action>
-//         <v-icon>{{ item.model ? item.icon : item['icon-alt'] }}</v-icon>
-//         </v-list-tile-action>
-//         <v-list-tile-content>
-//         <v-list-tile-title>
-//             {{ item.text }}
-//         </v-list-tile-title>
-//         </v-list-tile-content>
-//     </v-list-tile>
-//     <v-list-tile
-//         v-for="(child, i) in item.children"
-//         :key="i"
-//     >
-//         <v-list-tile-action v-if="child.icon">
-//         <v-icon>{{ child.icon }}</v-icon>
-//         </v-list-tile-action>
-//         <v-list-tile-content>
-//         <v-list-tile-title>
-//             {{ child.text }}
-//         </v-list-tile-title>
-//         </v-list-tile-content>
-//     </v-list-tile>
-// </v-list-group>
-// <v-list-tile v-else>
-//     <v-list-tile-action>
-//         <v-icon>{{ item.icon }}</v-icon>
-//     </v-list-tile-action>
-//     <v-list-tile-content>
-//         <v-list-tile-title>
-//         {{ item.text }}
-//         </v-list-tile-title>
-//     </v-list-tile-content>
-// </v-list-tile>
-//
-//
-// <template>
-//     <div>
-//         <v-toolbar class="cyan darken-1">
-//             <v-toolbar-side-icon @click.native.stop="sidebar = !sidebar"></v-toolbar-side-icon>
-//             <v-toolbar-title>Dasalud</v-toolbar-title>
-//         </v-toolbar>
-//         <main>
-//             <v-sidebar v-model="sidebar" drawer class="mt-0 scroll-y" :mobile-break-point="576">
-//                 <v-list dense>
-//
-//                         <v-list-tile href="/">
-//                             <v-list-tile-avatar>
-//                                 <v-icon>accessibility</v-icon>
-//                             </v-list-tile-avatar>
-//                             <v-list-tile-content>
-//                                 <v-list-tile-title>Dashboard</v-list-tile-title>
-//                             </v-list-tile-content>
-//                         </v-list-tile>
-//
-//                     <v-list-group>
-//
-//                             <v-list-tile ripple>
-//                                 <v-list-tile-avatar>
-//                                     <v-icon>people</v-icon>
-//                                 </v-list-tile-avatar>
-//                                 <v-list-tile-content>
-//                                     <v-list-tile-title>Pacientes</v-list-tile-title>
-//                                 </v-list-tile-content>
-//                                 <v-list-tile-action>
-//                                     <v-icon>keyboard_arrow_down</v-icon>
-//                                 </v-list-tile-action>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/pacientes/page/1/">
-//                                 <v-list-tile-title>Lista Paciente</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/add/paciente/">
-//                                 <v-list-tile-title>Crear Paciente</v-list-tile-title>
-//                             </v-list-tile>
-//
-//                     </v-list-group>
-//                     <v-list-group>
-//
-//                             <v-list-tile ripple>
-//                                 <v-list-tile-avatar>
-//                                     <v-icon>today</v-icon>
-//                                 </v-list-tile-avatar>
-//                                 <v-list-tile-content>
-//                                     <v-list-tile-title>Agendas</v-list-tile-title>
-//                                 </v-list-tile-content>
-//                                     <v-list-tile-action>
-//                                     <v-icon>keyboard_arrow_down</v-icon>
-//                                 </v-list-tile-action>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/agenda/">
-//                                 <v-list-tile-title>Agenda del Dia</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/agenda/doctor/">
-//                                 <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>
-//                             </v-list-tile>
-//
-//                     </v-list-group>
-//                     <v-list-group>
-//
-//                             <v-list-tile ripple>
-//                                 <v-list-tile-avatar>
-//                                     <v-icon>open_in_browser</v-icon>
-//                                 </v-list-tile-avatar>
-//                                 <v-list-tile-content>
-//                                     <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>
-//                                 </v-list-tile-content>
-//                                 <v-list-tile-action>
-//                                     <v-icon>keyboard_arrow_down</v-icon>
-//                                 </v-list-tile-action>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/ordenes/">
-//                                 <v-list-tile-title>Lista de Ordenes</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/ordenesReporte/">
-//                                 <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>
-//                             </v-list-tile>
-//
-//                     </v-list-group>
-//
-//                         <v-list-tile ripple href="/portal_empresas/">
-//                             <v-list-tile-avatar>
-//                                 <v-icon>search</v-icon>
-//                             </v-list-tile-avatar>
-//                             <v-list-tile-content>
-//                                 <v-list-tile-title>Buscar Orden</v-list-tile-title>
-//                             </v-list-tile-content>
-//                         </v-list-tile>
-//
-//                     <v-divider light></v-divider>
-//                     <v-subheader>Utilidades</v-subheader>
-//                     <v-list-group>
-//
-//                             <v-list-tile ripple>
-//                                 <v-list-tile-avatar>
-//                                     <v-icon>local_hospital</v-icon>
-//                                 </v-list-tile-avatar>
-//                                 <v-list-tile-content>
-//                                     <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>
-//                                 </v-list-tile-content>
-//                                 <v-list-tile-action>
-//                                     <v-icon>keyboard_arrow_down</v-icon>
-//                                 </v-list-tile-action>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/medicos/">
-//                                 <v-list-tile-title>Medicos</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/instituciones/">
-//                                 <v-list-tile-title>Instituciones</v-list-tile-title>
-//                             </v-list-tile>
-//
-//                     </v-list-group>
-//                     <v-list-group>
-//
-//                             <v-list-tile ripple>
-//                                 <v-list-tile-avatar>
-//                                     <v-icon>business_center</v-icon>
-//                                 </v-list-tile-avatar>
-//                                 <v-list-tile-content>
-//                                     <v-list-tile-title>Empresas y Planes</v-list-tile-title>
-//                                 </v-list-tile-content>
-//                                 <v-list-tile-action>
-//                                     <v-icon>keyboard_arrow_down</v-icon>
-//                                 </v-list-tile-action>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/empresas/">
-//                                 <v-list-tile-title>Empresas</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/planes/">
-//                                 <v-list-tile-title>Planes de Salud</v-list-tile-title>
-//                             </v-list-tile>
-//
-//                     </v-list-group>
-//                     <v-list-group>
-//
-//                             <v-list-tile ripple>
-//                                 <v-list-tile-avatar>
-//                                     <v-icon>featured_play_list</v-icon>
-//                                 </v-list-tile-avatar>
-//                                 <v-list-tile-content>
-//                                     <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>
-//                                 </v-list-tile-content>
-//                                 <v-list-tile-action>
-//                                     <v-icon>keyboard_arrow_down</v-icon>
-//                                 </v-list-tile-action>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/procedimientos/">
-//                                 <v-list-tile-title>Procedimientos</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/plantillas/">
-//                                 <v-list-tile-title>Plantillas</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/servicios/">
-//                                 <v-list-tile-title>Servicios</v-list-tile-title>
-//                             </v-list-tile>
-//
-//                     </v-list-group>
-//                     <v-list-group>
-//
-//                             <v-list-tile ripple>
-//                                 <v-list-tile-avatar>
-//                                     <v-icon>featured_play_list</v-icon>
-//                                 </v-list-tile-avatar>
-//                                 <v-list-tile-content>
-//                                     <v-list-tile-title>Usuarios</v-list-tile-title>
-//                                 </v-list-tile-content>
-//                                 <v-list-tile-action>
-//                                     <v-icon>keyboard_arrow_down</v-icon>
-//                                 </v-list-tile-action>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/usuarios/">
-//                                 <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="/usuariosEmpresa/">
-//                                 <v-list-tile-title>Usuarios Empresas</v-list-tile-title>
-//                             </v-list-tile>
-//
-//                     </v-list-group>
-//                     <v-divider light></v-divider>
-//                     <v-subheader>Laboratorio</v-subheader>
-//
-//                         <v-list-tile ripple href="#/ordenes_laboratorios/">
-//                             <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>
-//                         </v-list-tile>
-//
-//                     <v-list-group>
-//
-//                             <v-list-tile ripple>
-//                                 <v-list-tile-avatar>
-//                                     <v-icon>local_hospital</v-icon>
-//                                 </v-list-tile-avatar>
-//                                 <v-list-tile-content>
-//                                     <v-list-tile-title>Administración</v-list-tile-title>
-//                                 </v-list-tile-content>
-//                                 <v-list-tile-action>
-//                                     <v-icon>keyboard_arrow_down</v-icon>
-//                                 </v-list-tile-action>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="#/bacteriologos/">
-//                               <v-list-tile-title>Bacteriologos</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="#/laboratorios/">
-//                               <v-list-tile-title>Laboratorios</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="#/equipos/">
-//                                 <v-list-tile-title>Equipos</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="#/tecnicas/">
-//                                 <v-list-tile-title>Tecnicas</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="#/secciones_trabajo/">
-//                                 <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="#/reactivos/">
-//                                 <v-list-tile-title>Reactivos</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="#/caracteristicas/">
-//                                 <v-list-tile-title>Caracteristicas</v-list-tile-title>
-//                             </v-list-tile>
-//
-//
-//                             <v-list-tile ripple href="#/especificacion_caracteristicas/">
-//                                 <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>
-//                             </v-list-tile>
-//
-//                     </v-list-group>
-//                 </v-list>
-//             </v-sidebar>
-//             <div class="main">
-//                 <v-content class="grey lighten-4">
-//                     <v-container fluid>
-//                         <br>
-//                         <v-spacer></v-spacer>
-//                         <slot></slot>
-//                     </v-container>
-//                 </v-content>
-//             </div>
-//         </main>
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+// <template lang="html">
+//     <div class="">
+//         <slot></slot>
+//         <div v-show="false">
+//           <slot name="input"></slot>
+//         </div>
 //     </div>
 // </template>
 //
 // <script>
-module.exports = {
-    name: 'igMenu',
-    props: {},
-    data: function data() {
-        return {
-            sidebar: false
-        };
-    }
-};
+exports.default = {};
 // </script>
 //
-// <style>
-//   .main {
-//     width: 100% !important;
-//   }
+// <style lang="css">
 // </style>
 //
 
 /***/ }),
-/* 55 */
+/* 117 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div class=\"\">\n        <slot></slot>\n        <div v-show=\"false\">\n          <slot name=\"input\"></slot>\n        </div>\n    </div>\n";
+
+/***/ }),
+/* 118 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div v-if=\"formato\">\n        <v-container class=\"white\">\n            <v-layout>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-layout>\n            <v-layout wrap>\n                <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand class=\"white\">\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        return-object\n                                        persistent-hint\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <div v-if=\"item.tipo.name != 'title'\">\n                                        <v-text-field\n                                          label=\"Texto de ayuda\"\n                                          v-model=\"item.help\"\n                                            hint=\"Ayuda textual que acompaña el campo\"\n                                        ></v-text-field>\n                                        <br>\n                                        <v-layout wrap>\n                                            <v-flex md12><v-subheader>Referencias</v-subheader></v-flex>\n                                            <template v-if=\"item.tipo.name == 'number'\">\n                                                <v-flex md6>\n                                                    <v-subheader>Hombre</v-subheader>\n                                                    <v-text-field\n                                                        label=\"Valores de referencia mínima (HOMBRE)\"\n                                                        v-model=\"item.referencias.M.minima\"\n                                                        :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                                        hint=\"Texto de referencia minima para la visualización del resultado (HOMBRE)\"\n                                                    ></v-text-field>\n                                                    <br>\n                                                    <v-text-field\n                                                        label=\"Valores de referencia máxima (HOMBRE)\"\n                                                        v-model=\"item.referencias.M.maxima\"\n                                                        :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                                        hint=\"Texto de referencia máxima para la visualización del resultado (HOMBRE)\"\n                                                    ></v-text-field>\n                                                </v-flex>\n                                                <v-flex md6>\n                                                    <v-subheader>Mujer</v-subheader>\n                                                    <v-text-field\n                                                        label=\"Valores de referencia mínima (MUJER)\"\n                                                        v-model=\"item.referencias.F.minima\"\n                                                        :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                                        hint=\"Texto de referencia minima para la visualización del resultado (MUJER)\"\n                                                    ></v-text-field>\n                                                    <br>\n                                                    <v-text-field\n                                                        label=\"Valores de referencia máxima (MUJER)\"\n                                                        v-model=\"item.referencias.F.maxima\"\n                                                        :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                                        hint=\"Texto de referencia máxima para la visualización del resultado (MUJER)\"\n                                                    ></v-text-field>\n                                                </v-flex>\n                                            </template>\n                                            <v-flex md12 v-else>\n                                                <v-text-field\n                                                    label=\"Valores de Referencia\"\n                                                    v-model=\"item.referencia\"\n                                                    multi-line\n                                                    hint=\"Texto de referencia para la visualización de resultados.\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                        </v-layout>\n                                        <br>\n                                        <v-text-field\n                                            label=\"Unidades\"\n                                            v-model=\"item.unidades\"\n                                            hint=\"Medida en unidades de el resultado\"\n                                        ></v-text-field>\n                                        <br>\n                                        <v-text-field\n                                            v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'\"\n                                            :multi-line=\"item.tipo.name == 'textarea'\"\n                                            :label=\"item.nombre\"\n                                            :hint=\"item.help\"\n                                            v-model=\"item.model_text\"\n                                            :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                            persistent-hint\n                                        ></v-text-field>\n                                        <div v-else-if=\"item.tipo.name == 'select'\">\n                                            <v-layout>\n                                                <v-flex md10 xs10>\n                                                    <v-select\n                                                        :label=\"item.nombre\"\n                                                        :hint=\"item.help\"\n                                                        v-model=\"item.model_text\"\n                                                        :items=\"item.choices\"\n                                                        :rules=\"[item.choices.length >= 1 || 'Debes escoger una caracteristica', item.choices.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                        item-value=\"text\"\n                                                        :return-object=\"true\"\n                                                        persistent-hint\n                                                    ></v-select>\n                                                </v-flex>\n                                                <v-flex md2 xs2>\n                                                    <v-btn\n                                                        v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                        class=\"green--text darken-1\" icon=\"icon\"\n                                                        @click.native.stop=\"dialog = true; lastItem = item\">\n                                                        <v-icon>add</v-icon>\n                                                    </v-btn>\n                                                </v-flex>\n                                            </v-layout>\n                                            <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                                <v-flex xs7 md7>\n                                                    <v-text-field\n                                                      label=\"Texto para mostrar\"\n                                                      v-model=\"choice.text\"\n                                                    ></v-text-field>\n                                                </v-flex>\n                                                <v-flex xs5 md5>\n                                                    <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                        <v-icon>delete</v-icon>\n                                                    </v-btn>\n                                                    <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                        <v-icon>add</v-icon>\n                                                    </v-btn>\n                                                </v-flex>\n                                            </v-layout>\n                                        </div>\n                                    </div>\n                                </v-card-text>\n                                <v-card-actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-actions>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn fab dark warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon dark>add</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon dark>save</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <!--<v-card-row height=\"300px\">-->\n                    <v-card-text>\n                        <v-radio\n                            v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                            :key=\"caracteristica.id\"\n                            :label=\"caracteristica.codigo.toUpperCase()\"\n                            v-model=\"modalchoice\"\n                            :value=\"caracteristica.id\"\n                            primary>\n                        </v-radio>\n                    </v-card-text>\n                <!--</v-card-row>-->\n                <v-divider></v-divider>\n                <v-card-actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-actions>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(120);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2d6ae7e6&file=productos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./productos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2d6ae7e6&file=productos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./productos.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.productos .container {\n  padding: 0;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27697,11 +29772,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(8);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -27952,480 +30027,96 @@ exports.default = {
 //
 
 /***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 122 */
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-// <template lang="html">
-//     <div class="">
-//         <slot></slot>
-//         <div v-show="false">
-//           <slot name="input"></slot>
-//         </div>
-//     </div>
-// </template>
-//
-// <script>
-exports.default = {};
-// </script>
-//
-// <style lang="css">
-// </style>
-//
+module.exports = "\n\n";
 
 /***/ }),
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 123 */
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _keys = __webpack_require__(36);
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _typeof2 = __webpack_require__(15);
-
-var _typeof3 = _interopRequireDefault(_typeof2);
-
-var _getIterator2 = __webpack_require__(9);
-
-var _getIterator3 = _interopRequireDefault(_getIterator2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// <template lang="html">
-//     <v-card>
-//         <v-card-title>
-//             {{ tableTitle }}
-//             <v-spacer></v-spacer>
-//             <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
-//         </v-card-title>
-//         <v-data-table
-//             :pagination.sync="pagination"
-//             v-bind:headers="headers"
-//             :items="data"
-//             v-bind:search="buscador"
-//             :rows-per-page-items="[10]"
-//             :rowsPerPage="10"
-//             :filter="filter"
-//             rows-per-page-text="Filas por Página"
-//             no-results-text="No se encontraron resultados"
-//             ref="dataTable">
-//             <template slot="headers" scope="props">
-//                 <!--<span style="text-align:before: center !important">{{ props.item }}</span>-->
-//                 <tr>
-//                     <th v-for="header in props.headers" :key="header"
-//                        :class="['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']"
-//                         @click="changeSort(header)"
-//                        >
-//                         <v-icon>arrow_upward</v-icon>
-//                         {{ header.text }}
-//                     </th>
-//                 </tr>
-//             </template>
-//             <template slot="items" scope="props">
-//                 <!-- <td @click="updateForm(props.item)">
-//                     <v-checkbox primary v-model="props.item.selected" ></v-checkbox>
-//                 </td> -->
-//                 <template v-for="field of fields">
-//                     <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
-//                     <td class="text-xs-center" v-else>
-//                         <v-btn floating small router class="cyan darken-1" :href="field.href.replace(':id', props.item.id)">
-//                             <v-icon light>mode_edit</v-icon>
-//                         </v-btn>
-//                     </td>
-//                 </template>
-//             </template>
-//         </v-data-table>
-//         <v-progress-linear indeterminate class="red--text" height="3" :active="loading"></v-progress-linear>
-//     </v-card>
-// </template>
-//
-// <script>
-exports.default = {
-    name: 'igTable',
-    props: {
-        tableTitle: {
-            type: String,
-            default: 'Lista',
-            required: false
-        },
-        headers: {
-            type: Array,
-            required: true
-        },
-        data: {
-            type: Array,
-            default: function _default() {
-                return [];
-            },
-            required: false
-        },
-        fields: {
-            type: Array,
-            required: true
-        },
-        loading: true
-    },
-    data: function data() {
-        return {
-            buscador: '',
-            pagination: {
-                page: 1,
-                rowsPerPage: 10,
-                descending: false,
-                totalItems: 0
-            }
-        };
-    },
-    mounted: function mounted() {
-        // this.$refs.dataTable.rowsPerPage = 10;
-    },
-    methods: {
-        getHrefField: function getHrefField(field, item) {
-            var href = void 0;
-            if (!'patrons' in field) {
-                href = field.href.replace(/\/\:[a-zA-Z]*\//g, '/' + item.id + '/');
-            } else {
-                href = field.href;
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
-
-                try {
-                    for (var _iterator = (0, _getIterator3.default)(field.patrons), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var patron = _step.value;
-
-                        href = href.replace(':'.concat(patron.identifier), typeof patron.replace == 'function' ? patron(item) : patron);
-                    }
-                } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion && _iterator.return) {
-                            _iterator.return();
-                        }
-                    } finally {
-                        if (_didIteratorError) {
-                            throw _iteratorError;
-                        }
-                    }
-                }
-            }
-            return href;
-        },
-        _validValue: function _validValue(val) {
-            return val !== null && ['undefined', 'boolean'].indexOf(typeof val === 'undefined' ? 'undefined' : (0, _typeof3.default)(val)) === -1;
-        },
-        customFilter: function customFilter(val, search) {
-            return val.toString().toLowerCase().indexOf(search) !== -1;
-        },
-        filter: function filter(val, search) {
-            var _this = this;
-
-            var valid = this._validValue(val);
-            if (valid) {
-                valid = valid && this.customFilter(val, search);
-                if (['object'].indexOf(typeof val === 'undefined' ? 'undefined' : (0, _typeof3.default)(val)) === 0 && !valid) {
-                    valid = (0, _keys2.default)(val).some(function (j) {
-                        return _this._validValue(val[j]) && _this.customFilter(val[j], search);
-                    });
-                }
-            }
-            return valid;
-        },
-        getattr: function getattr(obj, attr) {
-            var attrs = attr.split('.');
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
-
-            try {
-                for (var _iterator2 = (0, _getIterator3.default)(attrs), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var at = _step2.value;
-
-                    if (at in obj) {
-                        obj = obj[at];
-                    }
-                    if (obj instanceof Array) {
-                        var mix = '';
-                        var _iteratorNormalCompletion3 = true;
-                        var _didIteratorError3 = false;
-                        var _iteratorError3 = undefined;
-
-                        try {
-                            for (var _iterator3 = (0, _getIterator3.default)(obj), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                                var elem = _step3.value;
-
-                                attr = attrs[attrs.length - 1];
-                                if (mix) {
-                                    mix += ', ';
-                                }
-                                mix += elem[attr];
-                            }
-                        } catch (err) {
-                            _didIteratorError3 = true;
-                            _iteratorError3 = err;
-                        } finally {
-                            try {
-                                if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                                    _iterator3.return();
-                                }
-                            } finally {
-                                if (_didIteratorError3) {
-                                    throw _iteratorError3;
-                                }
-                            }
-                        }
-
-                        return mix;
-                    }
-                }
-            } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
-                    }
-                } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
-                    }
-                }
-            }
-
-            return obj;
-        },
-        updateForm: function updateForm(item) {
-            this.$emit('selectedrow', item);
-        },
-        changeSort: function changeSort(column) {
-            if ('sortable' in column && !column.sortable) {
-                return;
-            }
-            column = column.value;
-            if (this.pagination.sortBy === column) {
-                this.pagination.descending = !this.pagination.descending;
-            } else {
-                this.pagination.sortBy = column;
-                this.pagination.descending = false;
-            }
-        }
-    }
-};
-// </script>
-//
-// <style lang="css">
-// .text-xs-left {
-//     text-align: center !important;
-// }
-// </style>
-//
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Laboratorios\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']\"\n                  @selectedrow=\"customEventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-stepper v-model=\"stepper\" non-linear>\n            <v-stepper-header class=\"white\">\n                <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"2\" @click.native=\"secondStepClick\" :complete=\"stepper > 2\">Formato</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"3\" @click.native=\"thirdStepClick\">Insumos y Reactivos</v-stepper-step>\n            </v-stepper-header>\n            <v-stepper-content step=\"1\" class=\"white\">\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"_eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                >\n                    <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                        Continuar\n                    </v-btn>\n                </ig-form>\n            </v-stepper-content>\n            <v-stepper-content step=\"2\" class=\"white\">\n                <ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>\n            </v-stepper-content>\n            <v-stepper-content step=\"3\" class=\"white\">\n                <v-card>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                              <v-subheader>Insumos</v-subheader>\n                              <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                              <v-subheader>Reactivos</v-subheader>\n                              <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                </v-card>\n            </v-stepper-content>\n        </v-stepper>\n    </div>\n";
 
 /***/ }),
-/* 58 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _igmixin = __webpack_require__(4);
-
-var _igmixin2 = _interopRequireDefault(_igmixin);
-
-var _table = __webpack_require__(8);
-
-var _table2 = _interopRequireDefault(_table);
-
-var _form = __webpack_require__(7);
-
-var _form2 = _interopRequireDefault(_form);
-
-var _urls = __webpack_require__(3);
-
-var _urls2 = _interopRequireDefault(_urls);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-  components: {
-    igTable: _table2.default,
-    igForm: _form2.default
-  },
-  mixins: [_igmixin2.default],
-  data: function data() {
-    return {
-      urlForm: _urls2.default.bacteriologos,
-      selected: false,
-      headers: [{
-        text: 'Usuario',
-        value: 'username',
-        left: true
-      }, {
-        text: 'Nombre',
-        value: 'nombre',
-        left: true
-      }, {
-        text: 'Email',
-        value: 'usuario.email',
-        left: true
-      }, {
-        text: 'Codigo',
-        value: 'codigo',
-        left: true,
-        sortable: false
-      }, {
-        text: 'Registro',
-        value: 'registro',
-        left: true,
-        sortable: false
-      }, {
-        text: 'Areas',
-        value: 'areas',
-        left: true,
-        sortable: false
-      }],
-      fields: [{
-        name: 'username',
-        verbose_name: 'Usuario',
-        type: String,
-        hint: 'Este es el nombre de usuario de el bacteriologo.',
-        group: 'usuario'
-      }, {
-        name: 'password',
-        verbose_name: 'Contraseña',
-        type: String,
-        hint: 'Esta es la contraseña de el bacteriologo.',
-        required: false,
-        group: 'usuario',
-        kwargs: {
-          type: 'password'
-        }
-      }, {
-        name: 'email',
-        verbose_name: 'Email',
-        type: String,
-        hint: 'Este es el email de el bacteriologo.',
-        group: 'usuario',
-        kwargs: {
-          type: 'email'
-        }
-      }, {
-        name: 'nombre',
-        verbose_name: 'Nombre',
-        type: String,
-        hint: 'Nombre de el bacteriologo.'
-      }, {
-        name: 'codigo',
-        verbose_name: 'Codigo',
-        type: String,
-        hint: 'Código de el bacteriologo.'
-      }, {
-        name: 'registro',
-        verbose_name: 'Registro',
-        type: Number,
-        hint: 'Registro de el bacteriologo.',
-        kwargs: {
-          type: 'number'
-        }
-      }, {
-        name: 'areas',
-        verbose_name: 'Areas',
-        type: Array,
-        hint: 'Este es el código de representacion internacional del laboratorio.',
-        url: _urls2.default.secciones_trabajo,
-        key: 'codigo',
-        kwargs: {
-          multiple: true
-        }
-      }, {
-        name: 'firma',
-        verbose_name: 'Firma',
-        type: 'file',
-        hint: 'Esta es la firma de el bacteriologo, la cual saldrá en los resultados.',
-        required: false,
-        url_file: '/laboratorios/api/bacteriologos/firma/'
-      }]
-    };
-  },
-  mounted: function mounted() {
-    this.getElements(_urls2.default.bacteriologos);
+var __vue_script__, __vue_template__
+__webpack_require__(125)
+__vue_script__ = __webpack_require__(127)
+__vue_template__ = __webpack_require__(128)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/equipos.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
   }
-};
-// </script>
-//
-// <style lang="css">
-// </style>
-//
-// <template lang="html">
-//     <div>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <ig-table
-//                   table-title="Bacteriologos"
-//                   :headers="headers"
-//                   :data="elements"
-//                   :fields="['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']"
-//                   @selectedrow="eventUpdatedForm"
-//                   :loading="loading"
-//                 ></ig-table>
-//             </v-flex>
-//         </v-layout>
-//         <br>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <ig-form
-//                 :fields="fields"
-//                 :url="urlForm"
-//                 @showsnack="showSnackBar"
-//                 @objectcreated="eventCreatedObject"
-//                 @clearselected="selected = false"
-//                 :selected="selected"
-//                 ></ig-form>
-//             </v-flex>
-//         </v-layout>
-//     </div>
-// </template>
-//
-// <script>
+})()}
 
 /***/ }),
-/* 59 */
+/* 125 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(126);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b3141f26&file=equipos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b3141f26&file=equipos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 126 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -28441,290 +30132,15 @@ var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(7);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(9);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(4);
-
-var _igmixin2 = _interopRequireDefault(_igmixin);
-
-var _urls = __webpack_require__(3);
-
-var _urls2 = _interopRequireDefault(_urls);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Vue.use(VueRouter);
-_vue2.default.use(_vueResource2.default); // <template lang="html">
-//     <div>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <ig-table
-//                   table-title="Caracteristicas"
-//                   :headers="headers"
-//                   :data="elements"
-//                   :fields="['codigo', 'descripcion']"
-//                   @selectedrow="eventUpdatedForm"
-//                   :loading="loading"
-//                 ></ig-table>
-//             </v-flex>
-//         </v-layout>
-//         <br>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <ig-form
-//                   :fields="fields"
-//                   :url="urlForm"
-//                   @showsnack="showSnackBar"
-//                   @objectcreated="eventCreatedObject"
-//                   @clearselected="selected = false"
-//                   :selected="selected"
-//                 ></ig-form>
-//             </v-flex>
-//         </v-layout>
-//     </div>
-// </template>
-//
-// <script>
-
-_vue2.default.use(_vuetify2.default);
-
-exports.default = {
-    mixins: [_igmixin2.default],
-    data: function data() {
-        return {
-            urlForm: _urls2.default.caracteristicas,
-            selected: false,
-            headers: [{
-                text: 'Código',
-                value: 'tabla-codigo',
-                left: true
-            }, {
-                text: 'Descripción',
-                value: 'tabla-nombre',
-                left: true
-            }],
-            fields: [{
-                name: 'codigo',
-                verbose_name: 'Código',
-                type: String,
-                hint: 'Este es el código que identifica a cada equipo.'
-            }, {
-                name: 'descripcion',
-                verbose_name: 'Descripción',
-                type: String,
-                hint: 'Este es el código que identifica a cada equipo.'
-            }]
-        };
-    },
-    components: {
-        igMenu: _menu2.default,
-        igTable: _table2.default,
-        igForm: _form2.default
-    },
-    mounted: function mounted() {
-        this.getElements(_urls2.default.caracteristicas);
-    }
-};
-// </script>
-//
-// <style lang="css">
-// </style>
-//
-
-/***/ }),
-/* 60 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _igmixin = __webpack_require__(4);
-
-var _igmixin2 = _interopRequireDefault(_igmixin);
-
-var _table = __webpack_require__(8);
-
-var _table2 = _interopRequireDefault(_table);
-
-var _form = __webpack_require__(7);
-
-var _form2 = _interopRequireDefault(_form);
-
-var _urls = __webpack_require__(3);
-
-var _urls2 = _interopRequireDefault(_urls);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-  components: {
-    igTable: _table2.default,
-    igForm: _form2.default
-  },
-  mixins: [_igmixin2.default],
-  data: function data() {
-    return {
-      urlForm: _urls2.default.empleados,
-      selected: false,
-      headers: [{
-        text: 'Usuario',
-        value: 'username',
-        left: true
-      }, {
-        text: 'Nombre',
-        value: 'nombre',
-        left: true
-      }, {
-        text: 'Email',
-        value: 'usuario.email',
-        left: true
-      }, {
-        text: 'Documento',
-        value: 'documento',
-        left: true,
-        sortable: false
-      }],
-      fields: [{
-        name: 'username',
-        verbose_name: 'Usuario',
-        type: String,
-        hint: 'Este es el nombre de usuario de el bacteriologo.',
-        group: 'usuario'
-      }, {
-        name: 'password',
-        verbose_name: 'Contraseña',
-        type: String,
-        hint: 'Esta es la contraseña de el bacteriologo.',
-        required: false,
-        group: 'usuario',
-        kwargs: {
-          type: 'password'
-        }
-      }, {
-        name: 'email',
-        verbose_name: 'Email',
-        type: String,
-        hint: 'Este es el email de el bacteriologo.',
-        group: 'usuario',
-        kwargs: {
-          type: 'email'
-        }
-      }, {
-        name: 'nombres',
-        verbose_name: 'Nombre',
-        type: String,
-        hint: 'Nombres del empleado.'
-      }, {
-        name: 'apellidos',
-        verbose_name: 'Apellidos',
-        type: String,
-        hint: 'Apellidos de el empleado.'
-      }, {
-        name: 'documento',
-        verbose_name: 'Documento',
-        type: Number,
-        hint: 'Documento de el empleado.',
-        kwargs: {
-          type: 'number'
-        }
-      }]
-    };
-  },
-  mounted: function mounted() {
-    this.getElements(_urls2.default.empleados);
-  }
-};
-// </script>
-//
-// <style lang="css">
-// </style>
-//
-// <template lang="html">
-//     <div>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <ig-table
-//                   table-title="Empleados"
-//                   :headers="headers"
-//                   :data="elements"
-//                   :fields="['usuario.username', 'nombres', 'usuario.email', 'documento']"
-//                   @selectedrow="eventUpdatedForm"
-//                   :loading="loading"
-//                 ></ig-table>
-//             </v-flex>
-//         </v-layout>
-//         <br>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <ig-form
-//                 :fields="fields"
-//                 :url="urlForm"
-//                 @showsnack="showSnackBar"
-//                 @objectcreated="eventCreatedObject"
-//                 @clearselected="selected = false"
-//                 :selected="selected"
-//                 ></ig-form>
-//             </v-flex>
-//         </v-layout>
-//     </div>
-// </template>
-//
-// <script>
-
-/***/ }),
-/* 61 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _vue = __webpack_require__(5);
-
-var _vue2 = _interopRequireDefault(_vue);
-
-var _vuetify = __webpack_require__(10);
-
-var _vuetify2 = _interopRequireDefault(_vuetify);
-
-var _vueResource = __webpack_require__(6);
-
-var _vueResource2 = _interopRequireDefault(_vueResource);
-
-var _menu = __webpack_require__(11);
-
-var _menu2 = _interopRequireDefault(_menu);
-
-var _table = __webpack_require__(8);
-
-var _table2 = _interopRequireDefault(_table);
-
-var _form = __webpack_require__(7);
-
-var _form2 = _interopRequireDefault(_form);
-
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -28826,7 +30242,76 @@ exports.default = {
 //
 
 /***/ }),
-/* 62 */
+/* 128 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Equipos\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+
+/***/ }),
+/* 129 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(130)
+__vue_script__ = __webpack_require__(132)
+__vue_template__ = __webpack_require__(133)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/tecnicas.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(131);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-27b3ef42&file=tecnicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-27b3ef42&file=tecnicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 131 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28840,7 +30325,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -28856,15 +30341,1142 @@ var _menu = __webpack_require__(11);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(7);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(9);
 
 var _form2 = _interopRequireDefault(_form);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
+
+var _igmixin2 = _interopRequireDefault(_igmixin);
+
+var _urls = __webpack_require__(3);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Vue.use(VueRouter);
+_vue2.default.use(_vueResource2.default); // <template lang="html">
+//     <div>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-table
+//                   table-title="Tecnicas"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['codigo', 'nombre']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
+//             </v-flex>
+//         </v-layout>
+//         <br>
+//             <v-layout>
+//                 <v-flex xs12 md12>
+//                     <ig-form
+//                       :fields="fields"
+//                       :url="urlForm"
+//                       @showsnack="showSnackBar"
+//                       @objectcreated="eventCreatedObject"
+//                       @clearselected="selected = false"
+//                       :selected="selected"
+//                     ></ig-form>
+//                 </v-flex>
+//             </v-layout>
+//         <br>
+//     </div>
+// </template>
+//
+// <script>
+
+_vue2.default.use(_vuetify2.default);
+
+exports.default = {
+  mixins: [_igmixin2.default],
+  data: function data() {
+    return {
+      urlForm: _urls2.default.tecnicas,
+      selected: false,
+      headers: [{
+        text: 'Código',
+        value: 'codigo',
+        left: true
+      }, {
+        text: 'Nombre', value: 'nombre',
+        left: true
+      }],
+      fields: [{
+        name: 'codigo',
+        verbose_name: 'Código',
+        type: String,
+        hint: 'Este es el código que identifica a cada tecnica.'
+      }, {
+        name: 'nombre',
+        verbose_name: 'Nombre',
+        type: String,
+        hint: 'Este es el nombre de la tecnica.'
+      }]
+    };
+  },
+  components: {
+    igMenu: _menu2.default,
+    igTable: _table2.default,
+    igForm: _form2.default
+  },
+  mounted: function mounted() {
+    this.getElements(_urls2.default.tecnicas);
+  }
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+
+/***/ }),
+/* 133 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Tecnicas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-form\n                      :fields=\"fields\"\n                      :url=\"urlForm\"\n                      @showsnack=\"showSnackBar\"\n                      @objectcreated=\"eventCreatedObject\"\n                      @clearselected=\"selected = false\"\n                      :selected=\"selected\"\n                    ></ig-form>\n                </v-flex>\n            </v-layout>\n        <br>\n    </div>\n";
+
+/***/ }),
+/* 134 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(135)
+__vue_script__ = __webpack_require__(137)
+__vue_template__ = __webpack_require__(138)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/secciones_trabajo.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 135 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(136);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-81f97cf6&file=secciones_trabajo.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-81f97cf6&file=secciones_trabajo.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 136 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 137 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _vue = __webpack_require__(4);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _vuetify = __webpack_require__(10);
+
+var _vuetify2 = _interopRequireDefault(_vuetify);
+
+var _vueResource = __webpack_require__(6);
+
+var _vueResource2 = _interopRequireDefault(_vueResource);
+
+var _menu = __webpack_require__(11);
+
+var _menu2 = _interopRequireDefault(_menu);
+
+var _table = __webpack_require__(7);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _form = __webpack_require__(9);
+
+var _form2 = _interopRequireDefault(_form);
+
+var _productos = __webpack_require__(22);
+
+var _productos2 = _interopRequireDefault(_productos);
+
+var _igmixin = __webpack_require__(5);
+
+var _igmixin2 = _interopRequireDefault(_igmixin);
+
+var _urls = __webpack_require__(3);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Vue.use(VueRouter);
+// <template lang="html">
+//     <div>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-table
+//                   table-title="Areas"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['codigo', 'descripcion']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
+//             </v-flex>
+//         </v-layout>
+//         <br>
+//         <v-stepper v-model="stepper">
+//             <v-stepper-header class="white">
+//                 <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Área</v-stepper-step>
+//                 <v-divider></v-divider>
+//                 <v-stepper-step step="2" @click.native="secondStepClick">Plantilla de Gasto</v-stepper-step>
+//             </v-stepper-header>
+//             <v-stepper-content step="1" class="white">
+//                 <ig-form
+//                 :fields="fields"
+//                 :url="urlForm"
+//                 @showsnack="showSnackBar"
+//                 @objectcreated="eventCreatedObject"
+//                 @clearselected="selected = false"
+//                 :selected="selected"
+//                 >
+//                     <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
+//                         Continuar
+//                     </v-btn>
+//                 </ig-form>
+//             </v-stepper-content>
+//             <v-stepper-content step="2" class="white">
+//                 <v-card>
+//                     <v-card-title>Lista de insumos por área</v-card-title>
+//                     <v-card-text>
+//                         <ig-producto :area="area" :plantillas="plantillas"></ig-producto>
+//                     </v-card-text>
+//                 </v-card>
+//             </v-stepper-content>
+//         </v-stepper>
+//     </div>
+// </template>
+//
+// <script>
+_vue2.default.use(_vueResource2.default);
+_vue2.default.use(_vuetify2.default);
+
+exports.default = {
+    mixins: [_igmixin2.default],
+    watch: {
+        selected: function selected() {
+            var _this = this;
+
+            if (!this.selected) {
+                this.area = {};
+            } else {
+                this.area = this.selected;
+                this.$http.get(_urls2.default.plantillaArea.concat('?area=' + this.area.id.toString())).then(function (response) {
+                    if (response.body instanceof Array) {
+                        _this.plantillas = response.body;
+                    }
+                }, function (response) {});
+            }
+        }
+    },
+    data: function data() {
+        return {
+            area: {},
+            plantillas: [],
+            stepper: 1,
+            urlForm: _urls2.default.secciones_trabajo,
+            selected: false,
+            headers: [{
+                text: 'Código',
+                value: 'codigo',
+                left: true
+            }, {
+                text: 'Nombre',
+                value: 'descripcion',
+                left: true
+            }],
+            fields: [{
+                name: 'codigo',
+                verbose_name: 'Código',
+                type: String,
+                hint: 'Este es el código que identifica a cada equipo.'
+            }, {
+                name: 'descripcion',
+                verbose_name: 'Descripción',
+                type: String,
+                hint: 'Este es el nombre del equipo.'
+            }]
+        };
+    },
+    components: {
+        igMenu: _menu2.default,
+        igTable: _table2.default,
+        igForm: _form2.default,
+        igProducto: _productos2.default
+    },
+    mounted: function mounted() {
+        this.getElements(_urls2.default.secciones_trabajo);
+    },
+    methods: {
+        validateFirstStep: function validateFirstStep() {
+            return !_underscore2.default.isEmpty(this.area);
+        },
+        secondStepClick: function secondStepClick() {
+            if (this.validateFirstStep()) {
+                this.stepper = 2;
+            }
+        }
+    }
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+
+/***/ }),
+/* 138 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Areas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'descripcion']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-stepper v-model=\"stepper\">\n            <v-stepper-header class=\"white\">\n                <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Área</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"2\" @click.native=\"secondStepClick\">Plantilla de Gasto</v-stepper-step>\n            </v-stepper-header>\n            <v-stepper-content step=\"1\" class=\"white\">\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                >\n                    <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                        Continuar\n                    </v-btn>\n                </ig-form>\n            </v-stepper-content>\n            <v-stepper-content step=\"2\" class=\"white\">\n                <v-card>\n                    <v-card-title>Lista de insumos por área</v-card-title>\n                    <v-card-text>\n                        <ig-producto :area=\"area\" :plantillas=\"plantillas\"></ig-producto>\n                    </v-card-text>\n                </v-card>\n            </v-stepper-content>\n        </v-stepper>\n    </div>\n";
+
+/***/ }),
+/* 139 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(140)
+__vue_script__ = __webpack_require__(142)
+__vue_template__ = __webpack_require__(143)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/reactivos.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 140 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(141);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3496a1e9&file=reactivos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3496a1e9&file=reactivos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 141 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n.dialog:not(.dialog--fullscreen) {\n    overflow: scroll;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 142 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _getIterator2 = __webpack_require__(8);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _vue = __webpack_require__(4);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _vuetify = __webpack_require__(10);
+
+var _vuetify2 = _interopRequireDefault(_vuetify);
+
+var _vueResource = __webpack_require__(6);
+
+var _vueResource2 = _interopRequireDefault(_vueResource);
+
+var _menu = __webpack_require__(11);
+
+var _menu2 = _interopRequireDefault(_menu);
+
+var _table = __webpack_require__(7);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _form = __webpack_require__(9);
+
+var _form2 = _interopRequireDefault(_form);
+
+var _igmixin = __webpack_require__(5);
+
+var _igmixin2 = _interopRequireDefault(_igmixin);
+
+var _urls = __webpack_require__(3);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Vue.use(VueRouter);
+_vue2.default.use(_vueResource2.default); // <template lang="html">
+//     <div>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <v-card>
+//                     <v-card-title>
+//                         Productos
+//                         <v-spacer></v-spacer>
+//                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
+//                     </v-card-title>
+//                     <v-data-table
+//                         :pagination.sync="pagination"
+//                         :loading="loading"
+//                         v-bind:headers="headers"
+//                         :items="elements"
+//                         v-bind:search="buscador"
+//                         :rows-per-page-items="[10]"
+//                         rows-per-page-text="Filas por Página"
+//                         no-results-text="No se encontraron resultados">
+//                         <!--:filter="filter"-->
+//                         <template slot="headers" scope="props">
+//                             <!--<span style="text-align:before: center !important">{{ props.item.text }}</span>-->
+//                             <tr>
+//                                 <th v-for="header in props.headers" :key="header"
+//                                 :class="['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']"
+//                                     @click="changeSort(header)"
+//                                 >
+//                                     <v-icon>arrow_upward</v-icon>
+//                                     {{ header.text }}
+//                                 </th>
+//                             </tr>
+//                         </template>
+//                         <template slot="items" scope="props">
+//                             <template v-for="field of table_fields">
+//                                 <td :class="itemClasses(props.item)" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
+//                                 <td :class="itemClasses(props.item)" v-else>
+//                                     <v-btn fab dark small router class="cyan darken-1" @click.native.stop="openModalRecarga(props.item)">
+//                                         <v-icon dark>content_paste</v-icon>
+//                                     </v-btn>
+//                                 </td>
+//                             </template>
+//                         </template>
+//                     </v-data-table>
+//                 </v-card>
+//             </v-flex>
+//         </v-layout>
+//         <v-dialog v-model="dialog" width="80%" scrollable>
+//             <v-card class="lol">
+//                 <v-card-title>Realizar Recarga para {{ selected.nombre }}</v-card-title>
+//                 <v-card-text>
+//                     <v-layout>
+//                         <ig-form
+//                             :flat="true"
+//                             :fields="recarga_fields"
+//                             :url="urlRecarga.concat(selected ? selected.id.toString(): '') + '/'"
+//                             ref="formRecarga"
+//                             @showsnack="showSnackBar"
+//                             @clearselected="selectedRecarga = false"
+//                             @objectcreated="updateCantidadObjectCreated"
+//                             :selected="selectedRecarga"
+//                         ></ig-form>
+//                     </v-layout>
+//                 </v-card-text>
+//                 <v-card-actions>
+//                     <v-btn class="red--text darken-1" flat="flat" @click.native="dialog = false">Cancelar</v-btn>
+//                 </v-card-actions>
+//             </v-card>
+//         </v-dialog>
+//         <br>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-form
+//                   :fields="fields"
+//                   :url="urlForm"
+//                   @showsnack="showSnackBar"
+//                   @objectcreated="eventCreatedObject"
+//                   @clearselected="selected = false"
+//                   :selected="selected"
+//                 ></ig-form>
+//             </v-flex>
+//         </v-layout>
+//     </div>
+// </template>
+//
+// <script>
+
+_vue2.default.use(_vuetify2.default);
+
+exports.default = {
+    mixins: [_igmixin2.default],
+    data: function data() {
+        return {
+            urlForm: _urls2.default.reactivos,
+            urlRecarga: _urls2.default.recarga,
+            selectedRecarga: false,
+            selected: false,
+            dialog: false,
+            buscador: '',
+            headers: [{
+                text: 'Código',
+                value: 'codigo',
+                left: true
+            }, {
+                text: 'Nombre',
+                value: 'nombre',
+                left: true
+            }, {
+                text: 'Tipo',
+                value: 'tipo',
+                left: true
+            }, {
+                text: 'Cantidad',
+                value: 'cantidad',
+                left: true
+            }, {
+                text: 'Recargar',
+                left: true,
+                sortable: false
+            }],
+            fields: [{
+                name: 'codigo',
+                verbose_name: 'Código',
+                type: String,
+                hint: 'Este es el código que identifica al producto.'
+            }, {
+                name: 'nombre',
+                verbose_name: 'Nombre',
+                type: String,
+                hint: 'Este es el nombre del producto.'
+            }, {
+                name: 'alarma_media',
+                verbose_name: 'Alarma Media',
+                type: Number,
+                kwargs: {
+                    type: 'number'
+                },
+                hint: 'Este es el código que identifica a cada equipo.'
+            }, {
+                name: 'alarma_inferior',
+                verbose_name: 'Alarma Inferior',
+                type: Number,
+                kwargs: {
+                    type: 'number'
+                },
+                hint: 'Este es el código que identifica a cada equipo.'
+            }, {
+                name: 'cantidad',
+                verbose_name: 'Cantidad',
+                type: Number,
+                kwargs: {
+                    type: 'number'
+                },
+                hint: 'Este es cantidad de unidades que se tienen para este producto.'
+            }, {
+                name: 'tipo',
+                verbose_name: 'Tipo',
+                type: Array,
+                hint: 'Este es el tipo de el producto.',
+                choices: [{ text: 'INSUMO', value: 'I' }, { text: 'REACTIVO', value: 'R' }]
+            }],
+            table_fields: ['producto.codigo', 'producto.nombre', 'produto.tipo_display', 'producto.cantidad', {}],
+            pagination: {
+                page: 1,
+                rowsPerPage: 10,
+                descending: false,
+                totalItems: 0
+            },
+            recarga_fields: [{
+                name: 'cantidad',
+                verbose_name: 'Cantidad',
+                type: Number,
+                kwargs: {
+                    type: 'number'
+                },
+                hint: 'Cantidad de unidades del producto para la recarga'
+            }, {
+                name: 'fecha_vencimiento',
+                verbose_name: 'Fecha de Vencimiento',
+                required: false,
+                type: Date,
+                kwargs: {
+                    type: 'date'
+                },
+                hint: 'Fecha de vencimiento del producto'
+            }, {
+                name: 'lote',
+                verbose_name: 'Lote',
+                required: false,
+                type: String,
+                hint: 'Este es el lote del producto.'
+            }, {
+                name: 'distribuidor',
+                verbose_name: 'Distribuidor',
+                required: false,
+                type: String,
+                hint: 'Este es el distribuidor del producto.'
+            }, {
+                name: 'fabricante',
+                verbose_name: 'Fabricante',
+                required: false,
+                type: String,
+                hint: 'Este es el fabricante del producto.'
+            }, {
+                name: 'marca',
+                verbose_name: 'Marca',
+                required: false,
+                type: String,
+                hint: 'Este es el marca del producto.'
+            }, {
+                name: 'fecha_distribucion',
+                verbose_name: 'Fecha de Distribución',
+                required: false,
+                type: Date,
+                kwargs: {
+                    type: 'date'
+                },
+                hint: 'Fecha de vencimiento del producto'
+            }, {
+                name: 'presentacion',
+                verbose_name: 'Presentación',
+                required: false,
+                type: String,
+                hint: 'Esta es la presentacion en la que viene el producto'
+            }, {
+                name: 'invima',
+                verbose_name: 'Invima',
+                required: false,
+                type: String,
+                hint: 'Este es el invima del producto.'
+            }, {
+                name: 'casa_comercial',
+                verbose_name: 'Casa comercial',
+                required: false,
+                type: String,
+                hint: 'Esta es la casa comercial del producto.'
+            }]
+        };
+    },
+    components: {
+        igMenu: _menu2.default,
+        igTable: _table2.default,
+        igForm: _form2.default
+    },
+    mounted: function mounted() {
+        this.getElements(_urls2.default.reactivos);
+    },
+    methods: {
+        getattr: function getattr(obj, attr) {
+            var attrs = attr.split('.');
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = (0, _getIterator3.default)(attrs), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var at = _step.value;
+
+                    if (at in obj) {
+                        obj = obj[at];
+                    }
+                    if (obj instanceof Array) {
+                        var mix = '';
+                        var _iteratorNormalCompletion2 = true;
+                        var _didIteratorError2 = false;
+                        var _iteratorError2 = undefined;
+
+                        try {
+                            for (var _iterator2 = (0, _getIterator3.default)(obj), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                var elem = _step2.value;
+
+                                attr = attrs[attrs.length - 1];
+                                if (mix) {
+                                    mix += ', ';
+                                }
+                                mix += elem[attr];
+                            }
+                        } catch (err) {
+                            _didIteratorError2 = true;
+                            _iteratorError2 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                    _iterator2.return();
+                                }
+                            } finally {
+                                if (_didIteratorError2) {
+                                    throw _iteratorError2;
+                                }
+                            }
+                        }
+
+                        return mix;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            return obj;
+        },
+        changeSort: function changeSort(column) {
+            if ('sortable' in column && !column.sortable) {
+                return;
+            }
+            column = column.value;
+            if (this.pagination.sortBy === column) {
+                this.pagination.descending = !this.pagination.descending;
+            } else {
+                this.pagination.sortBy = column;
+                this.pagination.descending = false;
+            }
+        },
+
+        updateForm: function updateForm(item) {
+            // this.$emit('selectedrow', item);
+            this.selected = item;
+        },
+        itemClasses: function itemClasses(item) {
+            /* Avisa cuando un elemento necesita una recarga */
+            return {
+                'text-xs-center': true,
+                'yellow lighten-1': item.cantidad < item.alarma_media && item.cantidad >= item.alarma_inferior,
+                'orange lighten-1': item.cantidad < item.alarma_inferior
+            };
+        },
+        openModalRecarga: function openModalRecarga(item) {
+            this.selected = item;
+            this.dialog = true;
+        },
+        updateCantidadObjectCreated: function updateCantidadObjectCreated(event) {
+            var created = event;
+            var item = this.elements.find(function (x) {
+                return _underscore2.default.isNumber(created.producto) ? x.id == created.producto : x.id == created.producto.id;
+            });
+            if (item) {
+                item.cantidad += created.cantidad;
+            }
+            this.dialog = false;
+            // console.log(this.$refs.formRecarga)
+            for (var field in this.$refs.formRecarga.models) {
+                this.$refs.formRecarga.models[field] = '';
+            }
+        }
+    }
+};
+// </script>
+//
+// <style lang="css">
+// .dialog:not(.dialog--fullscreen) {
+//     overflow: scroll;
+// }
+// </style>
+//
+
+/***/ }),
+/* 143 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Productos\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <!--:filter=\"filter\"-->\n                        <template slot=\"headers\" scope=\"props\">\n                            <!--<span style=\"text-align:before: center !important\">{{ props.item.text }}</span>-->\n                            <tr>\n                                <th v-for=\"header in props.headers\" :key=\"header\"\n                                :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                    @click=\"changeSort(header)\"\n                                >\n                                    <v-icon>arrow_upward</v-icon>\n                                    {{ header.text }}\n                                </th>\n                            </tr>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of table_fields\">\n                                <td :class=\"itemClasses(props.item)\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td :class=\"itemClasses(props.item)\" v-else>\n                                    <v-btn fab dark small router class=\"cyan darken-1\" @click.native.stop=\"openModalRecarga(props.item)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n        <v-dialog v-model=\"dialog\" width=\"80%\" scrollable>\n            <v-card class=\"lol\">\n                <v-card-title>Realizar Recarga para {{ selected.nombre }}</v-card-title>\n                <v-card-text>\n                    <v-layout>\n                        <ig-form\n                            :flat=\"true\"\n                            :fields=\"recarga_fields\"\n                            :url=\"urlRecarga.concat(selected ? selected.id.toString(): '') + '/'\"\n                            ref=\"formRecarga\"\n                            @showsnack=\"showSnackBar\"\n                            @clearselected=\"selectedRecarga = false\"\n                            @objectcreated=\"updateCantidadObjectCreated\"\n                            :selected=\"selectedRecarga\"\n                        ></ig-form>\n                    </v-layout>\n                </v-card-text>\n                <v-card-actions>\n                    <v-btn class=\"red--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                </v-card-actions>\n            </v-card>\n        </v-dialog>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+
+/***/ }),
+/* 144 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(145)
+__vue_script__ = __webpack_require__(147)
+__vue_template__ = __webpack_require__(148)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/caracteristicas.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 145 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(146);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d5efd738&file=caracteristicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d5efd738&file=caracteristicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 146 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 147 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _vue = __webpack_require__(4);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _vuetify = __webpack_require__(10);
+
+var _vuetify2 = _interopRequireDefault(_vuetify);
+
+var _vueResource = __webpack_require__(6);
+
+var _vueResource2 = _interopRequireDefault(_vueResource);
+
+var _menu = __webpack_require__(11);
+
+var _menu2 = _interopRequireDefault(_menu);
+
+var _table = __webpack_require__(7);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _form = __webpack_require__(9);
+
+var _form2 = _interopRequireDefault(_form);
+
+var _igmixin = __webpack_require__(5);
+
+var _igmixin2 = _interopRequireDefault(_igmixin);
+
+var _urls = __webpack_require__(3);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Vue.use(VueRouter);
+_vue2.default.use(_vueResource2.default); // <template lang="html">
+//     <div>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-table
+//                   table-title="Caracteristicas"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['codigo', 'descripcion']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
+//             </v-flex>
+//         </v-layout>
+//         <br>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-form
+//                   :fields="fields"
+//                   :url="urlForm"
+//                   @showsnack="showSnackBar"
+//                   @objectcreated="eventCreatedObject"
+//                   @clearselected="selected = false"
+//                   :selected="selected"
+//                 ></ig-form>
+//             </v-flex>
+//         </v-layout>
+//     </div>
+// </template>
+//
+// <script>
+
+_vue2.default.use(_vuetify2.default);
+
+exports.default = {
+    mixins: [_igmixin2.default],
+    data: function data() {
+        return {
+            urlForm: _urls2.default.caracteristicas,
+            selected: false,
+            headers: [{
+                text: 'Código',
+                value: 'tabla-codigo',
+                left: true
+            }, {
+                text: 'Descripción',
+                value: 'tabla-nombre',
+                left: true
+            }],
+            fields: [{
+                name: 'codigo',
+                verbose_name: 'Código',
+                type: String,
+                hint: 'Este es el código que identifica a cada equipo.'
+            }, {
+                name: 'descripcion',
+                verbose_name: 'Descripción',
+                type: String,
+                hint: 'Este es el código que identifica a cada equipo.'
+            }]
+        };
+    },
+    components: {
+        igMenu: _menu2.default,
+        igTable: _table2.default,
+        igForm: _form2.default
+    },
+    mounted: function mounted() {
+        this.getElements(_urls2.default.caracteristicas);
+    }
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+
+/***/ }),
+/* 148 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Caracteristicas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'descripcion']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+
+/***/ }),
+/* 149 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(150)
+__vue_script__ = __webpack_require__(152)
+__vue_template__ = __webpack_require__(153)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/especificacion_caracteristica.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 150 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(151);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-32209851&file=especificacion_caracteristica.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-32209851&file=especificacion_caracteristica.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 151 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 152 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _vue = __webpack_require__(4);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _vuetify = __webpack_require__(10);
+
+var _vuetify2 = _interopRequireDefault(_vuetify);
+
+var _vueResource = __webpack_require__(6);
+
+var _vueResource2 = _interopRequireDefault(_vueResource);
+
+var _menu = __webpack_require__(11);
+
+var _menu2 = _interopRequireDefault(_menu);
+
+var _table = __webpack_require__(7);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _form = __webpack_require__(9);
+
+var _form2 = _interopRequireDefault(_form);
+
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -28957,7 +31569,76 @@ exports.default = {
 //
 
 /***/ }),
-/* 63 */
+/* 153 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Especificacion Caracteristica\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['nombre', 'caracteristica.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(155)
+__vue_script__ = __webpack_require__(157)
+__vue_template__ = __webpack_require__(158)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/ordenes_laboratorios.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 155 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(156);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6d5293a5&file=ordenes_laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6d5293a5&file=ordenes_laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 156 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28967,15 +31648,413 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _typeof2 = __webpack_require__(15);
+var _getIterator2 = __webpack_require__(8);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _keys = __webpack_require__(36);
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _typeof2 = __webpack_require__(16);
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
-var _stringify = __webpack_require__(23);
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _vue = __webpack_require__(4);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _vuetify = __webpack_require__(10);
+
+var _vuetify2 = _interopRequireDefault(_vuetify);
+
+var _vueResource = __webpack_require__(6);
+
+var _vueResource2 = _interopRequireDefault(_vueResource);
+
+var _menu = __webpack_require__(11);
+
+var _menu2 = _interopRequireDefault(_menu);
+
+var _table = __webpack_require__(7);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _form = __webpack_require__(9);
+
+var _form2 = _interopRequireDefault(_form);
+
+var _igmixin = __webpack_require__(5);
+
+var _igmixin2 = _interopRequireDefault(_igmixin);
+
+var _urls = __webpack_require__(3);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Vue.use(VueRouter);
+_vue2.default.use(_vueResource2.default); // <template lang="html">
+//     <div>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <v-card>
+//                     <v-card-title>
+//                         Ordenes con laboratorios
+//                         <v-spacer></v-spacer>
+//                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
+//                     </v-card-title>
+//                     <v-data-table
+//                         :pagination.sync="pagination"
+//                         :total-items="totalItems"
+//                         :loading="loading"
+//                         v-bind:headers="headers"
+//                         :items="elements"
+//                         v-bind:search="buscador"
+//                         :rows-per-page-items="[10]"
+//                         :filter="filter"
+//                         rows-per-page-text="Filas por Página"
+//                         no-results-text="No se encontraron resultados">
+//                         <template slot="headers" scope="props">
+//                             <tr>
+//                                 <th v-for="header in props.headers" :key="header"
+//                                 :class="['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']"
+//                                     @click="changeSort(header)"
+//                                 >
+//                                     <v-icon>arrow_upward</v-icon>
+//                                     {{ header.text }}
+//                                 </th>
+//                             </tr>
+//                         </template>
+//                         <template slot="items" scope="props">
+//                             <template v-for="field of fields">
+//                                 <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
+//                                 <td class="text-xs-center" v-else>
+//                                     <v-btn fab dark small router class="cyan darken-1" :href="field.href.replace(':id', props.item.orden.id)">
+//                                         <v-icon dark>content_paste</v-icon>
+//                                     </v-btn>
+//                                 </td>
+//                             </template>
+//                         </template>
+//                     </v-data-table>
+//                 </v-card>
+//             </v-flex>
+//         </v-layout>
+//     </div>
+// </template>
+//
+// <script>
+
+_vue2.default.use(_vuetify2.default);
+
+exports.default = {
+    mixins: [_igmixin2.default],
+    data: function data() {
+        return {
+            buscador: '',
+            loading: false,
+            fields: ['orden.id', 'orden.paciente.cedula', 'orden.paciente.nombre_completo', 'orden.laboratorios.nombre', 'orden.institucion.razon', 'orden.empresa.razon', 'orden.empresa_cliente', 'orden.fecha', { href: '/resultados/:id/', patrons: [{ identifier: 'id', replace: function replace(item) {
+                        return item.orden.id;
+                    } }] }],
+            totalItems: 0,
+            pagination: {
+                page: 1,
+                rowsPerPage: 10,
+                descending: false,
+                totalItems: 0
+            },
+            selected: false,
+            headers: [{
+                text: 'ID',
+                value: 'id',
+                left: true
+            }, {
+                text: 'Cedula',
+                value: 'tabla-cedula',
+                left: true,
+                sortable: false
+            }, {
+                text: 'Nombre',
+                value: 'paciente-pnombre',
+                left: true
+            }, {
+                text: 'Tipo',
+                value: 'tipo',
+                left: true
+            }, {
+                text: 'IPS',
+                value: 'paciente-pnombre',
+                left: true
+            }, {
+                text: 'Empresa',
+                value: 'paciente-pnombre',
+                left: true
+            }, {
+                text: 'Empresa Cliente',
+                value: 'paciente-pnombre',
+                left: true
+            }, {
+                text: 'Fecha Atención',
+                value: 'paciente-pnombre',
+                left: true
+            }, {
+                text: 'Accion', left: true, sortable: false
+            }]
+        };
+    },
+    watch: {
+        pagination: {
+            handler: function handler() {
+                if (this.buscador !== '') {
+                    this._getElements(_urls2.default.ordenes_busqueda.concat('?param=' + this.buscador + '&page=' + this.pagination.page));
+                } else {
+                    this._getElements(_urls2.default.ordenes_laboratorios.concat('?page=' + this.pagination.page));
+                }
+            },
+
+            deep: true
+        },
+        buscador: function buscador() {
+            if (this.buscador !== '') {
+                this.pagination.page = 1;
+                this._getElements(_urls2.default.ordenes_busqueda.concat('?param=' + this.buscador + '&page=' + this.pagination.page));
+            } else {
+                this._getElements(_urls2.default.ordenes_laboratorios.concat('?page=' + this.pagination.page));
+            }
+        }
+    },
+    components: {
+        igMenu: _menu2.default,
+        igTable: _table2.default,
+        igForm: _form2.default
+    },
+    mounted: function mounted() {
+        this._getElements(_urls2.default.ordenes_laboratorios.concat('?page=1'));
+    },
+    methods: {
+        _getElements: function _getElements() {
+            var _this = this;
+
+            if ('loading' in this) {
+                if (!this.loading) {
+                    this.toggleLoading();
+                }
+            }
+            var url = this.url || arguments[0];
+            if (!url) {
+                throw new Error('URL no provehida para hacer consulta de elementos');
+            }
+            this.$http.get(url).then(function (response) {
+                _this.elements = response.body.results;
+                _this.totalItems = response.body.count;
+                _this.toggleLoading();
+            }, function (response) {
+                _this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.');
+                _this.toggleLoading();
+            });
+        },
+
+        _validValue: function _validValue(val) {
+            return val !== null && ['undefined', 'boolean'].indexOf(typeof val === 'undefined' ? 'undefined' : (0, _typeof3.default)(val)) === -1;
+        },
+        customFilter: function customFilter(val, search) {
+            return val.toString().toLowerCase().indexOf(search) !== -1;
+        },
+        filter: function filter(val, search) {
+            var _this2 = this;
+
+            var valid = this._validValue(val);
+            if (valid) {
+                valid = valid && this.customFilter(val, search);
+                if (['object'].indexOf(typeof val === 'undefined' ? 'undefined' : (0, _typeof3.default)(val)) === 0 && !valid) {
+                    valid = (0, _keys2.default)(val).some(function (j) {
+                        return _this2._validValue(val[j]) && _this2.customFilter(val[j], search);
+                    });
+                }
+            }
+            return valid;
+        },
+        getattr: function getattr(obj, attr) {
+            var attrs = attr.split('.');
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = (0, _getIterator3.default)(attrs), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var at = _step.value;
+
+                    if (at in obj) {
+                        obj = obj[at];
+                    }
+                    if (obj instanceof Array) {
+                        var mix = '';
+                        var _iteratorNormalCompletion2 = true;
+                        var _didIteratorError2 = false;
+                        var _iteratorError2 = undefined;
+
+                        try {
+                            for (var _iterator2 = (0, _getIterator3.default)(obj), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                var elem = _step2.value;
+
+                                attr = attrs[attrs.length - 1];
+                                if (mix) {
+                                    mix += ', ';
+                                }
+                                mix += elem[attr];
+                            }
+                        } catch (err) {
+                            _didIteratorError2 = true;
+                            _iteratorError2 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                    _iterator2.return();
+                                }
+                            } finally {
+                                if (_didIteratorError2) {
+                                    throw _iteratorError2;
+                                }
+                            }
+                        }
+
+                        return mix;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            return obj;
+        },
+        updateForm: function updateForm(item) {
+            this.$emit('selectedrow', item);
+        },
+        changeSort: function changeSort(column) {
+            if ('sortable' in column && !column.sortable) {
+                return;
+            }
+            column = column.value;
+            if (this.pagination.sortBy === column) {
+                this.pagination.descending = !this.pagination.descending;
+            } else {
+                this.pagination.sortBy = column;
+                this.pagination.descending = false;
+            }
+        }
+    }
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+
+/***/ }),
+/* 158 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Ordenes con laboratorios\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :total-items=\"totalItems\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        :filter=\"filter\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <template slot=\"headers\" scope=\"props\">\n                            <tr>\n                                <th v-for=\"header in props.headers\" :key=\"header\"\n                                :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                    @click=\"changeSort(header)\"\n                                >\n                                    <v-icon>arrow_upward</v-icon>\n                                    {{ header.text }}\n                                </th>\n                            </tr>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of fields\">\n                                <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td class=\"text-xs-center\" v-else>\n                                    <v-btn fab dark small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+
+/***/ }),
+/* 159 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(160)
+__vue_script__ = __webpack_require__(162)
+__vue_template__ = __webpack_require__(163)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/formatos.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 160 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(161);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-698b8b92&file=formatos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-698b8b92&file=formatos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 161 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _typeof2 = __webpack_require__(16);
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _stringify = __webpack_require__(32);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(8);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -28983,11 +32062,11 @@ var _urls = __webpack_require__(3);
 
 var _urls2 = _interopRequireDefault(_urls);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _errormixin = __webpack_require__(18);
+var _errormixin = __webpack_require__(21);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
 
@@ -29463,59 +32542,100 @@ exports.default = {
 //
 
 /***/ }),
-/* 64 */
+/* 163 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div v-if=\"formato\">\n        <v-layout>\n            <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n        </v-layout>\n        <v-layout wrap>\n            <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                <v-expansion-panel expand class=\"white\">\n                    <v-expansion-panel-content>\n                        <div slot=\"header\">{{ item.nombre }}</div>\n                        <v-card>\n                            <v-card-title>\n                            </v-card-title>\n                            <v-card-text class=\"grey lighten-5\">\n                                <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                    Asegurate de crear varias opciones.\n                                </v-alert>\n                                <v-select\n                                    label=\"Tipo\"\n                                    :hint=\"item.tipo.help\"\n                                    :items=\"tipoOpciones\"\n                                    v-model=\"item.tipo\"\n                                    item-value=\"text\"\n                                    :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                    required\n                                    return-object\n                                    persistent-hint\n                                    dark\n                                ></v-select>\n                                <br>\n                                <v-text-field\n                                    label=\"Nombre del Campo\"\n                                    v-model=\"item.nombre\"\n                                    hint=\"Con este nombre se identificará el campo\"\n                                    :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                    required\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Texto de ayuda\"\n                                    v-model=\"item.help\"\n                                    hint=\"Ayuda textual que acompaña el campo\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Valores de referencia\"\n                                    v-model=\"item.referencia\"\n                                    hint=\"Texto de referencia para el momento de poner el resultado\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Unidades\"\n                                    v-model=\"item.unidades\"\n                                    hint=\"Medida en unidades de el resultado\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                    :multi-line=\"item.tipo.name == 'textarea'\"\n                                    :label=\"item.nombre\"\n                                    :hint=\"item.help\"\n                                    v-model=\"item.model_text\"\n                                    persistent-hint\n                                ></v-text-field>\n                                <div v-else-if=\"item.tipo.name == 'select'\">\n                                    <v-layout>\n                                        <v-flex md10 xs10>\n                                            <v-select\n                                                :label=\"item.nombre\"\n                                                :hint=\"item.help\"\n                                                v-model=\"item.model_text\"\n                                                :items=\"item.choices_select\"\n                                                :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                item-value=\"text\"\n                                                persistent-hint\n                                            ></v-select>\n                                        </v-flex>\n                                        <v-flex md2 xs2>\n                                            <v-btn\n                                                v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                class=\"green--text darken-1\" icon=\"icon\"\n                                                @click.native.stop=\"dialog = true; lastItem = item\">\n                                                <v-icon>add</v-icon>\n                                            </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                                <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                    <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                        <v-flex xs7 md7>\n                                            <v-checkbox\n                                              v-if=\"!choice.edit\"\n                                              :label=\"choice.name\"\n                                              v-model=\"item.model_check\"\n                                              :value=\"choice.id\"\n                                              primary\n                                            ></v-checkbox>\n                                            <v-text-field\n                                              v-else\n                                              label=\"Texto para mostrar\"\n                                              v-model=\"choice.name\"\n                                            ></v-text-field>\n                                        </v-flex>\n                                        <v-flex xs5 md5>\n                                          <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                              <v-icon>mode_edit</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                              <v-icon>delete</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                              <v-icon>add</v-icon>\n                                          </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                                <div v-else-if=\"item.tipo.name == 'radio'\">\n                                    <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                        <v-flex xs7 md7>\n                                            <v-radio\n                                              v-if=\"!choice.edit\"\n                                              :label=\"choice.name\"\n                                              v-model=\"item.model_text\"\n                                              :value=\"choice.name\"\n                                              primary\n                                            ></v-radio>\n                                            <v-text-field\n                                              v-else\n                                              label=\"Texto para mostrar\"\n                                              v-model=\"choice.name\"\n                                            ></v-text-field>\n                                        </v-flex>\n                                        <v-flex xs5 md5>\n                                          <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                              <v-icon>mode_edit</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                              <v-icon>delete</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                              <v-icon>add</v-icon>\n                                          </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                            </v-card-text>\n                            <v-card-actions>\n                                <v-btn\n                                  v-show=\"items.length > 1\"\n                                  flat\n                                  class=\"red--text darken-1\"\n                                  @click.native=\"removeItem(id)\"\n                                >Eliminar Campo</v-btn>\n                            </v-card-actions>\n                        </v-card>\n                    </v-expansion-panel-content>\n                </v-expansion-panel>\n                <br>\n            </v-flex>\n        </v-layout>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-actions>\n            </v-card>\n        </v-dialog>\n    </div>\n";
+
+/***/ }),
+/* 164 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(165)
+__vue_script__ = __webpack_require__(167)
+__vue_template__ = __webpack_require__(168)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/bacteriologos.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 165 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(166);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1dbee8c4&file=bacteriologos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1dbee8c4&file=bacteriologos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 166 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
-
-var _getIterator2 = __webpack_require__(9);
-
-var _getIterator3 = _interopRequireDefault(_getIterator2);
 
 var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _igmixin = __webpack_require__(5);
 
-var _vue2 = _interopRequireDefault(_vue);
+var _igmixin2 = _interopRequireDefault(_igmixin);
 
-var _vuetify = __webpack_require__(10);
-
-var _vuetify2 = _interopRequireDefault(_vuetify);
-
-var _vueResource = __webpack_require__(6);
-
-var _vueResource2 = _interopRequireDefault(_vueResource);
-
-var _menu = __webpack_require__(11);
-
-var _menu2 = _interopRequireDefault(_menu);
-
-var _table = __webpack_require__(8);
+var _table = __webpack_require__(7);
 
 var _table2 = _interopRequireDefault(_table);
 
-var _form = __webpack_require__(7);
+var _form = __webpack_require__(9);
 
 var _form2 = _interopRequireDefault(_form);
-
-var _formato = __webpack_require__(167);
-
-var _formato2 = _interopRequireDefault(_formato);
-
-var _productos = __webpack_require__(22);
-
-var _productos2 = _interopRequireDefault(_productos);
-
-var _igmixin = __webpack_require__(4);
-
-var _igmixin2 = _interopRequireDefault(_igmixin);
 
 var _urls = __webpack_require__(3);
 
@@ -29523,718 +32643,140 @@ var _urls2 = _interopRequireDefault(_urls);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// Vue.use(VueRouter);
-_vue2.default.use(_vueResource2.default); // <template lang="html">
+exports.default = {
+  components: {
+    igTable: _table2.default,
+    igForm: _form2.default
+  },
+  mixins: [_igmixin2.default],
+  data: function data() {
+    return {
+      urlForm: _urls2.default.bacteriologos,
+      selected: false,
+      headers: [{
+        text: 'Usuario',
+        value: 'username',
+        left: true
+      }, {
+        text: 'Nombre',
+        value: 'nombre',
+        left: true
+      }, {
+        text: 'Email',
+        value: 'usuario.email',
+        left: true
+      }, {
+        text: 'Codigo',
+        value: 'codigo',
+        left: true,
+        sortable: false
+      }, {
+        text: 'Registro',
+        value: 'registro',
+        left: true,
+        sortable: false
+      }, {
+        text: 'Areas',
+        value: 'areas',
+        left: true,
+        sortable: false
+      }],
+      fields: [{
+        name: 'username',
+        verbose_name: 'Usuario',
+        type: String,
+        hint: 'Este es el nombre de usuario de el bacteriologo.',
+        group: 'usuario'
+      }, {
+        name: 'password',
+        verbose_name: 'Contraseña',
+        type: String,
+        hint: 'Esta es la contraseña de el bacteriologo.',
+        required: false,
+        group: 'usuario',
+        kwargs: {
+          type: 'password'
+        }
+      }, {
+        name: 'email',
+        verbose_name: 'Email',
+        type: String,
+        hint: 'Este es el email de el bacteriologo.',
+        group: 'usuario',
+        kwargs: {
+          type: 'email'
+        }
+      }, {
+        name: 'nombre',
+        verbose_name: 'Nombre',
+        type: String,
+        hint: 'Nombre de el bacteriologo.'
+      }, {
+        name: 'codigo',
+        verbose_name: 'Codigo',
+        type: String,
+        hint: 'Código de el bacteriologo.'
+      }, {
+        name: 'registro',
+        verbose_name: 'Registro',
+        type: Number,
+        hint: 'Registro de el bacteriologo.',
+        kwargs: {
+          type: 'number'
+        }
+      }, {
+        name: 'areas',
+        verbose_name: 'Areas',
+        type: Array,
+        hint: 'Este es el código de representacion internacional del laboratorio.',
+        url: _urls2.default.secciones_trabajo,
+        key: 'codigo',
+        kwargs: {
+          multiple: true
+        }
+      }, {
+        name: 'firma',
+        verbose_name: 'Firma',
+        type: 'file',
+        hint: 'Esta es la firma de el bacteriologo, la cual saldrá en los resultados.',
+        required: false,
+        url_file: '/laboratorios/api/bacteriologos/firma/'
+      }]
+    };
+  },
+  mounted: function mounted() {
+    this.getElements(_urls2.default.bacteriologos);
+  }
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+// <template lang="html">
 //     <div>
 //         <v-layout>
 //             <v-flex xs12 md12>
 //                 <ig-table
-//                   table-title="Laboratorios"
+//                   table-title="Bacteriologos"
 //                   :headers="headers"
 //                   :data="elements"
-//                   :fields="['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']"
-//                   @selectedrow="customEventUpdatedForm"
+//                   :fields="['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']"
+//                   @selectedrow="eventUpdatedForm"
 //                   :loading="loading"
 //                 ></ig-table>
 //             </v-flex>
 //         </v-layout>
 //         <br>
-//         <v-stepper v-model="stepper" non-linear>
-//             <v-stepper-header class="white">
-//                 <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Laboratorio</v-stepper-step>
-//                 <v-divider></v-divider>
-//                 <v-stepper-step step="2" @click.native="secondStepClick" :complete="stepper > 2">Formato</v-stepper-step>
-//                 <v-divider></v-divider>
-//                 <v-stepper-step step="3" @click.native="thirdStepClick">Insumos y Reactivos</v-stepper-step>
-//             </v-stepper-header>
-//             <v-stepper-content step="1" class="white">
+//         <v-layout>
+//             <v-flex xs12 md12>
 //                 <ig-form
 //                 :fields="fields"
 //                 :url="urlForm"
 //                 @showsnack="showSnackBar"
-//                 @objectcreated="_eventCreatedObject"
+//                 @objectcreated="eventCreatedObject"
 //                 @clearselected="selected = false"
 //                 :selected="selected"
-//                 >
-//                     <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
-//                         Continuar
-//                     </v-btn>
-//                 </ig-form>
-//             </v-stepper-content>
-//             <v-stepper-content step="2" class="white">
-//                 <ig-formato :laboratorio="laboratorio" @mostrarsnackbar="showSnackBar"></ig-formato>
-//             </v-stepper-content>
-//             <v-stepper-content step="3" class="white">
-//                 <v-card>
-//                     <v-card-text>
-//                         <v-layout>
-//                             <v-flex md6 xs12>
-//                               <v-subheader>Insumos</v-subheader>
-//                               <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_insumos" tipo="i"></ig-producto>
-//                             </v-flex>
-//                             <v-flex md6 xs12>
-//                               <v-subheader>Reactivos</v-subheader>
-//                               <ig-producto :laboratorio="laboratorio" :plantillas="plantillas_reactivos" tipo="r"></ig-producto>
-//                             </v-flex>
-//                         </v-layout>
-//                     </v-card-text>
-//                 </v-card>
-//             </v-stepper-content>
-//         </v-stepper>
-//     </div>
-// </template>
-//
-// <script>
-
-_vue2.default.use(_vuetify2.default);
-
-var BASE_URL = _urls2.default.BASE;
-
-exports.default = {
-    mixins: [_igmixin2.default],
-    data: function data() {
-        return {
-            laboratorio: {},
-            stepper: 1,
-            urlForm: _urls2.default.laboratorios,
-            selected: false,
-            plantillas_insumos: [],
-            plantillas_reactivos: [],
-            headers: [{
-                text: 'Código',
-                left: true,
-                value: 'codigo'
-            }, {
-                text: 'Nombre', value: 'nombre', left: true
-            }, {
-                text: 'Código Internacional', value: 'codigo_internacional', left: true
-            }, {
-                text: 'Equipo', value: 'equipo', left: true
-            }, {
-                text: 'Sección de Trabajo', value: 'seccion_trabajo', left: true,
-                sortable: false
-            }],
-            fields: [{
-                name: 'codigo',
-                verbose_name: 'Código',
-                type: String,
-                hint: 'Este es el código que identifica a cada laboratorio.'
-            }, {
-                name: 'nombre',
-                verbose_name: 'Nombre',
-                type: String,
-                hint: 'Este es el nombre del equipo.'
-            }, {
-                name: 'codigo_internacional',
-                verbose_name: 'Código Internacional',
-                type: String,
-                hint: 'Este es el código de representacion internacional del laboratorio.'
-            }, {
-                name: 'equipo',
-                verbose_name: 'Equipo',
-                type: Array,
-                url: _urls2.default.equipos,
-                hint: 'Este es el equipo que sera usado en este laboratorio.',
-                key: 'nombre'
-            }, {
-                name: 'seccion_trabajo',
-                verbose_name: 'Sección de Trabajo',
-                type: Array,
-                url: _urls2.default.secciones_trabajo,
-                hint: 'Este es el area o sección de trabajo de este laboratorio.',
-                key: 'codigo'
-            }, {
-                name: 'servicio',
-                verbose_name: 'Servicio',
-                type: Array,
-                url: _urls2.default.servicios,
-                hint: 'Este es el servicio asociado, con el cual se hará la relación en la orden.',
-                key: 'nombre'
-            }]
-        };
-    },
-    components: {
-        igMenu: _menu2.default,
-        igTable: _table2.default,
-        igForm: _form2.default,
-        igFormato: _formato2.default,
-        igProducto: _productos2.default
-    },
-    watch: {
-        selected: function selected() {
-            var _this = this;
-
-            this.plantillas_insumos = [];
-            this.plantillas_reactivos = [];
-
-            if (!this.selected) {
-                this.laboratorio = {};
-            } else {
-                this.laboratorio = this.selected;
-                this.$http.get(_urls2.default.plantillaLaboratorio.concat('?laboratorio=' + this.laboratorio.id.toString())).then(function (response) {
-                    if (response.body instanceof Array) {
-                        var _iteratorNormalCompletion = true;
-                        var _didIteratorError = false;
-                        var _iteratorError = undefined;
-
-                        try {
-                            for (var _iterator = (0, _getIterator3.default)(response.body), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                                var plantilla = _step.value;
-
-                                if (plantilla.producto.tipo.toLowerCase() == 'i') {
-                                    _this.plantillas_insumos.push(plantilla);
-                                } else {
-                                    _this.plantillas_reactivos.push(plantilla);
-                                }
-                            }
-                        } catch (err) {
-                            _didIteratorError = true;
-                            _iteratorError = err;
-                        } finally {
-                            try {
-                                if (!_iteratorNormalCompletion && _iterator.return) {
-                                    _iterator.return();
-                                }
-                            } finally {
-                                if (_didIteratorError) {
-                                    throw _iteratorError;
-                                }
-                            }
-                        }
-                    }
-                }, function (response) {});
-            }
-        }
-    },
-    methods: {
-        validateFirstStep: function validateFirstStep() {
-            return !_underscore2.default.isEmpty(this.laboratorio);
-        },
-        secondStepClick: function secondStepClick() {
-            if (this.validateFirstStep()) {
-                this.stepper = 2;
-            }
-        },
-        thirdStepClick: function thirdStepClick() {
-            if (this.validateFirstStep()) {
-                this.stepper = 3;
-            }
-        },
-        customEventUpdatedForm: function customEventUpdatedForm(value) {
-            var _this2 = this;
-
-            this.laboratorio = value;
-            this.$http.get(_urls2.default.servicios.concat(value.servicio.id.toString() + '/')).then(function (response) {
-                value.servicio = response.body;
-                _this2.eventUpdatedForm(value);
-            }, function (response) {
-                console.error(response);
-                _this2.showSnackBar(response.detail || 'Ha ocurrido un error');
-            });
-        },
-        _eventCreatedObject: function _eventCreatedObject(value) {
-            this.laboratorio = value;
-            value.selected = false;
-            var exists = this.elements.find(function (x) {
-                return x.id == value.id;
-            });
-            if (exists) {
-                for (var attr in exists) {
-                    this.elements[this.elements.indexOf(exists)][attr] = value[attr] || exists[attr];
-                }
-            } else {
-                this.elements.push(value);
-            }
-            this.selected = value;
-            this.stepper = 3;
-        }
-    },
-    mounted: function mounted() {
-        this.getElements(_urls2.default.laboratorios);
-    }
-};
-// </script>
-//
-// <style lang="css">
-// .stepper__wrapper .card {
-//     box-shadow: inherit;
-// }
-//
-// .stepper__step--active, .stepper__step--complete {
-//     cursor: pointer !important;
-//     transition: ease 1s all;
-// }
-//
-// .stepper__step--active:hover, .stepper__step--complete:hover {
-//     background-color: #f0f0f0;
-// }
-// /*.stepper__wrapper .card .card__title{
-//     display: none;
-// }*/
-// </style>
-//
-
-/***/ }),
-/* 65 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _getIterator2 = __webpack_require__(9);
-
-var _getIterator3 = _interopRequireDefault(_getIterator2);
-
-var _keys = __webpack_require__(36);
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _typeof2 = __webpack_require__(15);
-
-var _typeof3 = _interopRequireDefault(_typeof2);
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _vue = __webpack_require__(5);
-
-var _vue2 = _interopRequireDefault(_vue);
-
-var _vuetify = __webpack_require__(10);
-
-var _vuetify2 = _interopRequireDefault(_vuetify);
-
-var _vueResource = __webpack_require__(6);
-
-var _vueResource2 = _interopRequireDefault(_vueResource);
-
-var _menu = __webpack_require__(11);
-
-var _menu2 = _interopRequireDefault(_menu);
-
-var _table = __webpack_require__(8);
-
-var _table2 = _interopRequireDefault(_table);
-
-var _form = __webpack_require__(7);
-
-var _form2 = _interopRequireDefault(_form);
-
-var _igmixin = __webpack_require__(4);
-
-var _igmixin2 = _interopRequireDefault(_igmixin);
-
-var _urls = __webpack_require__(3);
-
-var _urls2 = _interopRequireDefault(_urls);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Vue.use(VueRouter);
-_vue2.default.use(_vueResource2.default); // <template lang="html">
-//     <div>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <v-card>
-//                     <v-card-title>
-//                         Ordenes con laboratorios
-//                         <v-spacer></v-spacer>
-//                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
-//                     </v-card-title>
-//                     <v-data-table
-//                         :pagination.sync="pagination"
-//                         :total-items="totalItems"
-//                         :loading="loading"
-//                         v-bind:headers="headers"
-//                         :items="elements"
-//                         v-bind:search="buscador"
-//                         :rows-per-page-items="[10]"
-//                         :filter="filter"
-//                         rows-per-page-text="Filas por Página"
-//                         no-results-text="No se encontraron resultados">
-//                         <template slot="headers" scope="props">
-//                             <tr>
-//                                 <th v-for="header in props.headers" :key="header"
-//                                 :class="['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']"
-//                                     @click="changeSort(header)"
-//                                 >
-//                                     <v-icon>arrow_upward</v-icon>
-//                                     {{ header.text }}
-//                                 </th>
-//                             </tr>
-//                         </template>
-//                         <template slot="items" scope="props">
-//                             <template v-for="field of fields">
-//                                 <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
-//                                 <td class="text-xs-center" v-else>
-//                                     <v-btn fab dark small router class="cyan darken-1" :href="field.href.replace(':id', props.item.orden.id)">
-//                                         <v-icon dark>content_paste</v-icon>
-//                                     </v-btn>
-//                                 </td>
-//                             </template>
-//                         </template>
-//                     </v-data-table>
-//                 </v-card>
-//             </v-flex>
-//         </v-layout>
-//     </div>
-// </template>
-//
-// <script>
-
-_vue2.default.use(_vuetify2.default);
-
-exports.default = {
-    mixins: [_igmixin2.default],
-    data: function data() {
-        return {
-            buscador: '',
-            loading: false,
-            fields: ['orden.id', 'orden.paciente.cedula', 'orden.paciente.nombre_completo', 'orden.laboratorios.nombre', 'orden.institucion.razon', 'orden.empresa.razon', 'orden.empresa_cliente', 'orden.fecha', { href: '/resultados/:id/', patrons: [{ identifier: 'id', replace: function replace(item) {
-                        return item.orden.id;
-                    } }] }],
-            totalItems: 0,
-            pagination: {
-                page: 1,
-                rowsPerPage: 10,
-                descending: false,
-                totalItems: 0
-            },
-            selected: false,
-            headers: [{
-                text: 'ID',
-                value: 'id',
-                left: true
-            }, {
-                text: 'Cedula',
-                value: 'tabla-cedula',
-                left: true,
-                sortable: false
-            }, {
-                text: 'Nombre',
-                value: 'paciente-pnombre',
-                left: true
-            }, {
-                text: 'Tipo',
-                value: 'tipo',
-                left: true
-            }, {
-                text: 'IPS',
-                value: 'paciente-pnombre',
-                left: true
-            }, {
-                text: 'Empresa',
-                value: 'paciente-pnombre',
-                left: true
-            }, {
-                text: 'Empresa Cliente',
-                value: 'paciente-pnombre',
-                left: true
-            }, {
-                text: 'Fecha Atención',
-                value: 'paciente-pnombre',
-                left: true
-            }, {
-                text: 'Accion', left: true, sortable: false
-            }]
-        };
-    },
-    watch: {
-        pagination: {
-            handler: function handler() {
-                if (this.buscador !== '') {
-                    this._getElements(_urls2.default.ordenes_busqueda.concat('?param=' + this.buscador + '&page=' + this.pagination.page));
-                } else {
-                    this._getElements(_urls2.default.ordenes_laboratorios.concat('?page=' + this.pagination.page));
-                }
-            },
-
-            deep: true
-        },
-        buscador: function buscador() {
-            if (this.buscador !== '') {
-                this.pagination.page = 1;
-                this._getElements(_urls2.default.ordenes_busqueda.concat('?param=' + this.buscador + '&page=' + this.pagination.page));
-            } else {
-                this._getElements(_urls2.default.ordenes_laboratorios.concat('?page=' + this.pagination.page));
-            }
-        }
-    },
-    components: {
-        igMenu: _menu2.default,
-        igTable: _table2.default,
-        igForm: _form2.default
-    },
-    mounted: function mounted() {
-        this._getElements(_urls2.default.ordenes_laboratorios.concat('?page=1'));
-    },
-    methods: {
-        _getElements: function _getElements() {
-            var _this = this;
-
-            if ('loading' in this) {
-                if (!this.loading) {
-                    this.toggleLoading();
-                }
-            }
-            var url = this.url || arguments[0];
-            if (!url) {
-                throw new Error('URL no provehida para hacer consulta de elementos');
-            }
-            this.$http.get(url).then(function (response) {
-                _this.elements = response.body.results;
-                _this.totalItems = response.body.count;
-                _this.toggleLoading();
-            }, function (response) {
-                _this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado.');
-                _this.toggleLoading();
-            });
-        },
-
-        _validValue: function _validValue(val) {
-            return val !== null && ['undefined', 'boolean'].indexOf(typeof val === 'undefined' ? 'undefined' : (0, _typeof3.default)(val)) === -1;
-        },
-        customFilter: function customFilter(val, search) {
-            return val.toString().toLowerCase().indexOf(search) !== -1;
-        },
-        filter: function filter(val, search) {
-            var _this2 = this;
-
-            var valid = this._validValue(val);
-            if (valid) {
-                valid = valid && this.customFilter(val, search);
-                if (['object'].indexOf(typeof val === 'undefined' ? 'undefined' : (0, _typeof3.default)(val)) === 0 && !valid) {
-                    valid = (0, _keys2.default)(val).some(function (j) {
-                        return _this2._validValue(val[j]) && _this2.customFilter(val[j], search);
-                    });
-                }
-            }
-            return valid;
-        },
-        getattr: function getattr(obj, attr) {
-            var attrs = attr.split('.');
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = (0, _getIterator3.default)(attrs), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var at = _step.value;
-
-                    if (at in obj) {
-                        obj = obj[at];
-                    }
-                    if (obj instanceof Array) {
-                        var mix = '';
-                        var _iteratorNormalCompletion2 = true;
-                        var _didIteratorError2 = false;
-                        var _iteratorError2 = undefined;
-
-                        try {
-                            for (var _iterator2 = (0, _getIterator3.default)(obj), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                                var elem = _step2.value;
-
-                                attr = attrs[attrs.length - 1];
-                                if (mix) {
-                                    mix += ', ';
-                                }
-                                mix += elem[attr];
-                            }
-                        } catch (err) {
-                            _didIteratorError2 = true;
-                            _iteratorError2 = err;
-                        } finally {
-                            try {
-                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                                    _iterator2.return();
-                                }
-                            } finally {
-                                if (_didIteratorError2) {
-                                    throw _iteratorError2;
-                                }
-                            }
-                        }
-
-                        return mix;
-                    }
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-
-            return obj;
-        },
-        updateForm: function updateForm(item) {
-            this.$emit('selectedrow', item);
-        },
-        changeSort: function changeSort(column) {
-            if ('sortable' in column && !column.sortable) {
-                return;
-            }
-            column = column.value;
-            if (this.pagination.sortBy === column) {
-                this.pagination.descending = !this.pagination.descending;
-            } else {
-                this.pagination.sortBy = column;
-                this.pagination.descending = false;
-            }
-        }
-    }
-};
-// </script>
-//
-// <style lang="css">
-// </style>
-//
-
-/***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _getIterator2 = __webpack_require__(9);
-
-var _getIterator3 = _interopRequireDefault(_getIterator2);
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _vue = __webpack_require__(5);
-
-var _vue2 = _interopRequireDefault(_vue);
-
-var _vuetify = __webpack_require__(10);
-
-var _vuetify2 = _interopRequireDefault(_vuetify);
-
-var _vueResource = __webpack_require__(6);
-
-var _vueResource2 = _interopRequireDefault(_vueResource);
-
-var _menu = __webpack_require__(11);
-
-var _menu2 = _interopRequireDefault(_menu);
-
-var _table = __webpack_require__(8);
-
-var _table2 = _interopRequireDefault(_table);
-
-var _form = __webpack_require__(7);
-
-var _form2 = _interopRequireDefault(_form);
-
-var _igmixin = __webpack_require__(4);
-
-var _igmixin2 = _interopRequireDefault(_igmixin);
-
-var _urls = __webpack_require__(3);
-
-var _urls2 = _interopRequireDefault(_urls);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Vue.use(VueRouter);
-_vue2.default.use(_vueResource2.default); // <template lang="html">
-//     <div>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <v-card>
-//                     <v-card-title>
-//                         Productos
-//                         <v-spacer></v-spacer>
-//                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
-//                     </v-card-title>
-//                     <v-data-table
-//                         :pagination.sync="pagination"
-//                         :loading="loading"
-//                         v-bind:headers="headers"
-//                         :items="elements"
-//                         v-bind:search="buscador"
-//                         :rows-per-page-items="[10]"
-//                         rows-per-page-text="Filas por Página"
-//                         no-results-text="No se encontraron resultados">
-//                         <!--:filter="filter"-->
-//                         <template slot="headers" scope="props">
-//                             <!--<span style="text-align:before: center !important">{{ props.item.text }}</span>-->
-//                             <tr>
-//                                 <th v-for="header in props.headers" :key="header"
-//                                 :class="['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']"
-//                                     @click="changeSort(header)"
-//                                 >
-//                                     <v-icon>arrow_upward</v-icon>
-//                                     {{ header.text }}
-//                                 </th>
-//                             </tr>
-//                         </template>
-//                         <template slot="items" scope="props">
-//                             <template v-for="field of table_fields">
-//                                 <td :class="itemClasses(props.item)" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
-//                                 <td :class="itemClasses(props.item)" v-else>
-//                                     <v-btn fab dark small router class="cyan darken-1" @click.native.stop="openModalRecarga(props.item)">
-//                                         <v-icon dark>content_paste</v-icon>
-//                                     </v-btn>
-//                                 </td>
-//                             </template>
-//                         </template>
-//                     </v-data-table>
-//                 </v-card>
-//             </v-flex>
-//         </v-layout>
-//         <v-dialog v-model="dialog" width="80%" scrollable>
-//             <v-card class="lol">
-//                 <v-card-title>Realizar Recarga para {{ selected.nombre }}</v-card-title>
-//                 <v-card-text>
-//                     <v-layout>
-//                         <ig-form
-//                             :flat="true"
-//                             :fields="recarga_fields"
-//                             :url="urlRecarga.concat(selected ? selected.id.toString(): '') + '/'"
-//                             ref="formRecarga"
-//                             @showsnack="showSnackBar"
-//                             @clearselected="selectedRecarga = false"
-//                             @objectcreated="updateCantidadObjectCreated"
-//                             :selected="selectedRecarga"
-//                         ></ig-form>
-//                     </v-layout>
-//                 </v-card-text>
-//                 <v-card-actions>
-//                     <v-btn class="red--text darken-1" flat="flat" @click.native="dialog = false">Cancelar</v-btn>
-//                 </v-card-actions>
-//             </v-card>
-//         </v-dialog>
-//         <br>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <ig-form
-//                   :fields="fields"
-//                   :url="urlForm"
-//                   @showsnack="showSnackBar"
-//                   @objectcreated="eventCreatedObject"
-//                   @clearselected="selected = false"
-//                   :selected="selected"
 //                 ></ig-form>
 //             </v-flex>
 //         </v-layout>
@@ -30243,287 +32785,77 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //
 // <script>
 
-_vue2.default.use(_vuetify2.default);
+/***/ }),
+/* 168 */
+/***/ (function(module, exports) {
 
-exports.default = {
-    mixins: [_igmixin2.default],
-    data: function data() {
-        return {
-            urlForm: _urls2.default.reactivos,
-            urlRecarga: _urls2.default.recarga,
-            selectedRecarga: false,
-            selected: false,
-            dialog: false,
-            buscador: '',
-            headers: [{
-                text: 'Código',
-                value: 'codigo',
-                left: true
-            }, {
-                text: 'Nombre',
-                value: 'nombre',
-                left: true
-            }, {
-                text: 'Tipo',
-                value: 'tipo',
-                left: true
-            }, {
-                text: 'Cantidad',
-                value: 'cantidad',
-                left: true
-            }, {
-                text: 'Recargar',
-                left: true,
-                sortable: false
-            }],
-            fields: [{
-                name: 'codigo',
-                verbose_name: 'Código',
-                type: String,
-                hint: 'Este es el código que identifica al producto.'
-            }, {
-                name: 'nombre',
-                verbose_name: 'Nombre',
-                type: String,
-                hint: 'Este es el nombre del producto.'
-            }, {
-                name: 'alarma_media',
-                verbose_name: 'Alarma Media',
-                type: Number,
-                kwargs: {
-                    type: 'number'
-                },
-                hint: 'Este es el código que identifica a cada equipo.'
-            }, {
-                name: 'alarma_inferior',
-                verbose_name: 'Alarma Inferior',
-                type: Number,
-                kwargs: {
-                    type: 'number'
-                },
-                hint: 'Este es el código que identifica a cada equipo.'
-            }, {
-                name: 'cantidad',
-                verbose_name: 'Cantidad',
-                type: Number,
-                kwargs: {
-                    type: 'number'
-                },
-                hint: 'Este es cantidad de unidades que se tienen para este producto.'
-            }, {
-                name: 'tipo',
-                verbose_name: 'Tipo',
-                type: Array,
-                hint: 'Este es el tipo de el producto.',
-                choices: [{ text: 'INSUMO', value: 'I' }, { text: 'REACTIVO', value: 'R' }]
-            }],
-            table_fields: ['producto.codigo', 'producto.nombre', 'produto.tipo_display', 'producto.cantidad', {}],
-            pagination: {
-                page: 1,
-                rowsPerPage: 10,
-                descending: false,
-                totalItems: 0
-            },
-            recarga_fields: [{
-                name: 'cantidad',
-                verbose_name: 'Cantidad',
-                type: Number,
-                kwargs: {
-                    type: 'number'
-                },
-                hint: 'Cantidad de unidades del producto para la recarga'
-            }, {
-                name: 'fecha_vencimiento',
-                verbose_name: 'Fecha de Vencimiento',
-                required: false,
-                type: Date,
-                kwargs: {
-                    type: 'date'
-                },
-                hint: 'Fecha de vencimiento del producto'
-            }, {
-                name: 'lote',
-                verbose_name: 'Lote',
-                required: false,
-                type: String,
-                hint: 'Este es el lote del producto.'
-            }, {
-                name: 'distribuidor',
-                verbose_name: 'Distribuidor',
-                required: false,
-                type: String,
-                hint: 'Este es el distribuidor del producto.'
-            }, {
-                name: 'fabricante',
-                verbose_name: 'Fabricante',
-                required: false,
-                type: String,
-                hint: 'Este es el fabricante del producto.'
-            }, {
-                name: 'marca',
-                verbose_name: 'Marca',
-                required: false,
-                type: String,
-                hint: 'Este es el marca del producto.'
-            }, {
-                name: 'fecha_distribucion',
-                verbose_name: 'Fecha de Distribución',
-                required: false,
-                type: Date,
-                kwargs: {
-                    type: 'date'
-                },
-                hint: 'Fecha de vencimiento del producto'
-            }, {
-                name: 'presentacion',
-                verbose_name: 'Presentación',
-                required: false,
-                type: String,
-                hint: 'Esta es la presentacion en la que viene el producto'
-            }, {
-                name: 'invima',
-                verbose_name: 'Invima',
-                required: false,
-                type: String,
-                hint: 'Este es el invima del producto.'
-            }, {
-                name: 'casa_comercial',
-                verbose_name: 'Casa comercial',
-                required: false,
-                type: String,
-                hint: 'Esta es la casa comercial del producto.'
-            }]
-        };
-    },
-    components: {
-        igMenu: _menu2.default,
-        igTable: _table2.default,
-        igForm: _form2.default
-    },
-    mounted: function mounted() {
-        this.getElements(_urls2.default.reactivos);
-    },
-    methods: {
-        getattr: function getattr(obj, attr) {
-            var attrs = attr.split('.');
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = (0, _getIterator3.default)(attrs), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var at = _step.value;
-
-                    if (at in obj) {
-                        obj = obj[at];
-                    }
-                    if (obj instanceof Array) {
-                        var mix = '';
-                        var _iteratorNormalCompletion2 = true;
-                        var _didIteratorError2 = false;
-                        var _iteratorError2 = undefined;
-
-                        try {
-                            for (var _iterator2 = (0, _getIterator3.default)(obj), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                                var elem = _step2.value;
-
-                                attr = attrs[attrs.length - 1];
-                                if (mix) {
-                                    mix += ', ';
-                                }
-                                mix += elem[attr];
-                            }
-                        } catch (err) {
-                            _didIteratorError2 = true;
-                            _iteratorError2 = err;
-                        } finally {
-                            try {
-                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                                    _iterator2.return();
-                                }
-                            } finally {
-                                if (_didIteratorError2) {
-                                    throw _iteratorError2;
-                                }
-                            }
-                        }
-
-                        return mix;
-                    }
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-
-            return obj;
-        },
-        changeSort: function changeSort(column) {
-            if ('sortable' in column && !column.sortable) {
-                return;
-            }
-            column = column.value;
-            if (this.pagination.sortBy === column) {
-                this.pagination.descending = !this.pagination.descending;
-            } else {
-                this.pagination.sortBy = column;
-                this.pagination.descending = false;
-            }
-        },
-
-        updateForm: function updateForm(item) {
-            // this.$emit('selectedrow', item);
-            this.selected = item;
-        },
-        itemClasses: function itemClasses(item) {
-            /* Avisa cuando un elemento necesita una recarga */
-            return {
-                'text-xs-center': true,
-                'yellow lighten-1': item.cantidad < item.alarma_media && item.cantidad >= item.alarma_inferior,
-                'orange lighten-1': item.cantidad < item.alarma_inferior
-            };
-        },
-        openModalRecarga: function openModalRecarga(item) {
-            this.selected = item;
-            this.dialog = true;
-        },
-        updateCantidadObjectCreated: function updateCantidadObjectCreated(event) {
-            var created = event;
-            var item = this.elements.find(function (x) {
-                return _underscore2.default.isNumber(created.producto) ? x.id == created.producto : x.id == created.producto.id;
-            });
-            if (item) {
-                item.cantidad += created.cantidad;
-            }
-            this.dialog = false;
-            // console.log(this.$refs.formRecarga)
-            for (var field in this.$refs.formRecarga.models) {
-                this.$refs.formRecarga.models[field] = '';
-            }
-        }
-    }
-};
-// </script>
-//
-// <style lang="css">
-// .dialog:not(.dialog--fullscreen) {
-//     overflow: scroll;
-// }
-// </style>
-//
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Bacteriologos\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
-/* 67 */
+/* 169 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(170)
+__vue_script__ = __webpack_require__(172)
+__vue_template__ = __webpack_require__(173)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/resultados.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 170 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(171);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4ef00e1b&file=resultados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4ef00e1b&file=resultados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 171 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30533,11 +32865,11 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _stringify = __webpack_require__(23);
+var _stringify = __webpack_require__(32);
 
 var _stringify2 = _interopRequireDefault(_stringify);
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(8);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -30545,7 +32877,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -30561,7 +32893,7 @@ var _productos = __webpack_require__(22);
 
 var _productos2 = _interopRequireDefault(_productos);
 
-var _errormixin = __webpack_require__(18);
+var _errormixin = __webpack_require__(21);
 
 var _errormixin2 = _interopRequireDefault(_errormixin);
 
@@ -31098,312 +33430,76 @@ exports.default = {
 // <script>
 
 /***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
+/* 173 */
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _vue = __webpack_require__(5);
-
-var _vue2 = _interopRequireDefault(_vue);
-
-var _vuetify = __webpack_require__(10);
-
-var _vuetify2 = _interopRequireDefault(_vuetify);
-
-var _vueResource = __webpack_require__(6);
-
-var _vueResource2 = _interopRequireDefault(_vueResource);
-
-var _menu = __webpack_require__(11);
-
-var _menu2 = _interopRequireDefault(_menu);
-
-var _table = __webpack_require__(8);
-
-var _table2 = _interopRequireDefault(_table);
-
-var _form = __webpack_require__(7);
-
-var _form2 = _interopRequireDefault(_form);
-
-var _productos = __webpack_require__(22);
-
-var _productos2 = _interopRequireDefault(_productos);
-
-var _igmixin = __webpack_require__(4);
-
-var _igmixin2 = _interopRequireDefault(_igmixin);
-
-var _urls = __webpack_require__(3);
-
-var _urls2 = _interopRequireDefault(_urls);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Vue.use(VueRouter);
-// <template lang="html">
-//     <div>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <ig-table
-//                   table-title="Areas"
-//                   :headers="headers"
-//                   :data="elements"
-//                   :fields="['codigo', 'descripcion']"
-//                   @selectedrow="eventUpdatedForm"
-//                   :loading="loading"
-//                 ></ig-table>
-//             </v-flex>
-//         </v-layout>
-//         <br>
-//         <v-stepper v-model="stepper">
-//             <v-stepper-header class="white">
-//                 <v-stepper-step step="1" @click.native="stepper = 1" :complete="validateFirstStep()">Área</v-stepper-step>
-//                 <v-divider></v-divider>
-//                 <v-stepper-step step="2" @click.native="secondStepClick">Plantilla de Gasto</v-stepper-step>
-//             </v-stepper-header>
-//             <v-stepper-content step="1" class="white">
-//                 <ig-form
-//                 :fields="fields"
-//                 :url="urlForm"
-//                 @showsnack="showSnackBar"
-//                 @objectcreated="eventCreatedObject"
-//                 @clearselected="selected = false"
-//                 :selected="selected"
-//                 >
-//                     <v-btn flat @click.native="stepper = 2" dark v-if="validateFirstStep()">
-//                         Continuar
-//                     </v-btn>
-//                 </ig-form>
-//             </v-stepper-content>
-//             <v-stepper-content step="2" class="white">
-//                 <v-card>
-//                     <v-card-title>Lista de insumos por área</v-card-title>
-//                     <v-card-text>
-//                         <ig-producto :area="area" :plantillas="plantillas"></ig-producto>
-//                     </v-card-text>
-//                 </v-card>
-//             </v-stepper-content>
-//         </v-stepper>
-//     </div>
-// </template>
-//
-// <script>
-_vue2.default.use(_vueResource2.default);
-_vue2.default.use(_vuetify2.default);
-
-exports.default = {
-    mixins: [_igmixin2.default],
-    watch: {
-        selected: function selected() {
-            var _this = this;
-
-            if (!this.selected) {
-                this.area = {};
-            } else {
-                this.area = this.selected;
-                this.$http.get(_urls2.default.plantillaArea.concat('?area=' + this.area.id.toString())).then(function (response) {
-                    if (response.body instanceof Array) {
-                        _this.plantillas = response.body;
-                    }
-                }, function (response) {});
-            }
-        }
-    },
-    data: function data() {
-        return {
-            area: {},
-            plantillas: [],
-            stepper: 1,
-            urlForm: _urls2.default.secciones_trabajo,
-            selected: false,
-            headers: [{
-                text: 'Código',
-                value: 'codigo',
-                left: true
-            }, {
-                text: 'Nombre',
-                value: 'descripcion',
-                left: true
-            }],
-            fields: [{
-                name: 'codigo',
-                verbose_name: 'Código',
-                type: String,
-                hint: 'Este es el código que identifica a cada equipo.'
-            }, {
-                name: 'descripcion',
-                verbose_name: 'Descripción',
-                type: String,
-                hint: 'Este es el nombre del equipo.'
-            }]
-        };
-    },
-    components: {
-        igMenu: _menu2.default,
-        igTable: _table2.default,
-        igForm: _form2.default,
-        igProducto: _productos2.default
-    },
-    mounted: function mounted() {
-        this.getElements(_urls2.default.secciones_trabajo);
-    },
-    methods: {
-        validateFirstStep: function validateFirstStep() {
-            return !_underscore2.default.isEmpty(this.area);
-        },
-        secondStepClick: function secondStepClick() {
-            if (this.validateFirstStep()) {
-                this.stepper = 2;
-            }
-        }
-    }
-};
-// </script>
-//
-// <style lang="css">
-// </style>
-//
+module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <div v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                dark>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                            <v-spacer></v-spacer>\n                            <v-btn\n                                :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                                flat\n                                @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                                Guardar\n                            </v-btn>\n                        </v-card-actions>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-toolbar class=\"cyan darken-4\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <v-spacer></v-spacer>\n                        <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                            <span class=\"btn__content\">Imprimir</span>\n                        </a>\n                    </v-toolbar>\n                    <v-container>\n                        <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                            <div class=\"preloader\">\n                                <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                            </div>\n                        </div>\n                        <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas>\n                    </v-container>\n                </v-card>\n            </v-dialog>\n        </div>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn fab dark info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon dark>check</v-icon>\n                </v-btn>\n                <v-btn fab dark warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon dark>fingerprint</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon dark>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
 
 /***/ }),
-/* 69 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _underscore = __webpack_require__(2);
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
-var _vue = __webpack_require__(5);
-
-var _vue2 = _interopRequireDefault(_vue);
-
-var _vuetify = __webpack_require__(10);
-
-var _vuetify2 = _interopRequireDefault(_vuetify);
-
-var _vueResource = __webpack_require__(6);
-
-var _vueResource2 = _interopRequireDefault(_vueResource);
-
-var _menu = __webpack_require__(11);
-
-var _menu2 = _interopRequireDefault(_menu);
-
-var _table = __webpack_require__(8);
-
-var _table2 = _interopRequireDefault(_table);
-
-var _form = __webpack_require__(7);
-
-var _form2 = _interopRequireDefault(_form);
-
-var _igmixin = __webpack_require__(4);
-
-var _igmixin2 = _interopRequireDefault(_igmixin);
-
-var _urls = __webpack_require__(3);
-
-var _urls2 = _interopRequireDefault(_urls);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-// Vue.use(VueRouter);
-_vue2.default.use(_vueResource2.default); // <template lang="html">
-//     <div>
-//         <v-layout>
-//             <v-flex xs12 md12>
-//                 <ig-table
-//                   table-title="Tecnicas"
-//                   :headers="headers"
-//                   :data="elements"
-//                   :fields="['codigo', 'nombre']"
-//                   @selectedrow="eventUpdatedForm"
-//                   :loading="loading"
-//                 ></ig-table>
-//             </v-flex>
-//         </v-layout>
-//         <br>
-//             <v-layout>
-//                 <v-flex xs12 md12>
-//                     <ig-form
-//                       :fields="fields"
-//                       :url="urlForm"
-//                       @showsnack="showSnackBar"
-//                       @objectcreated="eventCreatedObject"
-//                       @clearselected="selected = false"
-//                       :selected="selected"
-//                     ></ig-form>
-//                 </v-flex>
-//             </v-layout>
-//         <br>
-//     </div>
-// </template>
-//
-// <script>
-
-_vue2.default.use(_vuetify2.default);
-
-exports.default = {
-  mixins: [_igmixin2.default],
-  data: function data() {
-    return {
-      urlForm: _urls2.default.tecnicas,
-      selected: false,
-      headers: [{
-        text: 'Código',
-        value: 'codigo',
-        left: true
-      }, {
-        text: 'Nombre', value: 'nombre',
-        left: true
-      }],
-      fields: [{
-        name: 'codigo',
-        verbose_name: 'Código',
-        type: String,
-        hint: 'Este es el código que identifica a cada tecnica.'
-      }, {
-        name: 'nombre',
-        verbose_name: 'Nombre',
-        type: String,
-        hint: 'Este es el nombre de la tecnica.'
-      }]
-    };
-  },
-  components: {
-    igMenu: _menu2.default,
-    igTable: _table2.default,
-    igForm: _form2.default
-  },
-  mounted: function mounted() {
-    this.getElements(_urls2.default.tecnicas);
+var __vue_script__, __vue_template__
+__webpack_require__(175)
+__vue_script__ = __webpack_require__(177)
+__vue_template__ = __webpack_require__(178)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/toma_muestra.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
   }
-};
-// </script>
-//
-// <style lang="css">
-// </style>
-//
+})()}
 
 /***/ }),
-/* 70 */
+/* 175 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(176);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-26532994&file=toma_muestra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./toma_muestra.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-26532994&file=toma_muestra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./toma_muestra.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 176 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31413,7 +33509,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _getIterator2 = __webpack_require__(9);
+var _getIterator2 = __webpack_require__(8);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
@@ -31421,7 +33517,7 @@ var _underscore = __webpack_require__(2);
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _vue = __webpack_require__(5);
+var _vue = __webpack_require__(4);
 
 var _vue2 = _interopRequireDefault(_vue);
 
@@ -31433,7 +33529,7 @@ var _vueResource = __webpack_require__(6);
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _igmixin = __webpack_require__(4);
+var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
 
@@ -31720,2233 +33816,19 @@ exports.default = {
 //
 
 /***/ }),
-/* 71 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(74), __esModule: true };
-
-/***/ }),
-/* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(77), __esModule: true };
-
-/***/ }),
-/* 73 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = { "default": __webpack_require__(79), __esModule: true };
-
-/***/ }),
-/* 74 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(47);
-__webpack_require__(98);
-module.exports = __webpack_require__(12).Array.from;
-
-/***/ }),
-/* 75 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(104);
-__webpack_require__(47);
-module.exports = __webpack_require__(97);
-
-/***/ }),
-/* 76 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var core = __webpack_require__(12);
-module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
-  return (core.JSON && core.JSON.stringify || JSON.stringify).apply(JSON, arguments);
-};
-
-/***/ }),
-/* 77 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(100);
-module.exports = __webpack_require__(12).Object.assign;
-
-/***/ }),
-/* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(101);
-module.exports = __webpack_require__(12).Object.keys;
-
-/***/ }),
-/* 79 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(103);
-__webpack_require__(102);
-module.exports = __webpack_require__(12).Symbol;
-
-/***/ }),
-/* 80 */
-/***/ (function(module, exports) {
-
-module.exports = function(it){
-  if(typeof it != 'function')throw TypeError(it + ' is not a function!');
-  return it;
-};
-
-/***/ }),
-/* 81 */
-/***/ (function(module, exports) {
-
-module.exports = function(){ /* empty */ };
-
-/***/ }),
-/* 82 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = __webpack_require__(26)
-  , TAG = __webpack_require__(14)('toStringTag')
-  // ES3 wrong here
-  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
-
-module.exports = function(it){
-  var O, T, B;
-  return it === undefined ? 'Undefined' : it === null ? 'Null'
-    // @@toStringTag case
-    : typeof (T = (O = Object(it))[TAG]) == 'string' ? T
-    // builtinTag case
-    : ARG ? cof(O)
-    // ES3 arguments fallback
-    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
-};
-
-/***/ }),
-/* 83 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// all enumerable object keys, includes symbols
-var $ = __webpack_require__(13);
-module.exports = function(it){
-  var keys       = $.getKeys(it)
-    , getSymbols = $.getSymbols;
-  if(getSymbols){
-    var symbols = getSymbols(it)
-      , isEnum  = $.isEnum
-      , i       = 0
-      , key;
-    while(symbols.length > i)if(isEnum.call(it, key = symbols[i++]))keys.push(key);
-  }
-  return keys;
-};
-
-/***/ }),
-/* 84 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-var toIObject = __webpack_require__(21)
-  , getNames  = __webpack_require__(13).getNames
-  , toString  = {}.toString;
-
-var windowNames = typeof window == 'object' && Object.getOwnPropertyNames
-  ? Object.getOwnPropertyNames(window) : [];
-
-var getWindowNames = function(it){
-  try {
-    return getNames(it);
-  } catch(e){
-    return windowNames.slice();
-  }
-};
-
-module.exports.get = function getOwnPropertyNames(it){
-  if(windowNames && toString.call(it) == '[object Window]')return getWindowNames(it);
-  return getNames(toIObject(it));
-};
-
-/***/ }),
-/* 85 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// check on default Array iterator
-var Iterators  = __webpack_require__(17)
-  , ITERATOR   = __webpack_require__(14)('iterator')
-  , ArrayProto = Array.prototype;
-
-module.exports = function(it){
-  return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
-};
-
-/***/ }),
-/* 86 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.2.2 IsArray(argument)
-var cof = __webpack_require__(26);
-module.exports = Array.isArray || function(arg){
-  return cof(arg) == 'Array';
-};
-
-/***/ }),
-/* 87 */
-/***/ (function(module, exports) {
-
-module.exports = function(it){
-  return typeof it === 'object' ? it !== null : typeof it === 'function';
-};
-
-/***/ }),
-/* 88 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// call something on iterator step with safe closing on error
-var anObject = __webpack_require__(25);
-module.exports = function(iterator, fn, value, entries){
-  try {
-    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
-  // 7.4.6 IteratorClose(iterator, completion)
-  } catch(e){
-    var ret = iterator['return'];
-    if(ret !== undefined)anObject(ret.call(iterator));
-    throw e;
-  }
-};
-
-/***/ }),
-/* 89 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var $              = __webpack_require__(13)
-  , descriptor     = __webpack_require__(30)
-  , setToStringTag = __webpack_require__(31)
-  , IteratorPrototype = {};
-
-// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(29)(IteratorPrototype, __webpack_require__(14)('iterator'), function(){ return this; });
-
-module.exports = function(Constructor, NAME, next){
-  Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
-  setToStringTag(Constructor, NAME + ' Iterator');
-};
-
-/***/ }),
-/* 90 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var ITERATOR     = __webpack_require__(14)('iterator')
-  , SAFE_CLOSING = false;
-
-try {
-  var riter = [7][ITERATOR]();
-  riter['return'] = function(){ SAFE_CLOSING = true; };
-  Array.from(riter, function(){ throw 2; });
-} catch(e){ /* empty */ }
-
-module.exports = function(exec, skipClosing){
-  if(!skipClosing && !SAFE_CLOSING)return false;
-  var safe = false;
-  try {
-    var arr  = [7]
-      , iter = arr[ITERATOR]();
-    iter.next = function(){ return {done: safe = true}; };
-    arr[ITERATOR] = function(){ return iter; };
-    exec(arr);
-  } catch(e){ /* empty */ }
-  return safe;
-};
-
-/***/ }),
-/* 91 */
-/***/ (function(module, exports) {
-
-module.exports = function(done, value){
-  return {value: value, done: !!done};
-};
-
-/***/ }),
-/* 92 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var $         = __webpack_require__(13)
-  , toIObject = __webpack_require__(21);
-module.exports = function(object, el){
-  var O      = toIObject(object)
-    , keys   = $.getKeys(O)
-    , length = keys.length
-    , index  = 0
-    , key;
-  while(length > index)if(O[key = keys[index++]] === el)return key;
-};
-
-/***/ }),
-/* 93 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.1 Object.assign(target, source, ...)
-var $        = __webpack_require__(13)
-  , toObject = __webpack_require__(32)
-  , IObject  = __webpack_require__(39);
-
-// should work with symbols and should have deterministic property order (V8 bug)
-module.exports = __webpack_require__(19)(function(){
-  var a = Object.assign
-    , A = {}
-    , B = {}
-    , S = Symbol()
-    , K = 'abcdefghijklmnopqrst';
-  A[S] = 7;
-  K.split('').forEach(function(k){ B[k] = k; });
-  return a({}, A)[S] != 7 || Object.keys(a({}, B)).join('') != K;
-}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
-  var T     = toObject(target)
-    , $$    = arguments
-    , $$len = $$.length
-    , index = 1
-    , getKeys    = $.getKeys
-    , getSymbols = $.getSymbols
-    , isEnum     = $.isEnum;
-  while($$len > index){
-    var S      = IObject($$[index++])
-      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
-      , length = keys.length
-      , j      = 0
-      , key;
-    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
-  }
-  return T;
-} : Object.assign;
-
-/***/ }),
-/* 94 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// most Object methods by ES6 should accept primitives
-var $export = __webpack_require__(16)
-  , core    = __webpack_require__(12)
-  , fails   = __webpack_require__(19);
-module.exports = function(KEY, exec){
-  var fn  = (core.Object || {})[KEY] || Object[KEY]
-    , exp = {};
-  exp[KEY] = exec(fn);
-  $export($export.S + $export.F * fails(function(){ fn(1); }), 'Object', exp);
-};
-
-/***/ }),
-/* 95 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var toInteger = __webpack_require__(44)
-  , defined   = __webpack_require__(27);
-// true  -> String#at
-// false -> String#codePointAt
-module.exports = function(TO_STRING){
-  return function(that, pos){
-    var s = String(defined(that))
-      , i = toInteger(pos)
-      , l = s.length
-      , a, b;
-    if(i < 0 || i >= l)return TO_STRING ? '' : undefined;
-    a = s.charCodeAt(i);
-    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
-      ? TO_STRING ? s.charAt(i) : a
-      : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
-  };
-};
-
-/***/ }),
-/* 96 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 7.1.15 ToLength
-var toInteger = __webpack_require__(44)
-  , min       = Math.min;
-module.exports = function(it){
-  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
-};
-
-/***/ }),
-/* 97 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var anObject = __webpack_require__(25)
-  , get      = __webpack_require__(46);
-module.exports = __webpack_require__(12).getIterator = function(it){
-  var iterFn = get(it);
-  if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
-  return anObject(iterFn.call(it));
-};
-
-/***/ }),
-/* 98 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var ctx         = __webpack_require__(37)
-  , $export     = __webpack_require__(16)
-  , toObject    = __webpack_require__(32)
-  , call        = __webpack_require__(88)
-  , isArrayIter = __webpack_require__(85)
-  , toLength    = __webpack_require__(96)
-  , getIterFn   = __webpack_require__(46);
-$export($export.S + $export.F * !__webpack_require__(90)(function(iter){ Array.from(iter); }), 'Array', {
-  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
-  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
-    var O       = toObject(arrayLike)
-      , C       = typeof this == 'function' ? this : Array
-      , $$      = arguments
-      , $$len   = $$.length
-      , mapfn   = $$len > 1 ? $$[1] : undefined
-      , mapping = mapfn !== undefined
-      , index   = 0
-      , iterFn  = getIterFn(O)
-      , length, result, step, iterator;
-    if(mapping)mapfn = ctx(mapfn, $$len > 2 ? $$[2] : undefined, 2);
-    // if object isn't iterable or it's array with default iterator - use simple case
-    if(iterFn != undefined && !(C == Array && isArrayIter(iterFn))){
-      for(iterator = iterFn.call(O), result = new C; !(step = iterator.next()).done; index++){
-        result[index] = mapping ? call(iterator, mapfn, [step.value, index], true) : step.value;
-      }
-    } else {
-      length = toLength(O.length);
-      for(result = new C(length); length > index; index++){
-        result[index] = mapping ? mapfn(O[index], index) : O[index];
-      }
-    }
-    result.length = index;
-    return result;
-  }
-});
-
-
-/***/ }),
-/* 99 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var addToUnscopables = __webpack_require__(81)
-  , step             = __webpack_require__(91)
-  , Iterators        = __webpack_require__(17)
-  , toIObject        = __webpack_require__(21);
-
-// 22.1.3.4 Array.prototype.entries()
-// 22.1.3.13 Array.prototype.keys()
-// 22.1.3.29 Array.prototype.values()
-// 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = __webpack_require__(40)(Array, 'Array', function(iterated, kind){
-  this._t = toIObject(iterated); // target
-  this._i = 0;                   // next index
-  this._k = kind;                // kind
-// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
-}, function(){
-  var O     = this._t
-    , kind  = this._k
-    , index = this._i++;
-  if(!O || index >= O.length){
-    this._t = undefined;
-    return step(1);
-  }
-  if(kind == 'keys'  )return step(0, index);
-  if(kind == 'values')return step(0, O[index]);
-  return step(0, [index, O[index]]);
-}, 'values');
-
-// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
-Iterators.Arguments = Iterators.Array;
-
-addToUnscopables('keys');
-addToUnscopables('values');
-addToUnscopables('entries');
-
-/***/ }),
-/* 100 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.3.1 Object.assign(target, source)
-var $export = __webpack_require__(16);
-
-$export($export.S + $export.F, 'Object', {assign: __webpack_require__(93)});
-
-/***/ }),
-/* 101 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.2.14 Object.keys(O)
-var toObject = __webpack_require__(32);
-
-__webpack_require__(94)('keys', function($keys){
-  return function keys(it){
-    return $keys(toObject(it));
-  };
-});
-
-/***/ }),
-/* 102 */
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-/* 103 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// ECMAScript 6 symbols shim
-var $              = __webpack_require__(13)
-  , global         = __webpack_require__(20)
-  , has            = __webpack_require__(28)
-  , DESCRIPTORS    = __webpack_require__(38)
-  , $export        = __webpack_require__(16)
-  , redefine       = __webpack_require__(42)
-  , $fails         = __webpack_require__(19)
-  , shared         = __webpack_require__(43)
-  , setToStringTag = __webpack_require__(31)
-  , uid            = __webpack_require__(45)
-  , wks            = __webpack_require__(14)
-  , keyOf          = __webpack_require__(92)
-  , $names         = __webpack_require__(84)
-  , enumKeys       = __webpack_require__(83)
-  , isArray        = __webpack_require__(86)
-  , anObject       = __webpack_require__(25)
-  , toIObject      = __webpack_require__(21)
-  , createDesc     = __webpack_require__(30)
-  , getDesc        = $.getDesc
-  , setDesc        = $.setDesc
-  , _create        = $.create
-  , getNames       = $names.get
-  , $Symbol        = global.Symbol
-  , $JSON          = global.JSON
-  , _stringify     = $JSON && $JSON.stringify
-  , setter         = false
-  , HIDDEN         = wks('_hidden')
-  , isEnum         = $.isEnum
-  , SymbolRegistry = shared('symbol-registry')
-  , AllSymbols     = shared('symbols')
-  , useNative      = typeof $Symbol == 'function'
-  , ObjectProto    = Object.prototype;
-
-// fallback for old Android, https://code.google.com/p/v8/issues/detail?id=687
-var setSymbolDesc = DESCRIPTORS && $fails(function(){
-  return _create(setDesc({}, 'a', {
-    get: function(){ return setDesc(this, 'a', {value: 7}).a; }
-  })).a != 7;
-}) ? function(it, key, D){
-  var protoDesc = getDesc(ObjectProto, key);
-  if(protoDesc)delete ObjectProto[key];
-  setDesc(it, key, D);
-  if(protoDesc && it !== ObjectProto)setDesc(ObjectProto, key, protoDesc);
-} : setDesc;
-
-var wrap = function(tag){
-  var sym = AllSymbols[tag] = _create($Symbol.prototype);
-  sym._k = tag;
-  DESCRIPTORS && setter && setSymbolDesc(ObjectProto, tag, {
-    configurable: true,
-    set: function(value){
-      if(has(this, HIDDEN) && has(this[HIDDEN], tag))this[HIDDEN][tag] = false;
-      setSymbolDesc(this, tag, createDesc(1, value));
-    }
-  });
-  return sym;
-};
-
-var isSymbol = function(it){
-  return typeof it == 'symbol';
-};
-
-var $defineProperty = function defineProperty(it, key, D){
-  if(D && has(AllSymbols, key)){
-    if(!D.enumerable){
-      if(!has(it, HIDDEN))setDesc(it, HIDDEN, createDesc(1, {}));
-      it[HIDDEN][key] = true;
-    } else {
-      if(has(it, HIDDEN) && it[HIDDEN][key])it[HIDDEN][key] = false;
-      D = _create(D, {enumerable: createDesc(0, false)});
-    } return setSymbolDesc(it, key, D);
-  } return setDesc(it, key, D);
-};
-var $defineProperties = function defineProperties(it, P){
-  anObject(it);
-  var keys = enumKeys(P = toIObject(P))
-    , i    = 0
-    , l = keys.length
-    , key;
-  while(l > i)$defineProperty(it, key = keys[i++], P[key]);
-  return it;
-};
-var $create = function create(it, P){
-  return P === undefined ? _create(it) : $defineProperties(_create(it), P);
-};
-var $propertyIsEnumerable = function propertyIsEnumerable(key){
-  var E = isEnum.call(this, key);
-  return E || !has(this, key) || !has(AllSymbols, key) || has(this, HIDDEN) && this[HIDDEN][key]
-    ? E : true;
-};
-var $getOwnPropertyDescriptor = function getOwnPropertyDescriptor(it, key){
-  var D = getDesc(it = toIObject(it), key);
-  if(D && has(AllSymbols, key) && !(has(it, HIDDEN) && it[HIDDEN][key]))D.enumerable = true;
-  return D;
-};
-var $getOwnPropertyNames = function getOwnPropertyNames(it){
-  var names  = getNames(toIObject(it))
-    , result = []
-    , i      = 0
-    , key;
-  while(names.length > i)if(!has(AllSymbols, key = names[i++]) && key != HIDDEN)result.push(key);
-  return result;
-};
-var $getOwnPropertySymbols = function getOwnPropertySymbols(it){
-  var names  = getNames(toIObject(it))
-    , result = []
-    , i      = 0
-    , key;
-  while(names.length > i)if(has(AllSymbols, key = names[i++]))result.push(AllSymbols[key]);
-  return result;
-};
-var $stringify = function stringify(it){
-  if(it === undefined || isSymbol(it))return; // IE8 returns string on undefined
-  var args = [it]
-    , i    = 1
-    , $$   = arguments
-    , replacer, $replacer;
-  while($$.length > i)args.push($$[i++]);
-  replacer = args[1];
-  if(typeof replacer == 'function')$replacer = replacer;
-  if($replacer || !isArray(replacer))replacer = function(key, value){
-    if($replacer)value = $replacer.call(this, key, value);
-    if(!isSymbol(value))return value;
-  };
-  args[1] = replacer;
-  return _stringify.apply($JSON, args);
-};
-var buggyJSON = $fails(function(){
-  var S = $Symbol();
-  // MS Edge converts symbol values to JSON as {}
-  // WebKit converts symbol values to JSON as null
-  // V8 throws on boxed symbols
-  return _stringify([S]) != '[null]' || _stringify({a: S}) != '{}' || _stringify(Object(S)) != '{}';
-});
-
-// 19.4.1.1 Symbol([description])
-if(!useNative){
-  $Symbol = function Symbol(){
-    if(isSymbol(this))throw TypeError('Symbol is not a constructor');
-    return wrap(uid(arguments.length > 0 ? arguments[0] : undefined));
-  };
-  redefine($Symbol.prototype, 'toString', function toString(){
-    return this._k;
-  });
-
-  isSymbol = function(it){
-    return it instanceof $Symbol;
-  };
-
-  $.create     = $create;
-  $.isEnum     = $propertyIsEnumerable;
-  $.getDesc    = $getOwnPropertyDescriptor;
-  $.setDesc    = $defineProperty;
-  $.setDescs   = $defineProperties;
-  $.getNames   = $names.get = $getOwnPropertyNames;
-  $.getSymbols = $getOwnPropertySymbols;
-
-  if(DESCRIPTORS && !__webpack_require__(41)){
-    redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
-  }
-}
-
-var symbolStatics = {
-  // 19.4.2.1 Symbol.for(key)
-  'for': function(key){
-    return has(SymbolRegistry, key += '')
-      ? SymbolRegistry[key]
-      : SymbolRegistry[key] = $Symbol(key);
-  },
-  // 19.4.2.5 Symbol.keyFor(sym)
-  keyFor: function keyFor(key){
-    return keyOf(SymbolRegistry, key);
-  },
-  useSetter: function(){ setter = true; },
-  useSimple: function(){ setter = false; }
-};
-// 19.4.2.2 Symbol.hasInstance
-// 19.4.2.3 Symbol.isConcatSpreadable
-// 19.4.2.4 Symbol.iterator
-// 19.4.2.6 Symbol.match
-// 19.4.2.8 Symbol.replace
-// 19.4.2.9 Symbol.search
-// 19.4.2.10 Symbol.species
-// 19.4.2.11 Symbol.split
-// 19.4.2.12 Symbol.toPrimitive
-// 19.4.2.13 Symbol.toStringTag
-// 19.4.2.14 Symbol.unscopables
-$.each.call((
-  'hasInstance,isConcatSpreadable,iterator,match,replace,search,' +
-  'species,split,toPrimitive,toStringTag,unscopables'
-).split(','), function(it){
-  var sym = wks(it);
-  symbolStatics[it] = useNative ? sym : wrap(sym);
-});
-
-setter = true;
-
-$export($export.G + $export.W, {Symbol: $Symbol});
-
-$export($export.S, 'Symbol', symbolStatics);
-
-$export($export.S + $export.F * !useNative, 'Object', {
-  // 19.1.2.2 Object.create(O [, Properties])
-  create: $create,
-  // 19.1.2.4 Object.defineProperty(O, P, Attributes)
-  defineProperty: $defineProperty,
-  // 19.1.2.3 Object.defineProperties(O, Properties)
-  defineProperties: $defineProperties,
-  // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
-  getOwnPropertyDescriptor: $getOwnPropertyDescriptor,
-  // 19.1.2.7 Object.getOwnPropertyNames(O)
-  getOwnPropertyNames: $getOwnPropertyNames,
-  // 19.1.2.8 Object.getOwnPropertySymbols(O)
-  getOwnPropertySymbols: $getOwnPropertySymbols
-});
-
-// 24.3.2 JSON.stringify(value [, replacer [, space]])
-$JSON && $export($export.S + $export.F * (!useNative || buggyJSON), 'JSON', {stringify: $stringify});
-
-// 19.4.3.5 Symbol.prototype[@@toStringTag]
-setToStringTag($Symbol, 'Symbol');
-// 20.2.1.9 Math[@@toStringTag]
-setToStringTag(Math, 'Math', true);
-// 24.3.3 JSON[@@toStringTag]
-setToStringTag(global.JSON, 'JSON', true);
-
-/***/ }),
-/* 104 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(99);
-var Iterators = __webpack_require__(17);
-Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
-
-/***/ }),
-/* 105 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n  .main {\n    width: 100% !important;\n  }\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 106 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 107 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 108 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 109 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 110 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 111 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 112 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.stepper__wrapper .card {\n    box-shadow: inherit;\n}\n\n.stepper__step--active, .stepper__step--complete {\n    cursor: pointer !important;\n    transition: ease 1s all;\n}\n\n.stepper__step--active:hover, .stepper__step--complete:hover {\n    background-color: #f0f0f0;\n}\n/*.stepper__wrapper .card .card__title{\n    display: none;\n}*/\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 113 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.productos .container {\n  padding: 0;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 114 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.text-xs-left {\n    text-align: center !important;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 115 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 116 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 117 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 118 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 119 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.dialog:not(.dialog--fullscreen) {\n    overflow: scroll;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 120 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 121 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.fixindex {\n    z-index: 7 !important;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 122 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 123 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 124 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.ig-floating-button {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin-right: 22px;\n    /*margin-bottom: 90px;*/\n    transition-duration: 50ms !important;\n    -webkit-animation-duration: 500ms;\n            animation-duration: 500ms;\n}\n\n.ig-floating-button-main {\n    position: fixed;\n    bottom: 0;\n    right: 0;\n    margin: 15px;\n    transition-duration: 500ms;\n    z-index: 10;\n}\n\n.ig-floating-button-main:hover {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg);\n    transition-duration: 500ms;\n}\n\n.ig-floating-button-container {\n    position: fixed;\n    background-color: transparent;\n    /*background-color: #323213;*/\n    padding: 40px;\n    right: 0;\n    top: 0;\n    z-index: 0;\n    height: 100%;\n}\n\n/*.ig-rotator {\n    transform: rotate(360deg);\n    transition-duration: 500ms;\n}*/\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 125 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(0)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 126 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-/* 127 */
-/***/ (function(module, exports) {
-
-
-/**
- * When source maps are enabled, `style-loader` uses a link element with a data-uri to
- * embed the css on the page. This breaks all relative urls because now they are relative to a
- * bundle instead of the current page.
- *
- * One solution is to only use full urls, but that may be impossible.
- *
- * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
- *
- * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
- *
- */
-
-module.exports = function (css) {
-  // get current location
-  var location = typeof window !== "undefined" && window.location;
-
-  if (!location) {
-    throw new Error("fixUrls requires window.location");
-  }
-
-	// blank or null?
-	if (!css || typeof css !== "string") {
-	  return css;
-  }
-
-  var baseUrl = location.protocol + "//" + location.host;
-  var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
-
-	// convert each url(...)
-	/*
-	This regular expression is just a way to recursively match brackets within
-	a string.
-
-	 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
-	   (  = Start a capturing group
-	     (?:  = Start a non-capturing group
-	         [^)(]  = Match anything that isn't a parentheses
-	         |  = OR
-	         \(  = Match a start parentheses
-	             (?:  = Start another non-capturing groups
-	                 [^)(]+  = Match anything that isn't a parentheses
-	                 |  = OR
-	                 \(  = Match a start parentheses
-	                     [^)(]*  = Match anything that isn't a parentheses
-	                 \)  = Match a end parentheses
-	             )  = End Group
-              *\) = Match anything and then a close parens
-          )  = Close non-capturing group
-          *  = Match anything
-       )  = Close capturing group
-	 \)  = Match a close parens
-
-	 /gi  = Get all matches, not the first.  Be case insensitive.
-	 */
-	var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function(fullMatch, origUrl) {
-		// strip quotes (if they exist)
-		var unquotedOrigUrl = origUrl
-			.trim()
-			.replace(/^"(.*)"$/, function(o, $1){ return $1; })
-			.replace(/^'(.*)'$/, function(o, $1){ return $1; });
-
-		// already a full url? no change
-		if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/)/i.test(unquotedOrigUrl)) {
-		  return fullMatch;
-		}
-
-		// convert the url to a full url
-		var newUrl;
-
-		if (unquotedOrigUrl.indexOf("//") === 0) {
-		  	//TODO: should we add protocol?
-			newUrl = unquotedOrigUrl;
-		} else if (unquotedOrigUrl.indexOf("/") === 0) {
-			// path should be relative to the base url
-			newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
-		} else {
-			// path should be relative to current directory
-			newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
-		}
-
-		// send back the fixed url(...)
-		return "url(" + JSON.stringify(newUrl) + ")";
-	});
-
-	// send back the fixed css
-	return fixedCss;
-};
-
-
-/***/ }),
-/* 128 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(105);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0ac725f3&file=menu.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0ac725f3&file=menu.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 129 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(106);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1085f444&file=equipos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1085f444&file=equipos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 130 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(107);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-13aef41d&file=toma_muestra.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./toma_muestra.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-13aef41d&file=toma_muestra.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./toma_muestra.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 131 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(108);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1b5014cf&file=slot-input.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1b5014cf&file=slot-input.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 132 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(109);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-245a4338&file=empleados.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-245a4338&file=empleados.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 133 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(110);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-26c23238&file=resultados.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-26c23238&file=resultados.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 134 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(111);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-27e3c52e&file=ordenes_laboratorios.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-27e3c52e&file=ordenes_laboratorios.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 135 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(112);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2fb61547&file=laboratorios.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2fb61547&file=laboratorios.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 136 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(113);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-32fe342f&file=productos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./productos.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-32fe342f&file=productos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./productos.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 137 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(114);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3537e16a&file=table.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3537e16a&file=table.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 138 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(115);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-417c029b&file=formatos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-417c029b&file=formatos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 139 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(116);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-41de513b&file=caracteristicas.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-41de513b&file=caracteristicas.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 140 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(117);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4affe2d8&file=form.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4affe2d8&file=form.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 141 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(118);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4dc766f4&file=formato.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4dc766f4&file=formato.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 142 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(119);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5ab50c00&file=reactivos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5ab50c00&file=reactivos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 143 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(120);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-77d30130&file=tecnicas.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-77d30130&file=tecnicas.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 144 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(121);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-93219130&file=formulario-resultado.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formulario-resultado.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-93219130&file=formulario-resultado.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formulario-resultado.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 145 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(122);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-a183db96&file=bacteriologos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-a183db96&file=bacteriologos.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 146 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(123);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d6b7de30&file=especificacion_caracteristica.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d6b7de30&file=especificacion_caracteristica.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 147 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(124);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d7f7ec16&file=floating-button.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d7f7ec16&file=floating-button.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 148 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(125);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// add the styles to the DOM
-var update = __webpack_require__(1)(content, {});
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e184b6c8&file=secciones_trabajo.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue", function() {
-			var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/vue-loader/lib/style-rewriter.js?id=_v-e184b6c8&file=secciones_trabajo.vue!../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 149 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div v-if=\"formato\">\n        <v-container class=\"white\">\n            <v-layout>\n                <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n            </v-layout>\n            <v-layout wrap>\n                <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                    <v-expansion-panel expand class=\"white\">\n                        <v-expansion-panel-content>\n                            <div slot=\"header\">{{ item.nombre }}</div>\n                            <v-card>\n                                <v-card-title>\n                                </v-card-title>\n                                <v-card-text class=\"grey lighten-5\">\n                                    <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                        Asegurate de crear varias opciones.\n                                    </v-alert>\n                                    <v-select\n                                        label=\"Tipo\"\n                                        :hint=\"item.tipo.help\"\n                                        :items=\"tipoOpciones\"\n                                        v-model=\"item.tipo\"\n                                        item-value=\"text\"\n                                        :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                        return-object\n                                        persistent-hint\n                                    ></v-select>\n                                    <br>\n                                    <v-text-field\n                                        label=\"Nombre del Campo\"\n                                        v-model=\"item.nombre\"\n                                        hint=\"Con este nombre se identificará el campo\"\n                                        :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                        required\n                                    ></v-text-field>\n                                    <br>\n                                    <div v-if=\"item.tipo.name != 'title'\">\n                                        <v-text-field\n                                          label=\"Texto de ayuda\"\n                                          v-model=\"item.help\"\n                                            hint=\"Ayuda textual que acompaña el campo\"\n                                        ></v-text-field>\n                                        <br>\n                                        <v-layout wrap>\n                                            <v-flex md12><v-subheader>Referencias</v-subheader></v-flex>\n                                            <template v-if=\"item.tipo.name == 'number'\">\n                                                <v-flex md6>\n                                                    <v-subheader>Hombre</v-subheader>\n                                                    <v-text-field\n                                                        label=\"Valores de referencia mínima (HOMBRE)\"\n                                                        v-model=\"item.referencias.M.minima\"\n                                                        :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                                        hint=\"Texto de referencia minima para la visualización del resultado (HOMBRE)\"\n                                                    ></v-text-field>\n                                                    <br>\n                                                    <v-text-field\n                                                        label=\"Valores de referencia máxima (HOMBRE)\"\n                                                        v-model=\"item.referencias.M.maxima\"\n                                                        :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                                        hint=\"Texto de referencia máxima para la visualización del resultado (HOMBRE)\"\n                                                    ></v-text-field>\n                                                </v-flex>\n                                                <v-flex md6>\n                                                    <v-subheader>Mujer</v-subheader>\n                                                    <v-text-field\n                                                        label=\"Valores de referencia mínima (MUJER)\"\n                                                        v-model=\"item.referencias.F.minima\"\n                                                        :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                                        hint=\"Texto de referencia minima para la visualización del resultado (MUJER)\"\n                                                    ></v-text-field>\n                                                    <br>\n                                                    <v-text-field\n                                                        label=\"Valores de referencia máxima (MUJER)\"\n                                                        v-model=\"item.referencias.F.maxima\"\n                                                        :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                                        hint=\"Texto de referencia máxima para la visualización del resultado (MUJER)\"\n                                                    ></v-text-field>\n                                                </v-flex>\n                                            </template>\n                                            <v-flex md12 v-else>\n                                                <v-text-field\n                                                    label=\"Valores de Referencia\"\n                                                    v-model=\"item.referencia\"\n                                                    multi-line\n                                                    hint=\"Texto de referencia para la visualización de resultados.\"\n                                                ></v-text-field>\n                                            </v-flex>\n                                        </v-layout>\n                                        <br>\n                                        <v-text-field\n                                            label=\"Unidades\"\n                                            v-model=\"item.unidades\"\n                                            hint=\"Medida en unidades de el resultado\"\n                                        ></v-text-field>\n                                        <br>\n                                        <v-text-field\n                                            v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea' || item.tipo.name == 'number'\"\n                                            :multi-line=\"item.tipo.name == 'textarea'\"\n                                            :label=\"item.nombre\"\n                                            :hint=\"item.help\"\n                                            v-model=\"item.model_text\"\n                                            :type=\"item.tipo.name == 'number' ? 'number': 'text'\"\n                                            persistent-hint\n                                        ></v-text-field>\n                                        <div v-else-if=\"item.tipo.name == 'select'\">\n                                            <v-layout>\n                                                <v-flex md10 xs10>\n                                                    <v-select\n                                                        :label=\"item.nombre\"\n                                                        :hint=\"item.help\"\n                                                        v-model=\"item.model_text\"\n                                                        :items=\"item.choices\"\n                                                        :rules=\"[item.choices.length >= 1 || 'Debes escoger una caracteristica', item.choices.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                        item-value=\"text\"\n                                                        :return-object=\"true\"\n                                                        persistent-hint\n                                                    ></v-select>\n                                                </v-flex>\n                                                <v-flex md2 xs2>\n                                                    <v-btn\n                                                        v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                        class=\"green--text darken-1\" icon=\"icon\"\n                                                        @click.native.stop=\"dialog = true; lastItem = item\">\n                                                        <v-icon>add</v-icon>\n                                                    </v-btn>\n                                                </v-flex>\n                                            </v-layout>\n                                            <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                                <v-flex xs7 md7>\n                                                    <v-text-field\n                                                      label=\"Texto para mostrar\"\n                                                      v-model=\"choice.text\"\n                                                    ></v-text-field>\n                                                </v-flex>\n                                                <v-flex xs5 md5>\n                                                    <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                                        <v-icon>delete</v-icon>\n                                                    </v-btn>\n                                                    <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                                        <v-icon>add</v-icon>\n                                                    </v-btn>\n                                                </v-flex>\n                                            </v-layout>\n                                        </div>\n                                    </div>\n                                </v-card-text>\n                                <v-card-actions>\n                                    <v-btn\n                                      v-show=\"items.length > 1\"\n                                      flat\n                                      class=\"red--text darken-1\"\n                                      @click.native=\"removeItem(id)\"\n                                    >Eliminar Campo</v-btn>\n                                </v-card-actions>\n                            </v-card>\n                        </v-expansion-panel-content>\n                    </v-expansion-panel>\n                    <br>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn fab dark warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon dark>add</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon dark>save</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <!--<v-card-row height=\"300px\">-->\n                    <v-card-text>\n                        <v-radio\n                            v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                            :key=\"caracteristica.id\"\n                            :label=\"caracteristica.codigo.toUpperCase()\"\n                            v-model=\"modalchoice\"\n                            :value=\"caracteristica.id\"\n                            primary>\n                        </v-radio>\n                    </v-card-text>\n                <!--</v-card-row>-->\n                <v-divider></v-divider>\n                <v-card-actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-actions>\n            </v-card>\n        </v-dialog>\n    </div>\n";
-
-/***/ }),
-/* 150 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-toolbar class=\"cyan darken-1\">\n            <v-toolbar-side-icon @click.native.stop=\"sidebar = !sidebar\"></v-toolbar-side-icon>\n            <v-toolbar-title>Dasalud</v-toolbar-title>\n        </v-toolbar>\n        <main>\n            <v-sidebar v-model=\"sidebar\" drawer class=\"mt-0 scroll-y\" :mobile-break-point=\"576\">\n                <v-list dense>\n                \n                        <v-list-tile href=\"/\">\n                            <v-list-tile-avatar>\n                                <v-icon>accessibility</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Dashboard</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n    \n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>people</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Pacientes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/pacientes/page/1/\">\n                                <v-list-tile-title>Lista Paciente</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/add/paciente/\">\n                                <v-list-tile-title>Crear Paciente</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>today</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Agendas</v-list-tile-title>\n                                </v-list-tile-content>\n                                    <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/agenda/\">\n                                <v-list-tile-title>Agenda del Dia</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/agenda/doctor/\">\n                                <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>open_in_browser</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Ordenes de Servicio</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/ordenes/\">\n                                <v-list-tile-title>Lista de Ordenes</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/ordenesReporte/\">\n                                <v-list-tile-title>Filtrar Ordenes</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                \n                        <v-list-tile ripple href=\"/portal_empresas/\">\n                            <v-list-tile-avatar>\n                                <v-icon>search</v-icon>\n                            </v-list-tile-avatar>\n                            <v-list-tile-content>\n                                <v-list-tile-title>Buscar Orden</v-list-tile-title>\n                            </v-list-tile-content>\n                        </v-list-tile>\n    \n                    <v-divider light></v-divider>\n                    <v-subheader>Utilidades</v-subheader>\n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Medicos e Instituciones</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/medicos/\">\n                                <v-list-tile-title>Medicos</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/instituciones/\">\n                                <v-list-tile-title>Instituciones</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>business_center</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Empresas y Planes</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/empresas/\">\n                                <v-list-tile-title>Empresas</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/planes/\">\n                                <v-list-tile-title>Planes de Salud</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Procedimientos y Plantillas</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/procedimientos/\">\n                                <v-list-tile-title>Procedimientos</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/plantillas/\">\n                                <v-list-tile-title>Plantillas</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/servicios/\">\n                                <v-list-tile-title>Servicios</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>featured_play_list</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Usuarios</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/usuarios/\">\n                                <v-list-tile-title>Usuarios del Sistema</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"/usuariosEmpresa/\">\n                                <v-list-tile-title>Usuarios Empresas</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                    <v-divider light></v-divider>\n                    <v-subheader>Laboratorio</v-subheader>\n                \n                        <v-list-tile ripple href=\"#/ordenes_laboratorios/\">\n                            <v-list-tile-title>Ordenes Laboratorios</v-list-tile-title>\n                        </v-list-tile>\n    \n                    <v-list-group>\n    \n                            <v-list-tile ripple>\n                                <v-list-tile-avatar>\n                                    <v-icon>local_hospital</v-icon>\n                                </v-list-tile-avatar>\n                                <v-list-tile-content>\n                                    <v-list-tile-title>Administración</v-list-tile-title>\n                                </v-list-tile-content>\n                                <v-list-tile-action>\n                                    <v-icon>keyboard_arrow_down</v-icon>\n                                </v-list-tile-action>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/bacteriologos/\">\n                              <v-list-tile-title>Bacteriologos</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/laboratorios/\">\n                              <v-list-tile-title>Laboratorios</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/equipos/\">\n                                <v-list-tile-title>Equipos</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/tecnicas/\">\n                                <v-list-tile-title>Tecnicas</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/secciones_trabajo/\">\n                                <v-list-tile-title>Secciones de Trabajo</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/reactivos/\">\n                                <v-list-tile-title>Reactivos</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/caracteristicas/\">\n                                <v-list-tile-title>Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n        \n                    \n                            <v-list-tile ripple href=\"#/especificacion_caracteristicas/\">\n                                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>\n                            </v-list-tile>\n        \n                    </v-list-group>\n                </v-list>\n            </v-sidebar>\n            <div class=\"main\">\n                <v-content class=\"grey lighten-4\">\n                    <v-container fluid>\n                        <br>\n                        <v-spacer></v-spacer>\n                        <slot></slot>\n                    </v-container>\n                </v-content>\n            </div>\n        </main>\n    </div>\n";
-
-/***/ }),
-/* 151 */
-/***/ (function(module, exports) {
-
-module.exports = "\n\n";
-
-/***/ }),
-/* 152 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div class=\"\">\n        <slot></slot>\n        <div v-show=\"false\">\n          <slot name=\"input\"></slot>\n        </div>\n    </div>\n";
-
-/***/ }),
-/* 153 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTitle }}\n            <v-spacer></v-spacer>\n            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n        </v-card-title>\n        <v-data-table\n            :pagination.sync=\"pagination\"\n            v-bind:headers=\"headers\"\n            :items=\"data\"\n            v-bind:search=\"buscador\"\n            :rows-per-page-items=\"[10]\"\n            :rowsPerPage=\"10\"\n            :filter=\"filter\"\n            rows-per-page-text=\"Filas por Página\"\n            no-results-text=\"No se encontraron resultados\"\n            ref=\"dataTable\">\n            <template slot=\"headers\" scope=\"props\">\n                <!--<span style=\"text-align:before: center !important\">{{ props.item }}</span>-->\n                <tr>\n                    <th v-for=\"header in props.headers\" :key=\"header\"\n                       :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                        @click=\"changeSort(header)\"\n                       >\n                        <v-icon>arrow_upward</v-icon>\n                        {{ header.text }}\n                    </th>\n                </tr>\n            </template>\n            <template slot=\"items\" scope=\"props\">\n                <!-- <td @click=\"updateForm(props.item)\">\n                    <v-checkbox primary v-model=\"props.item.selected\" ></v-checkbox>\n                </td> -->\n                <template v-for=\"field of fields\">\n                    <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                    <td class=\"text-xs-center\" v-else>\n                        <v-btn floating small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                            <v-icon light>mode_edit</v-icon>\n                        </v-btn>\n                    </td>\n                </template>\n            </template>\n        </v-data-table>\n        <v-progress-linear indeterminate class=\"red--text\" height=\"3\" :active=\"loading\"></v-progress-linear>\n    </v-card>\n";
-
-/***/ }),
-/* 154 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Bacteriologos\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombre', 'usuario.email', 'codigo', 'registro', 'areas.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
-
-/***/ }),
-/* 155 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Caracteristicas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'descripcion']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
-
-/***/ }),
-/* 156 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Empleados\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombres', 'usuario.email', 'documento']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
-
-/***/ }),
-/* 157 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Equipos\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'tecnica.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                  ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
-
-/***/ }),
-/* 158 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Especificacion Caracteristica\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['nombre', 'caracteristica.codigo']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n              <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
-
-/***/ }),
-/* 159 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div v-if=\"formato\">\n        <v-layout>\n            <h1 class=\"title\">Formato para el Laboratorio <strong>{{ formato.laboratorio.nombre.toUpperCase() }}({{ formato.laboratorio.codigo.toUpperCase() }})</strong></h1>\n        </v-layout>\n        <v-layout wrap>\n            <v-flex md6 class=\"mb-5\" v-for=\"(item, id) of items\" :key=\"id\">\n                <v-expansion-panel expand class=\"white\">\n                    <v-expansion-panel-content>\n                        <div slot=\"header\">{{ item.nombre }}</div>\n                        <v-card>\n                            <v-card-title>\n                            </v-card-title>\n                            <v-card-text class=\"grey lighten-5\">\n                                <v-alert error hide-icon :value=\"['checkbox', 'radio'].indexOf(item.tipo.name) !== -1 && item.choices.length <= 1\">\n                                    Asegurate de crear varias opciones.\n                                </v-alert>\n                                <v-select\n                                    label=\"Tipo\"\n                                    :hint=\"item.tipo.help\"\n                                    :items=\"tipoOpciones\"\n                                    v-model=\"item.tipo\"\n                                    item-value=\"text\"\n                                    :rules=\"[item.tipo !== '' || 'Este campo es obligatorio']\"\n                                    required\n                                    return-object\n                                    persistent-hint\n                                    dark\n                                ></v-select>\n                                <br>\n                                <v-text-field\n                                    label=\"Nombre del Campo\"\n                                    v-model=\"item.nombre\"\n                                    hint=\"Con este nombre se identificará el campo\"\n                                    :rules=\"[item.nombre !== '' || 'Este campo es obligatorio']\"\n                                    required\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Texto de ayuda\"\n                                    v-model=\"item.help\"\n                                    hint=\"Ayuda textual que acompaña el campo\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Valores de referencia\"\n                                    v-model=\"item.referencia\"\n                                    hint=\"Texto de referencia para el momento de poner el resultado\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    label=\"Unidades\"\n                                    v-model=\"item.unidades\"\n                                    hint=\"Medida en unidades de el resultado\"\n                                ></v-text-field>\n                                <br>\n                                <v-text-field\n                                    v-if=\"item.tipo.name == 'text' || item.tipo.name == 'textarea'\"\n                                    :multi-line=\"item.tipo.name == 'textarea'\"\n                                    :label=\"item.nombre\"\n                                    :hint=\"item.help\"\n                                    v-model=\"item.model_text\"\n                                    persistent-hint\n                                ></v-text-field>\n                                <div v-else-if=\"item.tipo.name == 'select'\">\n                                    <v-layout>\n                                        <v-flex md10 xs10>\n                                            <v-select\n                                                :label=\"item.nombre\"\n                                                :hint=\"item.help\"\n                                                v-model=\"item.model_text\"\n                                                :items=\"item.choices_select\"\n                                                :rules=\"[item.choices_select.length >= 1 || 'Debes escoger una caracteristica', item.choices_select.length == 1 ? 'Asegurate que la caracteristica tenga varias especificaciones': true]\"\n                                                item-value=\"text\"\n                                                persistent-hint\n                                            ></v-select>\n                                        </v-flex>\n                                        <v-flex md2 xs2>\n                                            <v-btn\n                                                v-tooltip:top=\"{html: 'Agregar Opciones'}\"\n                                                class=\"green--text darken-1\" icon=\"icon\"\n                                                @click.native.stop=\"dialog = true; lastItem = item\">\n                                                <v-icon>add</v-icon>\n                                            </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                                <div v-else-if=\"item.tipo.name == 'checkbox'\">\n                                    <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                        <v-flex xs7 md7>\n                                            <v-checkbox\n                                              v-if=\"!choice.edit\"\n                                              :label=\"choice.name\"\n                                              v-model=\"item.model_check\"\n                                              :value=\"choice.id\"\n                                              primary\n                                            ></v-checkbox>\n                                            <v-text-field\n                                              v-else\n                                              label=\"Texto para mostrar\"\n                                              v-model=\"choice.name\"\n                                            ></v-text-field>\n                                        </v-flex>\n                                        <v-flex xs5 md5>\n                                          <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                              <v-icon>mode_edit</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                              <v-icon>delete</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Agregar opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                              <v-icon>add</v-icon>\n                                          </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                                <div v-else-if=\"item.tipo.name == 'radio'\">\n                                    <v-layout v-for=\"(choice, choiceId) of item.choices\" :key=\"choiceId\">\n                                        <v-flex xs7 md7>\n                                            <v-radio\n                                              v-if=\"!choice.edit\"\n                                              :label=\"choice.name\"\n                                              v-model=\"item.model_text\"\n                                              :value=\"choice.name\"\n                                              primary\n                                            ></v-radio>\n                                            <v-text-field\n                                              v-else\n                                              label=\"Texto para mostrar\"\n                                              v-model=\"choice.name\"\n                                            ></v-text-field>\n                                        </v-flex>\n                                        <v-flex xs5 md5>\n                                          <v-btn v-tooltip:top=\"{html: 'Editar opción'}\" icon=\"icon\" class=\"indigo--text\" @click.native=\"toggleValueEditCheckBox(choice)\">\n                                              <v-icon>mode_edit</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Remover opción'}\" icon=\"icon\" class=\"red--text\" @click.native=\"deleteChoiceItem(item, choiceId)\" v-show=\"item.choices.length != 1\">\n                                              <v-icon>delete</v-icon>\n                                          </v-btn>\n                                          <v-btn v-tooltip:top=\"{html: 'Agregar una nueva opción'}\" icon=\"icon\" class=\"yellow--text\" @click.native=\"addChoiceItem(item)\" v-show=\"choiceId == item.choices.length - 1\">\n                                              <v-icon>add</v-icon>\n                                          </v-btn>\n                                        </v-flex>\n                                    </v-layout>\n                                </div>\n                            </v-card-text>\n                            <v-card-actions>\n                                <v-btn\n                                  v-show=\"items.length > 1\"\n                                  flat\n                                  class=\"red--text darken-1\"\n                                  @click.native=\"removeItem(id)\"\n                                >Eliminar Campo</v-btn>\n                            </v-card-actions>\n                        </v-card>\n                    </v-expansion-panel-content>\n                </v-expansion-panel>\n                <br>\n            </v-flex>\n        </v-layout>\n        <floating-button>\n            <template slot=\"child\">\n                <v-btn floating warning small @click.native=\"addItem\" v-tooltip:left=\"{html: 'Agregar Campo'}\">\n                    <v-icon light>add</v-icon>\n                </v-btn>\n                <v-btn floating success small @click.native=\"saveFormato\" v-tooltip:left=\"{html: 'Guardar Formato'}\">\n                    <v-icon light>save</v-icon>\n                </v-btn>\n                <v-btn floating info small @click.native.stop=\"preview = true\" v-tooltip:left=\"{html: 'Previsualizar el Formulario'}\">\n                    <v-icon light>photo</v-icon>\n                </v-btn>\n            </template>\n            <v-btn floating error v-tooltip:left=\"{html: 'Opciones'}\">\n                <v-icon light>settings</v-icon>\n            </v-btn>\n        </floating-button>\n        <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n            <v-card>\n                <v-card-row>\n                    <v-toolbar class=\"orange darken-2\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <!-- <v-btn class=\"white--text\" flat=\"flat\" @click.native=\"preview = false\">Save</v-btn> -->\n                    </v-toolbar>\n                </v-card-row>\n                <formulario-resultado :value=\"$data\"></formulario-resultado>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"dialog\" scrollable>\n            <v-card>\n                <v-card-title>Selecciona una Caracteristica</v-card-title>\n                <v-divider></v-divider>\n                <v-card-row height=\"300px\">\n                    <v-card-text>\n                      <v-radio\n                      v-for=\"(caracteristica, caracteristicaId) of caracteristicas\"\n                      :key=\"caracteristica.id\"\n                      :label=\"caracteristica.codigo.toUpperCase()\"\n                      v-model=\"modalchoice\"\n                      :value=\"caracteristica.id\"\n                      primary></v-radio>\n                    </v-card-text>\n                </v-card-row>\n                <v-divider></v-divider>\n                <v-card-actions>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"dialog = false\">Cerrar</v-btn>\n                    <v-btn class=\"blue--text darken-1\" flat @click.native=\"llenarCaracteristicas\">Escoger</v-btn>\n                </v-card-actions>\n            </v-card>\n        </v-dialog>\n    </div>\n";
-
-/***/ }),
-/* 160 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Laboratorios\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre', 'codigo_internacional', 'equipo.codigo', 'seccion_trabajo.codigo']\"\n                  @selectedrow=\"customEventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-stepper v-model=\"stepper\" non-linear>\n            <v-stepper-header class=\"white\">\n                <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Laboratorio</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"2\" @click.native=\"secondStepClick\" :complete=\"stepper > 2\">Formato</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"3\" @click.native=\"thirdStepClick\">Insumos y Reactivos</v-stepper-step>\n            </v-stepper-header>\n            <v-stepper-content step=\"1\" class=\"white\">\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"_eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                >\n                    <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                        Continuar\n                    </v-btn>\n                </ig-form>\n            </v-stepper-content>\n            <v-stepper-content step=\"2\" class=\"white\">\n                <ig-formato :laboratorio=\"laboratorio\" @mostrarsnackbar=\"showSnackBar\"></ig-formato>\n            </v-stepper-content>\n            <v-stepper-content step=\"3\" class=\"white\">\n                <v-card>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                              <v-subheader>Insumos</v-subheader>\n                              <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                              <v-subheader>Reactivos</v-subheader>\n                              <ig-producto :laboratorio=\"laboratorio\" :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                </v-card>\n            </v-stepper-content>\n        </v-stepper>\n    </div>\n";
-
-/***/ }),
-/* 161 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Ordenes con laboratorios\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :total-items=\"totalItems\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        :filter=\"filter\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <template slot=\"headers\" scope=\"props\">\n                            <tr>\n                                <th v-for=\"header in props.headers\" :key=\"header\"\n                                :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                    @click=\"changeSort(header)\"\n                                >\n                                    <v-icon>arrow_upward</v-icon>\n                                    {{ header.text }}\n                                </th>\n                            </tr>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of fields\">\n                                <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td class=\"text-xs-center\" v-else>\n                                    <v-btn fab dark small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n    </div>\n";
-
-/***/ }),
-/* 162 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Productos\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <!--:filter=\"filter\"-->\n                        <template slot=\"headers\" scope=\"props\">\n                            <!--<span style=\"text-align:before: center !important\">{{ props.item.text }}</span>-->\n                            <tr>\n                                <th v-for=\"header in props.headers\" :key=\"header\"\n                                :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                    @click=\"changeSort(header)\"\n                                >\n                                    <v-icon>arrow_upward</v-icon>\n                                    {{ header.text }}\n                                </th>\n                            </tr>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of table_fields\">\n                                <td :class=\"itemClasses(props.item)\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td :class=\"itemClasses(props.item)\" v-else>\n                                    <v-btn fab dark small router class=\"cyan darken-1\" @click.native.stop=\"openModalRecarga(props.item)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n        <v-dialog v-model=\"dialog\" width=\"80%\" scrollable>\n            <v-card class=\"lol\">\n                <v-card-title>Realizar Recarga para {{ selected.nombre }}</v-card-title>\n                <v-card-text>\n                    <v-layout>\n                        <ig-form\n                            :flat=\"true\"\n                            :fields=\"recarga_fields\"\n                            :url=\"urlRecarga.concat(selected ? selected.id.toString(): '') + '/'\"\n                            ref=\"formRecarga\"\n                            @showsnack=\"showSnackBar\"\n                            @clearselected=\"selectedRecarga = false\"\n                            @objectcreated=\"updateCantidadObjectCreated\"\n                            :selected=\"selectedRecarga\"\n                        ></ig-form>\n                    </v-layout>\n                </v-card-text>\n                <v-card-actions>\n                    <v-btn class=\"red--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                </v-card-actions>\n            </v-card>\n        </v-dialog>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
-
-/***/ }),
-/* 163 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <div v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                dark>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                            <v-spacer></v-spacer>\n                            <v-btn\n                                :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                                flat\n                                @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                                Guardar\n                            </v-btn>\n                        </v-card-actions>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\">\n                <v-card>\n                    <v-toolbar class=\"cyan darken-4\">\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Settings</v-toolbar-title>\n                        <v-spacer></v-spacer>\n                        <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                            <span class=\"btn__content\">Imprimir</span>\n                        </a>\n                    </v-toolbar>\n                    <v-container>\n                        <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                            <div class=\"preloader\">\n                                <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                            </div>\n                        </div>\n                        <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas>\n                    </v-container>\n                </v-card>\n            </v-dialog>\n        </div>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn fab dark info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon dark>check</v-icon>\n                </v-btn>\n                <v-btn fab dark warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon dark>fingerprint</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon dark>print</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
-
-/***/ }),
-/* 164 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Areas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'descripcion']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-stepper v-model=\"stepper\">\n            <v-stepper-header class=\"white\">\n                <v-stepper-step step=\"1\" @click.native=\"stepper = 1\" :complete=\"validateFirstStep()\">Área</v-stepper-step>\n                <v-divider></v-divider>\n                <v-stepper-step step=\"2\" @click.native=\"secondStepClick\">Plantilla de Gasto</v-stepper-step>\n            </v-stepper-header>\n            <v-stepper-content step=\"1\" class=\"white\">\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                >\n                    <v-btn flat @click.native=\"stepper = 2\" dark v-if=\"validateFirstStep()\">\n                        Continuar\n                    </v-btn>\n                </ig-form>\n            </v-stepper-content>\n            <v-stepper-content step=\"2\" class=\"white\">\n                <v-card>\n                    <v-card-title>Lista de insumos por área</v-card-title>\n                    <v-card-text>\n                        <ig-producto :area=\"area\" :plantillas=\"plantillas\"></ig-producto>\n                    </v-card-text>\n                </v-card>\n            </v-stepper-content>\n        </v-stepper>\n    </div>\n";
-
-/***/ }),
-/* 165 */
-/***/ (function(module, exports) {
-
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Tecnicas\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['codigo', 'nombre']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <ig-form\n                      :fields=\"fields\"\n                      :url=\"urlForm\"\n                      @showsnack=\"showSnackBar\"\n                      @objectcreated=\"eventCreatedObject\"\n                      @clearselected=\"selected = false\"\n                      :selected=\"selected\"\n                    ></ig-form>\n                </v-flex>\n            </v-layout>\n        <br>\n    </div>\n";
-
-/***/ }),
-/* 166 */
+/* 178 */
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-container fluid>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            Ordenes en Recepción\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <tr>\n                                    <th v-for=\"header in props.headers\" :key=\"header\"\n                                    :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                        @click=\"changeSort(header)\"\n                                    >\n                                        <v-icon>arrow_upward</v-icon>\n                                        {{ header.text }}\n                                    </th>\n                                </tr>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo.toUpperCase(), ' | ') }}</td>\n                                <td>\n                                    <v-btn fab dark small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                <v-card-text v-if=\"hasRecepcion\">\n                    <v-card horizontal flat>\n                        <v-container>\n                            <v-layout>\n                                <v-flex xs4>\n                                    <v-card-media\n                                    :src=\"fotoPaciente\"\n                                    height=\"345px\"\n                                    ></v-card-media>\n                                </v-flex>\n                                <v-flex xs8>\n                                    <!--height=\"100px\"-->\n                                    <v-card-text>\n                                        <v-layout>\n                                            <v-flex md6>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Nombre del paciente</strong>\n                                                    <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                                </div>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Identificación</strong>\n                                                    <div>{{ recepcion.paciente.cedula }}</div>\n                                                </div>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Edad del paciente</strong>\n                                                    <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                                </div>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Empresa cliente</strong>\n                                                    <div>{{ recepcion.empresa_cliente }}</div>\n                                                </div>\n                                                <strong>Laboratorios a realizar</strong>\n                                                <div>{{ joinBy(recepcion.laboratorios, x => x.nombre.toUpperCase(), ', ') }}</div>\n                                            </v-flex>\n                                            <v-flex md6>\n                                                <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                            </v-flex>\n                                        </v-layout>\n                                    </v-card-text>\n                                    <v-card-actions class=\"cyan darken-1\">\n                                        <v-spacer></v-spacer>\n                                        <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                            <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                        </v-btn>\n                                    </v-card-actions>\n                                </v-flex>\n                            </v-layout>\n                        </v-container>\n                    </v-card>\n                </v-card-text>\n            </v-card>\n        </v-dialog>\n    </div>\n";
-
-/***/ }),
-/* 167 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(141)
-__vue_script__ = __webpack_require__(52)
-__vue_template__ = __webpack_require__(149)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/components/formato.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 168 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(131)
-__vue_script__ = __webpack_require__(56)
-__vue_template__ = __webpack_require__(152)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/components/slot-input.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 169 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(145)
-__vue_script__ = __webpack_require__(58)
-__vue_template__ = __webpack_require__(154)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/bacteriologos.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 170 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(139)
-__vue_script__ = __webpack_require__(59)
-__vue_template__ = __webpack_require__(155)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/caracteristicas.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 171 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(132)
-__vue_script__ = __webpack_require__(60)
-__vue_template__ = __webpack_require__(156)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/empleados.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 172 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(129)
-__vue_script__ = __webpack_require__(61)
-__vue_template__ = __webpack_require__(157)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/equipos.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 173 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(146)
-__vue_script__ = __webpack_require__(62)
-__vue_template__ = __webpack_require__(158)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/especificacion_caracteristica.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 174 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(138)
-__vue_script__ = __webpack_require__(63)
-__vue_template__ = __webpack_require__(159)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/formatos.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 175 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(135)
-__vue_script__ = __webpack_require__(64)
-__vue_template__ = __webpack_require__(160)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/laboratorios.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 176 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(134)
-__vue_script__ = __webpack_require__(65)
-__vue_template__ = __webpack_require__(161)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/ordenes_laboratorios.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 177 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(142)
-__vue_script__ = __webpack_require__(66)
-__vue_template__ = __webpack_require__(162)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/reactivos.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
-
-/***/ }),
-/* 178 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var __vue_script__, __vue_template__
-__webpack_require__(133)
-__vue_script__ = __webpack_require__(67)
-__vue_template__ = __webpack_require__(163)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/resultados.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
 
 /***/ }),
 /* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
-__webpack_require__(148)
-__vue_script__ = __webpack_require__(68)
-__vue_template__ = __webpack_require__(164)
+__webpack_require__(180)
+__vue_script__ = __webpack_require__(182)
+__vue_template__ = __webpack_require__(183)
 module.exports = __vue_script__ || {}
 if (module.exports.__esModule) module.exports = module.exports.default
 if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
@@ -33954,7 +33836,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/secciones_trabajo.vue"
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/empleados.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -33966,80 +33848,195 @@ if (false) {(function () {  module.hot.accept()
 /* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __vue_script__, __vue_template__
-__webpack_require__(143)
-__vue_script__ = __webpack_require__(69)
-__vue_template__ = __webpack_require__(165)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/tecnicas.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(181);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(1)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-03884dbe&file=empleados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-03884dbe&file=empleados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
 
 /***/ }),
 /* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __vue_script__, __vue_template__
-__webpack_require__(130)
-__vue_script__ = __webpack_require__(70)
-__vue_template__ = __webpack_require__(166)
-module.exports = __vue_script__ || {}
-if (module.exports.__esModule) module.exports = module.exports.default
-if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
-if (false) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/laboratorios/pages/toma_muestra.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, __vue_template__)
-  }
-})()}
+exports = module.exports = __webpack_require__(0)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
 
 /***/ }),
 /* 182 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-var g;
+"use strict";
 
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
 
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
+var _underscore = __webpack_require__(2);
 
-module.exports = g;
+var _underscore2 = _interopRequireDefault(_underscore);
 
+var _igmixin = __webpack_require__(5);
+
+var _igmixin2 = _interopRequireDefault(_igmixin);
+
+var _table = __webpack_require__(7);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _form = __webpack_require__(9);
+
+var _form2 = _interopRequireDefault(_form);
+
+var _urls = __webpack_require__(3);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  components: {
+    igTable: _table2.default,
+    igForm: _form2.default
+  },
+  mixins: [_igmixin2.default],
+  data: function data() {
+    return {
+      urlForm: _urls2.default.empleados,
+      selected: false,
+      headers: [{
+        text: 'Usuario',
+        value: 'username',
+        left: true
+      }, {
+        text: 'Nombre',
+        value: 'nombre',
+        left: true
+      }, {
+        text: 'Email',
+        value: 'usuario.email',
+        left: true
+      }, {
+        text: 'Documento',
+        value: 'documento',
+        left: true,
+        sortable: false
+      }],
+      fields: [{
+        name: 'username',
+        verbose_name: 'Usuario',
+        type: String,
+        hint: 'Este es el nombre de usuario de el bacteriologo.',
+        group: 'usuario'
+      }, {
+        name: 'password',
+        verbose_name: 'Contraseña',
+        type: String,
+        hint: 'Esta es la contraseña de el bacteriologo.',
+        required: false,
+        group: 'usuario',
+        kwargs: {
+          type: 'password'
+        }
+      }, {
+        name: 'email',
+        verbose_name: 'Email',
+        type: String,
+        hint: 'Este es el email de el bacteriologo.',
+        group: 'usuario',
+        kwargs: {
+          type: 'email'
+        }
+      }, {
+        name: 'nombres',
+        verbose_name: 'Nombre',
+        type: String,
+        hint: 'Nombres del empleado.'
+      }, {
+        name: 'apellidos',
+        verbose_name: 'Apellidos',
+        type: String,
+        hint: 'Apellidos de el empleado.'
+      }, {
+        name: 'documento',
+        verbose_name: 'Documento',
+        type: Number,
+        hint: 'Documento de el empleado.',
+        kwargs: {
+          type: 'number'
+        }
+      }]
+    };
+  },
+  mounted: function mounted() {
+    this.getElements(_urls2.default.empleados);
+  }
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+// <template lang="html">
+//     <div>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-table
+//                   table-title="Empleados"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['usuario.username', 'nombres', 'usuario.email', 'documento']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
+//             </v-flex>
+//         </v-layout>
+//         <br>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-form
+//                 :fields="fields"
+//                 :url="urlForm"
+//                 @showsnack="showSnackBar"
+//                 @objectcreated="eventCreatedObject"
+//                 @clearselected="selected = false"
+//                 :selected="selected"
+//                 ></ig-form>
+//             </v-flex>
+//         </v-layout>
+//     </div>
+// </template>
+//
+// <script>
 
 /***/ }),
 /* 183 */
 /***/ (function(module, exports) {
 
-/* (ignored) */
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Empleados\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombres', 'usuario.email', 'documento']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ })
 /******/ ]);

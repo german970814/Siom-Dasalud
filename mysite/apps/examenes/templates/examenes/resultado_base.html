@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Resultado Examen</title>
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/print_examenes.css' %}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="card">
+                <div class="card-body card-padding">
+
+                    {% include 'examenes/header.html' %}
+
+                    <div class="row resultado-content">
+
+                        {% include 'examenes/body-visiometria.html' with examen=visiometria %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
