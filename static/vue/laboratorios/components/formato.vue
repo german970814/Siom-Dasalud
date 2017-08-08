@@ -242,7 +242,7 @@ import FloattingButton from './../components/floating-button.vue';
 import FormularioResultado from './../components/formulario-resultado.vue';
 import _ from 'underscore';
 
-import wysiwgy from './../vue-wysiwyg/dist/vueWysiwyg'
+import wysiwgy from './../../vue-wysiwyg/dist/vueWysiwyg'
 
 Vue.use(wysiwgy, {hideModules: {hyperlink: true, image: true, table: true}});
 

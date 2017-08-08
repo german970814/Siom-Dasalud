@@ -24,5 +24,8 @@ def get_resultado(instance, genero):
         else:
             result = result.upper()
     elif tipo == 'select':
-        result = instance.model_text.text.upper()
+        if instance.model_text:
+            result = instance.model_text.text.upper()
+        else:
+            result = ''
     return result
