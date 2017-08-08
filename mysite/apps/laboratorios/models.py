@@ -230,6 +230,14 @@ class Bacteriologo(models.Model):
 
     __str__ = lambda self: '{self.nombre} ({self.registro})'.format(self=self)
 
+    def get_firma(self):
+        if self.firma:
+            return self.firma
+        if getattr(self.usuario, 'visiometra', None) is not None:
+            if self.usuario.visiometra.firma:
+                return self.usuario.visiometra.firma
+        return None
+
 
 @python_2_unicode_compatible
 class Formato(models.Model):

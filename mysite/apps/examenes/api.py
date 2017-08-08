@@ -13,10 +13,10 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.pagination import PageNumberPagination
 
 from .models import (
-    Visiometria
+    Visiometria, Visiometra
 )
 from .serializers import (
-    VisiometriaSerializer
+    VisiometriaSerializer, VisiometraSerializer
 )
 from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
 from mysite.apps.historias.serializers import OrdenSerializer
@@ -72,3 +72,29 @@ class VisiometriaRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
             orden = self._get_orden()
             instance = Visiometria(orden=orden)
         return instance
+
+
+class VisiometraListAPI(generics.ListCreateAPIView):
+    queryset = Visiometra.objects.all()
+    serializer_class = VisiometraSerializer
+
+
+class VisiometraRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Visiometra.objects.all()
+    serializer_class = VisiometraSerializer
+
+
+@api_view(['PUT'])
+def cambiar_firma_visiometra(request, pk):
+    """Vista para cambiar la firma del visiometra."""
+
+    visiometra = get_object_or_404(Visiometra, pk=pk)
+
+    # kwargs_serializer = {'fields': ('firma', )}
+    request.data.setdefault('id', pk)
+    serializer = VisiometraSerializer(fields=('firma', ), data=request.data, instance=visiometra)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors)

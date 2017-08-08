@@ -24,6 +24,17 @@ class Visiometra(models.Model):
     nombre = models.CharField(max_length=200, verbose_name=('Nombre'))
     firma = models.FileField(upload_to=ruta_imagen_visiometra, null=True, blank=True)
 
+    def get_firma(self):
+        """
+        Metodo para obtener la firma de acuerdo a los perfiles del usuario
+        """
+        if self.firma:
+            return self.firma
+        if getattr(self.usuario, 'bacteriologo', None) is not None:
+            if self.usuario.bacteriologo.firma:
+                return self.usuario.bacteriologo.firma
+        return None
+
 
 @python_2_unicode_compatible
 class Visiometria(models.Model):

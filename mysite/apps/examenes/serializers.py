@@ -2,11 +2,13 @@ from rest_framework import serializers
 
 from . import models
 from mysite.apps.historias.serializers import OrdenSerializer
+from mysite.apps.datos.serializers import UsuarioSerializer
 from mysite.apps.laboratorios.mixins import IGSerializer
 
 
 class VisiometriaSerializer(IGSerializer):
     """
+    Serializer para las visiometrias.
     """
 
     orden = OrdenSerializer(
@@ -27,3 +29,17 @@ class VisiometriaSerializer(IGSerializer):
     def __init__(self, *args, **kwargs):
         super(VisiometriaSerializer, self).__init__(*args, **kwargs)
         self.fields['estado'].required = False
+
+
+class VisiometraSerializer(IGSerializer):
+    """
+    Serializer de visiometra.
+    """
+
+    save_in_nested = ('usuario', )
+
+    usuario = UsuarioSerializer(fields=('username', 'email', 'password', ))
+
+    class Meta:
+        model = models.Visiometra
+        fields = ('id', 'usuario', 'nombre', 'firma', )

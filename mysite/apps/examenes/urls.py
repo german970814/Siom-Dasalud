@@ -12,4 +12,7 @@ urlpatterns += [
     url(r'^api/visiometria/recepcion/$', api.OrdenesSinVisiometriaListAPI.as_view(), name='ordenes_sin_visiometia'),
     url(r'^api/visiometria/$', api.VisiometriaListAPI.as_view(), name='ordenes_sin_visiometia'),
     url(r'^api/visiometria/(?P<pk>\d+)/$', api.VisiometriaRetrieveUpdateAPI.as_view(), name='visiometria'),
+    url(r'^api/visiometra/$', api.VisiometraListAPI.as_view(), name='visiometra'),
+    url(r'^api/visiometra/(?P<pk>\d+)/$', api.VisiometraRetrieveUpdateAPI.as_view(), name='visiometra_update'),
+    url(r'^api/visiometra/firma/(?P<pk>\d+)/$', api.cambiar_firma_visiometra, name='cambiar_firma_visiometra'),
 ]

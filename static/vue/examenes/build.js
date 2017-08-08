@@ -24386,6 +24386,9 @@ process.umask = function() { return 0; };
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_ordenes_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__pages_ordenes_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_visiometria_vue__ = __webpack_require__(77);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__pages_visiometria_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__pages_visiometria_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_visiometra_vue__ = __webpack_require__(96);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_visiometra_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__pages_visiometra_vue__);
+
 
 
 
@@ -24394,6 +24397,7 @@ process.umask = function() { return 0; };
 const routes = [
     {path: '/ordenes/visiometria/', component: __WEBPACK_IMPORTED_MODULE_1__pages_ordenes_vue___default.a},
     {path: '/formulario/:id/', component: __WEBPACK_IMPORTED_MODULE_2__pages_visiometria_vue___default.a},
+    {path: '/visiometra/', component: __WEBPACK_IMPORTED_MODULE_3__pages_visiometra_vue___default.a},
 ]
 
 const router = new __WEBPACK_IMPORTED_MODULE_0_vue_router__["a" /* default */]({routes});
@@ -26546,10 +26550,12 @@ const BASE = '/examenes/api/';
 
 const ordenes = BASE.concat('visiometria/recepcion/');
 const visiometria = BASE.concat('visiometria/');
+const visiometra = BASE.concat('visiometra/');
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     ordenes,
-    visiometria
+    visiometria,
+    visiometra,
 });
 
 
@@ -26809,10 +26815,6 @@ _vue2.default.use(_vueResource2.default); // <template>
 //                                             <th class="column">CIL</th>
 //                                             <th class="column">EJE</th>
 //                                             <th class="column">ADD</th>
-//                                             <th class="column">D.P</th>
-//                                             <th class="column">N.P</th>
-//                                             <th class="column">ALT</th>
-//                                             <th class="column">PRISMA</th>
 //                                         </tr>
 //                                     </thead>
 //                                     <tbody>
@@ -26822,10 +26824,6 @@ _vue2.default.use(_vueResource2.default); // <template>
 //                                             <td class="text-xs-center"><v-text-field label="" v-model="cil_od"></v-text-field></td>
 //                                             <td class="text-xs-center"><v-text-field label="" v-model="eje_od"></v-text-field></td>
 //                                             <td class="text-xs-center"><v-text-field label="" v-model="add_od"></v-text-field></td>
-//                                             <td class="text-xs-center"><v-text-field label="" v-model="dp_od"></v-text-field></td>
-//                                             <td class="text-xs-center"><v-text-field label="" v-model="np_od"></v-text-field></td>
-//                                             <td class="text-xs-center"><v-text-field label="" v-model="alt_od"></v-text-field></td>
-//                                             <td class="text-xs-center"><v-text-field label="" v-model="prisma_od"></v-text-field></td>
 //                                         </tr>
 //                                         <tr>
 //                                             <td class="text-xs-center">OJO IZQUIERDO</td>
@@ -26833,6 +26831,33 @@ _vue2.default.use(_vueResource2.default); // <template>
 //                                             <td class="text-xs-center"><v-text-field label="" v-model="cil_oi"></v-text-field></td>
 //                                             <td class="text-xs-center"><v-text-field label="" v-model="eje_oi"></v-text-field></td>
 //                                             <td class="text-xs-center"><v-text-field label="" v-model="add_oi"></v-text-field></td>
+//                                         </tr>
+//                                     </tbody>
+//                                 </table>
+//                             </div>
+//                         </v-layout>
+//                         <v-layout>
+//                             <div class="table__overflow">
+//                                 <table class="table datatable">
+//                                     <thead>
+//                                         <tr>
+//                                             <th class="column"></th>
+//                                             <th class="column">D.P</th>
+//                                             <th class="column">N.P</th>
+//                                             <th class="column">ALT</th>
+//                                             <th class="column">PRISMA</th>
+//                                         </tr>
+//                                     </thead>
+//                                     <tbody>
+//                                         <tr>
+//                                             <td class="text-xs-center">OJO DERECHO</td>
+//                                             <td class="text-xs-center"><v-text-field label="" v-model="dp_od"></v-text-field></td>
+//                                             <td class="text-xs-center"><v-text-field label="" v-model="np_od"></v-text-field></td>
+//                                             <td class="text-xs-center"><v-text-field label="" v-model="alt_od"></v-text-field></td>
+//                                             <td class="text-xs-center"><v-text-field label="" v-model="prisma_od"></v-text-field></td>
+//                                         </tr>
+//                                         <tr>
+//                                             <td class="text-xs-center">OJO IZQUIERDO</td>
 //                                             <td class="text-xs-center"><v-text-field label="" v-model="dp_oi"></v-text-field></td>
 //                                             <td class="text-xs-center"><v-text-field label="" v-model="np_oi"></v-text-field></td>
 //                                             <td class="text-xs-center"><v-text-field label="" v-model="alt_oi"></v-text-field></td>
@@ -26859,12 +26884,12 @@ _vue2.default.use(_vueResource2.default); // <template>
 //                     </v-card-text>
 //                     <v-card-actions>
 //                         <!-- <v-spacer></v-spacer> -->
-//                         <v-btn v-show="visiometria.estado === 'PE'" flat outline success @click.native="submit">{{ 'id' in this.visiometria && this.visiometria.id ? 'Editar': 'Crear'}}</v-btn>
+//                         <v-btn v-show="visiometria.estado !== 'RE'" flat outline success @click.native="submit">{{ 'id' in this.visiometria && this.visiometria.id ? 'Editar': 'Crear'}}</v-btn>
 //                     </v-card-actions>
 //                 </v-card>
 //             </v-flex>
 //         </v-layout>
-//         <ig-fab v-show="'id' in visiometria && visiometria.id && visiometria.estado === 'PE'">
+//         <ig-fab v-show="'id' in visiometria && visiometria.id && visiometria.estado !== 'RE'">
 //             <v-btn
 //                 class="pink"
 //                 dark
@@ -27060,7 +27085,7 @@ exports.default = {
 /* 79 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/examenes/#/ordenes/visiometria/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        <h1 class=\"title\">Formato \"Certificado de aptitud visual\"</h1>\n                    </v-card-title>\n                    <v-card-text>\n                        <v-layout wrap>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Nombre del paciente</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.paciente.nombre_completo }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Identificación</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.paciente.cedula }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Edad del paciente</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Empresa cliente</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.empresa_cliente }}</div>\n                                </div>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-text>\n                        <v-layout wrap>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Usa Lentes Correctivos?\" v-model=\"lentes_correctivos\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Hace cuanto tiempo\" v-model=\"hace_cuanto\"></v-text-field>\n                            </v-flex>\n                        </v-layout>\n                        <h3 class=\"title\">Antecedentes Oftalmológicos</h3>\n                        <v-layout wrap>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Cirugía\" v-model=\"cirugia\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Trauma Ocular\" v-model=\"trauma_ocular\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Pterigio\" v-model=\"pterigio\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Colores\" v-model=\"colores\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-select label=\"Vision Lejana\" v-model=\"vision_lejana\" :items=\"OPCIONES_OJOS\"></v-select>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-select label=\"Vision Cercana\" v-model=\"vision_cercana\" :items=\"OPCIONES_OJOS\"></v-select>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-select label=\"AV\" v-model=\"av\" :items=\"OPCIONES_OJOS\"></v-select>\n                            </v-flex>\n                        </v-layout>\n                        <h3 class=\"title\">Refracción Final</h3>\n                        <v-layout>\n                            <div class=\"table__overflow\">\n                                <table class=\"table datatable\">\n                                    <thead>\n                                        <tr>\n                                            <th class=\"column\"></th>\n                                            <th class=\"column\">ESF</th>\n                                            <th class=\"column\">CIL</th>\n                                            <th class=\"column\">EJE</th>\n                                            <th class=\"column\">ADD</th>\n                                            <th class=\"column\">D.P</th>\n                                            <th class=\"column\">N.P</th>\n                                            <th class=\"column\">ALT</th>\n                                            <th class=\"column\">PRISMA</th>\n                                        </tr>\n                                    </thead>\n                                    <tbody>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO DERECHO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"esf_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"cil_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"eje_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"add_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"dp_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"np_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"alt_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"prisma_od\"></v-text-field></td>\n                                        </tr>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO IZQUIERDO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"esf_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"cil_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"eje_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"add_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"dp_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"np_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"alt_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"prisma_oi\"></v-text-field></td>\n                                        </tr>\n                                    </tbody>\n                                </table>\n                            </div>\n                        </v-layout>\n                        <v-layout wrap>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Foria\" v-model=\"foria\"></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Campimetría\" v-model=\"campimetria\"></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Recomendaciones\" v-model=\"recomendaciones\" multi-line></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Remitir a Oftamología\" v-model=\"remitir_oftamologia\"></v-checkbox>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <!-- <v-spacer></v-spacer> -->\n                        <v-btn v-show=\"visiometria.estado === 'PE'\" flat outline success @click.native=\"submit\">{{ 'id' in this.visiometria && this.visiometria.id ? 'Editar': 'Crear'}}</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-flex>\n        </v-layout>\n        <ig-fab v-show=\"'id' in visiometria && visiometria.id && visiometria.estado === 'PE'\">\n            <v-btn\n                class=\"pink\"\n                dark\n                fab\n                v-tooltip:left=\"{html: 'Cerrar'}\"\n                @click.native=\"cerrarPrueba\"\n            >\n                <v-icon>save</v-icon>\n            </v-btn>\n        </ig-fab>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/examenes/#/ordenes/visiometria/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        <h1 class=\"title\">Formato \"Certificado de aptitud visual\"</h1>\n                    </v-card-title>\n                    <v-card-text>\n                        <v-layout wrap>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Nombre del paciente</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.paciente.nombre_completo }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Identificación</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.paciente.cedula }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Edad del paciente</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Empresa cliente</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.empresa_cliente }}</div>\n                                </div>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-text>\n                        <v-layout wrap>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Usa Lentes Correctivos?\" v-model=\"lentes_correctivos\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Hace cuanto tiempo\" v-model=\"hace_cuanto\"></v-text-field>\n                            </v-flex>\n                        </v-layout>\n                        <h3 class=\"title\">Antecedentes Oftalmológicos</h3>\n                        <v-layout wrap>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Cirugía\" v-model=\"cirugia\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Trauma Ocular\" v-model=\"trauma_ocular\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Pterigio\" v-model=\"pterigio\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Colores\" v-model=\"colores\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-select label=\"Vision Lejana\" v-model=\"vision_lejana\" :items=\"OPCIONES_OJOS\"></v-select>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-select label=\"Vision Cercana\" v-model=\"vision_cercana\" :items=\"OPCIONES_OJOS\"></v-select>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-select label=\"AV\" v-model=\"av\" :items=\"OPCIONES_OJOS\"></v-select>\n                            </v-flex>\n                        </v-layout>\n                        <h3 class=\"title\">Refracción Final</h3>\n                        <v-layout>\n                            <div class=\"table__overflow\">\n                                <table class=\"table datatable\">\n                                    <thead>\n                                        <tr>\n                                            <th class=\"column\"></th>\n                                            <th class=\"column\">ESF</th>\n                                            <th class=\"column\">CIL</th>\n                                            <th class=\"column\">EJE</th>\n                                            <th class=\"column\">ADD</th>\n                                        </tr>\n                                    </thead>\n                                    <tbody>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO DERECHO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"esf_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"cil_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"eje_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"add_od\"></v-text-field></td>\n                                        </tr>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO IZQUIERDO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"esf_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"cil_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"eje_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"add_oi\"></v-text-field></td>\n                                        </tr>\n                                    </tbody>\n                                </table>\n                            </div>\n                        </v-layout>\n                        <v-layout>\n                            <div class=\"table__overflow\">\n                                <table class=\"table datatable\">\n                                    <thead>\n                                        <tr>\n                                            <th class=\"column\"></th>\n                                            <th class=\"column\">D.P</th>\n                                            <th class=\"column\">N.P</th>\n                                            <th class=\"column\">ALT</th>\n                                            <th class=\"column\">PRISMA</th>\n                                        </tr>\n                                    </thead>\n                                    <tbody>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO DERECHO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"dp_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"np_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"alt_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"prisma_od\"></v-text-field></td>\n                                        </tr>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO IZQUIERDO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"dp_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"np_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"alt_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"prisma_oi\"></v-text-field></td>\n                                        </tr>\n                                    </tbody>\n                                </table>\n                            </div>\n                        </v-layout>\n                        <v-layout wrap>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Foria\" v-model=\"foria\"></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Campimetría\" v-model=\"campimetria\"></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Recomendaciones\" v-model=\"recomendaciones\" multi-line></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Remitir a Oftamología\" v-model=\"remitir_oftamologia\"></v-checkbox>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <!-- <v-spacer></v-spacer> -->\n                        <v-btn v-show=\"visiometria.estado !== 'RE'\" flat outline success @click.native=\"submit\">{{ 'id' in this.visiometria && this.visiometria.id ? 'Editar': 'Crear'}}</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-flex>\n        </v-layout>\n        <ig-fab v-show=\"'id' in visiometria && visiometria.id && visiometria.estado !== 'RE'\">\n            <v-btn\n                class=\"pink\"\n                dark\n                fab\n                v-tooltip:left=\"{html: 'Cerrar'}\"\n                @click.native=\"cerrarPrueba\"\n            >\n                <v-icon>save</v-icon>\n            </v-btn>\n        </ig-fab>\n    </div>\n";
 
 /***/ }),
 /* 80 */
@@ -27493,6 +27518,1294 @@ module.exports = __webpack_require__(21)(function(){
   }
   return T;
 } : Object.assign;
+
+/***/ }),
+/* 96 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(97)
+__vue_script__ = __webpack_require__(99)
+__vue_template__ = __webpack_require__(104)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/examenes/pages/visiometra.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 97 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(98);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(25)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2ad830ad&file=visiometra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./visiometra.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2ad830ad&file=visiometra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./visiometra.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 98 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(24)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 99 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _igmixin = __webpack_require__(76);
+
+var _igmixin2 = _interopRequireDefault(_igmixin);
+
+var _table = __webpack_require__(69);
+
+var _table2 = _interopRequireDefault(_table);
+
+var _form = __webpack_require__(100);
+
+var _form2 = _interopRequireDefault(_form);
+
+var _urls = __webpack_require__(74);
+
+var _urls2 = _interopRequireDefault(_urls);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    components: {
+        igTable: _table2.default,
+        igForm: _form2.default
+    },
+    mixins: [_igmixin2.default],
+    data: function data() {
+        return {
+            urlForm: _urls2.default.visiometra,
+            selected: false,
+            headers: [{
+                text: 'Usuario',
+                value: 'username',
+                left: true
+            }, {
+                text: 'Nombre',
+                value: 'nombre',
+                left: true
+            }, {
+                text: 'Email',
+                value: 'usuario.email',
+                left: true
+            }],
+            fields: [{
+                name: 'username',
+                verbose_name: 'Usuario',
+                type: String,
+                hint: 'Este es el nombre de usuario de el visiometra.',
+                group: 'usuario'
+            }, {
+                name: 'password',
+                verbose_name: 'Contraseña',
+                type: String,
+                hint: 'Esta es la contraseña de el visiometra.',
+                required: false,
+                group: 'usuario',
+                kwargs: {
+                    type: 'password'
+                }
+            }, {
+                name: 'email',
+                verbose_name: 'Email',
+                type: String,
+                hint: 'Este es el email de el visiometra.',
+                group: 'usuario',
+                kwargs: {
+                    type: 'email'
+                }
+            }, {
+                name: 'nombre',
+                verbose_name: 'Nombre',
+                type: String,
+                hint: 'Nombre de el visiometra.'
+            }, {
+                name: 'firma',
+                verbose_name: 'Firma',
+                type: 'file',
+                hint: 'Esta es la firma de el visiometra, la cual saldrá en los resultados.',
+                required: false,
+                url_file: '/examenes/api/visiometra/firma/'
+            }]
+        };
+    },
+    mounted: function mounted() {
+        this.getElements(_urls2.default.visiometra);
+    }
+};
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+// <template lang="html">
+//     <div>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-table
+//                   table-title="Visiometras"
+//                   :headers="headers"
+//                   :data="elements"
+//                   :fields="['usuario.username', 'nombre', 'usuario.email']"
+//                   @selectedrow="eventUpdatedForm"
+//                   :loading="loading"
+//                 ></ig-table>
+//             </v-flex>
+//         </v-layout>
+//         <br>
+//         <v-layout>
+//             <v-flex xs12 md12>
+//                 <ig-form
+//                 :fields="fields"
+//                 :url="urlForm"
+//                 @showsnack="showSnackBar"
+//                 @objectcreated="eventCreatedObject"
+//                 @clearselected="selected = false"
+//                 :selected="selected"
+//                 ></ig-form>
+//             </v-flex>
+//         </v-layout>
+//     </div>
+// </template>
+//
+// <script>
+
+/***/ }),
+/* 100 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __vue_script__, __vue_template__
+__webpack_require__(101)
+__vue_script__ = __webpack_require__(103)
+module.exports = __vue_script__ || {}
+if (module.exports.__esModule) module.exports = module.exports.default
+if (__vue_template__) { (typeof module.exports === "function" ? module.exports.options : module.exports).template = __vue_template__ }
+if (false) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/examenes/components/form.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, __vue_template__)
+  }
+})()}
+
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(102);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(25)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-12f2b830&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-12f2b830&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 102 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(24)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 103 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _toConsumableArray2 = __webpack_require__(84);
+
+var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+
+var _typeof2 = __webpack_require__(35);
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _assign = __webpack_require__(92);
+
+var _assign2 = _interopRequireDefault(_assign);
+
+var _getIterator2 = __webpack_require__(26);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _vue = __webpack_require__(3);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _vueResource = __webpack_require__(6);
+
+var _vueResource2 = _interopRequireDefault(_vueResource);
+
+var _errormixin = __webpack_require__(105);
+
+var _errormixin2 = _interopRequireDefault(_errormixin);
+
+var _underscore = __webpack_require__(2);
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// <script>
+_vue2.default.use(_vueResource2.default);
+/* TODO:
+  -Corregir el método getRules();
+*/
+exports.default = {
+    name: 'igForm',
+    mixins: [_errormixin2.default],
+    props: {
+        fields: {
+            type: Array,
+            required: true
+        },
+        url: {
+            type: String,
+            required: true
+        },
+        flat: false,
+        selected: {}
+    },
+    created: function created() {
+        this._getFetchData();
+        // en mounted this.$vuetify.load(this.init)
+    },
+    data: function data() {
+        return {
+            models: {}, // los modelos
+            files: {}, // los archivos
+            items: {}, // los items de los selects
+            validateFields: false,
+            appended: {},
+            isValid: true
+        };
+    },
+    watch: {
+        selected: function selected() {
+            var _this = this;
+
+            if (this.selected) {
+                var _loop = function _loop(attr) {
+                    if (attr in _this.models) {
+                        // si está en los campos
+                        if (_this._isGroupField(attr)) {
+                            var _loop2 = function _loop2(subattr) {
+                                if (attr in _this.items) {
+                                    var key = void 0;
+                                    if (_this.selected[attr][subattr] instanceof Array) {
+                                        var field = _this.fields.find(function (field) {
+                                            return field.name == subattr && field.group == attr;
+                                        });
+                                        if (field && field.kwargs && field.type == Array && field.kwargs.multiple) {
+                                            key = [];
+                                            var _iteratorNormalCompletion = true;
+                                            var _didIteratorError = false;
+                                            var _iteratorError = undefined;
+
+                                            try {
+                                                var _loop3 = function _loop3() {
+                                                    var obj = _step.value;
+
+                                                    var found = _this.items[attr].find(function (object) {
+                                                        return object.id == obj.id;
+                                                    });
+                                                    if (found) {
+                                                        key.push(found);
+                                                    }
+                                                };
+
+                                                for (var _iterator = (0, _getIterator3.default)(_this.selected[attr][subattr]), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                                                    _loop3();
+                                                }
+                                            } catch (err) {
+                                                _didIteratorError = true;
+                                                _iteratorError = err;
+                                            } finally {
+                                                try {
+                                                    if (!_iteratorNormalCompletion && _iterator.return) {
+                                                        _iterator.return();
+                                                    }
+                                                } finally {
+                                                    if (_didIteratorError) {
+                                                        throw _iteratorError;
+                                                    }
+                                                }
+                                            }
+
+                                            if (!_underscore2.default.isEmpty(key)) {
+                                                _this.models[attr][subattr] = key;
+                                            } else {
+                                                _this.$emit('showsnack', 'No se encontró el campo múltiple ' + subattr.toString() + ' del grupo ' + attr.toString());
+                                                _this.models[attr][subattr] = [];
+                                            }
+                                        }
+                                    } else {
+                                        var _iteratorNormalCompletion2 = true;
+                                        var _didIteratorError2 = false;
+                                        var _iteratorError2 = undefined;
+
+                                        try {
+                                            for (var _iterator2 = (0, _getIterator3.default)(_this.items[attr]), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                                var _obj = _step2.value;
+
+                                                if (_obj.id == _this.selected[attr][subattr].id) {
+                                                    key = _obj;
+                                                    break;
+                                                }
+                                            }
+                                        } catch (err) {
+                                            _didIteratorError2 = true;
+                                            _iteratorError2 = err;
+                                        } finally {
+                                            try {
+                                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                                    _iterator2.return();
+                                                }
+                                            } finally {
+                                                if (_didIteratorError2) {
+                                                    throw _iteratorError2;
+                                                }
+                                            }
+                                        }
+
+                                        if (key) {
+                                            // this.models[attr][subattr] = key;
+                                        } else {
+                                            // support for OneToOneField and GroupField forms (models)
+                                            key = _this.fields.find(function (x) {
+                                                return x.group == attr && x.name == subattr;
+                                            });
+                                            if (key) {
+                                                // this.selected[attr][subattr].text = this.selected[attr][subattr][key.key];
+                                                if (attr in _this.appended && _this.appended[attr]) {
+                                                    _this.items[attr].pop();
+                                                    _this.appended[attr] = false;
+                                                }
+                                                _this.items[attr].push(_this.selected[attr][subattr]);
+                                                _this.appended[attr] = true;
+                                                _this.models[attr][subattr] = _this.selected[attr][subattr];
+                                            } else {
+                                                _this.$emit('showsnack', 'No se encuentra el campo "' + subattr + '" de el grupo "' + attr + '" deseado.');
+                                            }
+                                        }
+                                    }
+                                }
+                                _this.models[attr][subattr] = _this.selected[attr][subattr];
+                            };
+
+                            for (var subattr in _this.models[attr]) {
+                                _loop2(subattr);
+                            }
+                        } else {
+                            if (attr in _this.items) {
+                                // si esta en los items que ya fueron fetched
+                                var key = void 0;
+                                if (_this.selected[attr] instanceof Array) {
+                                    // support for ManyToManyField
+                                    var field = _this.fields.find(function (field) {
+                                        return field.name == attr;
+                                    });
+                                    if (field && field.kwargs && field.type == Array && field.kwargs.multiple) {
+                                        key = [];
+                                        var _iteratorNormalCompletion3 = true;
+                                        var _didIteratorError3 = false;
+                                        var _iteratorError3 = undefined;
+
+                                        try {
+                                            var _loop4 = function _loop4() {
+                                                var obj = _step3.value;
+
+                                                var found = _this.items[attr].find(function (object) {
+                                                    return object.id == obj.id;
+                                                });
+                                                if (found) {
+                                                    key.push(found);
+                                                }
+                                            };
+
+                                            for (var _iterator3 = (0, _getIterator3.default)(_this.selected[attr]), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                                                _loop4();
+                                            }
+                                        } catch (err) {
+                                            _didIteratorError3 = true;
+                                            _iteratorError3 = err;
+                                        } finally {
+                                            try {
+                                                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                                                    _iterator3.return();
+                                                }
+                                            } finally {
+                                                if (_didIteratorError3) {
+                                                    throw _iteratorError3;
+                                                }
+                                            }
+                                        }
+
+                                        if (!_underscore2.default.isEmpty(key)) {
+                                            _this.models[attr] = key;
+                                        } else {
+                                            _this.$emit('showsnack', 'No se encontró el campo múltiple ' + attr.toString());
+                                            _this.models[attr] = [];
+                                        }
+                                    }
+                                } else {
+                                    var _iteratorNormalCompletion4 = true;
+                                    var _didIteratorError4 = false;
+                                    var _iteratorError4 = undefined;
+
+                                    try {
+                                        for (var _iterator4 = (0, _getIterator3.default)(_this.items[attr]), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                                            var _obj2 = _step4.value;
+
+                                            if (_obj2.id == _this.selected[attr].id) {
+                                                key = _obj2;
+                                                break;
+                                            }
+                                        }
+                                    } catch (err) {
+                                        _didIteratorError4 = true;
+                                        _iteratorError4 = err;
+                                    } finally {
+                                        try {
+                                            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                                                _iterator4.return();
+                                            }
+                                        } finally {
+                                            if (_didIteratorError4) {
+                                                throw _iteratorError4;
+                                            }
+                                        }
+                                    }
+
+                                    if (key) {
+                                        _this.models[attr] = key;
+                                    } else {
+                                        // support for OneToOneField
+                                        key = _this.fields.find(function (x) {
+                                            return x.name == attr;
+                                        });
+                                        if (key) {
+                                            _this.selected[attr].text = _this.selected[attr][key.key];
+                                            if (attr in _this.appended && _this.appended[attr]) {
+                                                _this.items[attr].pop();
+                                                _this.appended[attr] = false;
+                                            }
+                                            _this.items[attr].push(_this.selected[attr]);
+                                            _this.appended[attr] = true;
+                                            _this.models[attr] = _this.selected[attr];
+                                        } else {
+                                            _this.$emit('showsnack', 'No se encuentra el ' + attr.toString() + ' deseado.');
+                                            _this.models[attr] = '';
+                                        }
+                                    }
+                                }
+                            } else {
+                                _this.models[attr] = _this.selected[attr];
+                            }
+                        }
+                    }
+                };
+
+                for (var attr in this.selected) {
+                    _loop(attr);
+                }
+            }
+        }
+    },
+    methods: {
+        dataURLToBlob: function dataURLToBlob(dataURL) {
+            var BASE64_MARKER = ';base64,';
+
+            if (dataURL.indexOf(BASE64_MARKER) == -1) {
+                var _parts = dataURL.split(',');
+                var _contentType = _parts[0].split(':')[1];
+                var _raw = _parts[1];
+
+                return new Blob([_raw], { type: _contentType });
+            }
+
+            var parts = dataURL.split(BASE64_MARKER);
+            var contentType = parts[0].split(':')[1];
+            var raw = window.atob(parts[1]);
+            var rawLength = raw.length;
+
+            var uInt8Array = new Uint8Array(rawLength);
+
+            for (var i = 0; i < rawLength; ++i) {
+                uInt8Array[i] = raw.charCodeAt(i);
+            }
+
+            return new Blob([uInt8Array], { type: contentType });
+        },
+        cleanFields: function cleanFields() {
+            var _iteratorNormalCompletion5 = true;
+            var _didIteratorError5 = false;
+            var _iteratorError5 = undefined;
+
+            try {
+                for (var _iterator5 = (0, _getIterator3.default)(this.fields), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                    var field = _step5.value;
+
+                    if (field.group) {
+                        if (field.type == 'file') {
+                            this.files[field.group][field.name].model = '';
+                        } else {
+                            if (this.models[field.group][field.name] instanceof Array) {
+                                this.models[field.group][field.name] = new Array();
+                            } else {
+                                this.models[field.group][field.name] = '';
+                            }
+                        }
+                    } else {
+                        if (field.type == 'file') {
+                            this.files[field.name].model = '';
+                        } else {
+                            if (this.models[field.name] instanceof Array) {
+                                this.models[field.name] = new Array();
+                            } else {
+                                this.models[field.name] = '';
+                            }
+                        }
+                    }
+
+                    if (field.name in this.appended) {
+                        this.appended[field.name] = false;
+                        this.items[field.name].pop();
+                    }
+                }
+                // this.selected = false;
+            } catch (err) {
+                _didIteratorError5 = true;
+                _iteratorError5 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                        _iterator5.return();
+                    }
+                } finally {
+                    if (_didIteratorError5) {
+                        throw _iteratorError5;
+                    }
+                }
+            }
+
+            this.$emit('clearselected');
+            this.validateFields = false;
+        },
+        fieldIsRequired: function fieldIsRequired(field) {
+            return field.required === undefined || field.required;
+        },
+        _getFetchData: function _getFetchData() {
+            var _this2 = this;
+
+            var _iteratorNormalCompletion6 = true;
+            var _didIteratorError6 = false;
+            var _iteratorError6 = undefined;
+
+            try {
+                var _loop5 = function _loop5() {
+                    var field = _step6.value;
+
+                    if ('url' in field) {
+                        // si tiene una url donde hacer la consulta
+                        _vue2.default.set(_this2.items, field.name, []); // Se setean las propiedades de acuerdo a la documentacion, de forma reactiva
+                        _this2.$http.get(field.url).then(function (response) {
+                            var _iteratorNormalCompletion7 = true;
+                            var _didIteratorError7 = false;
+                            var _iteratorError7 = undefined;
+
+                            try {
+                                for (var _iterator7 = (0, _getIterator3.default)(response.body), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                                    var _item = _step7.value;
+
+                                    _item.text = _item[field.key];
+                                    _this2.items[field.name].push(_item);
+                                }
+                            } catch (err) {
+                                _didIteratorError7 = true;
+                                _iteratorError7 = err;
+                            } finally {
+                                try {
+                                    if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                                        _iterator7.return();
+                                    }
+                                } finally {
+                                    if (_didIteratorError7) {
+                                        throw _iteratorError7;
+                                    }
+                                }
+                            }
+                        }, function (response) {
+                            if ('detail' in response.body) {
+                                _this2.snackbarText = response.body.detail;
+                                _this2.snackbar = true;
+                            } else {
+                                _this2.snackbarText = 'Han ocurrido errores';
+                                _this2.snackbar = true;
+                            }
+                        });
+                    }
+                    var fieldType = {};
+                    if (field.type == String || field.type == Number) {
+                        fieldType = '';
+                    } else if (field.type == Array) {
+                        if ('kwargs' in field) {
+                            fieldType = field.kwargs.multiple ? [] : {};
+                        }
+                    }
+                    if (field.type == 'file') {
+                        if (!('url_file' in field) && _underscore2.default.isEmpty(field.url_file)) {
+                            throw new Error('Not \'url_file\' provided for ' + field.name + ', verify the field configuration.');
+                        }
+                        if (field.group) {
+                            if (!_this2.files[field.group]) {
+                                _vue2.default.set(_this2.files, field.group, {});
+                            }
+                            _vue2.default.set(_this2.files[field.group], field.name, { field: field, model: '' });
+                        } else {
+                            _vue2.default.set(_this2.files, field.name, { field: field, model: '' });
+                        }
+                    } else {
+                        if (field.group) {
+                            if (!_this2.models[field.group]) {
+                                _vue2.default.set(_this2.models, field.group, {});
+                            }
+                            _vue2.default.set(_this2.models[field.group], field.name, fieldType);
+                            // this.models[field.group][field.name] = fieldType;
+                        } else {
+                            _vue2.default.set(_this2.models, field.name, fieldType);
+                        }
+                    }
+                };
+
+                for (var _iterator6 = (0, _getIterator3.default)(this.fields), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                    _loop5();
+                }
+            } catch (err) {
+                _didIteratorError6 = true;
+                _iteratorError6 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                        _iterator6.return();
+                    }
+                } finally {
+                    if (_didIteratorError6) {
+                        throw _iteratorError6;
+                    }
+                }
+            }
+        },
+        getRules: function getRules(field) {
+            var _this3 = this;
+
+            var rules = new Array();
+            if ('group' in field && field.group && this.fieldIsRequired(field)) {
+                if (field.type == Number) {
+                    rules.push(function (_field) {
+                        return _this3.validateFields ? _underscore2.default.isNumber(_this3.models[field.group][field.name]) || 'Este campo es obligatorio' : true;
+                    });
+                } else {
+                    rules.push(function (_field) {
+                        return _this3.validateFields ? !_underscore2.default.isEmpty(_this3.models[field.group][field.name]) || 'Este campo es obligatorio' : true;
+                    });
+                }
+            } else if (this.fieldIsRequired(field)) {
+                if (field.type == Number) {
+                    rules.push(function (_field) {
+                        return _this3.validateFields ? _underscore2.default.isNumber(Number(_this3.models[field.name])) || 'Este campo es obligatorio' : true;
+                    });
+                } else {
+                    rules.push(function (_field) {
+                        return _this3.validateFields ? !_underscore2.default.isEmpty(_this3.models[field.name]) || 'Este campo es obligatorio' : true;
+                    });
+                }
+            }
+            if ('rules' in field) {
+                if (!field.rules instanceof Array) {
+                    console.error('Las reglas de los campos, deben ser un array [' + field.name.toString() + ']');
+                }
+                rules.push.apply(rules, field.rules);
+            }
+            return rules;
+        },
+        emitDefaultEvents: function emitDefaultEvents(message, attrs) {
+            this.$emit('objectcreated', attrs);
+            this.$emit('showsnack', message);
+        },
+
+        _isValid: function _isValid() {
+            this.validateFields = true;
+            var _iteratorNormalCompletion8 = true;
+            var _didIteratorError8 = false;
+            var _iteratorError8 = undefined;
+
+            try {
+                for (var _iterator8 = (0, _getIterator3.default)(this.fields), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+                    var _field2 = _step8.value;
+
+                    var rules = this.getRules(_field2);
+                    var _iteratorNormalCompletion9 = true;
+                    var _didIteratorError9 = false;
+                    var _iteratorError9 = undefined;
+
+                    try {
+                        for (var _iterator9 = (0, _getIterator3.default)(rules), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+                            var rule = _step9.value;
+
+                            var valid = typeof rule === 'function' ? rule(_field2) : rule;
+                            if (!valid || typeof valid == 'string') {
+                                this.isValid = false;
+                                return this.isValid;
+                            }
+                        }
+                    } catch (err) {
+                        _didIteratorError9 = true;
+                        _iteratorError9 = err;
+                    } finally {
+                        try {
+                            if (!_iteratorNormalCompletion9 && _iterator9.return) {
+                                _iterator9.return();
+                            }
+                        } finally {
+                            if (_didIteratorError9) {
+                                throw _iteratorError9;
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                _didIteratorError8 = true;
+                _iteratorError8 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion8 && _iterator8.return) {
+                        _iterator8.return();
+                    }
+                } finally {
+                    if (_didIteratorError8) {
+                        throw _iteratorError8;
+                    }
+                }
+            }
+
+            this.isValid = true;
+            return this.isValid;
+        },
+        submitForm: function submitForm() {
+            var _this4 = this;
+
+            var url = this.url;
+            var method = 'post';
+            var message = void 0;
+            var data = {};
+            var token = document.getElementsByName('csrfmiddlewaretoken')[0];
+            if (this.selected) {
+                url += this.selected.id + '/';
+                method = 'put';
+            }
+            var _iteratorNormalCompletion10 = true;
+            var _didIteratorError10 = false;
+            var _iteratorError10 = undefined;
+
+            try {
+                for (var _iterator10 = (0, _getIterator3.default)(this.fields), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+                    var _field4 = _step10.value;
+                    // do no support groups yet
+                    // TODO: support for groups
+                    if (_field4.type == Array && !Boolean(_field4.url)) {
+                        // let choices = 'choices' in field ? field.choices: field.kwargs.choices;
+                        data[_field4.name] = this.models[_field4.name].value;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError10 = true;
+                _iteratorError10 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion10 && _iterator10.return) {
+                        _iterator10.return();
+                    }
+                } finally {
+                    if (_didIteratorError10) {
+                        throw _iteratorError10;
+                    }
+                }
+            }
+
+            var payload = (0, _assign2.default)({}, this.models, data);
+
+            if (this._isValid()) {
+                this.$http[method](url, payload, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
+                    if (response.status == 201) {
+                        message = 'Elemento Creado Correctamente';
+                    } else {
+                        message = 'Elemento Editado Correctamente';
+                    }
+                    if (!_underscore2.default.isEmpty(_this4.files)) {
+                        var existsFiles = false;
+                        for (var fileField in _this4.files) {
+                            var _field = _this4.files[fileField];
+                            if (!_underscore2.default.isEmpty(_field.model.name)) {
+                                existsFiles = true;
+                                // let filePayload = {}
+                                // filePayload[fileField] = _field.model;
+                                var filePayload = new FormData();
+                                filePayload.append(fileField, _field.model);
+                                _this4.$http.put(_field.field.url_file.concat(response.body.id.toString() + '/'), filePayload, { headers: { 'X-CSRFToken': token.value } }).then(function (res) {
+                                    _this4.emitDefaultEvents(message, response.body);
+                                }, function (res) {
+                                    console.log("ocurrio un error");
+                                });
+                            }
+                        }
+                        if (!existsFiles) {
+                            _this4.emitDefaultEvents(message, response.body);
+                        }
+                    } else {
+                        _this4.emitDefaultEvents(message, response.body);
+                    }
+                }, function (response) {
+                    if (response.status == 400) {
+                        message = 'Han ocurrido Errores';
+                        if ('usuario' in response.body) {
+                            var _loop6 = function _loop6(_field3) {
+                                var found = _this4.fields.find(function (f) {
+                                    return f.name == _field3;
+                                });
+                                if (found) {
+                                    if (!('rules' in found)) {
+                                        found.rules = [];
+                                    }
+                                    if (found.rules.indexOf(response.body.usuario[_field3]) == -1) {
+                                        var _iteratorNormalCompletion11 = true;
+                                        var _didIteratorError11 = false;
+                                        var _iteratorError11 = undefined;
+
+                                        try {
+                                            for (var _iterator11 = (0, _getIterator3.default)(response.body.usuario[_field3]), _step11; !(_iteratorNormalCompletion11 = (_step11 = _iterator11.next()).done); _iteratorNormalCompletion11 = true) {
+                                                var error = _step11.value;
+
+                                                found.rules.push(error);
+                                            }
+                                        } catch (err) {
+                                            _didIteratorError11 = true;
+                                            _iteratorError11 = err;
+                                        } finally {
+                                            try {
+                                                if (!_iteratorNormalCompletion11 && _iterator11.return) {
+                                                    _iterator11.return();
+                                                }
+                                            } finally {
+                                                if (_didIteratorError11) {
+                                                    throw _iteratorError11;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    _this4.models.usuario[_field3] = '';
+                                }
+                            };
+
+                            for (var _field3 in response.body.usuario) {
+                                _loop6(_field3);
+                            }
+                        }
+                    } else if ('detail' in response.body) {
+                        message = response.body.detail;
+                    } else {
+                        console.error(response);
+                    }
+                    if (message) {
+                        _this4.$emit('showsnack', message);
+                    }
+                });
+            } else {
+                this.$emit('showsnack', 'El formulario aún tiene errores, verifica antes de enviar.');
+            }
+        },
+        _isGroupField: function _isGroupField(item) {
+            if (!_underscore2.default.isArray(this.models[item]) && _underscore2.default.isObject(this.models[item])) {
+                var _iteratorNormalCompletion12 = true;
+                var _didIteratorError12 = false;
+                var _iteratorError12 = undefined;
+
+                try {
+                    for (var _iterator12 = (0, _getIterator3.default)(this.fields), _step12; !(_iteratorNormalCompletion12 = (_step12 = _iterator12.next()).done); _iteratorNormalCompletion12 = true) {
+                        var _field5 = _step12.value;
+
+                        if (_field5.group == item) {
+                            return true;
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError12 = true;
+                    _iteratorError12 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion12 && _iterator12.return) {
+                            _iterator12.return();
+                        }
+                    } finally {
+                        if (_didIteratorError12) {
+                            throw _iteratorError12;
+                        }
+                    }
+                }
+            }
+            return false;
+        },
+        _genCardHeader: function _genCardHeader() {
+            var _this5 = this;
+
+            var childs = [this.$createElement('v-spacer', [])];
+            if (this.selected) {
+                childs.push(this.$createElement('v-btn', {
+                    nativeOn: {
+                        click: function click() {
+                            _this5.cleanFields();
+                        }
+                    },
+                    props: { flat: true }
+                }, [this.$createElement('v-icon', ['clear_all']), 'Limpiar']));
+            }
+            return this.$createElement('v-card-title', childs);
+        },
+        _genCardBody: function _genCardBody() {
+            var _this6 = this;
+
+            var match = {};
+            match[(0, _typeof3.default)(String())] = 'v-text-field';
+            match[(0, _typeof3.default)(Number())] = 'v-text-field';
+            match[(0, _typeof3.default)(Array())] = 'v-select';
+            match[(0, _typeof3.default)(Boolean())] = 'v-checkbox';
+            match['file'] = 'input';
+            match['date'] = 'v-date-picker';
+
+            var childs = [];
+            var _iteratorNormalCompletion13 = true;
+            var _didIteratorError13 = false;
+            var _iteratorError13 = undefined;
+
+            try {
+                var _loop7 = function _loop7() {
+                    var field = _step13.value;
+
+
+                    if (field.type == 'file') {
+                        childs.push(_this6.$createElement('v-flex', { attrs: { 'md6': true, 'xs12': true } }, [_this6.$createElement('input', {
+                            attrs: {
+                                name: field.name,
+                                type: 'file',
+                                accept: 'image/*',
+                                value: _this6.files[field.name].model
+                            },
+                            on: {
+                                input: function input(event) {
+                                    if (field.group) {
+                                        _this6.files[field.group][field.name].model = event.target.files[0];
+                                    } else {
+                                        _this6.files[field.name].model = event.target.files[0];
+                                    }
+                                    _this6.$emit('input', event.target.files[0]);
+                                },
+                                change: function change(event) {
+                                    var file = event.target.files[0];
+                                    _this6.files[field.name].model = file;
+                                }
+                            }
+                        }, [])]));
+                        return 'continue';
+                    }
+
+                    var defaultProps = {
+                        label: field.verbose_name || '',
+                        hint: field.hint || '',
+                        required: _this6.fieldIsRequired(field),
+                        rules: _this6.getRules(field)
+                    };
+                    if (match[(0, _typeof3.default)(field.type())] == 'v-text-field') {
+                        defaultProps.type = _underscore2.default.isEmpty(field.kwargs) ? 'text' : _underscore2.default.isEmpty(field.kwargs.type) ? 'text' : field.kwargs.type;
+                    } else if (match[(0, _typeof3.default)(field.type())] == 'v-select') {
+                        defaultProps.items = field.url ? _this6.items[field.name] : 'choices' in field ? field.choices : field.kwargs.choices;
+                        defaultProps['item-value'] = 'text';
+                        defaultProps.autocomplete = true;
+                        defaultProps.returnObject = true;
+                        // defaultProps.light = true;
+                        if ('kwargs' in field) {
+                            defaultProps.multiple = field.kwargs.multiple ? true : false;
+                        }
+                    }
+
+                    childs.push(_this6.$createElement('v-flex', { attrs: { 'md6': true, 'xs12': true } }, [_this6.$createElement(match[(0, _typeof3.default)(field.type())], {
+                        props: (0, _assign2.default)({
+                            dark: false
+                        }, defaultProps),
+                        domProps: {
+                            value: field.group ? _this6.models[field.group][field.name] : _this6.models[field.name]
+                        },
+                        attrs: {
+                            name: field.name
+                        },
+                        on: {
+                            input: function input(event) {
+                                if (field.group) {
+                                    _this6.models[field.group][field.name] = event;
+                                } else {
+                                    _this6.models[field.name] = event;
+                                }
+                                _this6.$emit('input', event);
+                            },
+                            blur: function blur(event) {
+                                // this.removeServerErrors()
+                                field.rules = [];
+                                var value = field.group ? _this6.models[field.group][field.name] : _this6.models[field.name];
+                                if ('group' in field) {
+                                    _this6.models[field.group][field.name] = value;
+                                } else {
+                                    _this6.models[field.name] = value;
+                                }
+                            }
+                        }
+                    }, [])]));
+                };
+
+                for (var _iterator13 = (0, _getIterator3.default)(this.fields), _step13; !(_iteratorNormalCompletion13 = (_step13 = _iterator13.next()).done); _iteratorNormalCompletion13 = true) {
+                    var _ret7 = _loop7();
+
+                    if (_ret7 === 'continue') continue;
+                }
+            } catch (err) {
+                _didIteratorError13 = true;
+                _iteratorError13 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion13 && _iterator13.return) {
+                        _iterator13.return();
+                    }
+                } finally {
+                    if (_didIteratorError13) {
+                        throw _iteratorError13;
+                    }
+                }
+            }
+
+            return this.$createElement('v-card-text', [this.$createElement('br', []), this.$createElement('v-container', [this.$createElement('v-layout', { attrs: { 'row': true, 'wrap': true } }, childs)]), this.$createElement('small', ['*Campos requeridos.']), this.$createElement('br', [])]);
+        },
+        _genCardFooter: function _genCardFooter() {
+            var _this7 = this;
+
+            var slots = this.$slots.default ? this.$slots.default : [];
+            return this.$createElement('v-card-actions', {
+                props: {
+                    actions: true
+                }
+            }, [this.$createElement('v-spacer', []), this.$createElement('v-btn', {
+                props: {
+                    flat: true,
+                    outline: true,
+                    error: !this.isValid,
+                    info: this.isValid
+                },
+                nativeOn: {
+                    click: function click(event) {
+                        _this7.submitForm(event.target.value);
+                    }
+                }
+            }, [!this.selected ? 'Crear' : 'Editar', this.$createElement('v-spacer', []), this.$createElement('v-icon', {
+                'class': {
+                    'blue--text': this.isValid,
+                    'red--text': !this.isValid
+                }
+            }, ['check_circle'])])].concat((0, _toConsumableArray3.default)(slots)));
+        }
+    },
+    render: function render() {
+        return this.$createElement('v-card', { props: { flat: this.flat } }, [this._genCardHeader(), this._genCardBody(), this._genCardFooter()]);
+    }
+};
+
+// </script>
+//
+// <style lang="css">
+// </style>
+//
+
+/***/ }),
+/* 104 */
+/***/ (function(module, exports) {
+
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Visiometras\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombre', 'usuario.email']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+
+/***/ }),
+/* 105 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_underscore___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_underscore__);
+/*
+
+ErrorMixin
+
+Mixin usado para manejar los errores de cada componente,
+el cual valida a un elemento 'x' que cumpla una serie de
+condiciones y recibe objetos como parametros, de la siguiente
+forma:
+
+var x = {
+  target: document.getElementById('test'),
+  validations: [
+    x => true,
+    false,
+    0 === false,
+  ]
+}
+*/
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    name: 'errorMixin',
+    data: function () {
+        return {
+            validations: [],
+            // _validated: false,
+            errors: [],
+        }
+    },
+    methods: {
+        addValidationIfNotExists: function (obj) {
+            if (!'target' in obj) {
+                throw new Error ('No hay un objetivo definido a partir de el cual buscar validaciones.')
+            }
+            let exists = this.validations.find(x => x.target == obj)
+            if (!exists) {
+                this.addValidation(obj)
+            }
+        },
+        addValidation: function (error) {
+            if (!'validations' in error) {
+                throw new Error ('No hay validaciones por hacer.');
+            }
+            // validations ever will evalue false for errors
+            this.validations.push(error);
+        },
+        removeValidation: function (error) {
+            this.validations.slice(this.validations.indexOf(error), 1);
+        },
+        hasError: function (obj) {
+            if (obj !== undefined) {
+                let validate = this.validations.find(i => i.target == obj);
+                if (validate) {
+                    let validations = validate.validations;
+                    for (let validation of validations) {
+                        const valid = typeof validation === 'function' ? validation(validate.target): validation;
+                        if (!valid || typeof valid == 'string') {
+                            return true;
+                        }
+                    }
+                }
+                return false
+            }
+            return this.validate();
+        },
+        validate: function () {
+            // this._validated = true;
+            let errors = []
+            this.validations.forEach(error => {
+                error.validations.forEach(validation => {
+                    const valid = typeof validation === 'function' ? validation(error.target): validation;
+                    if (!valid || typeof valid == 'string') {
+                        errors.push(error)
+                    }
+                });
+            });
+            return errors.length >= 1;
+        }
+    }
+});
+
 
 /***/ })
 /******/ ]);

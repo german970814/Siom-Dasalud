@@ -88,10 +88,6 @@
                                             <th class="column">CIL</th>
                                             <th class="column">EJE</th>
                                             <th class="column">ADD</th>
-                                            <th class="column">D.P</th>
-                                            <th class="column">N.P</th>
-                                            <th class="column">ALT</th>
-                                            <th class="column">PRISMA</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -101,10 +97,6 @@
                                             <td class="text-xs-center"><v-text-field label="" v-model="cil_od"></v-text-field></td>
                                             <td class="text-xs-center"><v-text-field label="" v-model="eje_od"></v-text-field></td>
                                             <td class="text-xs-center"><v-text-field label="" v-model="add_od"></v-text-field></td>
-                                            <td class="text-xs-center"><v-text-field label="" v-model="dp_od"></v-text-field></td>
-                                            <td class="text-xs-center"><v-text-field label="" v-model="np_od"></v-text-field></td>
-                                            <td class="text-xs-center"><v-text-field label="" v-model="alt_od"></v-text-field></td>
-                                            <td class="text-xs-center"><v-text-field label="" v-model="prisma_od"></v-text-field></td>
                                         </tr>
                                         <tr>
                                             <td class="text-xs-center">OJO IZQUIERDO</td>
@@ -112,6 +104,33 @@
                                             <td class="text-xs-center"><v-text-field label="" v-model="cil_oi"></v-text-field></td>
                                             <td class="text-xs-center"><v-text-field label="" v-model="eje_oi"></v-text-field></td>
                                             <td class="text-xs-center"><v-text-field label="" v-model="add_oi"></v-text-field></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </v-layout>
+                        <v-layout>
+                            <div class="table__overflow">
+                                <table class="table datatable">
+                                    <thead>
+                                        <tr>
+                                            <th class="column"></th>
+                                            <th class="column">D.P</th>
+                                            <th class="column">N.P</th>
+                                            <th class="column">ALT</th>
+                                            <th class="column">PRISMA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="text-xs-center">OJO DERECHO</td>
+                                            <td class="text-xs-center"><v-text-field label="" v-model="dp_od"></v-text-field></td>
+                                            <td class="text-xs-center"><v-text-field label="" v-model="np_od"></v-text-field></td>
+                                            <td class="text-xs-center"><v-text-field label="" v-model="alt_od"></v-text-field></td>
+                                            <td class="text-xs-center"><v-text-field label="" v-model="prisma_od"></v-text-field></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-xs-center">OJO IZQUIERDO</td>
                                             <td class="text-xs-center"><v-text-field label="" v-model="dp_oi"></v-text-field></td>
                                             <td class="text-xs-center"><v-text-field label="" v-model="np_oi"></v-text-field></td>
                                             <td class="text-xs-center"><v-text-field label="" v-model="alt_oi"></v-text-field></td>
@@ -138,12 +157,12 @@
                     </v-card-text>
                     <v-card-actions>
                         <!-- <v-spacer></v-spacer> -->
-                        <v-btn v-show="visiometria.estado === 'PE'" flat outline success @click.native="submit">{{ 'id' in this.visiometria && this.visiometria.id ? 'Editar': 'Crear'}}</v-btn>
+                        <v-btn v-show="visiometria.estado !== 'RE'" flat outline success @click.native="submit">{{ 'id' in this.visiometria && this.visiometria.id ? 'Editar': 'Crear'}}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-flex>
         </v-layout>
-        <ig-fab v-show="'id' in visiometria && visiometria.id && visiometria.estado === 'PE'">
+        <ig-fab v-show="'id' in visiometria && visiometria.id && visiometria.estado !== 'RE'">
             <v-btn
                 class="pink"
                 dark
