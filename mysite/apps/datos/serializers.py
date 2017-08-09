@@ -71,8 +71,8 @@ class UsuarioSerializer(IGModelSerializer, serializers.ModelSerializer):
         def validate(password=value):
             if not value:
                 raise serializers.ValidationError('La contraseña es obligatoria')
-            if len(password) <= 6:
-                raise serializers.ValidationError('Esta contraseña es muy corta')
+            # if len(password) <= 6:
+            #     raise serializers.ValidationError('Esta contraseña es muy corta')
         if instance and instance.pk:
             if value:
                 validate()

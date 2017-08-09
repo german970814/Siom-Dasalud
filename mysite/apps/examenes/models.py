@@ -24,6 +24,9 @@ class Visiometra(models.Model):
     nombre = models.CharField(max_length=200, verbose_name=('Nombre'))
     firma = models.FileField(upload_to=ruta_imagen_visiometra, null=True, blank=True)
 
+    def __str__(self):
+        return self.nombre
+
     def get_firma(self):
         """
         Metodo para obtener la firma de acuerdo a los perfiles del usuario

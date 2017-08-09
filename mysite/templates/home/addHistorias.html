@@ -416,30 +416,25 @@
             </div>
 
         </div>
+        {% if visiometria %}
         <div class="row">
             <div class="col-lg-2">
                 <p>
                     <label for="id_f_visiometria">Visiometria:</label>
-                    {{form1.f_visiometria}}
                 </p>
                 {% if visiometria.estado == 'RE' %}
                 <div class="help-blok">
                     <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html"><small>Ver resultado de Visiometría</small></a>
                 </div>
-                {% endif %}
-            </div>
-            <div class="col-lg-10">
-                <p>
-                    <label for="id_r_visiometria">Resultados:</label>
-                    {{form1.r_visiometria}}
-                </p>
-                {% if visiometria.estado == 'RE' %}
                 <div class="help-blok">
                     <a href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=pdf"><small>Descargar</small></a>
                 </div>
                 {% endif %}
             </div>
+            <div class="col-lg-10">
+            </div>
         </div>
+        {% endif %}
         <div class="row">
             <div class="col-lg-2"><p><label for="id_f_espirometria">Espirometria:</label>{{form1.f_espirometria}}</p></div>
             <div class="col-lg-10"><p><label for="id_r_espirometria">Resultados:</label>{{form1.r_espirometria}}</p></div>

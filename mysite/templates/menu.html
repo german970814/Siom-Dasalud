@@ -195,12 +195,19 @@
 <v-divider light></v-divider>
 {% endif %}
 
-{% if perms.home.es_administrador %}
+{% if user.visiometra or perms.home.es_administrador %}
 
 <v-subheader ligth>Visiometría</v-subheader>
+
+{% if user.visiometra %}
+
 <v-list-tile ripple href="{% url 'examenes:index_visiometria' %}#/ordenes/visiometria/">
     <v-list-tile-title>Ordenes</v-list-tile-title>
 </v-list-tile>
+
+{% endif %}
+
+{% if perms.home.es_administrador %}
 
 <v-list-group>
     <v-list-tile slot="item" ripple>
@@ -217,6 +224,8 @@
         <v-list-tile-title>Visiometras</v-list-tile-title>
     </v-list-tile>
 </v-list-group>
+
+{% endif %}
 
 {% endif %}
 
