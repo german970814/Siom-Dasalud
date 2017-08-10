@@ -42,3 +42,28 @@ class OrdenSerializer(IGModelSerializer, serializers.ModelSerializer):
         representation = super(OrdenSerializer, self).to_representation(obj)
         representation['fecha'] = obj.fecha.strftime('%Y-%m-%d')
         return representation
+
+
+class OrdenVisiometriaSerializer(IGModelSerializer, serializers.ModelSerializer):
+
+    paciente = PacienteSerializer(fields=(
+        'pnombre', 'snombre', 'papellido', 'sapellido', 'telefono',
+        'cedula', 'foto', 'edad', 'unidad_edad', 'genero'))
+    institucion = InstitucionSerializer(fields=('razon', ))
+    empresa = EmpresaSerializer(fields=('razon', ))
+
+    estado_visiometria = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Orden
+        fields = ('id', 'paciente', 'fecha', 'empresa', 'institucion', 'empresa_cliente', 'estado_visiometria', )
+
+    def get_estado_visiometria(self, obj):
+        if getattr(obj, 'visiometria', None) is not None:
+            return obj.visiometria.estado
+        return None
+
+    def to_representation(self, obj):
+        representation = super(OrdenVisiometriaSerializer, self).to_representation(obj)
+        representation['fecha'] = obj.fecha.strftime('%Y-%m-%d')
+        return representation

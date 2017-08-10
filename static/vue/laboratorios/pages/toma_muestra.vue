@@ -95,6 +95,9 @@
                                         <v-btn flat class="white--text" @click.native="saveRecepcion">
                                             <v-icon left light>rate_review</v-icon>Muestra Tomada
                                         </v-btn>
+                                        <v-btn flat class="white--text" @click.native="modalTomaMuestra = false">
+                                            Cancelar
+                                        </v-btn>
                                     </v-card-actions>
                                 </v-flex>
                             </v-layout>

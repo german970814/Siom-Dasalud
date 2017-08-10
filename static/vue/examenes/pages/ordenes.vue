@@ -32,8 +32,8 @@
                         </template>
                         <template slot="items" scope="props">
                             <template v-for="field of fields">
-                                <td class="text-xs-center" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
-                                <td class="text-xs-center" v-else>
+                                <td :class="{'text-xs-center': true, 'light-green lighten-4': props.item.estado_visiometria == 'RE' ? true: false}" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
+                                <td :class="{'text-xs-center': true, 'light-green lighten-4': props.item.estado_visiometria == 'RE' ? true: false}" v-else>
                                     <v-btn fab dark small router class="cyan darken-1" :href="field.href.replace(':id', props.item.id)">
                                         <v-icon dark>content_paste</v-icon>
                                     </v-btn>

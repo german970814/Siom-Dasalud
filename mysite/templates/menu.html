@@ -233,8 +233,11 @@
     <v-subheader light>Laboratorio</v-subheader>
     {% if user.bacteriologo %}
 
+        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/recepciones/">
+            <v-list-tile-title>Laboratorios Atendidos</v-list-tile-title>
+        </v-list-tile>
         <v-list-tile ripple href="{% url 'laboratorios:index' %}#/ordenes_laboratorios/">
-            <v-list-tile-title>Laboratorios</v-list-tile-title>
+            <v-list-tile-title>Laboratorios Sin Atender</v-list-tile-title>
         </v-list-tile>
 
     {% endif %}

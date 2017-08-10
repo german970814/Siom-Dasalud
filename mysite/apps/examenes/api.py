@@ -19,7 +19,7 @@ from .serializers import (
     VisiometriaSerializer, VisiometraSerializer
 )
 from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
-from mysite.apps.historias.serializers import OrdenSerializer
+from mysite.apps.historias.serializers import OrdenVisiometriaSerializer
 from mysite.apps.parametros.models import servicios as Servicio
 from mysite.apps.laboratorios.utils import Pagination
 # from mysite.apps.parametros.serializers import ServicioSerializer
@@ -30,7 +30,7 @@ import datetime
 
 class OrdenesSinVisiometriaListAPI(generics.ListAPIView):
     queryset = Orden.objects.all()
-    serializer_class = OrdenSerializer
+    serializer_class = OrdenVisiometriaSerializer
     pagination_class = Pagination
 
     def get_queryset(self, *args, **kwargs):
@@ -43,7 +43,7 @@ class OrdenesSinVisiometriaListAPI(generics.ListAPIView):
                 servicio__nombre=Visiometria.get_visiometria_servicio()
             ).values_list('orden_id', flat=True).distinct(),
             fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
-        ).order_by('-fecha').exclude(visiometria__estado=Visiometria.RESULTADO_EMITIDO)
+        ).order_by('-fecha')  # .exclude(visiometria__estado=Visiometria.RESULTADO_EMITIDO)
 
         return queryset
 
