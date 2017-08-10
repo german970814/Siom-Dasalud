@@ -5,12 +5,11 @@
         <div class="invoice">
             <div class="">
                 <img id="main-logo" src="http://{{ request.META.HTTP_HOST }}{% static 'siomlab_icon.png' %}" alt="Image Not Found" width="350px" height="125px">
+                <br>
+                <small><p>NIT 900703047-8 · RESOLUCION 0770 DEL 2014</p></small>
                 <div class="">
-                    <div class="title-centered">
-                        <h2 class="">RESULTADOS DE LABORATORIOS</h2>
-                    </div>
                     <div class="row">
-                        <div class="col-md-9">
+                        <div class="col-md-10">
                             <table class="table table-responsive table-bordered table-header">
                                 {% with paciente=orden.paciente %}
                                 <tr>
@@ -46,9 +45,12 @@
                                 {% endwith %}
                             </table>
                         </div>
-                        <div class="col-md-3">
-                            <img id="foto-paciente" src="http://{{ request.META.HTTP_HOST }}{{ orden.paciente.get_foto }}" alt="Foto Paciente" width="150" height="150" />
+                        <div class="col-md-2">
+                            <img id="foto-paciente" src="http://{{ request.META.HTTP_HOST }}{{ orden.paciente.get_foto }}" alt="Foto Paciente" />
                         </div>
+                    </div>
+                    <div class="title-centered">
+                        <h2 class="">RESULTADOS DE LABORATORIOS</h2>
                     </div>
                 </div>
             </div>

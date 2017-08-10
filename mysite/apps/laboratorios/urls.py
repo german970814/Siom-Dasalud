@@ -6,7 +6,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^imprimir/(?P<pk>\d+)/$', views.imprimir_laboratorio, name='imprimir'),
     url(r'^resultados_laboratorios/(?P<pk>\d+)/$', views.ver_resultado_laboratorio, name='ver_resultado_laboratorio'),
-    url(r'^prueba/(?P<pk>\d+)/$', views.prueba),
+    url(r'^preview/(?P<pk>\d+)/$', views.preview, name='preview'),
 ]
 
 # api
@@ -42,6 +42,7 @@ urlpatterns += [
     url(r'^api/servicios/(?P<pk>\d+)/$', api.ServicioLaboratorioAPI.as_view(), name='detalle_servicio'),
     url(r'^api/formatos/(?P<pk>\d+)/$', api.formato_api_view, name='formato_laboratorio'),
     url(r'^api/resultado/(?P<pk>\d+)/$', api.resultado_api_view, name='resultado'),
+    url(r'^api/recepciones/$', api.RecepcionesTerminadas.as_view(), name='recepciones'),
     url(r'^api/ordenes/buscar/$', api.search_resultado_api_view, name='busqueda_ordenes'),
     url(r'^api/ordenes/toma_muestra/$', api.ordenes_toma_muestra, name='ordenes_toma_muestra'),
     url(r'^api/especificacion_caracteristicas/caracteristica/(?P<pk>\d+)/$',

@@ -27,7 +27,7 @@ from .serializers import (
     RecepcionSerializer, HojaGastoSerializer, PlantillaLaboratorioSerializer,
     EmpleadoSerializer, RecargaSerializer
 )
-from .utils import ListViewAPIMixin
+from .utils import ListViewAPIMixin, Pagination
 from .permissions import (
     AdminPermission, BacteriologoPermission, AdminOrBacteriologoPermission,
     ReadOnlyPermission, EmpleadoPermission
@@ -212,6 +212,13 @@ class RecargaAPI(generics.CreateAPIView):
         serializer.save(producto=self.producto)
 
 
+class RecepcionesTerminadas(generics.ListAPIView):
+    queryset = Recepcion.objects.all()
+    serializer_class = RecepcionSerializer
+    filter_fields = ['estado']
+    pagination_class = Pagination
+
+
 @api_view(['GET', 'POST'])
 @permission_classes((EmpleadoPermission, ))
 def ordenes_toma_muestra(request):
@@ -389,6 +396,17 @@ def resultado_api_view(request, pk):
             with reversion.create_revision():
                 resultado = serializer.save(bacteriologo=bacteriologo)
                 if resultado.cerrado:
+                    _resultados = resultado.orden.resultados_laboratorio
+                    if not _resultados.filter(cerrado=False).exists():
+                        laboratorios = Laboratorio.objects.filter(
+                            id__in=Orden.objects.filter(id=orden.id).servicios().values_list('laboratorio__id', flat=True)
+                        ).exclude(
+                            id__in=_resultados.values_list('laboratorio__id', flat=True)
+                        )
+                        if not laboratorios.exists() and orden.recepcion.estado != Recepcion.RESULTADO_EMITIDO:
+                            recepcion = orden.recepcion
+                            recepcion.estado = Recepcion.RESULTADO_EMITIDO
+                            recepcion.save()
                     data_productos = request.data['productos']
                     serializer_plantilla = PlantillaSerializer(data=data_productos, many=True)
                     if serializer_plantilla.is_valid():

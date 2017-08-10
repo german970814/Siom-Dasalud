@@ -45,8 +45,8 @@ class addPlanForm(forms.ModelForm):
     class Meta:
         model   = planes_salud
         fields = ['descripcion', 'porcentaje']	
-        def __init__(self, *args, **kwargs):
-            super(addPlanForm, self).__init__(*args, **kwargs)
-            self.fields['descripcion'].widget.attrs.update({'class' : 'form-control'})
-            self.fields['porcentaje'].widget.attrs.update({'class' : 'form-control'})		
+    def __init__(self, *args, **kwargs):
+        super(addPlanForm, self).__init__(*args, **kwargs)
+        self.fields['descripcion'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['porcentaje'].widget.attrs.update({'class' : 'form-control'})		
                                                                 

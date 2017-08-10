@@ -1,0 +1,113 @@
+<table class="table table-bordered table-responsive join table-body">
+    <tr>
+        <th>USA LENTES CORRECTIVOS</th>
+        <td>{{ examen.lentes_correctivos|yesno:"SI,NO,NO"}}</td>
+        <th>HACE CUANTO</th>
+        <td>{{ examen.hace_cuanto|upper }}</td>
+    </tr>
+    <tr>
+        <th colspan="4" style="text-align:center">ANTECEDENTES PERSONALES OFTALMOLOGICOS</th>
+    </tr>
+</table>
+<table class="table table-bordered table-responsive join table-body">
+    <tr>
+        <th>CIRUGIA</th>
+        <td>{{ examen.cirugia|yesno:"SI,NO,NO" }}</td>
+        <th>TRAUMA OCULAR</th>
+        <td>{{ examen.trauma_ocular|yesno:"SI,NO,NO" }}</td>
+        <th>PTERIGIO</th>
+        <td>{{ examen.pterigio|yesno:"SI,NO,NO" }}</td>
+        <th>COLORES</th>
+        <td>{{ examen.colores|yesno:"SI,NO,NO" }}</td>
+    </tr>
+</table>
+<table class="table table-bordered table-responsive join table-body">
+    <tr>
+        <th>VISION LEJANA</th>
+        <td>{% if examen.vision_lejana %}{{ examen.get_vision_lejana_display|upper }}{% else %}NINGUNA{% endif %}</td>
+        <th>VISION CERCANA</th>
+        <td>{% if examen.vision_cercana %}{{ examen.get_vision_cercana_display|upper }}{% else %}NINGUNA{% endif %}</td>
+        <th>AV</th>
+        <td>{% if examen.av %}{{ examen.get_av_display|upper }}{% else %}NINGUNA{% endif %}</td>
+    </tr>
+</table>
+<table class="table table-bordered table-responsive join table-body">
+    <thead>
+        <tr>
+            <th colspan="9" style="text-align:center">REFRACCION FINAL</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th>ESF</th>
+            <th>CIL</th>
+            <th>EJE</th>
+            <th>ADD</th>
+            <th>D.P</th>
+            <th>N.P</th>
+            <th>ALT</th>
+            <th>PRISMA</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>O.D</td>
+            <td>{{ examen.esf_od }}</td>
+            <td>{{ examen.cil_od }}</td>
+            <td>{{ examen.eje_od }}</td>
+            <td>{{ examen.add_od }}</td>
+            <td>{{ examen.dp_od }}</td>
+            <td>{{ examen.np_od }}</td>
+            <td>{{ examen.alt_od }}</td>
+            <td>{{ examen.prisma_od }}</td>
+        </tr>
+        <tr>
+            <td>O.I</td>
+            <td>{{ examen.esf_oi }}</td>
+            <td>{{ examen.cil_oi }}</td>
+            <td>{{ examen.eje_oi }}</td>
+            <td>{{ examen.add_oi }}</td>
+            <td>{{ examen.dp_oi }}</td>
+            <td>{{ examen.np_oi }}</td>
+            <td>{{ examen.alt_oi }}</td>
+            <td>{{ examen.prisma_oi }}</td>
+        </tr>
+    </tbody>
+</table>
+<table class="table table-bordered table-responsive join table-body">
+    <tr>
+        <th>FORIA</th>
+        <td>{% if examen.foria %}{{ examen.foria }}{% else %}SIN DATOS{% endif %}</td>
+        <th>CAMPIMETRIA</th>
+        <td>{% if examen.campimetria %}{{ examen.campimetria }}{% else %}SIN DATOS{% endif %}</td>
+        <th>REMITIR A OFTALMOLOGIA</th>
+        <td>{{ examen.remitir_oftamologia|yesno:"SI,NO,NO" }}</td>
+    </tr>
+</table>
+<table class="table table-bordered table-responsive table-body">
+    <tr>
+        <th>RECOMENDACIONES</th>
+    </tr>
+    <tr>
+        <td>{% if examen.recomendaciones %}{{ examen.recomendaciones|title }}{% else %}NINGUNA{% endif %}</td>
+    </tr>
+</table>
+<div class="row">
+    <div class="col-md-3">
+        {% if examen.visiometra.get_firma %}
+        <img class="firma" src="http://{{ request.META.HTTP_HOST }}{{ examen.visiometra.get_firma.url }}" alt="" width="150px" height="80px"/>
+        <br>
+        {% else %}
+        <hr>
+        {% endif %}
+        <p>FIRMA DEL EXAMINADOR</p>
+    </div>
+    <div class="col-md-3 col-md-offset-3">
+        {% if orden.paciente.firma %}
+        <img class="firma" src="http://{{ request.META.HTTP_HOST }}{{ orden.paciente.firma.url }}" alt="" width="150px" height="80px"/>
+        <br>
+        {% else %}
+        <hr>
+        {% endif %}
+        <p>FIRMA DEL EXAMINADO</p>
+    </div>
+</div>

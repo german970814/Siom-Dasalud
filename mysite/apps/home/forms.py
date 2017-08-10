@@ -93,27 +93,27 @@ class usuarioForm(forms.ModelForm):
 class usuarioEmpresaForm(forms.ModelForm):
     class Meta:
         model   = usuario_empresa
-        fields = ['empresa', 'nombre', 'usuario']	
-        def __init__(self, *args, **kwargs):
-            super(usuarioEmpresaForm, self).__init__(*args, **kwargs)
-            self.fields['empresa'].widget.attrs.update({'class' : 'form-control'})
-            self.fields['nombre'].widget.attrs.update({'class' : 'form-control'})
-            self.fields['usuario'].widget.attrs.update({'class' : 'form-control'})
+        fields = ['empresa', 'nombre', 'usuario']
+    def __init__(self, *args, **kwargs):
+        super(usuarioEmpresaForm, self).__init__(*args, **kwargs)
+        self.fields['empresa'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['nombre'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['usuario'].widget.attrs.update({'class' : 'form-control'})
 
 class AddusuarioEmpresaForm(forms.ModelForm):
     class Meta:
         model   = usuario_empresa
-        fields = ['empresa', 'nombre']	
-        def __init__(self, *args, **kwargs):
-            super(AddusuarioEmpresaForm, self).__init__(*args, **kwargs)
-            self.fields['empresa'].widget.attrs.update({'class' : 'form-control'})
-            self.fields['nombre'].widget.attrs.update({'class' : 'form-control'})
+        fields = ['empresa', 'nombre']
+    def __init__(self, *args, **kwargs):
+        super(AddusuarioEmpresaForm, self).__init__(*args, **kwargs)
+        self.fields['empresa'].widget.attrs.update({'class' : 'form-control'})
+        self.fields['nombre'].widget.attrs.update({'class' : 'form-control'})
 
 class userProfileForm(forms.ModelForm):
     class Meta:
         model   = userProfile
-        fields = ['institucion',]	
-        def __init__(self, *args, **kwargs):
-            super(userProfileForm, self).__init__(*args, **kwargs)
-            self.fields['institucion'].widget.attrs.update({'class' : 'form-control'})
+        fields = ['institucion',]
+    def __init__(self, *args, **kwargs):
+        super(userProfileForm, self).__init__(*args, **kwargs)
+        self.fields['institucion'].widget.attrs.update({'class' : 'form-control'})
                         

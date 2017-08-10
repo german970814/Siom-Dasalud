@@ -20,7 +20,11 @@ class PacienteSerializer(IGModelSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Paciente
-        fields = ('id', 'pnombre', 'snombre', 'papellido', 'sapellido', 'cedula', 'foto', 'edad', 'unidad_edad', 'genero')
+        fields = (
+            'id', 'pnombre', 'snombre', 'papellido',
+            'sapellido', 'cedula', 'foto', 'edad',
+            'unidad_edad', 'genero', 'telefono'
+        )
         extra_kwargs = {'foto': {'read_only': True}}
 
     def get_nombre_completo(self, obj):
@@ -67,8 +71,8 @@ class UsuarioSerializer(IGModelSerializer, serializers.ModelSerializer):
         def validate(password=value):
             if not value:
                 raise serializers.ValidationError('La contraseña es obligatoria')
-            if len(password) <= 6:
-                raise serializers.ValidationError('Esta contraseña es muy corta')
+            # if len(password) <= 6:
+            #     raise serializers.ValidationError('Esta contraseña es muy corta')
         if instance and instance.pk:
             if value:
                 validate()

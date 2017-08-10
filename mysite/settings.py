@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'mysite.apps.parametros',
     'mysite.apps.facturacion',
     'mysite.apps.laboratorios',
+    'mysite.apps.examenes',
     'reversion',
     'rest_framework',
     'django_filters',

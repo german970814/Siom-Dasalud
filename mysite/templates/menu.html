@@ -194,77 +194,114 @@
 </v-list-group>
 <v-divider light></v-divider>
 {% endif %}
-<v-subheader light>Laboratorio</v-subheader>
-{% if user.bacteriologo %}
 
-    <v-list-tile ripple href="{% url 'laboratorios:index' %}#/ordenes_laboratorios/">
-        <v-list-tile-title>Laboratorios</v-list-tile-title>
-    </v-list-tile>
+{% if user.visiometra or perms.home.es_administrador %}
 
-{% endif %}
-{% if user.empleado %}
+<v-subheader ligth>Visiometría</v-subheader>
 
-    <v-list-tile ripple href="{% url 'laboratorios:index' %}#/toma_muestra/">
-        <v-list-tile-title>Ordenes Toma Muestra</v-list-tile-title>
-    </v-list-tile>
+{% if user.visiometra %}
+
+<v-list-tile ripple href="{% url 'examenes:index_visiometria' %}#/ordenes/visiometria/">
+    <v-list-tile-title>Ordenes</v-list-tile-title>
+</v-list-tile>
 
 {% endif %}
+
 {% if perms.home.es_administrador %}
-<v-list-group>
 
-        <v-list-tile slot="item" ripple>
-            <v-list-tile-action>
-                <v-icon light>local_hospital</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-                <v-list-tile-title>Administración</v-list-tile-title>
-            </v-list-tile-content>
-        </v-list-tile>
-    
-    
-        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/bacteriologos/">
-          <v-list-tile-title>Bacteriologos</v-list-tile-title>
-        </v-list-tile>
-    
-    
-        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/empleados/">
-          <v-list-tile-title>Empleados</v-list-tile-title>
-        </v-list-tile>
-    
-    
-        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/laboratorios/">
-          <v-list-tile-title>Laboratorios</v-list-tile-title>
-        </v-list-tile>
-    
-    
-        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/equipos/">
-            <v-list-tile-title>Equipos</v-list-tile-title>
-        </v-list-tile>
-    
-    
-        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/tecnicas/">
-            <v-list-tile-title>Tecnicas</v-list-tile-title>
-        </v-list-tile>
-    
-    
-        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/secciones_trabajo/">
-            <v-list-tile-title>Areas</v-list-tile-title>
-        </v-list-tile>
-    
-    
-        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/reactivos/">
-            <v-list-tile-title>Productos</v-list-tile-title>
-        </v-list-tile>
-    
-    
-        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/caracteristicas/">
-            <v-list-tile-title>Caracteristicas</v-list-tile-title>
-        </v-list-tile>
-    
-    
-        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/especificacion_caracteristicas/">
-            <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>
-        </v-list-tile>
-    
+<v-list-group>
+    <v-list-tile slot="item" ripple>
+        <v-list-tile-action>
+            <v-icon light>local_hospital</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+            <v-list-tile-title>Administración</v-list-tile-title>
+        </v-list-tile-content>
+    </v-list-tile>
+
+
+    <v-list-tile ripple href="{% url 'examenes:index_visiometria' %}#/visiometra/">
+        <v-list-tile-title>Visiometras</v-list-tile-title>
+    </v-list-tile>
 </v-list-group>
+
+{% endif %}
+
+{% endif %}
+
+{% if user.bacteriologo or user.empleado or perms.home.es_administrador %}
+    <v-subheader light>Laboratorio</v-subheader>
+    {% if user.bacteriologo %}
+
+        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/ordenes_laboratorios/">
+            <v-list-tile-title>Laboratorios</v-list-tile-title>
+        </v-list-tile>
+
+    {% endif %}
+    {% if user.empleado %}
+
+        <v-list-tile ripple href="{% url 'laboratorios:index' %}#/toma_muestra/">
+            <v-list-tile-title>Ordenes Toma Muestra</v-list-tile-title>
+        </v-list-tile>
+
+    {% endif %}
+    {% if perms.home.es_administrador %}
+    <v-list-group>
+
+            <v-list-tile slot="item" ripple>
+                <v-list-tile-action>
+                    <v-icon light>local_hospital</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                    <v-list-tile-title>Administración</v-list-tile-title>
+                </v-list-tile-content>
+            </v-list-tile>
+        
+        
+            <v-list-tile ripple href="{% url 'laboratorios:index' %}#/bacteriologos/">
+            <v-list-tile-title>Bacteriologos</v-list-tile-title>
+            </v-list-tile>
+        
+        
+            <v-list-tile ripple href="{% url 'laboratorios:index' %}#/empleados/">
+            <v-list-tile-title>Empleados</v-list-tile-title>
+            </v-list-tile>
+        
+        
+            <v-list-tile ripple href="{% url 'laboratorios:index' %}#/laboratorios/">
+            <v-list-tile-title>Laboratorios</v-list-tile-title>
+            </v-list-tile>
+        
+        
+            <v-list-tile ripple href="{% url 'laboratorios:index' %}#/equipos/">
+                <v-list-tile-title>Equipos</v-list-tile-title>
+            </v-list-tile>
+        
+        
+            <v-list-tile ripple href="{% url 'laboratorios:index' %}#/tecnicas/">
+                <v-list-tile-title>Tecnicas</v-list-tile-title>
+            </v-list-tile>
+        
+        
+            <v-list-tile ripple href="{% url 'laboratorios:index' %}#/secciones_trabajo/">
+                <v-list-tile-title>Areas</v-list-tile-title>
+            </v-list-tile>
+        
+        
+            <v-list-tile ripple href="{% url 'laboratorios:index' %}#/reactivos/">
+                <v-list-tile-title>Productos</v-list-tile-title>
+            </v-list-tile>
+        
+        
+            <v-list-tile ripple href="{% url 'laboratorios:index' %}#/caracteristicas/">
+                <v-list-tile-title>Caracteristicas</v-list-tile-title>
+            </v-list-tile>
+        
+        
+            <v-list-tile ripple href="{% url 'laboratorios:index' %}#/especificacion_caracteristicas/">
+                <v-list-tile-title>Especificacion de Caracteristicas</v-list-tile-title>
+            </v-list-tile>
+        
+    </v-list-group>
+    {% endif %}
 {% endif %}

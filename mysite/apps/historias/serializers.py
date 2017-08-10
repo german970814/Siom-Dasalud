@@ -17,7 +17,8 @@ class OrdenProductoSerializer(IGModelSerializer):
 class OrdenSerializer(IGModelSerializer, serializers.ModelSerializer):
 
     paciente = PacienteSerializer(fields=(
-        'pnombre', 'snombre', 'papellido', 'sapellido', 'cedula', 'foto', 'edad', 'unidad_edad', 'genero'))
+        'pnombre', 'snombre', 'papellido', 'sapellido', 'telefono',
+        'cedula', 'foto', 'edad', 'unidad_edad', 'genero'))
     institucion = InstitucionSerializer(fields=('razon', ))
     empresa = EmpresaSerializer(fields=('razon', ))
 
