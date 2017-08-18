@@ -89,7 +89,7 @@ export default {
                 this.$createElement('v-text-field', {
                     slot: 'input',
                     props: {
-                        label: 'Comentario', 'multi-line': true, type: 'text',
+                        label: 'Comentario', 'multi-line': true, type: 'text', autofocus: true
                     },
                     on: {
                         input: (event) => {
@@ -240,7 +240,7 @@ export default {
                             props: {
                                 label: 'Resultado', 'multi-line': item.tipo.name == 'textarea',
                                 type: item.tipo.name == 'number' ? 'number': 'text',
-                                hint: item.help, 'persistent-hint': true
+                                hint: item.help, 'persistent-hint': true, autofocus: true
                             },
                             on: {
                                 input: (event) => {
@@ -278,7 +278,8 @@ export default {
                                 props: {
                                     label: 'Resultado', 'item-value': 'text',
                                     hint: item.help, 'persistent-hint': true,
-                                    items: item.choices, 'return-object': true
+                                    items: item.choices, 'return-object': true,
+                                    autofocus: true
                                 },
                                 on: {
                                     input: (event) => {

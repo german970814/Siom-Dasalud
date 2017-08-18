@@ -96,10 +96,9 @@
 
     .table-header {
         border-collapse: separate !important;
-        border-radius: 12px;
-        font-size: 8px !important;
-        /* border-spacing: 3px !important; */
+        font-size: 10px !important;
         margin: 0;
+        margin-top: -9px;
     }
 
     .table> tbody> tr> th {
@@ -138,6 +137,12 @@
 
     footer p {
         font-size: 6px !important;
+    }
+
+    .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+        padding: 0;
+        vertical-align: initial;
+        border-top: 0;
     }
 }
 
