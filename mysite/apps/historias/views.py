@@ -516,7 +516,7 @@ def add_orden_view(request,id_prod):
 	return render_to_response('home/addordenSiom.html',ctx,context_instance=RequestContext(request))
 
 @login_required(login_url=URL_LOGIN)
-def add_servicios_view(request,id_prod,id_orden):
+def add_servicios_view(request, id_prod, id_orden):
 	temp = paciente.objects.get(pk=id_prod)
 	getorden = orden.objects.get(pk=id_orden)
 	if request.method == "POST":

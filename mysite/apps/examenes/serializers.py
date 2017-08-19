@@ -41,5 +41,5 @@ class VisiometraSerializer(IGSerializer):
     usuario = UsuarioSerializer(fields=('username', 'email', 'password', ))
 
     class Meta:
-        model = models.Visiometra
+        model = models.Empleado
         fields = ('id', 'usuario', 'nombre', 'firma', )

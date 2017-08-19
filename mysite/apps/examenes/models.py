@@ -10,19 +10,27 @@ from mysite.apps.historias.models import orden as Orden
 from mysite.apps.parametros.models import servicios as Servicio
 
 
-def ruta_imagen_visiometra(instance, filename):
-    return 'visiometria/filename/{}_{}'.format(instance.id, filename)
+def ruta_imagen_empleado(instance, filename):
+    return 'examenes/filename/{}_{}'.format(instance.id, filename)
 
 
 @python_2_unicode_compatible
-class Visiometra(models.Model):
+class Empleado(models.Model):
     """
-    Usuario perfil de visiometra.
+    Empleado del sistema de Examenes.
     """
 
-    usuario = models.OneToOneField(settings.AUTH_USER_MODEL, verbose_name=_('Usuario'))
+    usuario = models.OneToOneField(
+        settings.AUTH_USER_MODEL, verbose_name=_('Usuario'), related_name='empleado_examenes')
     nombre = models.CharField(max_length=200, verbose_name=('Nombre'))
-    firma = models.FileField(upload_to=ruta_imagen_visiometra, null=True, blank=True)
+    firma = models.FileField(upload_to=ruta_imagen_empleado, null=True, blank=True)
+
+    class Meta:
+        permissions = (
+            ('audiometra', 'Es usuario de Audiometría'),
+            ('visiometra', 'Es usuario de Visiometría'),
+            ('optometra', 'Es usuario de Optometría'),
+        )
 
     def __str__(self):
         return self.nombre
@@ -52,6 +60,9 @@ class Visiometria(models.Model):
     PENDIENTE = 'PE'
     RESULTADO_EMITIDO = 'RE'
 
+    VISIOMETRIA = 'VI'
+    OPTOMETRIA = 'OP'
+
     OPCIONES_OJOS = (
         (OJO_DERECHO, _('OJO DERECHO')),
         (OJO_IZQUIERDO, _('OJO IZQUIERDO')),
@@ -63,20 +74,34 @@ class Visiometria(models.Model):
         (RESULTADO_EMITIDO, _('RESULTADO EMITIDO'))
     )
 
+    OPCIONES_TIPO = (
+        (VISIOMETRIA, _('VISIOMETRIA')),
+        (OPTOMETRIA, _('OPTOMETRIA'))
+    )
+
     lentes_correctivos = models.NullBooleanField(verbose_name=_('Usa Lentes Correctivos'))
     hace_cuanto = models.CharField(
         max_length=100, verbose_name=_('Hace cuanto tiempo'), blank=True, null=True
     )  # hace cuanto tiempo usa lentes
 
     # antecedentes
-    cirugia = models.NullBooleanField(verbose_name=_('Cirugía'))
-    trauma_ocular = models.NullBooleanField(verbose_name=_('Trauma Ocular'))
-    pterigio = models.NullBooleanField(verbose_name=_('Pterigio'))
-    colores = models.NullBooleanField(verbose_name=_('Colores'))
+    cirugia = models.CharField(max_length=50, verbose_name=_('Cirugía'), blank=True, null=True)
+    trauma_ocular = models.CharField(max_length=50, verbose_name=_('Trauma Ocular'), blank=True, null=True)
+    pterigio = models.CharField(max_length=50, verbose_name=_('Pterigio'), blank=True, null=True)
+    colores = models.CharField(max_length=50, verbose_name=_('Colores'), blank=True, null=True)
 
-    vision_lejana = models.CharField(max_length=2, verbose_name=_('Vision lejana'), choices=OPCIONES_OJOS, blank=True, null=True)
-    vision_cercana = models.CharField(max_length=2, verbose_name=_('Vision cercana'), choices=OPCIONES_OJOS, blank=True, null=True)
-    av = models.CharField(max_length=2, verbose_name=_('AV'), choices=OPCIONES_OJOS, blank=True, null=True)
+    # vision_lejana = models.CharField(max_length=2, verbose_name=_('Vision lejana'), choices=OPCIONES_OJOS, blank=True, null=True)
+    # vision_cercana = models.CharField(max_length=2, verbose_name=_('Vision cercana'), choices=OPCIONES_OJOS, blank=True, null=True)
+    # av = models.CharField(max_length=2, verbose_name=_('AV'), choices=OPCIONES_OJOS, blank=True, null=True)
+    vision_lejana_od = models.CharField(max_length=50, verbose_name=_('Ojo Derecho'), blank=True, null=True)
+    vision_lejana_oi = models.CharField(max_length=50, verbose_name=_('Ojo Izquierdo'), blank=True, null=True)
+    vision_lejana_ao = models.CharField(max_length=50, verbose_name=_('Ambos ojos'), blank=True, null=True)
+    vision_cercana_od = models.CharField(max_length=50, verbose_name=_('Ojo Derecho'), blank=True, null=True)
+    vision_cercana_oi = models.CharField(max_length=50, verbose_name=_('Ojo Izquierdo'), blank=True, null=True)
+    vision_cercana_ao = models.CharField(max_length=50, verbose_name=_('Ambos ojos'), blank=True, null=True)
+    av_od = models.CharField(max_length=50, verbose_name=_('Ojo Derecho'), blank=True, null=True)
+    av_oi = models.CharField(max_length=50, verbose_name=_('Ojo Izquierdo'), blank=True, null=True)
+    av_ao = models.CharField(max_length=50, verbose_name=_('Ambos ojos'), blank=True, null=True)
 
     esf_od = models.CharField(max_length=50, verbose_name=_('ESF'), blank=True, null=True)
     cil_od = models.CharField(max_length=50, verbose_name=_('CIL'), blank=True, null=True)
@@ -103,13 +128,28 @@ class Visiometria(models.Model):
     recomendaciones = models.TextField(verbose_name=_('Recomendaciones'), blank=True, null=True)
     # constancia = models.CharField(max_length=100, verbose_name=_('En constancia de:'))
 
+    tipo = models.CharField(max_length=2, choices=OPCIONES_TIPO)
     orden = models.OneToOneField(Orden, related_name='visiometria')
-    visiometra = models.ForeignKey(Visiometra, related_name='visiometrias')
+    visiometra = models.ForeignKey(Empleado, related_name='visiometrias')
     estado = models.CharField(max_length=2, choices=OPCIONES_ESTADO)
 
     def __str__(self):
-        return 'Visiometría #{self.id}'.format(self=self)
+        return '{display} #{self.id}'.format(self=self, display=self.get_tipo_display())
 
     @classmethod
     def get_visiometria_servicio(cls):
         return Servicio.objects.get(nombre__icontains='visiometria')
+
+    @classmethod
+    def get_optometria_servicio(cls):
+        return Servicio.objects.get(nombre__icontains='optometria')
+
+    def get_servicio(self):
+        """
+        Retorna el servicio correspondiente de acuerdo al campo tipo.
+        """
+        if self.tipo == self.VISIOMETRIA:
+            return self.__class__.get_visiometria_servicio()
+        elif self.tipo == self.OPTOMETRIA:
+            return self.__class__.get_optometria_servicio()
+        raise Servicio.DoesNotExist('Servicio no existe')

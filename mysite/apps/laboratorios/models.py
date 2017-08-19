@@ -234,9 +234,9 @@ class Bacteriologo(models.Model):
     def get_firma(self):
         if self.firma:
             return self.firma
-        if getattr(self.usuario, 'visiometra', None) is not None:
-            if self.usuario.visiometra.firma:
-                return self.usuario.visiometra.firma
+        if getattr(self.usuario, 'empleado_examenes', None) is not None:
+            if self.usuario.empleado_examenes.firma:
+                return self.usuario.empleado_examenes.firma
         return None
 
 
