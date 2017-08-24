@@ -26692,6 +26692,7 @@ module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12
 /***/ (function(module, exports, __webpack_require__) {
 
 var __vue_script__, __vue_template__
+__webpack_require__(106)
 __vue_script__ = __webpack_require__(80)
 __vue_template__ = __webpack_require__(95)
 module.exports = __vue_script__ || {}
@@ -26802,6 +26803,12 @@ _vue2.default.use(_vueResource2.default); // <template>
 //                                     <div v-if="'paciente' in recepcion">{{ recepcion.empresa_cliente }}</div>
 //                                 </div>
 //                             </v-flex>
+//                             <v-flex md3>
+//                                 <div style="margin-bottom: 7px">
+//                                     <strong>Orden</strong>
+//                                     <div v-if="'paciente' in recepcion">{{ recepcion.id }}</div>
+//                                 </div>
+//                             </v-flex>
 //                         </v-layout>
 //                     </v-card-text>
 //                     <v-card-text>
@@ -26816,31 +26823,57 @@ _vue2.default.use(_vueResource2.default); // <template>
 //                         <h3 class="title">Antecedentes Oftalmológicos</h3>
 //                         <v-layout wrap>
 //                             <v-flex md6 x12>
-//                                 <v-checkbox label="Cirugía" v-model="cirugia"></v-checkbox>
+//                                 <v-text-field label="Cirugía" v-model="cirugia"></v-text-field>
 //                             </v-flex>
 //                             <v-flex md6 x12>
-//                                 <v-checkbox label="Trauma Ocular" v-model="trauma_ocular"></v-checkbox>
+//                                 <v-text-field label="Trauma Ocular" v-model="trauma_ocular"></v-text-field>
 //                             </v-flex>
 //                             <v-flex md6 x12>
-//                                 <v-checkbox label="Pterigio" v-model="pterigio"></v-checkbox>
+//                                 <v-text-field label="Pterigio" v-model="pterigio"></v-text-field>
 //                             </v-flex>
 //                             <v-flex md6 x12>
-//                                 <v-checkbox label="Colores" v-model="colores"></v-checkbox>
-//                             </v-flex>
-//                             <v-flex md6 x12>
-//                                 <v-select label="Vision Lejana" v-model="vision_lejana" :items="OPCIONES_OJOS"></v-select>
-//                             </v-flex>
-//                             <v-flex md6 x12>
-//                                 <v-select label="Vision Cercana" v-model="vision_cercana" :items="OPCIONES_OJOS"></v-select>
-//                             </v-flex>
-//                             <v-flex md6 x12>
-//                                 <v-select label="AV" v-model="av" :items="OPCIONES_OJOS"></v-select>
+//                                 <v-text-field label="Colores" v-model="colores"></v-text-field>
 //                             </v-flex>
 //                         </v-layout>
+//                         <v-layout wrap>
+//                             <div class="table__overflow">
+//                                 <table class="table datatable examen-table">
+//                                     <thead>
+//                                         <tr>
+//                                             <th></th>
+//                                             <th>OD</th>
+//                                             <th>OI</th>
+//                                             <th>AO</th>
+//                                         </tr>
+//                                     </thead>
+//                                     <tbody>
+//                                         <tr>
+//                                             <td>Visión Lejana</td>
+//                                             <td><v-text-field label="" v-model="vision_lejana_od"></v-text-field></td>
+//                                             <td><v-text-field label="" v-model="vision_lejana_oi"></v-text-field></td>
+//                                             <td><v-text-field label="" v-model="vision_lejana_ao"></v-text-field></td>
+//                                         </tr>
+//                                         <tr>
+//                                             <td>Visión Cercana</td>
+//                                             <td><v-text-field label="" v-model="vision_cercana_od"></v-text-field></td>
+//                                             <td><v-text-field label="" v-model="vision_cercana_oi"></v-text-field></td>
+//                                             <td><v-text-field label="" v-model="vision_cercana_ao"></v-text-field></td>
+//                                         </tr>
+//                                         <tr>
+//                                             <td>AV</td>
+//                                             <td><v-text-field label="" v-model="av_od"></v-text-field></td>
+//                                             <td><v-text-field label="" v-model="av_oi"></v-text-field></td>
+//                                             <td><v-text-field label="" v-model="av_ao"></v-text-field></td>
+//                                         </tr>
+//                                     </tbody>
+//                                 </table>
+//                             </div>
+//                         </v-layout>
+//                         <br>
 //                         <h3 class="title">Refracción Final</h3>
 //                         <v-layout>
 //                             <div class="table__overflow">
-//                                 <table class="table datatable">
+//                                 <table class="table datatable examen-table">
 //                                     <thead>
 //                                         <tr>
 //                                             <th class="column"></th>
@@ -26871,7 +26904,7 @@ _vue2.default.use(_vueResource2.default); // <template>
 //                         </v-layout>
 //                         <v-layout>
 //                             <div class="table__overflow">
-//                                 <table class="table datatable">
+//                                 <table class="table datatable examen-table">
 //                                     <thead>
 //                                         <tr>
 //                                             <th class="column"></th>
@@ -26900,6 +26933,7 @@ _vue2.default.use(_vueResource2.default); // <template>
 //                                 </table>
 //                             </div>
 //                         </v-layout>
+//                         <br>
 //                         <v-layout wrap>
 //                             <v-flex md6 x12>
 //                                 <v-text-field label="Foria" v-model="foria"></v-text-field>
@@ -26958,9 +26992,15 @@ exports.default = {
             trauma_ocular: '',
             pterigio: '',
             colores: '',
-            vision_lejana: '',
-            vision_cercana: '',
-            av: '',
+            vision_lejana_od: '',
+            vision_lejana_oi: '',
+            vision_lejana_ao: '',
+            vision_cercana_od: '',
+            vision_cercana_oi: '',
+            vision_cercana_ao: '',
+            av_od: '',
+            av_oi: '',
+            av_ao: '',
             foria: '',
             campimetria: '',
             remitir_oftamologia: '',
@@ -27002,7 +27042,7 @@ exports.default = {
         fetchData: function fetchData() {
             var _this = this;
 
-            var properties = ['lentes_correctivos', 'hace_cuanto', 'cirugia', 'trauma_ocular', 'pterigio', 'colores', 'vision_lejana', 'vision_cercana', 'av', 'foria', 'campimetria', 'remitir_oftamologia', 'recomendaciones', 'esf_od', 'cil_od', 'eje_od', 'add_od', 'dp_od', 'np_od', 'alt_od', 'prisma_od', 'esf_oi', 'cil_oi', 'eje_oi', 'add_oi', 'dp_oi', 'np_oi', 'alt_oi', 'prisma_oi'];
+            var properties = ['lentes_correctivos', 'hace_cuanto', 'cirugia', 'trauma_ocular', 'pterigio', 'colores', 'vision_lejana_od', 'vision_lejana_oi', 'vision_lejana_ao', 'vision_cercana_od', 'vision_cercana_oi', 'vision_cercana_ao', 'av_od', 'av_oi', 'av_ao', 'foria', 'campimetria', 'remitir_oftamologia', 'recomendaciones', 'esf_od', 'cil_od', 'eje_od', 'add_od', 'dp_od', 'np_od', 'alt_od', 'prisma_od', 'esf_oi', 'cil_oi', 'eje_oi', 'add_oi', 'dp_oi', 'np_oi', 'alt_oi', 'prisma_oi'];
             this.$http.get(_urls2.default.visiometria.concat(this.$route.params.id.toString() + '/')).then(function (response) {
                 _this.recepcion = response.body.orden;
                 _this.visiometria = response.body;
@@ -27057,9 +27097,15 @@ exports.default = {
                 trauma_ocular = this.trauma_ocular,
                 pterigio = this.pterigio,
                 colores = this.colores,
-                vision_lejana = this.vision_lejana,
-                vision_cercana = this.vision_cercana,
-                av = this.av,
+                vision_lejana_od = this.vision_lejana_od,
+                vision_lejana_oi = this.vision_lejana_oi,
+                vision_lejana_ao = this.vision_lejana_ao,
+                vision_cercana_od = this.vision_cercana_od,
+                vision_cercana_oi = this.vision_cercana_oi,
+                vision_cercana_ao = this.vision_cercana_ao,
+                av_od = this.av_od,
+                av_oi = this.av_oi,
+                av_ao = this.av_ao,
                 foria = this.foria,
                 campimetria = this.campimetria,
                 remitir_oftamologia = this.remitir_oftamologia,
@@ -27083,8 +27129,10 @@ exports.default = {
 
             var data = {
                 lentes_correctivos: lentes_correctivos, hace_cuanto: hace_cuanto, cirugia: cirugia,
-                trauma_ocular: trauma_ocular, pterigio: pterigio, colores: colores, vision_lejana: vision_lejana,
-                vision_cercana: vision_cercana, av: av, foria: foria, campimetria: campimetria, remitir_oftamologia: remitir_oftamologia,
+                trauma_ocular: trauma_ocular, pterigio: pterigio, colores: colores, vision_lejana_od: vision_lejana_od,
+                vision_lejana_oi: vision_lejana_oi, vision_lejana_ao: vision_lejana_ao, vision_cercana_od: vision_cercana_od,
+                vision_cercana_oi: vision_cercana_oi, vision_cercana_ao: vision_cercana_ao, av_od: av_od, av_oi: av_oi,
+                av_ao: av_ao, foria: foria, campimetria: campimetria, remitir_oftamologia: remitir_oftamologia,
                 recomendaciones: recomendaciones, esf_od: esf_od, cil_od: cil_od, eje_od: eje_od, add_od: add_od,
                 dp_od: dp_od, np_od: np_od, alt_od: alt_od, prisma_od: prisma_od, esf_oi: esf_oi, cil_oi: cil_oi,
                 eje_oi: eje_oi, add_oi: add_oi, dp_oi: dp_oi, np_oi: np_oi, alt_oi: alt_oi, prisma_oi: prisma_oi,
@@ -27112,6 +27160,16 @@ exports.default = {
     }
 };
 // </script>
+//
+// <style>
+// table.table.examen-table {
+//     border-collapse: inherit;
+// }
+//
+// table.table.examen-table tbody tr td .input-group {
+//     margin: 0;
+// }
+// </style>
 //
 
 /***/ }),
@@ -27517,7 +27575,7 @@ module.exports = function(exec, skipClosing){
 /* 95 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/examenes/#/ordenes/visiometria/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        <h1 class=\"title\">Formato \"Certificado de aptitud visual\"</h1>\n                    </v-card-title>\n                    <v-card-text>\n                        <v-layout wrap>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Nombre del paciente</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.paciente.nombre_completo }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Identificación</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.paciente.cedula }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Edad del paciente</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Empresa cliente</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.empresa_cliente }}</div>\n                                </div>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-text>\n                        <v-layout wrap>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Usa Lentes Correctivos?\" v-model=\"lentes_correctivos\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Hace cuanto tiempo\" v-model=\"hace_cuanto\"></v-text-field>\n                            </v-flex>\n                        </v-layout>\n                        <h3 class=\"title\">Antecedentes Oftalmológicos</h3>\n                        <v-layout wrap>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Cirugía\" v-model=\"cirugia\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Trauma Ocular\" v-model=\"trauma_ocular\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Pterigio\" v-model=\"pterigio\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Colores\" v-model=\"colores\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-select label=\"Vision Lejana\" v-model=\"vision_lejana\" :items=\"OPCIONES_OJOS\"></v-select>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-select label=\"Vision Cercana\" v-model=\"vision_cercana\" :items=\"OPCIONES_OJOS\"></v-select>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-select label=\"AV\" v-model=\"av\" :items=\"OPCIONES_OJOS\"></v-select>\n                            </v-flex>\n                        </v-layout>\n                        <h3 class=\"title\">Refracción Final</h3>\n                        <v-layout>\n                            <div class=\"table__overflow\">\n                                <table class=\"table datatable\">\n                                    <thead>\n                                        <tr>\n                                            <th class=\"column\"></th>\n                                            <th class=\"column\">ESF</th>\n                                            <th class=\"column\">CIL</th>\n                                            <th class=\"column\">EJE</th>\n                                            <th class=\"column\">ADD</th>\n                                        </tr>\n                                    </thead>\n                                    <tbody>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO DERECHO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"esf_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"cil_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"eje_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"add_od\"></v-text-field></td>\n                                        </tr>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO IZQUIERDO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"esf_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"cil_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"eje_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"add_oi\"></v-text-field></td>\n                                        </tr>\n                                    </tbody>\n                                </table>\n                            </div>\n                        </v-layout>\n                        <v-layout>\n                            <div class=\"table__overflow\">\n                                <table class=\"table datatable\">\n                                    <thead>\n                                        <tr>\n                                            <th class=\"column\"></th>\n                                            <th class=\"column\">D.P</th>\n                                            <th class=\"column\">N.P</th>\n                                            <th class=\"column\">ALT</th>\n                                            <th class=\"column\">PRISMA</th>\n                                        </tr>\n                                    </thead>\n                                    <tbody>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO DERECHO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"dp_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"np_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"alt_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"prisma_od\"></v-text-field></td>\n                                        </tr>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO IZQUIERDO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"dp_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"np_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"alt_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"prisma_oi\"></v-text-field></td>\n                                        </tr>\n                                    </tbody>\n                                </table>\n                            </div>\n                        </v-layout>\n                        <v-layout wrap>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Foria\" v-model=\"foria\"></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Campimetría\" v-model=\"campimetria\"></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Recomendaciones\" v-model=\"recomendaciones\" multi-line></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Remitir a Oftamología\" v-model=\"remitir_oftamologia\"></v-checkbox>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <!-- <v-spacer></v-spacer> -->\n                        <v-btn v-show=\"visiometria.estado !== 'RE'\" flat outline success @click.native=\"submit\">{{ 'id' in this.visiometria && this.visiometria.id ? 'Editar': 'Crear'}}</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-flex>\n        </v-layout>\n        <ig-fab v-show=\"'id' in visiometria && visiometria.id && visiometria.estado !== 'RE'\">\n            <v-btn\n                class=\"pink\"\n                dark\n                fab\n                v-tooltip:left=\"{html: 'Cerrar'}\"\n                @click.native=\"cerrarPrueba\"\n            >\n                <v-icon>save</v-icon>\n            </v-btn>\n        </ig-fab>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/examenes/#/ordenes/visiometria/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        <h1 class=\"title\">Formato \"Certificado de aptitud visual\"</h1>\n                    </v-card-title>\n                    <v-card-text>\n                        <v-layout wrap>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Nombre del paciente</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.paciente.nombre_completo }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Identificación</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.paciente.cedula }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Edad del paciente</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Empresa cliente</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.empresa_cliente }}</div>\n                                </div>\n                            </v-flex>\n                            <v-flex md3>\n                                <div style=\"margin-bottom: 7px\">\n                                    <strong>Orden</strong>\n                                    <div v-if=\"'paciente' in recepcion\">{{ recepcion.id }}</div>\n                                </div>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-text>\n                        <v-layout wrap>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Usa Lentes Correctivos?\" v-model=\"lentes_correctivos\"></v-checkbox>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Hace cuanto tiempo\" v-model=\"hace_cuanto\"></v-text-field>\n                            </v-flex>\n                        </v-layout>\n                        <h3 class=\"title\">Antecedentes Oftalmológicos</h3>\n                        <v-layout wrap>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Cirugía\" v-model=\"cirugia\"></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Trauma Ocular\" v-model=\"trauma_ocular\"></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Pterigio\" v-model=\"pterigio\"></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Colores\" v-model=\"colores\"></v-text-field>\n                            </v-flex>\n                        </v-layout>\n                        <v-layout wrap>\n                            <div class=\"table__overflow\">\n                                <table class=\"table datatable examen-table\">\n                                    <thead>\n                                        <tr>\n                                            <th></th>\n                                            <th>OD</th>\n                                            <th>OI</th>\n                                            <th>AO</th>\n                                        </tr>\n                                    </thead>\n                                    <tbody>\n                                        <tr>\n                                            <td>Visión Lejana</td>\n                                            <td><v-text-field label=\"\" v-model=\"vision_lejana_od\"></v-text-field></td>\n                                            <td><v-text-field label=\"\" v-model=\"vision_lejana_oi\"></v-text-field></td>\n                                            <td><v-text-field label=\"\" v-model=\"vision_lejana_ao\"></v-text-field></td>\n                                        </tr>\n                                        <tr>\n                                            <td>Visión Cercana</td>\n                                            <td><v-text-field label=\"\" v-model=\"vision_cercana_od\"></v-text-field></td>\n                                            <td><v-text-field label=\"\" v-model=\"vision_cercana_oi\"></v-text-field></td>\n                                            <td><v-text-field label=\"\" v-model=\"vision_cercana_ao\"></v-text-field></td>\n                                        </tr>\n                                        <tr>\n                                            <td>AV</td>\n                                            <td><v-text-field label=\"\" v-model=\"av_od\"></v-text-field></td>\n                                            <td><v-text-field label=\"\" v-model=\"av_oi\"></v-text-field></td>\n                                            <td><v-text-field label=\"\" v-model=\"av_ao\"></v-text-field></td>\n                                        </tr>\n                                    </tbody>\n                                </table>\n                            </div>\n                        </v-layout>\n                        <br>\n                        <h3 class=\"title\">Refracción Final</h3>\n                        <v-layout>\n                            <div class=\"table__overflow\">\n                                <table class=\"table datatable examen-table\">\n                                    <thead>\n                                        <tr>\n                                            <th class=\"column\"></th>\n                                            <th class=\"column\">ESF</th>\n                                            <th class=\"column\">CIL</th>\n                                            <th class=\"column\">EJE</th>\n                                            <th class=\"column\">ADD</th>\n                                        </tr>\n                                    </thead>\n                                    <tbody>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO DERECHO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"esf_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"cil_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"eje_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"add_od\"></v-text-field></td>\n                                        </tr>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO IZQUIERDO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"esf_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"cil_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"eje_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"add_oi\"></v-text-field></td>\n                                        </tr>\n                                    </tbody>\n                                </table>\n                            </div>\n                        </v-layout>\n                        <v-layout>\n                            <div class=\"table__overflow\">\n                                <table class=\"table datatable examen-table\">\n                                    <thead>\n                                        <tr>\n                                            <th class=\"column\"></th>\n                                            <th class=\"column\">D.P</th>\n                                            <th class=\"column\">N.P</th>\n                                            <th class=\"column\">ALT</th>\n                                            <th class=\"column\">PRISMA</th>\n                                        </tr>\n                                    </thead>\n                                    <tbody>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO DERECHO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"dp_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"np_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"alt_od\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"prisma_od\"></v-text-field></td>\n                                        </tr>\n                                        <tr>\n                                            <td class=\"text-xs-center\">OJO IZQUIERDO</td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"dp_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"np_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"alt_oi\"></v-text-field></td>\n                                            <td class=\"text-xs-center\"><v-text-field label=\"\" v-model=\"prisma_oi\"></v-text-field></td>\n                                        </tr>\n                                    </tbody>\n                                </table>\n                            </div>\n                        </v-layout>\n                        <br>\n                        <v-layout wrap>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Foria\" v-model=\"foria\"></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Campimetría\" v-model=\"campimetria\"></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-text-field label=\"Recomendaciones\" v-model=\"recomendaciones\" multi-line></v-text-field>\n                            </v-flex>\n                            <v-flex md6 x12>\n                                <v-checkbox label=\"Remitir a Oftamología\" v-model=\"remitir_oftamologia\"></v-checkbox>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <!-- <v-spacer></v-spacer> -->\n                        <v-btn v-show=\"visiometria.estado !== 'RE'\" flat outline success @click.native=\"submit\">{{ 'id' in this.visiometria && this.visiometria.id ? 'Editar': 'Crear'}}</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-flex>\n        </v-layout>\n        <ig-fab v-show=\"'id' in visiometria && visiometria.id && visiometria.estado !== 'RE'\">\n            <v-btn\n                class=\"pink\"\n                dark\n                fab\n                v-tooltip:left=\"{html: 'Cerrar'}\"\n                @click.native=\"cerrarPrueba\"\n            >\n                <v-icon>save</v-icon>\n            </v-btn>\n        </ig-fab>\n    </div>\n";
 
 /***/ }),
 /* 96 */
@@ -28806,6 +28864,46 @@ var x = {
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Visiometras\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombre', 'usuario.email']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+
+/***/ }),
+/* 106 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(107);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// add the styles to the DOM
+var update = __webpack_require__(6)(content, {});
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6c139ebb&file=visiometria.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./visiometria.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6c139ebb&file=visiometria.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./visiometria.vue");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 107 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(5)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\ntable.table.examen-table {\n    border-collapse: inherit;\n}\n\ntable.table.examen-table tbody tr td .input-group {\n    margin: 0;\n}\n", ""]);
+
+// exports
+
 
 /***/ })
 /******/ ]);

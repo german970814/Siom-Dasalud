@@ -70,18 +70,6 @@ class VisiometriaRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = Visiometria.objects.all()
     serializer_class = VisiometriaSerializer
 
-    def _get_orden(self):
-        return get_object_or_404(Orden, pk=self.kwargs['pk'])
-
-    def get_object(self, *args, **kwargs):
-        try:
-            queryset = self.filter_queryset(self.get_queryset())
-            instance = get_object_or_404(queryset, **{'orden__id': self.kwargs['pk']})
-        except Exception:
-            orden = self._get_orden()
-            instance = Visiometria(orden=orden)
-        return instance
-
 
 class EmpleadoListAPI(generics.ListCreateAPIView):
     queryset = Empleado.objects.all()
