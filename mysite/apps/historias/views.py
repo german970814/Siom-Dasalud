@@ -1,4 +1,4 @@
-from django.shortcuts import render, render_to_response, get_object_or_404
+from django.shortcuts import render, render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from mysite.apps.historias.models import orden,ordenesProducto,historia_clinica,test_altura,historia_procedimientos,posologias,remision,remisionlab
 from mysite.apps.historias.forms import addOrdenForm,addOrdenSiomForm,addOrdenAnulaForm,addOrdenProductoForm,addhistoria_clinicaForm,addtest_alturaForm,addhistoria_procedimientosForm,addposologiaForm,addremisionForm,addremisionlabForm,fechaRipsForm,filtroOrdenForm
@@ -22,6 +22,7 @@ from django.db.models import Max,Q
 from reportlab.pdfgen import canvas
 
 from mysite.apps.laboratorios.models import Laboratorio
+from mysite.apps.examenes.models import Visiometria
 
 @login_required(login_url=URL_LOGIN)
 def historias_view(request,pagina):
@@ -540,10 +541,13 @@ def borrar_servicio_view(request,id_orden,id_servicio):
 	return HttpResponseRedirect('/add/servicios/%s/%s/' % (getorden.paciente.id,getorden.id))
 
 @login_required(login_url=URL_LOGIN)
-def finalizar_view(request,id_orden):
-	getorden = orden.objects.get(pk=id_orden)
+def finalizar_view(request, id_orden):
+	_orden = get_object_or_404(orden, pk=id_orden)
 	#getorden.status = 'R'
 	#getorden.save() # Elinamos objeto de la base de datos
+	_visiometrias = [Visiometria.get_visiometria_servicio(), Visiometria.get_optometria_servicio()]
+	if _orden.OrdenProducto_orden.filter(servicio__nombre__in=_visiometrias).exists():
+		return redirect('examenes:visiometria_nueva', id_orden)
 	return HttpResponseRedirect('/pacientes/page/1/')
 
 @login_required(login_url=URL_LOGIN)

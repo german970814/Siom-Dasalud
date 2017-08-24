@@ -13042,7 +13042,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/components/table.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/table.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -13064,7 +13064,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/components/form.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/form.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22214,7 +22214,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/components/menu.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/menu.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22468,7 +22468,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/components/productos.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/productos.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22616,7 +22616,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/components/floating-button.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/floating-button.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22638,7 +22638,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/components/formulario-resultado.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/formulario-resultado.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -25634,8 +25634,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5d459b5b&file=menu.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5d459b5b&file=menu.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6fe602db&file=menu.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6fe602db&file=menu.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -26126,8 +26126,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-32881902&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-32881902&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-73f4a182&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-73f4a182&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -26947,8 +26947,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-c5034f80&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-c5034f80&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9fc28080&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9fc28080&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -28188,7 +28188,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/laboratorios.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/laboratorios.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -28212,8 +28212,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-19d6c6df&file=laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-19d6c6df&file=laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9b79a142&file=laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9b79a142&file=laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -28564,7 +28564,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/components/formato.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/formato.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -28588,8 +28588,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-37e8188c&file=formato.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-37e8188c&file=formato.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5f56fde8&file=formato.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5f56fde8&file=formato.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -29235,8 +29235,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-90f4b8e6&file=floating-button.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-90f4b8e6&file=floating-button.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-13418c0d&file=floating-button.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-13418c0d&file=floating-button.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -29434,8 +29434,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-97344660&file=formulario-resultado.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formulario-resultado.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-97344660&file=formulario-resultado.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formulario-resultado.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-34474450&file=formulario-resultado.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formulario-resultado.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-34474450&file=formulario-resultado.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formulario-resultado.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -29796,7 +29796,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/components/slot-input.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/slot-input.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -29820,8 +29820,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-642a4792&file=slot-input.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-642a4792&file=slot-input.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7d7fa3b7&file=slot-input.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7d7fa3b7&file=slot-input.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -29905,8 +29905,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-17b8dfc7&file=productos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./productos.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-17b8dfc7&file=productos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./productos.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-46ad2847&file=productos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./productos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-46ad2847&file=productos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./productos.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -30221,7 +30221,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/equipos.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/equipos.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -30245,8 +30245,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6b72a3ac&file=equipos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6b72a3ac&file=equipos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5bf229a8&file=equipos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5bf229a8&file=equipos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -30430,7 +30430,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/tecnicas.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/tecnicas.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -30454,8 +30454,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-72808600&file=tecnicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-72808600&file=tecnicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-32b46580&file=tecnicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-32b46580&file=tecnicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -30626,7 +30626,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/secciones_trabajo.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/secciones_trabajo.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -30650,8 +30650,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-06443204&file=secciones_trabajo.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-06443204&file=secciones_trabajo.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-23c51984&file=secciones_trabajo.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-23c51984&file=secciones_trabajo.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -30873,7 +30873,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/reactivos.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/reactivos.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -30897,8 +30897,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-a598fd30&file=reactivos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-a598fd30&file=reactivos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-80582e30&file=reactivos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-80582e30&file=reactivos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -31361,7 +31361,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/caracteristicas.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/caracteristicas.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -31385,8 +31385,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-170dceba&file=caracteristicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-170dceba&file=caracteristicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b7e43fba&file=caracteristicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b7e43fba&file=caracteristicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -31557,7 +31557,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/especificacion_caracteristica.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/especificacion_caracteristica.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -31581,8 +31581,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7b0c7b60&file=especificacion_caracteristica.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7b0c7b60&file=especificacion_caracteristica.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1c5b69d0&file=especificacion_caracteristica.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1c5b69d0&file=especificacion_caracteristica.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -31757,7 +31757,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/ordenes_laboratorios.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/ordenes_laboratorios.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -31781,8 +31781,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4b655ec6&file=ordenes_laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4b655ec6&file=ordenes_laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b1bd7174&file=ordenes_laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b1bd7174&file=ordenes_laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -32155,7 +32155,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/formatos.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/formatos.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -32179,8 +32179,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-44254033&file=formatos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-44254033&file=formatos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9fcc2e9a&file=formatos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9fcc2e9a&file=formatos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -32730,7 +32730,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/bacteriologos.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/bacteriologos.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -32754,8 +32754,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0933939d&file=bacteriologos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0933939d&file=bacteriologos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7e543b1d&file=bacteriologos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7e543b1d&file=bacteriologos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -32974,7 +32974,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/resultados.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/resultados.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -32998,8 +32998,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2c21c308&file=resultados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2c21c308&file=resultados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2b5ba6fc&file=resultados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2b5ba6fc&file=resultados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -33658,7 +33658,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/toma_muestra.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/toma_muestra.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -33682,8 +33682,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0460b496&file=toma_muestra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./toma_muestra.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0460b496&file=toma_muestra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./toma_muestra.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d387e396&file=toma_muestra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./toma_muestra.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d387e396&file=toma_muestra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./toma_muestra.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34051,7 +34051,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/empleados.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/empleados.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34075,8 +34075,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-76d8b8a0&file=empleados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-76d8b8a0&file=empleados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ed0dbfc0&file=empleados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ed0dbfc0&file=empleados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34268,7 +34268,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Volumes/TOSHIBA/Documents/ipsiom/static/vue/laboratorios/pages/recepciones.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/recepciones.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34292,8 +34292,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-49e3a474&file=recepciones.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./recepciones.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-49e3a474&file=recepciones.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./recepciones.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-719a9574&file=recepciones.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./recepciones.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-719a9574&file=recepciones.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./recepciones.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});

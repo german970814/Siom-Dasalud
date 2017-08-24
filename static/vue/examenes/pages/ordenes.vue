@@ -4,7 +4,7 @@
             <v-flex xs12 md12>
                 <v-card>
                     <v-card-title>
-                        Ordenes con Visiometría
+                        Visiometrías
                         <v-spacer></v-spacer>
                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
                     </v-card-title>
@@ -73,9 +73,9 @@ export default {
             buscador: '',
             loading: false,
             fields: [
-              'id', 'paciente.cedula', 'paciente.nombre_completo',
-              'institucion.razon', 'empresa.razon',
-              'empresa_cliente', 'fecha',
+              'id', 'orden.paciente.cedula', 'orden.paciente.nombre_completo',
+              'orden.institucion.razon', 'orden.empresa.razon',
+              'orden.empresa_cliente', 'orden.fecha',
               {href: '/formulario/:id/', patrons: [{identifier: 'id', replace: item => item.id}]}
             ],
             totalItems: 0,
@@ -133,9 +133,9 @@ export default {
         pagination: {
             handler () {
                 if (this.buscador !== '') {
-                    this._getElements(URL.ordenes.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
+                    this._getElements(URL.visiometria.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
                 } else {
-                    this._getElements(URL.ordenes.concat(`?page=${this.pagination.page}`));
+                    this._getElements(URL.visiometria.concat(`?page=${this.pagination.page}`));
                 }
             },
             deep: true
@@ -143,9 +143,9 @@ export default {
         buscador: function () {
             if (this.buscador !== '') {
                 this.pagination.page = 1;
-                this._getElements(URL.ordenes.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
+                this._getElements(URL.visiometria.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
             } else {
-                this._getElements(URL.ordenes.concat(`?page=${this.pagination.page}`));
+                this._getElements(URL.visiometria.concat(`?page=${this.pagination.page}`));
             }
         }
     },
@@ -154,7 +154,7 @@ export default {
         // igForm: FormComponent,
     },
     mounted: function () {
-        this._getElements(URL.ordenes.concat('?page=1'));
+        this._getElements(URL.visiometria.concat('?page=1'));
     },
     methods: {
         _getElements () {

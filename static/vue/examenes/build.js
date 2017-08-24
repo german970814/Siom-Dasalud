@@ -25033,7 +25033,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/examenes/components/table.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/examenes/components/table.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -25399,7 +25399,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/examenes/pages/ordenes.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/examenes/pages/ordenes.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -25423,8 +25423,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7fa9ad00&file=ordenes.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7fa9ad00&file=ordenes.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0fa84182&file=ordenes.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-0fa84182&file=ordenes.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -25605,7 +25605,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //             <v-flex xs12 md12>
 //                 <v-card>
 //                     <v-card-title>
-//                         Ordenes con Visiometría
+//                         Visiometrías
 //                         <v-spacer></v-spacer>
 //                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
 //                     </v-card-title>
@@ -25658,7 +25658,7 @@ exports.default = {
         return {
             buscador: '',
             loading: false,
-            fields: ['id', 'paciente.cedula', 'paciente.nombre_completo', 'institucion.razon', 'empresa.razon', 'empresa_cliente', 'fecha', { href: '/formulario/:id/', patrons: [{ identifier: 'id', replace: function replace(item) {
+            fields: ['id', 'orden.paciente.cedula', 'orden.paciente.nombre_completo', 'orden.institucion.razon', 'orden.empresa.razon', 'orden.empresa_cliente', 'orden.fecha', { href: '/formulario/:id/', patrons: [{ identifier: 'id', replace: function replace(item) {
                         return item.id;
                     } }] }],
             totalItems: 0,
@@ -25707,9 +25707,9 @@ exports.default = {
         pagination: {
             handler: function handler() {
                 if (this.buscador !== '') {
-                    this._getElements(_urls2.default.ordenes.concat('?param=' + this.buscador + '&page=' + this.pagination.page));
+                    this._getElements(_urls2.default.visiometria.concat('?param=' + this.buscador + '&page=' + this.pagination.page));
                 } else {
-                    this._getElements(_urls2.default.ordenes.concat('?page=' + this.pagination.page));
+                    this._getElements(_urls2.default.visiometria.concat('?page=' + this.pagination.page));
                 }
             },
 
@@ -25718,9 +25718,9 @@ exports.default = {
         buscador: function buscador() {
             if (this.buscador !== '') {
                 this.pagination.page = 1;
-                this._getElements(_urls2.default.ordenes.concat('?param=' + this.buscador + '&page=' + this.pagination.page));
+                this._getElements(_urls2.default.visiometria.concat('?param=' + this.buscador + '&page=' + this.pagination.page));
             } else {
-                this._getElements(_urls2.default.ordenes.concat('?page=' + this.pagination.page));
+                this._getElements(_urls2.default.visiometria.concat('?page=' + this.pagination.page));
             }
         }
     },
@@ -25728,7 +25728,7 @@ exports.default = {
         igTable: _table2.default
     },
     mounted: function mounted() {
-        this._getElements(_urls2.default.ordenes.concat('?page=1'));
+        this._getElements(_urls2.default.visiometria.concat('?page=1'));
     },
     methods: {
         _getElements: function _getElements() {
@@ -26394,8 +26394,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6b9fb712&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6b9fb712&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-22b4e873&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-22b4e873&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -26685,7 +26685,7 @@ module.exports = "\n    <v-card>\n        <v-card-title>\n            {{ tableTi
 /* 78 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Ordenes con Visiometría\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :total-items=\"totalItems\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        :filter=\"filter\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <template slot=\"headers\" scope=\"props\">\n                            <tr>\n                                <th v-for=\"header in props.headers\" :key=\"header\"\n                                :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                    @click=\"changeSort(header)\"\n                                >\n                                    <v-icon>arrow_upward</v-icon>\n                                    {{ header.text }}\n                                </th>\n                            </tr>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of fields\">\n                                <td :class=\"{'text-xs-center': true, 'light-green lighten-4': props.item.estado_visiometria == 'RE' ? true: false}\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td :class=\"{'text-xs-center': true, 'light-green lighten-4': props.item.estado_visiometria == 'RE' ? true: false}\" v-else>\n                                    <v-btn fab dark small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Visiometrías\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :total-items=\"totalItems\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        :filter=\"filter\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <template slot=\"headers\" scope=\"props\">\n                            <tr>\n                                <th v-for=\"header in props.headers\" :key=\"header\"\n                                :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                    @click=\"changeSort(header)\"\n                                >\n                                    <v-icon>arrow_upward</v-icon>\n                                    {{ header.text }}\n                                </th>\n                            </tr>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of fields\">\n                                <td :class=\"{'text-xs-center': true, 'light-green lighten-4': props.item.estado_visiometria == 'RE' ? true: false}\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td :class=\"{'text-xs-center': true, 'light-green lighten-4': props.item.estado_visiometria == 'RE' ? true: false}\" v-else>\n                                    <v-btn fab dark small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.id)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 79 */
@@ -26701,7 +26701,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/examenes/pages/visiometria.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/examenes/pages/visiometria.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -27182,7 +27182,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/examenes/components/fab.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/examenes/components/fab.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -27206,8 +27206,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7c60bccb&file=fab.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./fab.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7c60bccb&file=fab.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./fab.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1424d26c&file=fab.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./fab.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1424d26c&file=fab.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./fab.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -27534,7 +27534,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/examenes/pages/visiometra.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/examenes/pages/visiometra.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -27558,8 +27558,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2ad830ad&file=visiometra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./visiometra.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2ad830ad&file=visiometra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./visiometra.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3c253be4&file=visiometra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./visiometra.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3c253be4&file=visiometra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./visiometra.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -27733,7 +27733,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/examenes/components/form.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/examenes/components/form.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -27757,8 +27757,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-12f2b830&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-12f2b830&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-73b156af&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-73b156af&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});

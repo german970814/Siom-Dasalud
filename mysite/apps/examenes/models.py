@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.contrib.auth.models import Group
 from django.utils.six import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
@@ -90,9 +91,6 @@ class Visiometria(models.Model):
     pterigio = models.CharField(max_length=50, verbose_name=_('Pterigio'), blank=True, null=True)
     colores = models.CharField(max_length=50, verbose_name=_('Colores'), blank=True, null=True)
 
-    # vision_lejana = models.CharField(max_length=2, verbose_name=_('Vision lejana'), choices=OPCIONES_OJOS, blank=True, null=True)
-    # vision_cercana = models.CharField(max_length=2, verbose_name=_('Vision cercana'), choices=OPCIONES_OJOS, blank=True, null=True)
-    # av = models.CharField(max_length=2, verbose_name=_('AV'), choices=OPCIONES_OJOS, blank=True, null=True)
     vision_lejana_od = models.CharField(max_length=50, verbose_name=_('Ojo Derecho'), blank=True, null=True)
     vision_lejana_oi = models.CharField(max_length=50, verbose_name=_('Ojo Izquierdo'), blank=True, null=True)
     vision_lejana_ao = models.CharField(max_length=50, verbose_name=_('Ambos ojos'), blank=True, null=True)
@@ -143,6 +141,14 @@ class Visiometria(models.Model):
     @classmethod
     def get_optometria_servicio(cls):
         return Servicio.objects.get(nombre__icontains='optometria')
+
+    @classmethod
+    def get_tipo_by_servicio(cls, orden):
+        if orden.OrdenProducto_orden.filter(servicio__nombre=cls.get_visiometria_servicio()):
+            return cls.VISIOMETRIA
+        elif orden.OrdenProducto_orden.filter(servicio__nombre=cls.get_optometria_servicio()):
+            return cls.OPTOMETRIA
+        return None
 
     def get_servicio(self):
         """

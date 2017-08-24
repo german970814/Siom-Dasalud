@@ -6,7 +6,7 @@ from django import forms
 from .models import Visiometria
 
 
-class VisisometriaForm(forms.ModelForm):
+class VisiometriaForm(forms.ModelForm):
     """Formulario de Visiometrias."""
 
     class Meta:
@@ -15,6 +15,6 @@ class VisisometriaForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         # self.orden = orden
-        super(Visiometria, self).__init__(*args, **kwargs)
+        super(VisiometriaForm, self).__init__(*args, **kwargs)
         self.fields['visiometra'].widget.attrs.update({'class': 'form-control'})
         # self.fields['orden'].widget.attrs.update({'class': 'form-control'})

@@ -13,10 +13,10 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.pagination import PageNumberPagination
 
 from .models import (
-    Visiometria, Visiometra
+    Visiometria, Empleado
 )
 from .serializers import (
-    VisiometriaSerializer, VisiometraSerializer
+    VisiometriaSerializer, EmpleadoSerializer
 )
 from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
 from mysite.apps.historias.serializers import OrdenVisiometriaSerializer
@@ -53,8 +53,17 @@ class VisiometriaListAPI(generics.ListCreateAPIView):
     serializer_class = VisiometriaSerializer
     pagination_class = Pagination
 
+    def get_queryset(self, *args, **kwargs):
+        hoy = timezone.now().date()
+        # queryset = super(VisiometriaListAPI, self).get_queryset(*args, **kwargs)
+        queryset = self.request.user.empleado_examenes.visiometrias.all()
+        queryset = queryset.filter(
+            orden__fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
+        ).order_by('-orden__fecha')
+        return queryset
+
     def perform_create(self, serializer):
-        serializer.save(visiometra=self.request.user.visiometra, estado=Visiometria.PENDIENTE)
+        serializer.save(visiometra=self.request.user.empleado_examenes, estado=Visiometria.PENDIENTE)
 
 
 class VisiometriaRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
@@ -74,25 +83,25 @@ class VisiometriaRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
         return instance
 
 
-class VisiometraListAPI(generics.ListCreateAPIView):
-    queryset = Visiometra.objects.all()
-    serializer_class = VisiometraSerializer
+class EmpleadoListAPI(generics.ListCreateAPIView):
+    queryset = Empleado.objects.all()
+    serializer_class = EmpleadoSerializer
 
 
-class VisiometraRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Visiometra.objects.all()
-    serializer_class = VisiometraSerializer
+class EmpleadoRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Empleado.objects.all()
+    serializer_class = EmpleadoSerializer
 
 
 @api_view(['PUT'])
 def cambiar_firma_visiometra(request, pk):
     """Vista para cambiar la firma del visiometra."""
 
-    visiometra = get_object_or_404(Visiometra, pk=pk)
+    visiometra = get_object_or_404(Empleado, pk=pk)
 
     # kwargs_serializer = {'fields': ('firma', )}
     request.data.setdefault('id', pk)
-    serializer = VisiometraSerializer(fields=('firma', ), data=request.data, instance=visiometra)
+    serializer = EmpleadoSerializer(fields=('firma', ), data=request.data, instance=visiometra)
 
     if serializer.is_valid():
         serializer.save()

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpResponse
+from django.utils.translation import ugettext_lazy as _
 # from django.utils import timezone
 # from django.utils.six import BytesIO
 # from django.core.files import File
@@ -13,11 +15,48 @@ from django.template.loader import render_to_string
 
 from weasyprint import HTML
 
-# from .models import Laboratorio, Resultado, Recepcion
+from . import models, forms
 from mysite.apps.historias.models import orden as Orden
 
 # import datetime
 # import json
+
+
+@login_required
+def visiometria_create(request, pk):
+    """Vista para crear visiometrías y optometrías"""
+
+    orden = get_object_or_404(Orden, pk=pk)
+
+    tipo = models.Visiometria.get_tipo_by_servicio(orden)
+
+    if getattr(orden, 'visiometria', None) is not None:
+        instance = orden.visiometria
+        form_kwargs = {'instance': instance}
+    else:
+        form_kwargs = {}
+
+    if request.method == 'POST':
+        form_kwargs['data'] = request.POST
+        form = forms.VisiometriaForm(**form_kwargs)
+
+        if form.is_valid():
+            visiometria = form.save(commit=False)
+            visiometria.orden = orden
+            visiometria.tipo = tipo
+            visiometria.estado = models.Visiometria.PENDIENTE
+            visiometria.save()
+            return redirect('/pacientes/page/1/')
+        else:
+            messages.error(request, _('Escoja un Visiometra'))
+    else:
+        form = forms.VisiometriaForm(**form_kwargs)
+
+    data = {
+        'form': form,
+        'orden': orden
+    }
+    return render(request, 'examenes/visiometria.html', data)
 
 
 @login_required

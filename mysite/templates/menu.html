@@ -195,11 +195,11 @@
 <v-divider light></v-divider>
 {% endif %}
 
-{% if user.visiometra or perms.home.es_administrador %}
+{% if user.empleado_examenes or perms.home.es_administrador %}
 
 <v-subheader ligth>Visiometría</v-subheader>
 
-{% if user.visiometra %}
+{% if user.empleado_examenes %}
 
 <v-list-tile ripple href="{% url 'examenes:index_visiometria' %}#/ordenes/visiometria/">
     <v-list-tile-title>Ordenes</v-list-tile-title>
