@@ -159,3 +159,65 @@ class Visiometria(models.Model):
         elif self.tipo == self.OPTOMETRIA:
             return self.__class__.get_optometria_servicio()
         raise Servicio.DoesNotExist('Servicio no existe')
+
+
+@python_2_unicode_compatible
+class Audiometria(models.Model):
+    """Modelo para los examenes de audiometria"""
+
+    tiempo_exposicion = models.CharField(max_length=50, verbose_name=_('Tiempo de exposición'), blank=True)
+    frecuencia = models.CharField(max_length=50, verbose_name=_('Frecuencia'), blank=True)
+    proteccion_auditiva = models.NullBooleanField(verbose_name=_('Protección auditiva'))
+    tipo_proteccion = models.CharField(max_length=200, verbose_name=_('Tipo de protección'), blank=True)
+
+    # antecedentes extra laborales
+    servicio_militar = models.NullBooleanField(verbose_name=_('Prestó servicio militar'))
+    practiva_poligono = models.NullBooleanField(verbose_name=_('Practicaba o practica poligono'))
+    usa_motocicleta = models.NullBooleanField(verbose_name=_('Utiliza motocicleta'))
+    cerca_explociones = models.NullBooleanField(verbose_name=_('Ha estado cerca de explociones'))
+    musica_volumen = models.NullBooleanField(verbose_name=_('Escucha música alto volumén'))
+    usa_audifonos = models.NullBooleanField(verbose_name=_('Usa audifonos/walman'))
+    practica_tejo = models.NullBooleanField(verbose_name=_('Practica tejo, caza, entre otros'))
+    otros_antecedentes = models.CharField(max_length=200, verbose_name=_('otros'), blank=True)
+
+    # antecedentes patologicos
+    cirugia_oido = models.NullBooleanField(verbose_name=_('Cirugía de oido'))
+    trauma = models.NullBooleanField(verbose_name=_('Trauma'))
+    medicamentos_ototoxicos = models.NullBooleanField(verbose_name=_('Medicamentos ototóxicos'))
+    hipoacusia = models.NullBooleanField(verbose_name=_('Hipoacusia'))
+    vertigo = models.NullBooleanField(verbose_name=_('Vértigo'))
+    acufeno = models.NullBooleanField(verbose_name=_('Acufeno'))
+    otitis = models.NullBooleanField(verbose_name=_('Otitis'))
+    otorrea = models.NullBooleanField(verbose_name=_('Otorrea'))
+
+    # tamizaje auditivo
+    hz250_d = models.IntegerField(verbose_name=_('250hz'))
+    hz500_d = models.IntegerField(verbose_name=_('500hz'))
+    hz1000_d = models.IntegerField(verbose_name=_('1000hz'))
+    hz2000_d = models.IntegerField(verbose_name=_('2000hz'))
+    hz3000_d = models.IntegerField(verbose_name=_('3000hz'))
+    hz4000_d = models.IntegerField(verbose_name=_('4000hz'))
+    hz6000_d = models.IntegerField(verbose_name=_('6000hz'))
+    hz8000_d = models.IntegerField(verbose_name=_('8000hz'))
+    hz250_i = models.IntegerField(verbose_name=_('250hz'))
+    hz500_i = models.IntegerField(verbose_name=_('500hz'))
+    hz1000_i = models.IntegerField(verbose_name=_('1000hz'))
+    hz2000_i = models.IntegerField(verbose_name=_('2000hz'))
+    hz3000_i = models.IntegerField(verbose_name=_('3000hz'))
+    hz4000_i = models.IntegerField(verbose_name=_('4000hz'))
+    hz6000_i = models.IntegerField(verbose_name=_('6000hz'))
+    hz8000_i = models.IntegerField(verbose_name=_('8000hz'))
+
+    otoscopia_od = models.CharField(max_length=200, verbose_name=_('Ototoscopia od'), blank=True)
+    otoscopia_oi = models.CharField(max_length=200, verbose_name=_('Ototoscopia oi'), blank=True)
+
+    # recomendaciones
+    uso_protectores_auditivos = models.NullBooleanField(verbose_name=_('Otorrea'))
+    complementar_audiometria_clinica = models.NullBooleanField(verbose_name=_('Otorrea'))
+    control_periodico = models.NullBooleanField(verbose_name=_('Otorrea'))
+    otras = models.TextField(verbose_name=_('Otras'), blank=True)
+
+    audiometra = models.ForeignKey()
+
+    def __str__(self):
+        return 'Audiometria #{self.id}'.format(self=self)
