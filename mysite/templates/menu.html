@@ -197,12 +197,16 @@
 
 {% if user.empleado_examenes or perms.home.es_administrador %}
 
-<v-subheader ligth>Visiometría</v-subheader>
+<v-subheader ligth>Audiometría y Visiometría</v-subheader>
 
 {% if user.empleado_examenes %}
 
 <v-list-tile ripple href="{% url 'examenes:index_visiometria' %}#/ordenes/visiometria/">
-    <v-list-tile-title>Ordenes</v-list-tile-title>
+    <v-list-tile-title>Ordenes Visiometría</v-list-tile-title>
+</v-list-tile>
+
+<v-list-tile ripple href="{% url 'examenes:index_visiometria' %}#/ordenes/audiometria/">
+    <v-list-tile-title>Ordenes Audiometría</v-list-tile-title>
 </v-list-tile>
 
 {% endif %}

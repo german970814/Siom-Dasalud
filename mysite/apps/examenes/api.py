@@ -13,13 +13,13 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.pagination import PageNumberPagination
 
 from .models import (
-    Visiometria, Empleado
+    Visiometria, Empleado, Audiometria
 )
 from .serializers import (
-    VisiometriaSerializer, EmpleadoSerializer
+    VisiometriaSerializer, EmpleadoSerializer, AudiometriaSerializer
 )
 from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
-from mysite.apps.historias.serializers import OrdenVisiometriaSerializer
+from mysite.apps.historias.serializers import OrdenVisiometriaSerializer, OrdenAudiometriaSerializer
 from mysite.apps.parametros.models import servicios as Servicio
 from mysite.apps.laboratorios.utils import Pagination
 # from mysite.apps.parametros.serializers import ServicioSerializer
@@ -95,3 +95,57 @@ def cambiar_firma_visiometra(request, pk):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors)
+
+
+class OrdenesSinAudiometriaListAPI(generics.ListAPIView):
+    queryset = Orden.objects.all()
+    serializer_class = OrdenAudiometriaSerializer
+    pagination_class = Pagination
+
+    def get_queryset(self, *args, **kwargs):
+        hoy = timezone.now().date()
+
+        queryset = super(OrdenesSinAudiometriaListAPI, self).get_queryset(*args, **kwargs)
+        queryset = queryset.filter(
+            id__in=OrdenProducto.objects.filter(
+                servicio__nombre=Audiometria.get_audiometria_servicio()
+            ).values_list('orden_id', flat=True).distinct(),
+            fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
+        ).order_by('-fecha')  # .exclude(visiometria__estado=Visiometria.RESULTADO_EMITIDO)
+
+        return queryset
+
+
+class AudiometriaListAPI(generics.ListCreateAPIView):
+    queryset = Audiometria.objects.all()
+    serializer_class = AudiometriaSerializer
+    pagination_class = Pagination
+
+    def get_queryset(self, *args, **kwargs):
+        hoy = timezone.now().date()
+        queryset = super(AudiometraListAPI, self).get_queryset(*args, **kwargs)
+        # queryset = self.request.user.empleado_examenes.visiometrias.all()
+        queryset = queryset.filter(
+            orden__fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
+        ).order_by('-orden__fecha')
+        return queryset
+
+    def perform_create(self, serializer):
+        serializer.save(audiometra=self.request.user.empleado_examenes, estado=Audiometria.PENDIENTE)
+
+
+class AudiometriaRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Audiometria.objects.all()
+    serializer_class = AudiometriaSerializer
+
+    def _get_orden(self):
+        return get_object_or_404(Orden, pk=self.kwargs['pk'])
+
+    def get_object(self, *args, **kwargs):
+        try:
+            queryset = self.filter_queryset(self.get_queryset())
+            instance = get_object_or_404(queryset, **{'orden__id': self.kwargs['pk']})
+        except Exception:
+            orden = self._get_orden()
+            instance = Audiometria(orden=orden)
+        return instance

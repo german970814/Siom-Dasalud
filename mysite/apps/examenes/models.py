@@ -54,21 +54,11 @@ class Visiometria(models.Model):
     Modelo para los examenes de visiometria.
     """
 
-    OJO_DERECHO = 'OD'
-    OJO_IZQUIERDO = 'OI'
-    AMBOS_OJOS = 'AO'
-
     PENDIENTE = 'PE'
     RESULTADO_EMITIDO = 'RE'
 
     VISIOMETRIA = 'VI'
     OPTOMETRIA = 'OP'
-
-    OPCIONES_OJOS = (
-        (OJO_DERECHO, _('OJO DERECHO')),
-        (OJO_IZQUIERDO, _('OJO IZQUIERDO')),
-        (AMBOS_OJOS, _('AMBOS OJOS'))
-    )
 
     OPCIONES_ESTADO = (
         (PENDIENTE, _('PENDIENTE')),
@@ -165,6 +155,14 @@ class Visiometria(models.Model):
 class Audiometria(models.Model):
     """Modelo para los examenes de audiometria"""
 
+    PENDIENTE = 'PE'
+    RESULTADO_EMITIDO = 'RE'
+
+    OPCIONES_ESTADO = (
+        (PENDIENTE, _('PENDIENTE')),
+        (RESULTADO_EMITIDO, _('RESULTADO EMITIDO'))
+    )
+
     tiempo_exposicion = models.CharField(max_length=50, verbose_name=_('Tiempo de exposición'), blank=True)
     frecuencia = models.CharField(max_length=50, verbose_name=_('Frecuencia'), blank=True)
     proteccion_auditiva = models.NullBooleanField(verbose_name=_('Protección auditiva'))
@@ -172,7 +170,7 @@ class Audiometria(models.Model):
 
     # antecedentes extra laborales
     servicio_militar = models.NullBooleanField(verbose_name=_('Prestó servicio militar'))
-    practiva_poligono = models.NullBooleanField(verbose_name=_('Practicaba o practica poligono'))
+    practica_poligono = models.NullBooleanField(verbose_name=_('Practicaba o practica poligono'))
     usa_motocicleta = models.NullBooleanField(verbose_name=_('Utiliza motocicleta'))
     cerca_explociones = models.NullBooleanField(verbose_name=_('Ha estado cerca de explociones'))
     musica_volumen = models.NullBooleanField(verbose_name=_('Escucha música alto volumén'))
@@ -217,7 +215,13 @@ class Audiometria(models.Model):
     control_periodico = models.NullBooleanField(verbose_name=_('Otorrea'))
     otras = models.TextField(verbose_name=_('Otras'), blank=True)
 
-    audiometra = models.ForeignKey()
+    audiometra = models.ForeignKey(Empleado, related_name='audiometrias')
+    orden = models.OneToOneField(Orden, related_name='audiometria')
+    estado = models.CharField(max_length=2, choices=OPCIONES_ESTADO)
 
     def __str__(self):
         return 'Audiometria #{self.id}'.format(self=self)
+
+    @classmethod
+    def get_audiometria_servicio(cls):
+        return Servicio.objects.get(nombre__icontains='audiometria')
