@@ -123,8 +123,7 @@ class AudiometriaListAPI(generics.ListCreateAPIView):
 
     def get_queryset(self, *args, **kwargs):
         hoy = timezone.now().date()
-        queryset = super(AudiometraListAPI, self).get_queryset(*args, **kwargs)
-        # queryset = self.request.user.empleado_examenes.visiometrias.all()
+        queryset = self.request.user.empleado_examenes.audiometrias.all()
         queryset = queryset.filter(
             orden__fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
         ).order_by('-orden__fecha')
@@ -137,15 +136,3 @@ class AudiometriaListAPI(generics.ListCreateAPIView):
 class AudiometriaRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = Audiometria.objects.all()
     serializer_class = AudiometriaSerializer
-
-    def _get_orden(self):
-        return get_object_or_404(Orden, pk=self.kwargs['pk'])
-
-    def get_object(self, *args, **kwargs):
-        try:
-            queryset = self.filter_queryset(self.get_queryset())
-            instance = get_object_or_404(queryset, **{'orden__id': self.kwargs['pk']})
-        except Exception:
-            orden = self._get_orden()
-            instance = Audiometria(orden=orden)
-        return instance

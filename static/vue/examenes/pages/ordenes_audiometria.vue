@@ -73,10 +73,10 @@ export default {
             buscador: '',
             loading: false,
             fields: [
-                'id', 'paciente.cedula', 'paciente.nombre_completo',
-                'institucion.razon', 'empresa.razon',
-                'empresa_cliente', 'fecha',
-                { href: '/formulario/audiometria/:id/', patrons: [{ identifier: 'id', replace: item => item.orden.id }] }
+                'id', 'orden.paciente.cedula', 'orden.paciente.nombre_completo',
+                'orden.institucion.razon', 'orden.empresa.razon',
+                'orden.empresa_cliente', 'orden.fecha',
+                { href: '/formulario/audiometria/:id/', patrons: [{ identifier: 'id', replace: item => item.id }] }
             ],
             totalItems: 0,
             pagination: {
@@ -133,9 +133,9 @@ export default {
         pagination: {
             handler() {
                 if (this.buscador !== '') {
-                    this._getElements(URL.ordenes_audiometria.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
+                    this._getElements(URL.audiometria.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
                 } else {
-                    this._getElements(URL.ordenes_audiometria.concat(`?page=${this.pagination.page}`));
+                    this._getElements(URL.audiometria.concat(`?page=${this.pagination.page}`));
                 }
             },
             deep: true
@@ -143,9 +143,9 @@ export default {
         buscador: function() {
             if (this.buscador !== '') {
                 this.pagination.page = 1;
-                this._getElements(URL.ordenes_audiometria.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
+                this._getElements(URL.audiometria.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
             } else {
-                this._getElements(URL.ordenes_audiometria.concat(`?page=${this.pagination.page}`));
+                this._getElements(URL.audiometria.concat(`?page=${this.pagination.page}`));
             }
         }
     },
@@ -154,7 +154,7 @@ export default {
         // igForm: FormComponent,
     },
     mounted: function() {
-        this._getElements(URL.ordenes_audiometria.concat('?page=1'));
+        this._getElements(URL.audiometria.concat('?page=1'));
     },
     methods: {
         _getElements() {

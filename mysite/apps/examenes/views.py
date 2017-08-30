@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse
 from django.utils.translation import ugettext_lazy as _
+from django.db import transaction
 # from django.utils import timezone
 # from django.utils.six import BytesIO
 # from django.core.files import File
@@ -97,3 +98,62 @@ def ver_resultado_visiometria(request, pk):
         return response
 
     return render(request, 'examenes/resultado_base.html', data)
+
+
+@login_required
+def asignar_especialista_examen(request, pk):
+    """Vista para crear audiometrías"""
+
+    orden = get_object_or_404(Orden, pk=pk)
+    form_visiometra_kwargs = {}
+    form_audiometra_kwargs = {}
+    tipo = None
+
+    visiometria = request.GET.get('visiometria', False)
+    audiometria = request.GET.get('audiometria', False)
+
+    if getattr(orden, 'audiometria', None) is not None:
+        form_audiometra_kwargs['instance'] = orden.audiometria
+    if getattr(orden, 'visiometria', None) is not None:
+        form_visiometra_kwargs['instance'] = orden.visiometria
+
+    _forms = {}
+    if audiometria:
+        _forms[forms.AudiometriaForm] = form_audiometra_kwargs
+    if visiometria:
+        _forms[forms.VisiometriaForm] = form_visiometra_kwargs
+        tipo = models.Visiometria.get_tipo_by_servicio(orden)
+
+    if request.method == 'POST':
+        for Form in _forms:
+            _forms[Form]['data'] = request.POST
+
+        _forms = [Form(**_forms[Form]) for Form in _forms]
+
+        if all([form.is_valid() for form in _forms]):
+            with transaction.atomic():
+                for form in _forms:
+                    instance = form.save(commit=False)
+                    instance.estado = form.Meta.model.PENDIENTE
+                    instance.orden = orden
+                    instance.tipo = tipo
+                    instance.save()
+            return redirect('/pacientes/page/1/')
+        else:
+            messages.error(request, _('Escoja un especialista'))
+    else:
+        _forms = [Form(**_forms[Form]) for Form in _forms]
+
+    def get(value, where):
+        first = list(filter(lambda x: x.__class__ == value, where))
+        if first:
+            return first[0]
+        return None
+
+    data = {
+        'form_visiometra': get(forms.VisiometriaForm, _forms),
+        'form_audiometra': get(forms.AudiometriaForm, _forms),
+        'audiometria': audiometria, 'visiometria': visiometria,
+        'orden': orden
+    }
+    return render(request, 'examenes/asignar_especialista.html', data)

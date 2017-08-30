@@ -22,7 +22,8 @@ from django.db.models import Max,Q
 from reportlab.pdfgen import canvas
 
 from mysite.apps.laboratorios.models import Laboratorio
-from mysite.apps.examenes.models import Visiometria
+from mysite.apps.examenes.models import Visiometria, Audiometria
+from django.core.urlresolvers import reverse
 
 @login_required(login_url=URL_LOGIN)
 def historias_view(request,pagina):
@@ -545,9 +546,20 @@ def finalizar_view(request, id_orden):
 	_orden = get_object_or_404(orden, pk=id_orden)
 	#getorden.status = 'R'
 	#getorden.save() # Elinamos objeto de la base de datos
-	_visiometrias = [Visiometria.get_visiometria_servicio(), Visiometria.get_optometria_servicio()]
+	_visiometrias = [
+		Visiometria.get_visiometria_servicio(), Visiometria.get_optometria_servicio()
+	]
+
+	url = ''
+	params = ''
 	if _orden.OrdenProducto_orden.filter(servicio__nombre__in=_visiometrias).exists():
-		return redirect('examenes:visiometria_nueva', id_orden)
+		url = reverse('examenes:visiometria_nueva', args=(id_orden, ))
+		params += 'visiometria=True&'
+	if _orden.OrdenProducto_orden.filter(servicio__nombre=Audiometria.get_audiometria_servicio()).exists():
+		url = reverse('examenes:visiometria_nueva', args=(id_orden, ))
+		params += 'audiometria=True'
+	if url:
+		return redirect('%s?%s' % (url, params))
 	return HttpResponseRedirect('/pacientes/page/1/')
 
 @login_required(login_url=URL_LOGIN)
