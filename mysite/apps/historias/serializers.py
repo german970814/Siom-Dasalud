@@ -45,7 +45,7 @@ class OrdenSerializer(IGModelSerializer, serializers.ModelSerializer):
 
 
 class OrdenVisiometriaSerializer(IGModelSerializer, serializers.ModelSerializer):
-
+    
     paciente = PacienteSerializer(fields=(
         'pnombre', 'snombre', 'papellido', 'sapellido', 'telefono',
         'cedula', 'foto', 'edad', 'unidad_edad', 'genero'))
@@ -65,5 +65,30 @@ class OrdenVisiometriaSerializer(IGModelSerializer, serializers.ModelSerializer)
 
     def to_representation(self, obj):
         representation = super(OrdenVisiometriaSerializer, self).to_representation(obj)
+        representation['fecha'] = obj.fecha.strftime('%Y-%m-%d')
+        return representation
+
+
+class OrdenAudiometriaSerializer(IGModelSerializer, serializers.ModelSerializer):
+
+    paciente = PacienteSerializer(fields=(
+        'pnombre', 'snombre', 'papellido', 'sapellido', 'telefono',
+        'cedula', 'foto', 'edad', 'unidad_edad', 'genero'))
+    institucion = InstitucionSerializer(fields=('razon', ))
+    empresa = EmpresaSerializer(fields=('razon', ))
+
+    estado_audiometria = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Orden
+        fields = ('id', 'paciente', 'fecha', 'empresa', 'institucion', 'empresa_cliente', 'estado_audiometria', )
+
+    def get_estado_audiometria(self, obj):
+        if getattr(obj, 'audiometria', None) is not None:
+            return obj.audiometria.estado
+        return None
+
+    def to_representation(self, obj):
+        representation = super(OrdenAudiometriaSerializer, self).to_representation(obj)
         representation['fecha'] = obj.fecha.strftime('%Y-%m-%d')
         return representation

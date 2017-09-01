@@ -1,0 +1,58 @@
+{% extends 'home/base.html' %} {% block title %}Asignar especialista a servicio{% endblock %} {% block content %}
+
+<div class="row">
+    <div class="col-lg-12">
+        <h3 class="page-header">Asignar Especialista a Servicio</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-danger">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                <strong>{{ message }}</strong>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Escoge el {% if form_visiometra and not form_audiometra %}Visiometra/Optometra{% elif form_audiometra and not form_visiometra %}Audiometra{% else %}Especialista{% endif %} encargado
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <form action="{% url 'examenes:visiometria_nueva' orden.id %}?{% if visiometria %}visiometria=True&{% endif %}{% if audiometria %}audiometria=True{% endif %}" method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <!-- <div class="col-lg-6">
+                            <p><label for="id_empresa">Servicio / Laboratorio:</label> {{form.servicio}}</p>
+                        </div> -->
+                        {% if form_visiometra %}
+                        <div class="col-lg-6">
+                            <label for="{{ form_visiometra.visiometra.id_for_label }}">{{ form_visiometra.visiometra.label }}</label> {{ form_visiometra.visiometra }}
+                        </div>
+                        {% endif %}
+                        {% if form_audiometra %}
+                        <div class="col-lg-6">
+                            <label for="{{ form_audiometra.audiometra.id_for_label }}">{{ form_audiometra.audiometra.label }}</label> {{ form_audiometra.audiometra }}
+                        </div>
+                        {% endif %}
+
+                        <div class="col-lg-3">
+                            <label for=""></label>
+                            <button type="submit" class="btn btn-primary btn-block">Aceptar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

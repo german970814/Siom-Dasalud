@@ -22,7 +22,8 @@ from django.db.models import Max,Q
 from reportlab.pdfgen import canvas
 
 from mysite.apps.laboratorios.models import Laboratorio
-from mysite.apps.examenes.models import Visiometria
+from mysite.apps.examenes.models import Visiometria, Audiometria
+from django.core.urlresolvers import reverse
 
 @login_required(login_url=URL_LOGIN)
 def historias_view(request,pagina):
@@ -46,6 +47,7 @@ def add_historias_view(request,id_prod):
 	resultados = getorden.resultados_laboratorio.all()
 
 	visiometria = getattr(getorden, 'visiometria', None)
+	audiometria = getattr(getorden, 'audiometria', None)
 
 	for laboratorio in laboratorios:
 		param = resultados.filter(laboratorio__id=laboratorio.id)
@@ -104,7 +106,7 @@ def add_historias_view(request,id_prod):
 			historial = historia_clinica.objects.filter(paciente=getorden.paciente)
 			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
 			form2 = addposologiaForm()
-			ctx = {'visiometria': visiometria, 'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
+			ctx = {'visiometria': visiometria, 'audiometria': audiometria, 'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
 			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 		if 'btntabhistoria_cerrar' in request.POST:
@@ -146,7 +148,7 @@ def add_historias_view(request,id_prod):
 			historial = historia_clinica.objects.filter(paciente=getorden.paciente)
 			lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
 			form2 = addposologiaForm()
-			ctx = {'visiometria': visiometria, 'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'exito_cerrada':exito_cerrada,'error':error,'altura':altura}
+			ctx = {'visiometria': visiometria, 'audiometria': audiometria, 'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'exito_cerrada':exito_cerrada,'error':error,'altura':altura}
 			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 	try: #Verifica si la historia ya existe para cargarla y continuar editandola
@@ -170,7 +172,7 @@ def add_historias_view(request,id_prod):
 	else:
 		altura = False
 		form3= addtest_alturaForm()
-	ctx = {'visiometria': visiometria, 'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
+	ctx = {'visiometria': visiometria, 'audiometria': audiometria, 'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'error':error,'altura':altura}
 	return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 @login_required(login_url=URL_LOGIN)
@@ -244,10 +246,12 @@ def show_historias_view(request, id_prod):
 	_historia = get_object_or_404(HistoriaClinica, orden=_orden)
 	# _procedimientos = HistoriaProcedimiento.objects.filter(paciente=_orden.paciente)
 	visiometria = getattr(_orden, 'visiometria', None)
+	audiometria = getattr(_orden, 'audiometria', None)
 
 	kwargs_form = {}
 	data = {
-		'getorden': _orden, 'gethistoria': _historia, 'altura': False, 'visiometria': visiometria
+		'getorden': _orden, 'gethistoria': _historia, 'altura': False, 'visiometria': visiometria,
+		'audiometria': audiometria
 	}
 
 	if _orden.examen_adicional == '1':
@@ -545,9 +549,20 @@ def finalizar_view(request, id_orden):
 	_orden = get_object_or_404(orden, pk=id_orden)
 	#getorden.status = 'R'
 	#getorden.save() # Elinamos objeto de la base de datos
-	_visiometrias = [Visiometria.get_visiometria_servicio(), Visiometria.get_optometria_servicio()]
+	_visiometrias = [
+		Visiometria.get_visiometria_servicio(), Visiometria.get_optometria_servicio()
+	]
+
+	url = ''
+	params = ''
 	if _orden.OrdenProducto_orden.filter(servicio__nombre__in=_visiometrias).exists():
-		return redirect('examenes:visiometria_nueva', id_orden)
+		url = reverse('examenes:visiometria_nueva', args=(id_orden, ))
+		params += 'visiometria=True&'
+	if _orden.OrdenProducto_orden.filter(servicio__nombre=Audiometria.get_audiometria_servicio()).exists():
+		url = reverse('examenes:visiometria_nueva', args=(id_orden, ))
+		params += 'audiometria=True'
+	if url:
+		return redirect('%s?%s' % (url, params))
 	return HttpResponseRedirect('/pacientes/page/1/')
 
 @login_required(login_url=URL_LOGIN)

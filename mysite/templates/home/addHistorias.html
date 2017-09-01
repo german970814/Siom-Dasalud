@@ -407,35 +407,6 @@
             <div class="col-lg-10"><p><label for="id_r_imagen">Resultados:</label>{{form1.r_imagen}}</p></div>
         </div>
         <div class="row">
-            <div class="col-lg-2"><p><label for="id_f_audiometria">Audiometria:</label>{{form1.f_audiometria}}</p></div>
-            <div class="col-lg-10">
-                <p>
-                    <label for="id_r_audiometria">Resultados:</label>
-                    {{form1.r_audiometria}}
-                </p>
-            </div>
-
-        </div>
-        {% if visiometria %}
-        <div class="row">
-            <div class="col-lg-2">
-                <p>
-                    <label for="id_f_visiometria">Visiometria:</label>
-                </p>
-                {% if visiometria.estado == 'RE' %}
-                <div class="help-blok">
-                    <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html"><small>Ver resultado de Visiometría</small></a>
-                </div>
-                <div class="help-blok">
-                    <a href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=pdf"><small>Descargar</small></a>
-                </div>
-                {% endif %}
-            </div>
-            <div class="col-lg-10">
-            </div>
-        </div>
-        {% endif %}
-        <div class="row">
             <div class="col-lg-2"><p><label for="id_f_espirometria">Espirometria:</label>{{form1.f_espirometria}}</p></div>
             <div class="col-lg-10"><p><label for="id_r_espirometria">Resultados:</label>{{form1.r_espirometria}}</p></div>
         </div>
@@ -476,6 +447,40 @@
             </table>
         </div>
         {% endif %}
+        <p>Exámenes</p>
+        <div class="row">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Examen</th>
+                        <th>Estado</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Visiometria</th>
+                        <td>{% if visiometria %}{{ visiometria.get_estado_display|upper }}{% else %}NO SOLICITADO{% endif %}</td>
+                        <td>
+                            {% if visiometria.estado == 'RE' %}
+                            <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html&examen=visiometria"><small>Ver resultado de Visiometría</small></a>|
+                            <a href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=pdf&examen=visiometria"><small>Descargar</small></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Audiometria</th>
+                        <td>{% if audiometria %}{{ audiometria.get_estado_display|upper }}{% else %}NO SOLICITADO{% endif %}</td>
+                        <td>
+                            {% if audiometria.estado == 'RE' %}
+                            <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html&examen=audiometria"><small>Ver resultado de Visiometría</small></a>|
+                            <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html&examen=audiometria&print=True"><small>Descargar</small></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     {% if altura == True %}
         <div class="tab-pane fade" id="tabaltura">

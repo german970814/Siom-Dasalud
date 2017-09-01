@@ -34,6 +34,35 @@ class VisiometriaSerializer(IGSerializer):
         self.fields['estado'].required = False
 
 
+class AudiometriaSerializer(IGSerializer):
+    """
+    Serializer para las audiometrias.
+    """
+
+    orden = OrdenSerializer(
+        fields=('paciente', 'fecha', 'empresa', 'institucion', 'empresa_cliente', ),
+        read_only_fields=['paciente', 'fecha']
+    )
+
+    class Meta:
+        model = models.Audiometria
+        fields = (
+            'id', 'tiempo_exposicion', 'frecuencia', 'proteccion_auditiva', 'tipo_proteccion',
+            'servicio_militar', 'practica_poligono', 'usa_motocicleta', 'cerca_explociones',
+            'musica_volumen', 'usa_audifonos', 'practica_tejo', 'otros_antecedentes',
+            'cirugia_oido', 'trauma', 'medicamentos_ototoxicos', 'hipoacusia', 'vertigo',
+            'acufeno', 'otitis', 'otorrea', 'hz250_d', 'hz500_d', 'hz1000_d', 'hz2000_d',
+            'hz3000_d', 'hz4000_d', 'hz6000_d', 'hz8000_d', 'hz250_i', 'hz500_i', 'hz1000_i',
+            'hz2000_i', 'hz3000_i', 'hz4000_i', 'hz6000_i', 'hz8000_i', 'otoscopia_od',
+            'otoscopia_oi', 'uso_protectores_auditivos', 'complementar_audiometria_clinica',
+            'control_periodico', 'otras', 'orden', 'estado',
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(AudiometriaSerializer, self).__init__(*args, **kwargs)
+        self.fields['estado'].required = False
+
+
 class EmpleadoSerializer(IGSerializer):
     """
     Serializer de visiometra.

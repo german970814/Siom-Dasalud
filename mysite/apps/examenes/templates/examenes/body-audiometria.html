@@ -1,0 +1,272 @@
+{% load staticfiles %}
+<table class="table table-bordered table-responsive join table-body">
+    <tr>
+        <th colspan="8" style="text-align: center">ANTECEDENTES DE EXPOSICION A RUIDO HISTORIA OCUPACIONAL</th>
+    </tr>
+    <tr>
+        <th>TIEMPO DE EXPOSICION</th>
+        <td>{{ examen.tiempo_exposicion }}</td>
+        <th>FRECUENCIA</th>
+        <td>{{ examen.frecuencia }}</td>
+        <th>PROTECCION AUDITIVA</th>
+        <td>{{ examen.proteccion_auditiva|yesno:"SI,NO,NO" }}</td>
+        <th>TIPO</th>
+        <td>{{ examen.tipo_proteccion }}</td>
+    </tr>
+</table>
+<table class="table table-bordered table-responsive join table-body">
+    <tr>
+        <th colspan="8" style="text-align: center">ANTECEDENTES EXTRA LABORAL</th>
+    </tr>
+    <tr>
+        <th>PRESTO SERVICIO MILITAR</th>
+        <td>{{ examen.servicio_militar|yesno:"SI,NO,NO" }}</td>
+        <th>PRACTICA O PRACTICABA POLIGONO</th>
+        <td>{{ examen.practica_poligono|yesno:"SI,NO,NO" }}</td>
+        <th>UTILIZA MOTOCICLETA</th>
+        <td>{{ examen.usa_motocicleta|yesno:"SI,NO,NO" }}</td>
+        <th>HA ESTADO CERCA DE EXPLOSIONES</th>
+        <td>{{ examen.cerca_explociones|yesno:"SI,NO,NO" }}</td>
+    </tr>
+    <tr>
+        <th>ESCUCHA MUSICA A ALTO VOLUMENT</th>
+        <td>{{ examen.musica_volumen|yesno:"SI,NO,NO" }}</td>
+        <th>USA AUDIFONOS/ WALMAN</th>
+        <td>{{ examen.usa_audifonos|yesno:"SI,NO,NO" }}</td>
+        <th>PRACTICA TEJO, CAZA</th>
+        <td>{{ examen.practica_tejo|yesno:"SI,NO,NO" }}</td>
+        <th>OTROS</th>
+        <td>{{ examen.otros }}</td>
+    </tr>
+</table>
+<table class="table table-bordered table-responsive join table-body">
+    <tr>
+        <th colspan="8" style="text-align: center">ANTECEDENTES PATOLOGICOS</th>
+    </tr>
+    <tr>
+        <th>CIRUGIA DE OIDO</th>
+        <td>{{ examen.cirugia_oido|yesno:"SI,NO,NO" }}</td>
+        <th>TRAUMA</th>
+        <td>{{ examen.trauma|yesno:"SI,NO,NO" }}</td>
+        <th>MEDICAMENTO OTOTOXICO</th>
+        <td>{{ examen.medicamentos_ototoxicos|yesno:"SI,NO,NO" }}</td>
+        <th>HIPOACUSIA</th>
+        <td>{{ examen.hipoacusia|yesno:"SI,NO,NO" }}</td>
+    </tr>
+    <tr>
+        <th>VERTIGO</th>
+        <td>{{ examen.vertigo|yesno:"SI,NO,NO" }}</td>
+        <th>ACUFENO</th>
+        <td>{{ examen.acufeno|yesno:"SI,NO,NO" }}</td>
+        <th>OTITIS</th>
+        <td>{{ examen.otitis|yesno:"SI,NO,NO" }}</td>
+        <th>OTORREA</th>
+        <td>{{ examen.otorrea|yesno:"SI,NO,NO" }}</td>
+    </tr>
+</table>
+<table class="table table-bordered table-responsive table-body">
+    <thead>
+        <tr>
+            <th colspan="9" style="text-align: center">TAMIZAJE AUDITIVO</th>
+        </tr>
+        <tr>
+            <th>OIDO/FRECUENCIA</th>
+            <th>250 HZ</th>
+            <th>500 HZ</th>
+            <th>1000 HZ</th>
+            <th>2000 HZ</th>
+            <th>3000 HZ</th>
+            <th>4000 HZ</th>
+            <th>6000 HZ</th>
+            <th>8000 HZ</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>DERECHO</th>
+            <td>{{ examen.hz250_d }}</td>
+            <td>{{ examen.hz500_d }}</td>
+            <td>{{ examen.hz1000_d }}</td>
+            <td>{{ examen.hz2000_d }}</td>
+            <td>{{ examen.hz3000_d }}</td>
+            <td>{{ examen.hz4000_d }}</td>
+            <td>{{ examen.hz6000_d }}</td>
+            <td>{{ examen.hz8000_d }}</td>
+        </tr>
+        <tr>
+            <th>IZQUIERDO</th>
+            <td>{{ examen.hz250_i }}</td>
+            <td>{{ examen.hz500_i }}</td>
+            <td>{{ examen.hz1000_i }}</td>
+            <td>{{ examen.hz2000_i }}</td>
+            <td>{{ examen.hz3000_i }}</td>
+            <td>{{ examen.hz4000_i }}</td>
+            <td>{{ examen.hz6000_i }}</td>
+            <td>{{ examen.hz8000_i }}</td>
+        </tr>
+    </tbody>
+</table>
+<div class="row">
+    <div class="col-md-6">
+        <table class="table table-bordered table-responsive join table-body">
+            <tr>
+                <th colspan="2" style="text-align: center">OTOSCOPIA</th>
+            </tr>
+            <tr>
+                <th>OIDO DERECHO</th>
+                <td>{{ examen.otoscopia_od }}</td>
+            </tr>
+            <tr>
+                <th>OIDO IZQUIERDO</th>
+                <td>{{ examen.otoscopia_oi }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <table class="table table-bordered table-responsive join table-body">
+            <tr>
+                <th colspan="2" style="text-align: center">PROMEDIO AUDITIVO</th>
+            </tr>
+            <tr>
+                <th>OIDO DERECHO</th>
+                <td id="oDAvg"></td>
+            </tr>
+            <tr>
+                <th>OIDO IZQUIERDO</th>
+                <td id="oIAvg"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <canvas id="canva-chart" width="100%" height="300"></canvas>
+    </div>
+</div>
+<table class="table table-bordered table-responsive join table-body">
+    <tr>
+        <th colspan="6" style="text-align: center">RECOMENDACIONES</th>
+    </tr>
+    <tr>
+        <th>USO DE PROTECTORES AUDITIVOS</th>
+        <td>{{ examen.uso_protectores_auditivos|yesno:"SI,NO,NO" }}</td>
+        <th>COMPLEMENTAR CON AUDIOMETRIA CLINICA</th>
+        <td>{{ examen.complementar_audiometria_clinica|yesno:"SI,NO,NO" }}</td>
+        <th>CONTROL PERIODICO</th>
+        <td>{{ examen.control_periodico|yesno:"SI,NO,NO" }}</td>
+    </tr>
+</table>
+<table class="table table-bordered table-responsive join table-body">
+    <tr>
+        <th>OTRAS</th>
+        <td>{{ otras }}</td>
+    </tr>
+</table>
+<br>
+<div class="row">
+    <div class="col-md-3">
+        {% if examen.audiometra.get_firma %}
+            <img class="firma" src="http://{{ request.META.HTTP_HOST }}{{ examen.audiometra.get_firma.url }}" alt="" width="150px" height="80px" />
+            <br>
+        {% else %}
+            <hr>
+        {% endif %}
+        <p>FIRMA DEL EXAMINADOR</p>
+    </div>
+    <div class="col-md-3 col-md-offset-3">
+        {% if orden.paciente.firma %}
+            <img class="firma" src="http://{{ request.META.HTTP_HOST }}{{ orden.paciente.firma.url }}" alt="" width="150px" height="80px" />
+            <br>
+        {% else %}
+            <hr>
+        {% endif %}
+        <p>FIRMA DEL EXAMINADO</p>
+    </div>
+</div>
+
+<script src="{% static 'vue/node_modules/chart.js/dist/Chart.js' %}"></script>
+<script>
+    window.onload = function () {
+        let canvas = document.getElementById('canva-chart');
+        let context = canvas.getContext('2d');
+
+        let options = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        // beginAtZero: true,
+                        reverse: true
+                    },
+                    gridLines: {
+                        display: true
+                    },
+                    fill: false
+                }],
+                xAxes: [{
+                    gridLines: {
+                        display: true
+                    },
+                    position: 'top'
+                }]
+            },
+            fill: false,
+            legend: {
+                display: true
+            },
+            responsive: true,
+            maintainAspectRatio: false,
+            elements: {
+                line: {
+                    tension: 0
+                },
+            }
+        }
+
+        let oidoDerechoSource = [{{ examen.hz250_d }}, {{ examen.hz500_d }}, {{ examen.hz1000_d }}, {{ examen.hz2000_d }}, {{ examen.hz3000_d }},
+            {{ examen.hz4000_d }}, {{ examen.hz6000_d }}, {{ examen.hz8000_d }}];
+        let oidoIzquierdoSource = [{{ examen.hz250_i }}, {{ examen.hz500_i }}, {{ examen.hz1000_i }}, {{ examen.hz2000_i }}, {{ examen.hz3000_i }},
+            {{ examen.hz4000_i }}, {{ examen.hz6000_i }}, {{ examen.hz8000_i }}];
+
+        let data = {
+            labels: ['250HZ', '500HZ', '1000HZ', '2000HZ', '3000HZ', '4000HZ', '6000HZ', '8000HZ'],
+            datasets: [
+                {
+                    label: 'Oído Derecho',
+                    backgroundColor: 'rgba(239,29,26,0.5)',
+                    borderColor: 'rgba(239,29,26,0.5)',
+                    data: oidoDerechoSource,
+                    fill: false
+                },
+                {
+                    label: 'Oído Izquierdo',
+                    backgroundColor: 'rgba(26,114,239,0.5)',
+                    borderColor: 'rgba(26,114,239,0.5)',
+                    data: oidoIzquierdoSource,
+                    fill: false
+                }
+            ],
+        }
+
+        let audiometriaChart = new Chart(
+            context, {
+                type: 'line',
+                data: data,
+                options: options,
+                plugins: []
+            }
+        )
+
+        function getAvg(list) {
+            return list.reduce((x, y) => x + y) / list.length;
+        }
+
+        document.getElementById('oDAvg').innerHTML = getAvg(oidoDerechoSource);
+        document.getElementById('oIAvg').innerHTML = getAvg(oidoIzquierdoSource);
+
+        {% if print %}
+        setTimeout(function () {
+            window.print();
+        }, 1000)
+        {% endif %}
+    }
+</script>
