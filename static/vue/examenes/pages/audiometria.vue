@@ -502,7 +502,7 @@ export default {
                     display: true
                 },
                 responsive: true,
-                maintainAspectRatio: false,
+                // maintainAspectRatio: false,
                 elements: {
                     line: {
                         tension: 0
