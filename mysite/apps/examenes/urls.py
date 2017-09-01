@@ -6,7 +6,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index_visiometria'),
     url(r'^nueva/(?P<pk>\d+)/$', views.asignar_especialista_examen, name='visiometria_nueva'),
     # url(r'^nueva/audiometria/(?P<pk>\d+)/$', views.audiometria_create, name='audiometria_nueva'),
-    url(r'^resultado/visiometria/(?P<pk>\d+)/$', views.ver_resultado_visiometria, name='ver_resultado_visiometria'),
+    url(r'^resultado/(?P<pk>\d+)/$', views.ver_resultado_examenes, name='ver_resultado_visiometria'),
 ]
 
 # api

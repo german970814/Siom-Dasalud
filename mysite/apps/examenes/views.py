@@ -101,6 +101,53 @@ def ver_resultado_visiometria(request, pk):
 
 
 @login_required
+def ver_resultado_examenes(request, pk):
+    """"""
+
+    RESPONSE_MODES = ('inline', 'attachment', )
+    RESPONSE_FORMATS = ('pdf', 'html', )
+    ACEPTED_EXAMENS = ('visiometria', 'audiometria', )
+    EXAMEN_MODEL_DIR = {
+        'visiometria': models.Visiometria,
+        'audiometria': models.Audiometria
+    }
+
+    _response_mode = request.GET.get('inline', 'attachment')
+    _response_format = request.GET.get('format', 'html')
+
+    if _response_mode not in RESPONSE_MODES:
+        _response_mode = RESPONSE_MODES[1]
+    if _response_format not in RESPONSE_FORMATS:
+        _response_format = RESPONSE_FORMATS[1]
+
+    orden = get_object_or_404(Orden, pk=pk)
+
+    _examen = request.GET.get('examen', '')
+
+    if _examen not in ACEPTED_EXAMENS:
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed('Examén no encontrado')
+
+    examen = get_object_or_404(EXAMEN_MODEL_DIR[_examen].objects.all(), orden=orden)
+
+    data = {
+        'orden': orden, 'examen': examen, 'request': request, 'tipo': _examen
+    }
+
+    if _response_format == 'pdf':
+        stylesheets = ['static/css/bootstrap.min.css', 'static/css/print_examenes.css']
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = '%s; filename=examen-%d.pdf' % (_response_mode, orden.id,)
+        _string = render_to_string(
+            'examenes/resultado_base.html', data, RequestContext(request)
+        )
+        HTML(string=_string).write_pdf(response, stylesheets=stylesheets)
+        return response
+
+    return render(request, 'examenes/resultado_base.html', data)
+
+
+@login_required
 def asignar_especialista_examen(request, pk):
     """Vista para crear audiometrías"""
 

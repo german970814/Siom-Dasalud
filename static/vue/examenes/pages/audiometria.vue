@@ -294,7 +294,7 @@
                             <v-flex md6>
                                 <chart-audiometria :chartData="chartData" :options="chartOptions"></chart-audiometria>
                                 <v-spacer></v-spacer>
-                                <v-btn flat outline success @click.native="saveGraph">Guardar gráfico actual</v-btn>
+                                <v-btn v-show="'id' in audiometria && audiometria.id && audiometria.estado !== 'RE'" flat outline success @click.native="saveGraph">Guardar gráfico actual</v-btn>
                             </v-flex>
                         </v-layout>
                         <br>
