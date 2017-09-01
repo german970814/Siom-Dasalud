@@ -474,7 +474,7 @@
                         <td>
                             {% if audiometria.estado == 'RE' %}
                             <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html&examen=audiometria"><small>Ver resultado de Visiometría</small></a>|
-                            <a href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=pdf&examen=audiometria"><small>Descargar</small></a>
+                            <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html&examen=audiometria&print=True"><small>Descargar</small></a>
                             {% endif %}
                         </td>
                     </tr>

@@ -114,6 +114,7 @@ def ver_resultado_examenes(request, pk):
 
     _response_mode = request.GET.get('inline', 'attachment')
     _response_format = request.GET.get('format', 'html')
+    _print = request.GET.get('print', None)
 
     if _response_mode not in RESPONSE_MODES:
         _response_mode = RESPONSE_MODES[1]
@@ -131,7 +132,7 @@ def ver_resultado_examenes(request, pk):
     examen = get_object_or_404(EXAMEN_MODEL_DIR[_examen].objects.all(), orden=orden)
 
     data = {
-        'orden': orden, 'examen': examen, 'request': request, 'tipo': _examen
+        'orden': orden, 'examen': examen, 'request': request, 'tipo': _examen, 'print': _print
     }
 
     if _response_format == 'pdf':

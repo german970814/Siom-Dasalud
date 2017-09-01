@@ -262,5 +262,11 @@
 
         document.getElementById('oDAvg').innerHTML = getAvg(oidoDerechoSource);
         document.getElementById('oIAvg').innerHTML = getAvg(oidoIzquierdoSource);
+
+        {% if print %}
+        setTimeout(function () {
+            window.print();
+        }, 1000)
+        {% endif %}
     }
 </script>

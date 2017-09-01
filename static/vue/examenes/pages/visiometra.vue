@@ -3,7 +3,7 @@
         <v-layout>
             <v-flex xs12 md12>
                 <ig-table
-                  table-title="Visiometras"
+                  table-title="Empleados"
                   :headers="headers"
                   :data="elements"
                   :fields="['usuario.username', 'nombre', 'usuario.email']"
@@ -67,14 +67,14 @@ export default {
                     name: 'username',
                     verbose_name: 'Usuario',
                     type: String,
-                    hint: 'Este es el nombre de usuario de el visiometra.',
+                    hint: 'Este es el nombre de usuario de el empleado.',
                     group: 'usuario',
                 },
                 {
                     name: 'password',
                     verbose_name: 'Contraseña',
                     type: String,
-                    hint: 'Esta es la contraseña de el visiometra.',
+                    hint: 'Esta es la contraseña de el empleado.',
                     required: false,
                     group: 'usuario',
                     kwargs: {
@@ -85,7 +85,7 @@ export default {
                     name: 'email',
                     verbose_name: 'Email',
                     type: String,
-                    hint: 'Este es el email de el visiometra.',
+                    hint: 'Este es el email de el empleado.',
                     group: 'usuario',
                     kwargs: {
                     type: 'email'
@@ -95,13 +95,13 @@ export default {
                     name: 'nombre',
                     verbose_name: 'Nombre',
                     type: String,
-                    hint: 'Nombre de el visiometra.',
+                    hint: 'Nombre de el empleado.',
                 },
                 {
                     name: 'firma',
                     verbose_name: 'Firma',
                     type: 'file',
-                    hint: 'Esta es la firma de el visiometra, la cual saldrá en los resultados.',
+                    hint: 'Esta es la firma de el empleado, la cual saldrá en los resultados.',
                     required: false,
                     url_file: '/examenes/api/visiometra/firma/',
                 },

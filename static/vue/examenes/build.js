@@ -54893,13 +54893,13 @@ exports.default = {
                 name: 'username',
                 verbose_name: 'Usuario',
                 type: String,
-                hint: 'Este es el nombre de usuario de el visiometra.',
+                hint: 'Este es el nombre de usuario de el empleado.',
                 group: 'usuario'
             }, {
                 name: 'password',
                 verbose_name: 'Contraseña',
                 type: String,
-                hint: 'Esta es la contraseña de el visiometra.',
+                hint: 'Esta es la contraseña de el empleado.',
                 required: false,
                 group: 'usuario',
                 kwargs: {
@@ -54909,7 +54909,7 @@ exports.default = {
                 name: 'email',
                 verbose_name: 'Email',
                 type: String,
-                hint: 'Este es el email de el visiometra.',
+                hint: 'Este es el email de el empleado.',
                 group: 'usuario',
                 kwargs: {
                     type: 'email'
@@ -54918,12 +54918,12 @@ exports.default = {
                 name: 'nombre',
                 verbose_name: 'Nombre',
                 type: String,
-                hint: 'Nombre de el visiometra.'
+                hint: 'Nombre de el empleado.'
             }, {
                 name: 'firma',
                 verbose_name: 'Firma',
                 type: 'file',
-                hint: 'Esta es la firma de el visiometra, la cual saldrá en los resultados.',
+                hint: 'Esta es la firma de el empleado, la cual saldrá en los resultados.',
                 required: false,
                 url_file: '/examenes/api/visiometra/firma/'
             }]
@@ -54943,7 +54943,7 @@ exports.default = {
 //         <v-layout>
 //             <v-flex xs12 md12>
 //                 <ig-table
-//                   table-title="Visiometras"
+//                   table-title="Empleados"
 //                   :headers="headers"
 //                   :data="elements"
 //                   :fields="['usuario.username', 'nombre', 'usuario.email']"
@@ -56056,7 +56056,7 @@ var x = {
 /* 323 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Visiometras\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombre', 'usuario.email']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-table\n                  table-title=\"Empleados\"\n                  :headers=\"headers\"\n                  :data=\"elements\"\n                  :fields=\"['usuario.username', 'nombre', 'usuario.email']\"\n                  @selectedrow=\"eventUpdatedForm\"\n                  :loading=\"loading\"\n                ></ig-table>\n            </v-flex>\n        </v-layout>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                :fields=\"fields\"\n                :url=\"urlForm\"\n                @showsnack=\"showSnackBar\"\n                @objectcreated=\"eventCreatedObject\"\n                @clearselected=\"selected = false\"\n                :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 324 */
