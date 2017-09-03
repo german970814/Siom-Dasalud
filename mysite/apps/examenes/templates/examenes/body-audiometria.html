@@ -140,7 +140,10 @@
 </div>
 <div class="row">
     <div class="col-md-6 col-md-offset-3">
-        <canvas id="canva-chart" width="100%" height="300"></canvas>
+        <canvas id="canva-chart" width="100%" height="300" style="z-index: 1"></canvas>
+    </div>
+    <div class="col-md-6 col-md-offset-3">
+        <div id="newImage"></div>
     </div>
 </div>
 <table class="table table-bordered table-responsive join table-body">
@@ -195,7 +198,10 @@
                 yAxes: [{
                     ticks: {
                         // beginAtZero: true,
-                        reverse: true
+                        reverse: true,
+                        min: 0,
+                        max: 100,
+                        step: 10
                     },
                     gridLines: {
                         display: true
@@ -235,14 +241,17 @@
                     backgroundColor: 'rgba(239,29,26,0.5)',
                     borderColor: 'rgba(239,29,26,0.5)',
                     data: oidoDerechoSource,
-                    fill: false
+                    fill: false,
+                    pointBorderWidth: 10,
                 },
                 {
                     label: 'Oído Izquierdo',
                     backgroundColor: 'rgba(26,114,239,0.5)',
                     borderColor: 'rgba(26,114,239,0.5)',
                     data: oidoIzquierdoSource,
-                    fill: false
+                    fill: false,
+                    pointStyle: 'cross',
+                    pointBorderWidth: 15,
                 }
             ],
         }
@@ -265,6 +274,17 @@
 
         {% if print %}
         setTimeout(function () {
+            // audiometriaChart.toBase64Image();
+            let algo = audiometriaChart.toBase64Image();
+            let i = new Image(540, 300);
+            i.onload = function () {
+                this.naturalHeight = 540
+                this.naturalWidth = 300
+                document.getElementById('newImage').appendChild(this);
+            }
+            i.src = algo;
+            canvas.style.display = 'none';
+            // console.log(algo);
             window.print();
         }, 1000)
         {% endif %}

@@ -435,7 +435,8 @@ export default {
                             this.cphz250_d, this.cphz500_d, this.cphz1000_d, this.cphz2000_d, this.cphz3000_d,
                             this.cphz4000_d, this.cphz6000_d, this.cphz8000_d
                         ],
-                        fill: false
+                        fill: false,
+                        pointBorderWidth: 10,
                     },
                     {
                         label: 'Oído Izquierdo',
@@ -445,7 +446,9 @@ export default {
                             this.cphz250_i, this.cphz500_i, this.cphz1000_i, this.cphz2000_i, this.cphz3000_i,
                             this.cphz4000_i, this.cphz6000_i, this.cphz8000_i
                         ],
-                        fill: false
+                        fill: false,
+                        pointStyle: 'cross',
+                        pointBorderWidth: 15,
                     }
                 ],
             }
@@ -462,7 +465,8 @@ export default {
                             this.hz250_d, this.hz500_d, this.hz1000_d, this.hz2000_d, this.hz3000_d,
                             this.hz4000_d, this.hz6000_d, this.hz8000_d
                         ],
-                        fill: false
+                        fill: false,
+                        pointBorderWidth: 10,
                     },
                     {
                         label: 'Oído Izquierdo',
@@ -471,7 +475,9 @@ export default {
                             this.hz250_i, this.hz500_i, this.hz1000_i, this.hz2000_i, this.hz3000_i,
                             this.hz4000_i, this.hz6000_i, this.hz8000_i
                         ],
-                        fill: false
+                        fill: false,
+                        pointStyle: 'cross',
+                        pointBorderWidth: 15,
                     }
                 ],
             }
@@ -483,7 +489,10 @@ export default {
                     yAxes: [{
                         ticks: {
                             // beginAtZero: true,
-                            reverse: true
+                            reverse: true,
+                            min: 0,
+                            max: 100,
+                            step: 10
                         },
                         gridLines: {
                             display: true
