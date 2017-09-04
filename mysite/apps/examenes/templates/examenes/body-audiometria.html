@@ -285,7 +285,9 @@
             i.src = algo;
             canvas.style.display = 'none';
             // console.log(algo);
-            window.print();
+            setTimeout(function () {
+                window.print();
+            }, 1000)
         }, 1000)
         {% endif %}
     }

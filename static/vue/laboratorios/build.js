@@ -29489,11 +29489,16 @@ var _vue = __webpack_require__(3);
 
 var _vue2 = _interopRequireDefault(_vue);
 
+var _editDialog = __webpack_require__(190);
+
+var _editDialog2 = _interopRequireDefault(_editDialog);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// <script>
 exports.default = {
     name: 'formulario-resultado',
-    components: { 'ig-slot-input': _slotInput2.default },
+    components: { 'ig-slot-input': _slotInput2.default, 'ig-edit-dialog': _editDialog2.default },
     mounted: function mounted() {},
     data: function data() {
         return {
@@ -29527,6 +29532,9 @@ exports.default = {
         }
     },
     methods: {
+        customSortFunction: function customSortFunction(items, index, descending) {
+            return items;
+        },
         _hasEmptyValues: function _hasEmptyValues() {
             var MODEL_TEXT = ['select', 'text', 'number', 'textarea'];
             var MODEL_OBJ = [];
@@ -29569,7 +29577,7 @@ exports.default = {
         _genEditDialog: function _genEditDialog(item) {
             var _this = this;
 
-            var dialog = 'v-edit-dialog';
+            var dialog = 'ig-edit-dialog';
             if (this.disabled) {
                 dialog = 'ig-slot-input';
             }
@@ -29631,7 +29639,8 @@ exports.default = {
                         rowsPerPage: 100,
                         descending: false,
                         totalItems: 0
-                    }
+                    },
+                    customSort: this.customSortFunction
                 },
                 scopedSlots: {
                     items: function items(props) {
@@ -29643,7 +29652,6 @@ exports.default = {
                     }
                 }
             }, []);
-
             return childs;
         },
         calculaReferencias: function calculaReferencias(item) {
@@ -29694,7 +29702,7 @@ exports.default = {
                 'title': ''
             };
 
-            var dialog = 'v-edit-dialog';
+            var dialog = 'ig-edit-dialog';
             if (this.disabled) {
                 dialog = 'ig-slot-input';
             }
@@ -29779,7 +29787,6 @@ exports.default = {
 // }
 // </style>
 //
-// <script>
 
 /***/ }),
 /* 113 */
@@ -34649,6 +34656,126 @@ exports.default = {
 /***/ (function(module, exports) {
 
 module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Recepciones\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :total-items=\"totalItems\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        :filter=\"filter\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <template slot=\"headers\" scope=\"props\">\n                            <tr>\n                                <th v-for=\"header in props.headers\" :key=\"header\"\n                                :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                    @click=\"changeSort(header)\"\n                                >\n                                    <v-icon>arrow_upward</v-icon>\n                                    {{ header.text }}\n                                </th>\n                            </tr>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of fields\">\n                                <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td class=\"text-xs-center\" v-else>\n                                    <v-btn fab dark small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+
+/***/ }),
+/* 190 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'edit-dialog',
+
+  data () {
+    return {
+      isActive: false,
+      isSaving: false
+    }
+  },
+
+  props: {
+    cancelText: {
+      default: 'Cancel'
+    },
+    large: Boolean,
+    lazy: Boolean,
+    saveText: {
+      default: 'Save'
+    },
+    transition: {
+      type: String,
+      default: 'v-slide-x-reverse-transition'
+    }
+  },
+
+  watch: {
+    isActive (val) {
+      val && this.$emit('open') && setTimeout(this.focus, 50)
+      if (!val) {
+        !this.isSaving && this.$emit('cancel')
+        this.isSaving && this.$emit('close')
+        this.isSaving = false
+      }
+    }
+  },
+
+  methods: {
+    cancel () {
+      this.isActive = false
+    },
+    focus () {
+      // const input = this.$el.querySelector('input')
+      // input && setTimeout(() => (input.focus()), 0)
+      const input = this.$refs.content.querySelector('input')
+      input && input.focus()
+    },
+    save () {
+      this.isSaving = true
+      this.isActive = false
+      this.$emit('save')
+    },
+    genButton (fn, text) {
+      return this.$createElement('v-btn', {
+        props: {
+          flat: true,
+          primary: true,
+          light: true
+        },
+        nativeOn: { click: fn },
+        on: { click: fn }
+      }, text)
+    },
+    genActions () {
+      return this.$createElement('div', {
+        'class': 'small-dialog__actions',
+        directives: [{
+          name: 'show',
+          value: this.large
+        }]
+      }, [
+        this.genButton(this.cancel, this.cancelText),
+        this.genButton(this.save, this.saveText)
+      ])
+    },
+    genContent () {
+      return this.$createElement('div', {
+        'class': 'small-dialog__content',
+        on: {
+          keydown: e => {
+            e.keyCode === 27 && this.cancel()
+            e.keyCode === 13 && this.save()
+          }
+        },
+        ref: 'content'
+      }, [this.$slots.input])
+    }
+  },
+
+  render (h) {
+    return h('v-menu', {
+      'class': 'small-dialog',
+      props: {
+        transition: this.transition,
+        origin: 'top right',
+        right: true,
+        value: this.isActive,
+        closeOnContentClick: false,
+        lazy: this.lazy
+      },
+      on: {
+        input: val => (this.isActive = val)
+      }
+    }, [
+      h('a', {
+        domProps: { href: 'javascript:;' },
+        slot: 'activator'
+      }, [this.$slots.default]),
+      this.genContent(),
+      this.genActions()
+    ])
+  }
+});
+
 
 /***/ })
 /******/ ]);

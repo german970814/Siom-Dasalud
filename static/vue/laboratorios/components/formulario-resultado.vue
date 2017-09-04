@@ -2,10 +2,11 @@
 import _ from 'underscore';
 import IGSlotInput from './slot-input.vue';
 import Vue from 'vue/dist/vue.js';
+import IgEditDialog from './edit-dialog';
 
 export default {
     name: 'formulario-resultado',
-    components: {'ig-slot-input': IGSlotInput},
+    components: {'ig-slot-input': IGSlotInput, 'ig-edit-dialog': IgEditDialog},
     mounted: function () {
 
     },
@@ -47,6 +48,9 @@ export default {
         }
     },
     methods: {
+        customSortFunction (items, index, descending) {
+            return items;
+        },
         _hasEmptyValues () {
             const MODEL_TEXT = ['select', 'text', 'number', 'textarea'];
             const MODEL_OBJ = [];
@@ -65,7 +69,7 @@ export default {
             return false;
         },
         _genEditDialog (item) {
-            let dialog = 'v-edit-dialog';
+            let dialog = 'ig-edit-dialog';
             if (this.disabled) {
                 dialog = 'ig-slot-input';
             }
@@ -126,39 +130,37 @@ export default {
         },
         _genBody () {
             let childs = this.$createElement('v-data-table', {
-                  props: {
-                      headers: this.headers, items: this.value.items,
-                      rowsPerPageItems: [100],
-                      pagination: {
-                          page: 1,
-                          rowsPerPage: 100,
-                          descending: false,
-                          totalItems: 0
-                      }
-                  },
-                  scopedSlots: {
-                      items: (props) => {
-                          let tds = [];
-                          if (props.item.tipo.name != 'title') {
-                              return [
-                                  this._genTd(props.item, props.item.nombre),
-                                  this._genTd(props.item, this.createTdWithProp(props.item)),
-                                  this._genTd(props.item, props.item.unidades),
-                                  this._genTd(props.item, this._genEditDialog(props.item)),
-                                  ...this.calculaReferencias(props.item),
-                              ]
-                          }
-                          return [
-                              this.$createElement('td', {'class': 'text-xs-left', attrs: {colspan: 5}}, [
-                                  this.$createElement('strong', {attrs: {style: 'font-size: 20px'}} , [props.item.nombre.toUpperCase()])
-                              ])
-                          ]
-                      }
-                  }
+                props: {
+                    headers: this.headers, items: this.value.items,
+                    rowsPerPageItems: [100],
+                    pagination: {
+                        page: 1,
+                        rowsPerPage: 100,
+                        descending: false,
+                        totalItems: 0
+                    },
+                    customSort: this.customSortFunction
                 },
-                []
-            );
-
+                scopedSlots: {
+                    items: (props) => {
+                        let tds = [];
+                        if (props.item.tipo.name != 'title') {
+                            return [
+                                this._genTd(props.item, props.item.nombre),
+                                this._genTd(props.item, this.createTdWithProp(props.item)),
+                                this._genTd(props.item, props.item.unidades),
+                                this._genTd(props.item, this._genEditDialog(props.item)),
+                                ...this.calculaReferencias(props.item),
+                            ]
+                        }
+                        return [
+                            this.$createElement('td', {'class': 'text-xs-left', attrs: {colspan: 5}}, [
+                                this.$createElement('strong', {attrs: {style: 'font-size: 20px'}} , [props.item.nombre.toUpperCase()])
+                            ])
+                        ]
+                    }
+                }
+            }, []);
             return childs;
         },
         calculaReferencias (item) {
@@ -211,7 +213,7 @@ export default {
                 'title': '',
             }
 
-            let dialog = 'v-edit-dialog';
+            let dialog = 'ig-edit-dialog';
             if (this.disabled) {
                 dialog = 'ig-slot-input';
             }
