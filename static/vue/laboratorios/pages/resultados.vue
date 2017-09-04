@@ -10,6 +10,28 @@
                 </v-breadcrumbs-item>
             </v-breadcrumbs>
         </v-layout>
+        <div v-if="orden">
+            <h5>Orden #{{ orden.id }}</h5>
+            <v-layout>
+                <table class="table">
+                    <tr>
+                        <th>Nombre del paciente</th>
+                        <td>{{ orden.paciente.nombre_completo }}</td>
+                        <th>Identificación</th>
+                        <td>{{ orden.paciente.cedula }}</td>
+                        <th>Edad del paciente</th>
+                        <td>{{ orden.paciente.edad + ' ' + orden.paciente.unidad_edad }}</td>
+                    </tr>
+                    <tr>
+                        <th>Empresa cliente</th>
+                        <td>{{ orden.empresa_cliente }}</td>
+                        <th>Contacto</th>
+                        <td>{{ orden.paciente.telefono }}</td>
+                    </tr>
+                </table>
+            </v-layout>
+            <br />
+        </div>
         <div v-if="items.length">
             <v-tabs
                 id="tabs"

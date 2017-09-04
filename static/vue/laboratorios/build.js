@@ -13042,7 +13042,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/table.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/table.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -13064,7 +13064,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/form.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/form.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22214,7 +22214,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/menu.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/menu.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22468,7 +22468,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/productos.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/productos.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22616,7 +22616,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/floating-button.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/floating-button.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -22638,7 +22638,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/formulario-resultado.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/formulario-resultado.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -25634,8 +25634,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-36ae8848&file=menu.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-36ae8848&file=menu.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6fe602db&file=menu.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6fe602db&file=menu.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./menu.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -26126,8 +26126,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d0edeebe&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d0edeebe&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-73f4a182&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-73f4a182&file=table.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./table.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -26947,8 +26947,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-24e178c1&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-24e178c1&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9fc28080&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9fc28080&file=form.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./form.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -28188,7 +28188,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/laboratorios.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/laboratorios.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -28212,8 +28212,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-425a4abe&file=laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-425a4abe&file=laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9b79a142&file=laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9b79a142&file=laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./laboratorios.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -28564,7 +28564,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/formato.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/formato.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -28588,8 +28588,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-606b9c6b&file=formato.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-606b9c6b&file=formato.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5f56fde8&file=formato.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5f56fde8&file=formato.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formato.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -29235,8 +29235,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4d1a4f28&file=floating-button.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4d1a4f28&file=floating-button.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-13418c0d&file=floating-button.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-13418c0d&file=floating-button.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./floating-button.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -29434,8 +29434,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-11bc495e&file=formulario-resultado.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formulario-resultado.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-11bc495e&file=formulario-resultado.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formulario-resultado.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-34474450&file=formulario-resultado.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formulario-resultado.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-34474450&file=formulario-resultado.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formulario-resultado.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -29590,7 +29590,7 @@ exports.default = {
             }, [Boolean(item.observaciones.trim()) ? item.observaciones : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Comentario']), this.$createElement('v-text-field', {
                 slot: 'input',
                 props: {
-                    label: 'Comentario', 'multi-line': true, type: 'text'
+                    label: 'Comentario', 'multi-line': true, type: 'text', autofocus: true
                 },
                 on: {
                     input: function input(event) {
@@ -29719,7 +29719,7 @@ exports.default = {
                     props: {
                         label: 'Resultado', 'multi-line': item.tipo.name == 'textarea',
                         type: item.tipo.name == 'number' ? 'number' : 'text',
-                        hint: item.help, 'persistent-hint': true
+                        hint: item.help, 'persistent-hint': true, autofocus: true
                     },
                     on: {
                         input: function input(event) {
@@ -29749,7 +29749,8 @@ exports.default = {
                     props: {
                         label: 'Resultado', 'item-value': 'text',
                         hint: item.help, 'persistent-hint': true,
-                        items: item.choices, 'return-object': true
+                        items: item.choices, 'return-object': true,
+                        autofocus: true
                     },
                     on: {
                         input: function input(event) {
@@ -29795,7 +29796,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/components/slot-input.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/components/slot-input.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -29819,8 +29820,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6e79d7f8&file=slot-input.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6e79d7f8&file=slot-input.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7d7fa3b7&file=slot-input.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7d7fa3b7&file=slot-input.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./slot-input.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -29904,8 +29905,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2d6ae7e6&file=productos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./productos.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2d6ae7e6&file=productos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./productos.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-46ad2847&file=productos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./productos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-46ad2847&file=productos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./productos.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -30220,7 +30221,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/equipos.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/equipos.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -30244,8 +30245,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b3141f26&file=equipos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b3141f26&file=equipos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5bf229a8&file=equipos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-5bf229a8&file=equipos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./equipos.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -30429,7 +30430,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/tecnicas.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/tecnicas.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -30453,8 +30454,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-27b3ef42&file=tecnicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-27b3ef42&file=tecnicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-32b46580&file=tecnicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-32b46580&file=tecnicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./tecnicas.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -30625,7 +30626,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/secciones_trabajo.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/secciones_trabajo.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -30649,8 +30650,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-81f97cf6&file=secciones_trabajo.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-81f97cf6&file=secciones_trabajo.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-23c51984&file=secciones_trabajo.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-23c51984&file=secciones_trabajo.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./secciones_trabajo.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -30872,7 +30873,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/reactivos.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/reactivos.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -30896,8 +30897,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3496a1e9&file=reactivos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-3496a1e9&file=reactivos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-80582e30&file=reactivos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-80582e30&file=reactivos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./reactivos.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -31360,7 +31361,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/caracteristicas.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/caracteristicas.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -31384,8 +31385,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d5efd738&file=caracteristicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d5efd738&file=caracteristicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b7e43fba&file=caracteristicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b7e43fba&file=caracteristicas.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./caracteristicas.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -31556,7 +31557,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/especificacion_caracteristica.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/especificacion_caracteristica.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -31580,8 +31581,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-32209851&file=especificacion_caracteristica.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-32209851&file=especificacion_caracteristica.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1c5b69d0&file=especificacion_caracteristica.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1c5b69d0&file=especificacion_caracteristica.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./especificacion_caracteristica.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -31756,7 +31757,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/ordenes_laboratorios.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/ordenes_laboratorios.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -31780,8 +31781,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6d5293a5&file=ordenes_laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-6d5293a5&file=ordenes_laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b1bd7174&file=ordenes_laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-b1bd7174&file=ordenes_laboratorios.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./ordenes_laboratorios.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -32154,7 +32155,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/formatos.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/formatos.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -32178,8 +32179,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-698b8b92&file=formatos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-698b8b92&file=formatos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9fcc2e9a&file=formatos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-9fcc2e9a&file=formatos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./formatos.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -32729,7 +32730,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/bacteriologos.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/bacteriologos.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -32753,8 +32754,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1dbee8c4&file=bacteriologos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-1dbee8c4&file=bacteriologos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7e543b1d&file=bacteriologos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-7e543b1d&file=bacteriologos.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./bacteriologos.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -32973,7 +32974,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/resultados.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/resultados.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -32997,8 +32998,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4ef00e1b&file=resultados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-4ef00e1b&file=resultados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2b5ba6fc&file=resultados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-2b5ba6fc&file=resultados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./resultados.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -33494,6 +33495,28 @@ exports.default = {
 //                 </v-breadcrumbs-item>
 //             </v-breadcrumbs>
 //         </v-layout>
+//         <div v-if="orden">
+//             <h5>Orden #{{ orden.id }}</h5>
+//             <v-layout>
+//                 <table class="table">
+//                     <tr>
+//                         <th>Nombre del paciente</th>
+//                         <td>{{ orden.paciente.nombre_completo }}</td>
+//                         <th>Identificación</th>
+//                         <td>{{ orden.paciente.cedula }}</td>
+//                         <th>Edad del paciente</th>
+//                         <td>{{ orden.paciente.edad + ' ' + orden.paciente.unidad_edad }}</td>
+//                     </tr>
+//                     <tr>
+//                         <th>Empresa cliente</th>
+//                         <td>{{ orden.empresa_cliente }}</td>
+//                         <th>Contacto</th>
+//                         <td>{{ orden.paciente.telefono }}</td>
+//                     </tr>
+//                 </table>
+//             </v-layout>
+//             <br />
+//         </div>
 //         <div v-if="items.length">
 //             <v-tabs
 //                 id="tabs"
@@ -33618,7 +33641,7 @@ exports.default = {
 /* 174 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <div v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                dark>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        :id=\"'tabItem-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              @empty=\"toggleClass($event, id)\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                            <v-btn\n                                :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                                flat\n                                @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                                Guardar\n                            </v-btn>\n                        </v-card-actions>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\" @keyup.esc=\"preview = false\">\n                <v-card @keyup.esc=\"preview = false\">\n                    <v-toolbar class=\"cyan darken-4\" @keyup.esc=\"preview = false\" fixed>\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Previsualización</v-toolbar-title>\n                        <v-spacer></v-spacer>\n                        <!-- <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                            <span class=\"btn__content\">Imprimir</span>\n                        </a> -->\n                    </v-toolbar>\n                    <v-container @keyup.esc=\"preview = false\">\n                        <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                            <div class=\"preloader\">\n                                <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                            </div>\n                        </div>\n                        <!-- <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas> -->\n                        <object style=\"margin-top: 60px\" id=\"object-visor\" width=\"100%\" height=\"800px\" :data=\"url_impresion\" type=\"application/pdf\" @keyup.esc=\"preview = false\"></object>\n                    </v-container>\n                </v-card>\n            </v-dialog>\n        </div>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn fab dark info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon dark>check</v-icon>\n                </v-btn>\n                <v-btn fab dark warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon dark>fingerprint</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon dark>print</v-icon>\n                </v-btn>\n                <v-btn fab dark error small @click.native.stop=\"showPreview\" v-tooltip:left=\"{html: 'Previsualización'}\">\n                    <v-icon dark>panorama</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista ordenes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <div v-if=\"orden\">\n            <h5>Orden #{{ orden.id }}</h5>\n            <v-layout>\n                <table class=\"table\">\n                    <tr>\n                        <th>Nombre del paciente</th>\n                        <td>{{ orden.paciente.nombre_completo }}</td>\n                        <th>Identificación</th>\n                        <td>{{ orden.paciente.cedula }}</td>\n                        <th>Edad del paciente</th>\n                        <td>{{ orden.paciente.edad + ' ' + orden.paciente.unidad_edad }}</td>\n                    </tr>\n                    <tr>\n                        <th>Empresa cliente</th>\n                        <td>{{ orden.empresa_cliente }}</td>\n                        <th>Contacto</th>\n                        <td>{{ orden.paciente.telefono }}</td>\n                    </tr>\n                </table>\n            </v-layout>\n            <br />\n        </div>\n        <div v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                dark>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        :id=\"'tabItem-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              @empty=\"toggleClass($event, id)\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-actions v-if=\"'resultado' in item ? !item.resultado.cerrado: true\">\n                            <v-btn\n                                :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                                flat\n                                @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                                Guardar\n                            </v-btn>\n                        </v-card-actions>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\" @keyup.esc=\"preview = false\">\n                <v-card @keyup.esc=\"preview = false\">\n                    <v-toolbar class=\"cyan darken-4\" @keyup.esc=\"preview = false\" fixed>\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Previsualización</v-toolbar-title>\n                        <v-spacer></v-spacer>\n                        <!-- <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                            <span class=\"btn__content\">Imprimir</span>\n                        </a> -->\n                    </v-toolbar>\n                    <v-container @keyup.esc=\"preview = false\">\n                        <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                            <div class=\"preloader\">\n                                <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                            </div>\n                        </div>\n                        <!-- <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas> -->\n                        <object style=\"margin-top: 60px\" id=\"object-visor\" width=\"100%\" height=\"800px\" :data=\"url_impresion\" type=\"application/pdf\" @keyup.esc=\"preview = false\"></object>\n                    </v-container>\n                </v-card>\n            </v-dialog>\n        </div>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn fab dark info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon dark>check</v-icon>\n                </v-btn>\n                <v-btn fab dark warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon dark>fingerprint</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon dark>print</v-icon>\n                </v-btn>\n                <v-btn fab dark error small @click.native.stop=\"showPreview\" v-tooltip:left=\"{html: 'Previsualización'}\">\n                    <v-icon dark>panorama</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
 
 /***/ }),
 /* 175 */
@@ -33635,7 +33658,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/toma_muestra.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/toma_muestra.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -33659,8 +33682,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-26532994&file=toma_muestra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./toma_muestra.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-26532994&file=toma_muestra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./toma_muestra.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d387e396&file=toma_muestra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./toma_muestra.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-d387e396&file=toma_muestra.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./toma_muestra.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34028,7 +34051,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/empleados.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/empleados.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34052,8 +34075,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-03884dbe&file=empleados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-03884dbe&file=empleados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ed0dbfc0&file=empleados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-ed0dbfc0&file=empleados.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./empleados.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});
@@ -34245,7 +34268,7 @@ if (false) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/germanalzate/Documents/Siom/ipsiom/static/vue/laboratorios/pages/recepciones.vue"
+  var id = "/Users/germanalzate/Documents/ipsiom/static/vue/laboratorios/pages/recepciones.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -34269,8 +34292,8 @@ if(content.locals) module.exports = content.locals;
 if(false) {
 	// When the styles change, update the <style> tags
 	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-162b3207&file=recepciones.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./recepciones.vue", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-162b3207&file=recepciones.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./recepciones.vue");
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-719a9574&file=recepciones.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./recepciones.vue", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/vue-loader/lib/style-rewriter.js?id=_v-719a9574&file=recepciones.vue!../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./recepciones.vue");
 			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 			update(newContent);
 		});

@@ -12,24 +12,44 @@
 <table class="table table-bordered table-responsive join table-body">
     <tr>
         <th>CIRUGIA</th>
-        <td>{{ examen.cirugia|yesno:"SI,NO,NO" }}</td>
+        <td>{% if examen.cirugia %}{{ examen.cirugia|upper }}{% else %}NO{% endif %}</td>
         <th>TRAUMA OCULAR</th>
-        <td>{{ examen.trauma_ocular|yesno:"SI,NO,NO" }}</td>
+        <td>{% if examen.trauma_ocular %}{{ examen.trauma_ocular|upper }}{% else %}NO{% endif %}</td>
         <th>PTERIGIO</th>
-        <td>{{ examen.pterigio|yesno:"SI,NO,NO" }}</td>
+        <td>{% if examen.pterigio %}{{ examen.pterigio|upper }}{% else %}NO{% endif %}</td>
         <th>COLORES</th>
-        <td>{{ examen.colores|yesno:"SI,NO,NO" }}</td>
+        <td>{% if examen.colores %}{{ examen.colores|upper }}{% else %}NO{% endif %}</td>
     </tr>
 </table>
 <table class="table table-bordered table-responsive join table-body">
-    <tr>
-        <th>VISION LEJANA</th>
-        <td>{% if examen.vision_lejana %}{{ examen.get_vision_lejana_display|upper }}{% else %}NINGUNA{% endif %}</td>
-        <th>VISION CERCANA</th>
-        <td>{% if examen.vision_cercana %}{{ examen.get_vision_cercana_display|upper }}{% else %}NINGUNA{% endif %}</td>
-        <th>AV</th>
-        <td>{% if examen.av %}{{ examen.get_av_display|upper }}{% else %}NINGUNA{% endif %}</td>
-    </tr>
+    <thead>
+        <tr>
+            <th></th>
+            <th>VISION LEJANA</th>
+            <th>VISION CERCANA</th>
+            <th>AV</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>O.D</th>
+            <td>{{ examen.vision_lejana_od }}</td>
+            <td>{{ examen.vision_cercana_od }}</td>
+            <td>{{ examen.av_od }}</td>
+        </tr>
+        <tr>
+            <th>O.I</th>
+            <td>{{ examen.vision_lejana_oi }}</td>
+            <td>{{ examen.vision_cercana_oi }}</td>
+            <td>{{ examen.av_oi }}</td>
+        </tr>
+        <tr>
+            <th>A.O</th>
+            <td>{{ examen.vision_lejana_ao }}</td>
+            <td>{{ examen.vision_cercana_ao }}</td>
+            <td>{{ examen.av_ao }}</td>
+        </tr>
+    </tbody>
 </table>
 <table class="table table-bordered table-responsive join table-body">
     <thead>
@@ -50,7 +70,7 @@
     </thead>
     <tbody>
         <tr>
-            <td>O.D</td>
+            <th>O.D</th>
             <td>{{ examen.esf_od }}</td>
             <td>{{ examen.cil_od }}</td>
             <td>{{ examen.eje_od }}</td>
@@ -61,7 +81,7 @@
             <td>{{ examen.prisma_od }}</td>
         </tr>
         <tr>
-            <td>O.I</td>
+            <th>O.I</th>
             <td>{{ examen.esf_oi }}</td>
             <td>{{ examen.cil_oi }}</td>
             <td>{{ examen.eje_oi }}</td>

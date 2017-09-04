@@ -12,6 +12,7 @@ from mysite.apps.parametros.models import servicios as Servicio
 
 import reversion
 import copy
+import json
 
 
 def ruta_imagen_bacteriologo(self, filename):
@@ -233,9 +234,9 @@ class Bacteriologo(models.Model):
     def get_firma(self):
         if self.firma:
             return self.firma
-        if getattr(self.usuario, 'visiometra', None) is not None:
-            if self.usuario.visiometra.firma:
-                return self.usuario.visiometra.firma
+        if getattr(self.usuario, 'empleado_examenes', None) is not None:
+            if self.usuario.empleado_examenes.firma:
+                return self.usuario.empleado_examenes.firma
         return None
 
 
@@ -281,6 +282,7 @@ class Resultado(models.Model):
                     HojaGasto.objects.create(orden=self.orden, **plantilla)
                 except Producto.DoesNotExist:
                     pass
+
     @property
     def _can_save_hojas_gasto(self):
         """Retorna verdader si puede guardar las hojas de gasto."""
@@ -288,6 +290,14 @@ class Resultado(models.Model):
         return (
             self.cerrado and not self.orden.hojas_gasto.filter(producto__tipo=Producto.REACTIVO).exists()
         )
+
+    @property
+    def format_resultado(self):
+        """
+        Retorna el formato con json.loads para tratarlo como un objeto de
+        javascript o diccionario de python.
+        """
+        return json.loads(self.resultado)
 
 
 @python_2_unicode_compatible

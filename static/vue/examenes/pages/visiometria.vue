@@ -42,6 +42,12 @@
                                     <div v-if="'paciente' in recepcion">{{ recepcion.empresa_cliente }}</div>
                                 </div>
                             </v-flex>
+                            <v-flex md3>
+                                <div style="margin-bottom: 7px">
+                                    <strong>Orden</strong>
+                                    <div v-if="'paciente' in recepcion">{{ recepcion.id }}</div>
+                                </div>
+                            </v-flex>
                         </v-layout>
                     </v-card-text>
                     <v-card-text>
@@ -56,31 +62,57 @@
                         <h3 class="title">Antecedentes Oftalmológicos</h3>
                         <v-layout wrap>
                             <v-flex md6 x12>
-                                <v-checkbox label="Cirugía" v-model="cirugia"></v-checkbox>
+                                <v-text-field label="Cirugía" v-model="cirugia"></v-text-field>
                             </v-flex>
                             <v-flex md6 x12>
-                                <v-checkbox label="Trauma Ocular" v-model="trauma_ocular"></v-checkbox>
+                                <v-text-field label="Trauma Ocular" v-model="trauma_ocular"></v-text-field>
                             </v-flex>
                             <v-flex md6 x12>
-                                <v-checkbox label="Pterigio" v-model="pterigio"></v-checkbox>
+                                <v-text-field label="Pterigio" v-model="pterigio"></v-text-field>
                             </v-flex>
                             <v-flex md6 x12>
-                                <v-checkbox label="Colores" v-model="colores"></v-checkbox>
-                            </v-flex>
-                            <v-flex md6 x12>
-                                <v-select label="Vision Lejana" v-model="vision_lejana" :items="OPCIONES_OJOS"></v-select>
-                            </v-flex>
-                            <v-flex md6 x12>
-                                <v-select label="Vision Cercana" v-model="vision_cercana" :items="OPCIONES_OJOS"></v-select>
-                            </v-flex>
-                            <v-flex md6 x12>
-                                <v-select label="AV" v-model="av" :items="OPCIONES_OJOS"></v-select>
+                                <v-text-field label="Colores" v-model="colores"></v-text-field>
                             </v-flex>
                         </v-layout>
+                        <v-layout wrap>
+                            <div class="table__overflow">
+                                <table class="table datatable examen-table">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>OD</th>
+                                            <th>OI</th>
+                                            <th>AO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Visión Lejana</td>
+                                            <td><v-text-field label="" v-model="vision_lejana_od"></v-text-field></td>
+                                            <td><v-text-field label="" v-model="vision_lejana_oi"></v-text-field></td>
+                                            <td><v-text-field label="" v-model="vision_lejana_ao"></v-text-field></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Visión Cercana</td>
+                                            <td><v-text-field label="" v-model="vision_cercana_od"></v-text-field></td>
+                                            <td><v-text-field label="" v-model="vision_cercana_oi"></v-text-field></td>
+                                            <td><v-text-field label="" v-model="vision_cercana_ao"></v-text-field></td>
+                                        </tr>
+                                        <tr>
+                                            <td>AV</td>
+                                            <td><v-text-field label="" v-model="av_od"></v-text-field></td>
+                                            <td><v-text-field label="" v-model="av_oi"></v-text-field></td>
+                                            <td><v-text-field label="" v-model="av_ao"></v-text-field></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </v-layout>
+                        <br>
                         <h3 class="title">Refracción Final</h3>
                         <v-layout>
                             <div class="table__overflow">
-                                <table class="table datatable">
+                                <table class="table datatable examen-table">
                                     <thead>
                                         <tr>
                                             <th class="column"></th>
@@ -111,7 +143,7 @@
                         </v-layout>
                         <v-layout>
                             <div class="table__overflow">
-                                <table class="table datatable">
+                                <table class="table datatable examen-table">
                                     <thead>
                                         <tr>
                                             <th class="column"></th>
@@ -140,6 +172,7 @@
                                 </table>
                             </div>
                         </v-layout>
+                        <br>
                         <v-layout wrap>
                             <v-flex md6 x12>
                                 <v-text-field label="Foria" v-model="foria"></v-text-field>
@@ -211,9 +244,15 @@ export default {
             trauma_ocular: '',
             pterigio: '',
             colores: '',
-            vision_lejana: '',
-            vision_cercana: '',
-            av: '',
+            vision_lejana_od: '',
+            vision_lejana_oi: '',
+            vision_lejana_ao: '',
+            vision_cercana_od: '',
+            vision_cercana_oi: '',
+            vision_cercana_ao: '',
+            av_od: '',
+            av_oi: '',
+            av_ao: '',
             foria: '',
             campimetria: '',
             remitir_oftamologia: '',
@@ -259,8 +298,10 @@ export default {
         fetchData () {
             const properties = [
                 'lentes_correctivos', 'hace_cuanto', 'cirugia',
-                'trauma_ocular', 'pterigio', 'colores', 'vision_lejana',
-                'vision_cercana', 'av', 'foria', 'campimetria', 'remitir_oftamologia',
+                'trauma_ocular', 'pterigio', 'colores', 'vision_lejana_od',
+                'vision_lejana_oi', 'vision_lejana_ao', 'vision_cercana_od',
+                'vision_cercana_oi', 'vision_cercana_ao', 'av_od', 'av_oi',
+                'av_ao', 'foria', 'campimetria', 'remitir_oftamologia',
                 'recomendaciones', 'esf_od', 'cil_od', 'eje_od', 'add_od',
                 'dp_od', 'np_od', 'alt_od', 'prisma_od', 'esf_oi', 'cil_oi',
                 'eje_oi', 'add_oi', 'dp_oi', 'np_oi', 'alt_oi', 'prisma_oi'
@@ -290,15 +331,19 @@ export default {
             let token = document.getElementsByName('csrfmiddlewaretoken')[0];
 
             let { lentes_correctivos, hace_cuanto, cirugia,
-                trauma_ocular, pterigio, colores, vision_lejana,
-                vision_cercana, av, foria, campimetria, remitir_oftamologia,
+                trauma_ocular, pterigio, colores, vision_lejana_od,
+                vision_lejana_oi, vision_lejana_ao, vision_cercana_od,
+                vision_cercana_oi, vision_cercana_ao, av_od, av_oi,
+                av_ao, foria, campimetria, remitir_oftamologia,
                 recomendaciones, esf_od, cil_od, eje_od, add_od,
                 dp_od, np_od, alt_od, prisma_od, esf_oi, cil_oi,
                 eje_oi, add_oi, dp_oi, np_oi, alt_oi, prisma_oi } = this;
             let data = {
                 lentes_correctivos, hace_cuanto, cirugia,
-                trauma_ocular, pterigio, colores, vision_lejana,
-                vision_cercana, av, foria, campimetria, remitir_oftamologia,
+                trauma_ocular, pterigio, colores, vision_lejana_od,
+                vision_lejana_oi, vision_lejana_ao, vision_cercana_od,
+                vision_cercana_oi, vision_cercana_ao, av_od, av_oi,
+                av_ao, foria, campimetria, remitir_oftamologia,
                 recomendaciones, esf_od, cil_od, eje_od, add_od,
                 dp_od, np_od, alt_od, prisma_od, esf_oi, cil_oi,
                 eje_oi, add_oi, dp_oi, np_oi, alt_oi, prisma_oi,
@@ -327,3 +372,13 @@ export default {
     }
 }
 </script>
+
+<style>
+table.table.examen-table {
+    border-collapse: inherit;
+}
+
+table.table.examen-table tbody tr td .input-group {
+    margin: 0;
+}
+</style>

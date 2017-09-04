@@ -15,6 +15,32 @@ def get_object_or_404_api(ModelOrQuery, **kwargs):  # deprecate
         raise Response(status=status.HTTP_404_NOT_FOUND)
 
 
+def get_hemogramas_from_queryset(queryset):
+    """
+    Funcion que recibe un queryset de resultados y retorna los resultados con
+    hemogramas.
+    """
+
+    # return list(
+    #     filter(lambda resultado: resultado.laboratorio.nombre.lower().startswith('hemograma'),
+    #     resultados)
+    # )
+
+    hemogramas = queryset.filter(
+        laboratorio__nombre__icontains='hemograma'
+    )
+
+    if hemogramas.exists():
+        hemogramas |= queryset.filter(
+            ~Q(id__in=hemogramas.values_list('id', flat=True)),
+            laboratorio__seccion_trabajo=hemogramas.first().laboratorio.seccion_trabajo
+        )
+
+    resultados = queryset.filter(~Q(id__in=hemogramas.values_list('id', flat=True)))
+
+    return hemogramas, resultados
+
+
 class Pagination(PageNumberPagination):
     page_size = 10
 

@@ -14,12 +14,15 @@ from django.conf import settings
 from weasyprint import HTML
 
 from .models import Laboratorio, Resultado, Recepcion, Formato
+from .utils import get_hemogramas_from_queryset
 from mysite.apps.historias.models import orden as Orden, ordenesProducto as OrdenProducto
 
 import datetime
-import json
+# import json
 import io
 
+
+RESULTADO_ORDERING = ['laboratorio__seccion_trabajo', 'bacteriologo', ]
 
 @login_required
 def index(request):
@@ -33,7 +36,10 @@ def ver_resultado_laboratorio(request, pk):
     permite visualizar el resultado como HTML o PDF.
     """
     orden = get_object_or_404(Orden, pk=pk)
-    resultados = orden.resultados_laboratorio.all().order_by('laboratorio__seccion_trabajo', 'bacteriologo')
+
+    resultados = orden.resultados_laboratorio.all().order_by(*RESULTADO_ORDERING)
+    hemogramas, resultados = get_hemogramas_from_queryset(resultados)
+    resultados = list(hemogramas) + list(resultados)
 
     _verified_formats = ['html', 'pdf']
     _verified_modes = ['inline', 'attachment']
@@ -43,7 +49,7 @@ def ver_resultado_laboratorio(request, pk):
 
     if spec not in _verified_formats or _mode not in _verified_modes:
         from django.http import HttpResponseNotAllowed
-        return HttpResponseNotAllowed('Spect or format not allowed for: {}'.format(spec))
+        return HttpResponseNotAllowed('Spec or format not allowed for: {}'.format(spec))
 
     if _laboratorio is not None:
         laboratorio = get_object_or_404(Resultado, pk=_laboratorio)
@@ -55,11 +61,7 @@ def ver_resultado_laboratorio(request, pk):
                     response.write(line)
             return response
         else:
-            resultados = Resultado.objects.filter(id=laboratorio.id).order_by('laboratorio__seccion_trabajo', 'bacteriologo')
-
-
-    for resultado in resultados:
-        resultado.resultado = json.loads(resultado.resultado)
+            resultados = Resultado.objects.filter(id=laboratorio.id).order_by(*RESULTADO_ORDERING)
 
     data = {'resultados': resultados, 'orden': orden, 'request': request}
     # weasyprint
@@ -85,7 +87,9 @@ def imprimir_laboratorio(request, pk):
     orden = get_object_or_404(Orden, pk=pk)
     _print = request.GET.get('print', None)
     mode = request.GET.get('inline', 'attachment')
-    resultados = orden.resultados_laboratorio.all().order_by('laboratorio__seccion_trabajo', 'bacteriologo')
+    resultados = orden.resultados_laboratorio.all().order_by(*RESULTADO_ORDERING)
+    hemogramas, resultados = get_hemogramas_from_queryset(resultados)
+    resultados = list(hemogramas) + list(resultados)
 
     stylesheets = ['static/css/bootstrap.min.css', 'static/css/print_laboratorios.css']
 
@@ -93,26 +97,22 @@ def imprimir_laboratorio(request, pk):
     response['Content-Disposition'] = '%s; filename=lab-%d.pdf' % (mode, orden.id)
 
     for resultado in resultados:
-        resultado._resultado = resultado.resultado
-
         if resultado.cerrado and not resultado.archivo:
             with io.BytesIO() as _buffer:
             # _buffer = io.BytesIO()
                 _resultados = Resultado.objects.filter(id=resultado.id)
-                for result_object in _resultados:
-                    result_object.resultado = json.loads(resultado.resultado)
+
+                _hemogramas = get_hemogramas_from_queryset(_resultados)
                 _buffer = File(_buffer)
                 _to_html = render_to_string(
                     'laboratorios/resultados.html',
-                    {'resultados': _resultados, 'orden': orden, 'request': request},
+                    {'resultados': _resultados, 'orden': orden, 'request': request,
+                    'hemogramas': _hemogramas},
                     RequestContext(request)
                 )
                 HTML(string=_to_html).write_pdf(_buffer, stylesheets=stylesheets)
                 resultado.archivo.save('resultado{}.pdf'.format(resultado.id), _buffer)
-                resultado.resultado = resultado._resultado
                 resultado.save(update_fields=['archivo'])
-
-        resultado.resultado = json.loads(resultado.resultado)
 
     if 'laboratorio' in request.GET:
         laboratorio = get_object_or_404(Resultado, pk=request.GET.get('laboratorio'))
@@ -122,10 +122,8 @@ def imprimir_laboratorio(request, pk):
                 for line in f.readlines():
                     response.write(line)
             return response
-        resultados = Resultado.objects.filter(
-            id=laboratorio.id).order_by('laboratorio__seccion_trabajo', 'bacteriologo')
-        for resultado in resultados:
-            resultado.resultado = json.loads(resultado.resultado)
+        resultados = Resultado.objects.filter(id=laboratorio.id).order_by(*RESULTADO_ORDERING)
+
     else:
         if _print is not None and orden.recepcion.estado != Recepcion.RESULTADO_EMITIDO:
             recepcion = orden.recepcion
@@ -153,7 +151,7 @@ def preview(request, pk):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename=lab-%d.pdf' % orden.id
 
-    resultados = orden.resultados_laboratorio.all().order_by('laboratorio__seccion_trabajo', 'bacteriologo')
+    resultados = orden.resultados_laboratorio.all().order_by(*RESULTADO_ORDERING)
 
     laboratorios = Laboratorio.objects.filter(
         id__in=Orden.objects.filter(id=orden.id).servicios().values_list('laboratorio__id', flat=True)
@@ -162,13 +160,13 @@ def preview(request, pk):
     )
     formatos = Formato.objects.filter(id__in=laboratorios.values_list('formato__id', flat=True))
 
-    resultados = list(resultados)
+    hemogramas, resultados = get_hemogramas_from_queryset(resultados)
+    resultados = list(hemogramas) + list(resultados)
+
     for formato in formatos:
         resultados.append(
             Resultado(orden=orden, laboratorio=formato.laboratorio, resultado=formato.formato)
         )
-    for resultado in resultados:
-        resultado.resultado = json.loads(resultado.resultado)
 
     stylesheets = ['static/css/bootstrap.min.css', 'static/css/print_laboratorios.css']
 

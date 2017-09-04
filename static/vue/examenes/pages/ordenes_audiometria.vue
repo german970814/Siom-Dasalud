@@ -4,7 +4,7 @@
             <v-flex xs12 md12>
                 <v-card>
                     <v-card-title>
-                        Visiometrías
+                        Audiometrías
                         <v-spacer></v-spacer>
                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
                     </v-card-title>
@@ -32,8 +32,8 @@
                         </template>
                         <template slot="items" scope="props">
                             <template v-for="field of fields">
-                                <td :class="{'text-xs-center': true, 'light-green lighten-4': props.item.estado_visiometria == 'RE' ? true: false}" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
-                                <td :class="{'text-xs-center': true, 'light-green lighten-4': props.item.estado_visiometria == 'RE' ? true: false}" v-else>
+                                <td :class="{'text-xs-center': true, 'light-green lighten-4': props.item.estado == 'RE' ? true: false}" @click="updateForm(props.item)" v-if="typeof field != 'object'">{{ getattr(props.item, field) }}</td>
+                                <td :class="{'text-xs-center': true, 'light-green lighten-4': props.item.estado == 'RE' ? true: false}" v-else>
                                     <v-btn fab dark small router class="cyan darken-1" :href="field.href.replace(':id', props.item.id)">
                                         <v-icon dark>content_paste</v-icon>
                                     </v-btn>
@@ -68,15 +68,15 @@ Vue.use(Vuetify);
 
 export default {
     mixins: [IgMixin],
-    data: function () {
+    data: function() {
         return {
             buscador: '',
             loading: false,
             fields: [
-              'id', 'orden.paciente.cedula', 'orden.paciente.nombre_completo',
-              'orden.institucion.razon', 'orden.empresa.razon',
-              'orden.empresa_cliente', 'orden.fecha',
-              {href: '/formulario/:id/', patrons: [{identifier: 'id', replace: item => item.id}]}
+                'id', 'orden.paciente.cedula', 'orden.paciente.nombre_completo',
+                'orden.institucion.razon', 'orden.empresa.razon',
+                'orden.empresa_cliente', 'orden.fecha',
+                { href: '/formulario/audiometria/:id/', patrons: [{ identifier: 'id', replace: item => item.id }] }
             ],
             totalItems: 0,
             pagination: {
@@ -124,28 +124,28 @@ export default {
                     left: true,
                 },
                 {
-                  text: 'Accion', left: true, sortable: false
+                    text: 'Accion', left: true, sortable: false
                 },
             ],
         }
     },
     watch: {
         pagination: {
-            handler () {
+            handler() {
                 if (this.buscador !== '') {
-                    this._getElements(URL.visiometria.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
+                    this._getElements(URL.audiometria.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
                 } else {
-                    this._getElements(URL.visiometria.concat(`?page=${this.pagination.page}`));
+                    this._getElements(URL.audiometria.concat(`?page=${this.pagination.page}`));
                 }
             },
             deep: true
         },
-        buscador: function () {
+        buscador: function() {
             if (this.buscador !== '') {
                 this.pagination.page = 1;
-                this._getElements(URL.visiometria.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
+                this._getElements(URL.audiometria.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
             } else {
-                this._getElements(URL.visiometria.concat(`?page=${this.pagination.page}`));
+                this._getElements(URL.audiometria.concat(`?page=${this.pagination.page}`));
             }
         }
     },
@@ -153,14 +153,14 @@ export default {
         igTable: TableComponent,
         // igForm: FormComponent,
     },
-    mounted: function () {
-        this._getElements(URL.visiometria.concat('?page=1'));
+    mounted: function() {
+        this._getElements(URL.audiometria.concat('?page=1'));
     },
     methods: {
-        _getElements () {
+        _getElements() {
             if ('loading' in this) {
                 if (!this.loading) {
-                  this.toggleLoading()
+                    this.toggleLoading()
                 }
             }
             let url = this.url || arguments[0];
@@ -177,13 +177,13 @@ export default {
                     this.toggleLoading()
                 });
         },
-        _validValue: function (val) {
+        _validValue: function(val) {
             return val !== null && ['undefined', 'boolean'].indexOf(typeof val) === -1
         },
-        customFilter: function (val, search) {
+        customFilter: function(val, search) {
             return val.toString().toLowerCase().indexOf(search) !== -1;
         },
-        filter: function (val, search) {
+        filter: function(val, search) {
             var valid = this._validValue(val);
             if (valid) {
                 valid = valid && this.customFilter(val, search);
@@ -193,7 +193,7 @@ export default {
             }
             return valid;
         },
-        getattr: function (obj, attr) {
+        getattr: function(obj, attr) {
             let attrs = attr.split('.');
             for (let at of attrs) {
                 if (at in obj) {
@@ -213,10 +213,10 @@ export default {
             }
             return obj;
         },
-        updateForm: function (item) {
+        updateForm: function(item) {
             this.$emit('selectedrow', item);
         },
-        changeSort (column) {
+        changeSort(column) {
             if ('sortable' in column && !(column.sortable)) {
                 return;
             }
@@ -233,4 +233,5 @@ export default {
 </script>
 
 <style lang="css">
+
 </style>

@@ -6,8 +6,13 @@
             <table class="table table-responsive table-bordered join table-header">
                 <tbody>
                     <tr>
+                        {% if tipo == 'visiometria' %}
                         <td rowspan="2"><img id="main-logo" src="http://{{ request.META.HTTP_HOST }}{% static 'siomoptica_icon.png' %}" alt="Image Not Found" width="350px" height="125px"></td>
                         <td colspan="2" style="text-align: center"><h1>Certificado de Aptitud Visual</h1></td>
+                        {% elif tipo == 'audiometria' %}
+                        <td rowspan="2"><img id="main-logo" src="http://{{ request.META.HTTP_HOST }}{% static 'siomlab_icon.png' %}" alt="Image Not Found" width="350px" height="125px"></td>
+                        <td colspan="2" style="text-align: center"><h1>Certificado de Aptitud Auditiva</h1></td>
+                        {% endif %}
                     </tr>
                     <tr>
                         <td style="text-align: center">

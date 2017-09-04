@@ -85,7 +85,7 @@ TEMPLATE_DIRS = (
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'siom_produccion',
+        'NAME': 'siom',
         'USER': 'german1234',
         'PASSWORD': '1234',
         'HOST': '127.0.0.1',

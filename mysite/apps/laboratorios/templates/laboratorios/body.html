@@ -14,36 +14,15 @@
         </tr>
     </thead>
     <tbody>
+
         {% regroup resultado_area.list by bacteriologo as resultados_bacteriologo %}
         
         {% for resultado_bacteriologo in resultados_bacteriologo %}
             {% for resultado_inner in resultado_bacteriologo.list %}
-                <tr>
-                    <th colspan="4">{{ resultado_inner.laboratorio.nombre|upper }} ({{ resultado_inner.laboratorio.codigo }})</th>
+                {% include "laboratorios/table-body.html" with resultado=resultado_inner %}
+                <tr style="height: 10px !important;">
+                    <td colspan="4"></td>
                 </tr>
-                {% with resultados_laboratorio=resultado_inner.resultado %}
-                    {% for resultado_fin in resultados_laboratorio %}
-                        {% if resultado_fin.tipo.name == 'title' %}
-                        <tr>
-                            <th colspan="4">{{ resultado_fin.nombre|upper }}</th>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td><i>{{ resultado_fin.nombre|upper }}</i>{% if resultado_fin.observaciones %}<br /><b><i>NOTA: </i></b>{{ resultado_fin.observaciones }}{% endif %}</td>
-                            <td>{{ resultado_fin|get_resultado:orden.paciente.genero }}</td>
-                            <td>{{ resultado_fin.unidades }}</td>
-                            <td>
-                                {% if resultado_fin.tipo.name == 'number' %}
-                                De {% if orden.paciente.genero == 'M' %}{{ resultado_fin.referencias.M.minima }}{% else %}{{ resultado_fin.referencias.F.minima }}{% endif %} - 
-                                {% if orden.paciente.genero == 'F' %}{{ resultado_fin.referencias.F.maxima }}{% else %}{{ resultado_fin.referencias.M.maxima }}{% endif %}
-                                {% else %}
-                                {{ resultado_fin.referencia|safe }}
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endif %}
-                    {% endfor %}
-                {% endwith %}
             {% endfor %}
             <tr>
                 <td colspan="2"></td>
@@ -60,6 +39,7 @@
                 </td>
             </tr>
         {% endfor %}
+
     </tbody>
 </table>
 {% endfor %}

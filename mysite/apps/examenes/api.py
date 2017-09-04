@@ -13,13 +13,13 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.pagination import PageNumberPagination
 
 from .models import (
-    Visiometria, Visiometra
+    Visiometria, Empleado, Audiometria
 )
 from .serializers import (
-    VisiometriaSerializer, VisiometraSerializer
+    VisiometriaSerializer, EmpleadoSerializer, AudiometriaSerializer
 )
 from mysite.apps.historias.models import ordenesProducto as OrdenProducto, orden as Orden
-from mysite.apps.historias.serializers import OrdenVisiometriaSerializer
+from mysite.apps.historias.serializers import OrdenVisiometriaSerializer, OrdenAudiometriaSerializer
 from mysite.apps.parametros.models import servicios as Servicio
 from mysite.apps.laboratorios.utils import Pagination
 # from mysite.apps.parametros.serializers import ServicioSerializer
@@ -53,48 +53,86 @@ class VisiometriaListAPI(generics.ListCreateAPIView):
     serializer_class = VisiometriaSerializer
     pagination_class = Pagination
 
+    def get_queryset(self, *args, **kwargs):
+        hoy = timezone.now().date()
+        # queryset = super(VisiometriaListAPI, self).get_queryset(*args, **kwargs)
+        queryset = self.request.user.empleado_examenes.visiometrias.all()
+        queryset = queryset.filter(
+            orden__fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
+        ).order_by('-orden__fecha')
+        return queryset
+
     def perform_create(self, serializer):
-        serializer.save(visiometra=self.request.user.visiometra, estado=Visiometria.PENDIENTE)
+        serializer.save(visiometra=self.request.user.empleado_examenes, estado=Visiometria.PENDIENTE)
 
 
 class VisiometriaRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = Visiometria.objects.all()
     serializer_class = VisiometriaSerializer
 
-    def _get_orden(self):
-        return get_object_or_404(Orden, pk=self.kwargs['pk'])
 
-    def get_object(self, *args, **kwargs):
-        try:
-            queryset = self.filter_queryset(self.get_queryset())
-            instance = get_object_or_404(queryset, **{'orden__id': self.kwargs['pk']})
-        except Exception:
-            orden = self._get_orden()
-            instance = Visiometria(orden=orden)
-        return instance
+class EmpleadoListAPI(generics.ListCreateAPIView):
+    queryset = Empleado.objects.all()
+    serializer_class = EmpleadoSerializer
 
 
-class VisiometraListAPI(generics.ListCreateAPIView):
-    queryset = Visiometra.objects.all()
-    serializer_class = VisiometraSerializer
-
-
-class VisiometraRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Visiometra.objects.all()
-    serializer_class = VisiometraSerializer
+class EmpleadoRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Empleado.objects.all()
+    serializer_class = EmpleadoSerializer
 
 
 @api_view(['PUT'])
 def cambiar_firma_visiometra(request, pk):
     """Vista para cambiar la firma del visiometra."""
 
-    visiometra = get_object_or_404(Visiometra, pk=pk)
+    visiometra = get_object_or_404(Empleado, pk=pk)
 
     # kwargs_serializer = {'fields': ('firma', )}
     request.data.setdefault('id', pk)
-    serializer = VisiometraSerializer(fields=('firma', ), data=request.data, instance=visiometra)
+    serializer = EmpleadoSerializer(fields=('firma', ), data=request.data, instance=visiometra)
 
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors)
+
+
+class OrdenesSinAudiometriaListAPI(generics.ListAPIView):
+    queryset = Orden.objects.all()
+    serializer_class = OrdenAudiometriaSerializer
+    pagination_class = Pagination
+
+    def get_queryset(self, *args, **kwargs):
+        hoy = timezone.now().date()
+
+        queryset = super(OrdenesSinAudiometriaListAPI, self).get_queryset(*args, **kwargs)
+        queryset = queryset.filter(
+            id__in=OrdenProducto.objects.filter(
+                servicio__nombre=Audiometria.get_audiometria_servicio()
+            ).values_list('orden_id', flat=True).distinct(),
+            fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
+        ).order_by('-fecha')  # .exclude(visiometria__estado=Visiometria.RESULTADO_EMITIDO)
+
+        return queryset
+
+
+class AudiometriaListAPI(generics.ListCreateAPIView):
+    queryset = Audiometria.objects.all()
+    serializer_class = AudiometriaSerializer
+    pagination_class = Pagination
+
+    def get_queryset(self, *args, **kwargs):
+        hoy = timezone.now().date()
+        queryset = self.request.user.empleado_examenes.audiometrias.all()
+        queryset = queryset.filter(
+            orden__fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
+        ).order_by('-orden__fecha')
+        return queryset
+
+    def perform_create(self, serializer):
+        serializer.save(audiometra=self.request.user.empleado_examenes, estado=Audiometria.PENDIENTE)
+
+
+class AudiometriaRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Audiometria.objects.all()
+    serializer_class = AudiometriaSerializer
