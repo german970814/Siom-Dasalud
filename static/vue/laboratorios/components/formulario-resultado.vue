@@ -12,6 +12,7 @@ export default {
     },
     data: function () {
         return {
+            tabs: [],
             headers: [
                 {
                     text: 'Concepto', value: 'id', align: 'left',
@@ -203,6 +204,12 @@ export default {
             return childs;
         },
         createTdWithProp (item) {
+            let ref = this.getRefByItem(item)
+            let found = this.tabs.find(x => x == ref);
+            if (!found) {
+                this.tabs.push(ref);
+            }
+
             const MATCH = {
                 'text': 'v-text-field',
                 'textarea': 'v-text-field',
@@ -231,9 +238,20 @@ export default {
                             },
                             cancel: () => {
                                 item.model_text = item._model_text || item.model_text
+                            },
+                            save: () => {
+                                let next = this.tabs.indexOf(ref);
+                                next++;
+                                next = this.tabs[next];
+                                let element = this.$refs[next];
+                                if (element) {
+                                    window.scrollTo(window.scrollX, window.scrollY + 50)
+                                    element.isActive = true;
+                                }
                             }
                         },
-                        props: {large: true, cancelText: 'Cancelar', saveText: 'Guardar'}
+                        props: {large: true, cancelText: 'Cancelar', saveText: 'Guardar'},
+                        ref
                     },
                     [
                         Boolean(item.model_text) ? item.model_text + unidades: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Resultado']),
@@ -268,7 +286,8 @@ export default {
                             cancel: () => {
                                 item.model_text = item._model_text || item.model_text;
                             }
-                        }
+                        },
+                        ref
                     },
                     [
                         !_.isEmpty(item.model_text) ? item.model_text.text: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Resultado']),
@@ -300,6 +319,10 @@ export default {
             }
             return 'hola';
         },
+        getRefByItem(item) {
+            let type = item.tipo.name.toUpperCase();
+            return item.nombre.toUpperCase().replace(/\s*/g, '').concat('_' + type);
+        }
     },
     render () {
         return this.$createElement('div', [

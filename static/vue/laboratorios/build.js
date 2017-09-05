@@ -29502,6 +29502,7 @@ exports.default = {
     mounted: function mounted() {},
     data: function data() {
         return {
+            tabs: [],
             headers: [{
                 text: 'Concepto', value: 'id', align: 'left'
             }, {
@@ -29692,6 +29693,14 @@ exports.default = {
         createTdWithProp: function createTdWithProp(item) {
             var _this3 = this;
 
+            var ref = this.getRefByItem(item);
+            var found = this.tabs.find(function (x) {
+                return x == ref;
+            });
+            if (!found) {
+                this.tabs.push(ref);
+            }
+
             var MATCH = {
                 'text': 'v-text-field',
                 'textarea': 'v-text-field',
@@ -29719,9 +29728,20 @@ exports.default = {
                         },
                         cancel: function cancel() {
                             item.model_text = item._model_text || item.model_text;
+                        },
+                        save: function save() {
+                            var next = _this3.tabs.indexOf(ref);
+                            next++;
+                            next = _this3.tabs[next];
+                            var element = _this3.$refs[next];
+                            if (element) {
+                                window.scrollTo(window.scrollX, window.scrollY + 50);
+                                element.isActive = true;
+                            }
                         }
                     },
-                    props: { large: true, cancelText: 'Cancelar', saveText: 'Guardar' }
+                    props: { large: true, cancelText: 'Cancelar', saveText: 'Guardar' },
+                    ref: ref
                 }, [Boolean(item.model_text) ? item.model_text + unidades : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Resultado']), this.$createElement(MATCH[item.tipo.name], {
                     slot: 'input',
                     props: {
@@ -29750,7 +29770,8 @@ exports.default = {
                         cancel: function cancel() {
                             item.model_text = item._model_text || item.model_text;
                         }
-                    }
+                    },
+                    ref: ref
                 }, [!_underscore2.default.isEmpty(item.model_text) ? item.model_text.text : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Resultado']), this.$createElement(MATCH[item.tipo.name], {
                     slot: 'input',
                     ref: 'select',
@@ -29773,6 +29794,10 @@ exports.default = {
                 }, [])]);
             }
             return 'hola';
+        },
+        getRefByItem: function getRefByItem(item) {
+            var type = item.tipo.name.toUpperCase();
+            return item.nombre.toUpperCase().replace(/\s*/g, '').concat('_' + type);
         }
     },
     render: function render() {
