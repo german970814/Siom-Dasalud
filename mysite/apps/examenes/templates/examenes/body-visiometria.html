@@ -112,7 +112,7 @@
     </tr>
 </table>
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-6">
         {% if examen.visiometra.get_firma %}
         <img class="firma" src="http://{{ request.META.HTTP_HOST }}{{ examen.visiometra.get_firma.url }}" alt="" width="150px" height="80px"/>
         <br>
@@ -121,7 +121,7 @@
         {% endif %}
         <p>FIRMA DEL EXAMINADOR</p>
     </div>
-    <div class="col-md-3 col-md-offset-3">
+    <div class="col-md-6">
         {% if orden.paciente.firma %}
         <img class="firma" src="http://{{ request.META.HTTP_HOST }}{{ orden.paciente.firma.url }}" alt="" width="150px" height="80px"/>
         <br>

@@ -20,7 +20,7 @@
         <p><strong>Sección o area a la que aspira:</strong> {{getorden.seccion}}</p>
         <p><strong>Empresa Cliente:</strong> {{getorden.empresa_cliente}}</p>
         <p><strong>Examen Adicional:</strong> {{getorden.get_examen_adicional_display}}</p>
-    </div>    
+    </div>
 
 </div>
 
@@ -44,7 +44,7 @@
             <a href="#" class="close" data-dismiss="alert">&times;</a>
             <strong>La historia ha sido CERRADA Satisfactoriamente!</strong> <p>No sera posible realizar mas cambios.</p>
         </div>
-        {% endif %}        
+        {% endif %}
         {% if error %}
         <div class="alert alert-danger">
             <a href="#" class="close" data-dismiss="alert">&times;</a>
@@ -59,7 +59,7 @@
         {% endif %}
     </div>
 </div>
- 
+
 <ul class="nav nav-tabs">
     <li class="active"><a href="#tabhistoria" data-toggle="tab">Antecedentes</a>
     </li>
@@ -70,9 +70,9 @@
     {% if altura == True %}
         <li><a href="#tabaltura" data-toggle="tab">Examen de Altura</a>
         </li>
-    {% endif %}     
+    {% endif %}
     <li><a href="#tabconcepto" data-toggle="tab">Concepto</a>
-    </li>       
+    </li>
     <li><a href="#tabhistorial" data-toggle="tab">Historial</a>
     </li>
 </ul>
@@ -89,7 +89,7 @@
             <div class="col-lg-3"><p><label for="id_num_hijos">Nº Hijos:</label> {{form1.num_hijos}}</p></div>
             <div class="col-lg-3"><p><label for="id_turno">Turno:</label> {{form1.turno}}</p></div>
             <div class="col-lg-3"><p><label for="id_actividad">Actividad:</label> {{form1.actividad}}</p></div>
-        </div>        
+        </div>
         <div class="row">
             <div class="col-lg-4">{{ form1.eps.errors }}<p><label for="id_cargo">EPS:</label> {{form1.eps}}</p></div>
             <div class="col-lg-4">{{ form1.afp.errors }}<p><label for="id_afp">AFP:</label> {{form1.afp}}</p></div>
@@ -154,19 +154,19 @@
             <div class="col-lg-3"><p><label for="id_tbc">T.B.C:</label> {{form1.tbc}}</p></div>
             <div class="col-lg-3"><p><label for="id_alergias">Alergias:</label> {{form1.alergias}}</p></div>
             <div class="col-lg-3"><p><label for="id_gripas">Gripas Frecuentes:</label> {{form1.gripas}}</p></div>
-        </div> 
+        </div>
         <div class="row">
             <div class="col-lg-3"><p><label for="id_enf_piel">Enf de la piel:</label> {{form1.enf_piel}}</p></div>
             <div class="col-lg-3"><p><label for="id_otologicos">Otologicos:</label> {{form1.otologicos}}</p></div>
             <div class="col-lg-3"><p><label for="id_diabetes">Diabetes:</label> {{form1.diabetes}}</p></div>
             <div class="col-lg-3"><p><label for="id_hematologicos">Hematologicos:</label> {{form1.hematologicos}}</p></div>
-        </div> 
+        </div>
         <div class="row">
             <div class="col-lg-3"><p><label for="id_epilepsia">Epilepsia:</label> {{form1.epilepsia}}</p></div>
             <div class="col-lg-3"><p><label for="id_cancer">Cancer:</label> {{form1.cancer}}</p></div>
             <div class="col-lg-3"><p><label for="id_hipertension">Hipertension:</label> {{form1.hipertension}}</p></div>
             <div class="col-lg-3"><p><label for="id_otros">Otros:</label> {{form1.otros}}</p></div>
-        </div>        
+        </div>
         <h4 class="page-header">Antecedentes Patologicos Famiiares</h4>
         <div class="row">
             <div class="col-lg-3"><p><label for="id_f_quirurgicos">Cirugia:</label> {{form1.f_quirurgicos}}</p></div>
@@ -185,13 +185,13 @@
             <div class="col-lg-3"><p><label for="id_f_tbc">T.B.C:</label> {{form1.f_tbc}}</p></div>
             <div class="col-lg-3"><p><label for="id_f_alergias">Alergias:</label> {{form1.f_alergias}}</p></div>
             <div class="col-lg-3"><p><label for="id_f_gripas">Gripas Frecuentes:</label> {{form1.f_gripas}}</p></div>
-        </div> 
+        </div>
         <div class="row">
             <div class="col-lg-3"><p><label for="id_f_enf_piel">Enf de la piel:</label> {{form1.f_enf_piel}}</p></div>
             <div class="col-lg-3"><p><label for="id_f_otologicos">Otologicos:</label> {{form1.f_otologicos}}</p></div>
             <div class="col-lg-3"><p><label for="id_f_diabetes">Diabetes:</label> {{form1.f_diabetes}}</p></div>
             <div class="col-lg-3"><p><label for="id_f_hematologicos">Hematologicos:</label> {{form1.f_hematologicos}}</p></div>
-        </div> 
+        </div>
         <div class="row">
             <div class="col-lg-3"><p><label for="id_f_epilepsia">Epilepsia:</label> {{form1.f_epilepsia}}</p></div>
             <div class="col-lg-3"><p><label for="id_f_cancer">Cancer:</label> {{form1.f_cancer}}</p></div>
@@ -216,7 +216,7 @@
                 <h4 class="page-header">Antecedentes Gineco-Obstetricos</h4>
                 <div class="row">
                     <div class="col-lg-3"><p><label for="id_hijos_vivos">Hijos Vivos:</label> {{form1.hijos_vivos}}</p></div>
-                </div>                
+                </div>
                 <div class="row">
                     <div class="col-lg-3"><p><label for="id_menarquia">Menarquia:</label> {{form1.menarquia}}</p></div>
                     <div class="col-lg-3"><p><label for="id_ciclos">Ciclos:</label> {{form1.ciclos}}</p></div>
@@ -238,8 +238,8 @@
                 <div class="row">
                     <div class="col-lg-6"><p><label for="id_transtorno_otros">Otros Transtornos:</label> {{form1.transtorno_otros}}</p></div>
                     <div class="col-lg-6"><p><label for="id_planificacion">Metodo de Planificacion Familiar:</label> {{form1.planificacion}}</p></div>
-                </div>                 
-            </div>                     
+                </div>
+            </div>
     </div>
     <!-- EXAMEN FISICO-->
     <div class="tab-pane fade" id="tabexamen">
@@ -270,19 +270,19 @@
             <div class="col-lg-3"><p><label for="id_cuello">Cuello:</label>{{form1.cuello}}</p></div>
             <div class="col-lg-3"><p><label for="id_torax">Torax:</label>{{form1.torax}}</p></div>
             <div class="col-lg-3"><p><label for="id_abdomen">Abdomen:</label>{{form1.abdomen}}</p></div>
-        </div>       
+        </div>
         <div class="row">
             <div class="col-lg-3"><p><label for="id_columna_cervical">Columna Cervical:</label>{{form1.columna_cervical}}</p></div>
             <div class="col-lg-3"><p><label for="id_columna_dorsal">Columna Dorsal:</label>{{form1.columna_dorsal}}</p></div>
             <div class="col-lg-3"><p><label for="id_columna_lumbo">Columna Lumbo Sacra:</label>{{form1.columna_lumbo}}</p></div>
-        </div>        
+        </div>
         <div class="row">
             <div class="col-lg-4"><p><label for="id_m_superiores">Miembros Superiores:</label>{{form1.m_superiores}}</p></div>
             <div class="col-lg-4"><p><label for="id_m_inferiores">Miembros Inferiores:</label>{{form1.m_inferiores}}</p></div>
         </div>
         <div class="row">
             <div class="col-lg-12"><p><label for="id_descripcion_osteomuscular">Observaciones:</label> {{form1.descripcion_osteomuscular}}</p></div>
-        </div>        
+        </div>
         <h4 class="page-header">Dinámica (Movimientos Articulares)</h4>
         <div class="row">
             <div class="col-lg-3"><p><label for="id_d_cuello">Cuello:</label>{{form1.d_cuello}}</p></div>
@@ -311,7 +311,7 @@
         <div class="row">
             <div class="col-lg-3"><p><label for="id_d_tobillo">Tobillo:</label>{{form1.d_tobillo}}</p></div>
             <div class="col-lg-9"><p><label for="id_d_tobillo_o">Observaciones:</label>{{form1.d_tobillo_o}}</p></div>
-        </div> 
+        </div>
         <h4 class="page-header">Organos o sistemas</h4>
         <div class="row">
             <div class="col-lg-4"><p><label for="id_cicatrices">Cicatrices-Tatuajes:</label>{{form1.cicatrices}}</p></div>
@@ -398,7 +398,7 @@
         <br>
         <div class="row">
             <div class="col-lg-6"><p><label for="id_pre_concepto">Pre-Concepto:</label>{{form1.pre_concepto}}</p></div>
-        </div>                          
+        </div>
     </div>
     <div class="tab-pane fade" id="tabdiagnosticos">
         <br>
@@ -473,7 +473,7 @@
                         <td>{% if audiometria %}{{ audiometria.get_estado_display|upper }}{% else %}NO SOLICITADO{% endif %}</td>
                         <td>
                             {% if audiometria.estado == 'RE' %}
-                            <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html&examen=audiometria"><small>Ver resultado de Visiometría</small></a>|
+                            <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html&examen=audiometria"><small>Ver resultado de Audiometría</small></a>|
                             <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html&examen=audiometria&print=True"><small>Descargar</small></a>
                             {% endif %}
                         </td>
@@ -487,7 +487,7 @@
             <br>
             <div class="row">
                 <div class="col-lg-6"><h4>¿Ha tenido alguna de las siguientes condiciones medicas?</h4></div>
-                <div class="col-lg-6"><h4>¿Ha tenido alguno de los siguientes problemas con el corazón?</h4></div>                
+                <div class="col-lg-6"><h4>¿Ha tenido alguno de los siguientes problemas con el corazón?</h4></div>
             </div>
             <div class="row">
                 <div class="col-lg-6"><p><label for="id_convulsiones_p">Convulsiones:</label>{{form3.convulsiones_p}}</p></div>
@@ -495,27 +495,27 @@
             </div>
             <div class="row">
                 <div class="col-lg-6"><p><label for="id_diabetes">Diabetes:</label>{{form3.diabetes}}</p></div>
-                <div class="col-lg-6"><p><label for="id_a_cerebro_v">Accidente Cerebro Vascular:</label>{{form3.a_cerebro_v}}</p></div>           
+                <div class="col-lg-6"><p><label for="id_a_cerebro_v">Accidente Cerebro Vascular:</label>{{form3.a_cerebro_v}}</p></div>
             </div>
             <div class="row">
                 <div class="col-lg-6"><p><label for="id_reacciones">Reacciones alérgicas que no lo dejan respirar:</label>{{form3.reacciones}}</p></div>
-                <div class="col-lg-6"><p><label for="id_angina_pecho">Angina de Pecho:</label>{{form3.angina_pecho}}</p></div>            
+                <div class="col-lg-6"><p><label for="id_angina_pecho">Angina de Pecho:</label>{{form3.angina_pecho}}</p></div>
             </div>
             <div class="row">
                 <div class="col-lg-6"><p><label for="id_claustrofobia">Claustrofobia:</label>{{form3.claustrofobia}}</p></div>
-                <div class="col-lg-6"><p><label for="id_insuficiencia_cardiaca">Insuficiencia Cardiaca:</label>{{form3.insuficiencia_cardiaca}}</p></div>            
+                <div class="col-lg-6"><p><label for="id_insuficiencia_cardiaca">Insuficiencia Cardiaca:</label>{{form3.insuficiencia_cardiaca}}</p></div>
             </div>
             <div class="row">
                 <div class="col-lg-6"><p><label for="id_acrofobia">Acrofobia:</label>{{form3.acrofobia}}</p></div>
-                <div class="col-lg-6"><p><label for="id_hinchazon_pies">Hinchazon en las piernas o pies (No por caminar):</label>{{form3.hinchazon_pies}}</p></div>            
-            </div> 
+                <div class="col-lg-6"><p><label for="id_hinchazon_pies">Hinchazon en las piernas o pies (No por caminar):</label>{{form3.hinchazon_pies}}</p></div>
+            </div>
             <div class="row">
                 <div class="col-lg-6"><p><label for="id_vertigos">Vertigos o Mareos:</label>{{form3.vertigos}}</p></div>
-                <div class="col-lg-6"><p><label for="id_latidos">Latidos Irregulares del Corazón:</label>{{form3.latidos}}</p></div>            
+                <div class="col-lg-6"><p><label for="id_latidos">Latidos Irregulares del Corazón:</label>{{form3.latidos}}</p></div>
             </div>
             <div class="row">
                 <div class="col-lg-6"><p><label for="id_epilepsia">Epilepsia:</label>{{form3.epilepsia}}</p></div>
-                <div class="col-lg-6"><p><label for="id_presion">Presion Alta:</label>{{form3.presion}}</p></div>            
+                <div class="col-lg-6"><p><label for="id_presion">Presion Alta:</label>{{form3.presion}}</p></div>
             </div>
             <div class="row">
                 <div class="col-lg-6"><p><label for="id_enfermedad_mental">Algún tipo de Enfermedad Mental:</label>{{form3.enfermedad_mental}}</p></div>
@@ -523,7 +523,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-6"><h4>¿Ha tenido algunos de los siguientes síntomas cardíacos?</h4></div>
-                <div class="col-lg-6"><h4>¿Actualmente tiene alguno de los siguientes problemas con su vista?</h4></div>                
+                <div class="col-lg-6"><h4>¿Actualmente tiene alguno de los siguientes problemas con su vista?</h4></div>
             </div>
             <div class="row">
                 <div class="col-lg-6"><p><label for="id_dolor_pecho1">Dolor de pecho frecuente o pecho apretado:</label>{{form3.dolor_pecho1}}</p></div>
@@ -550,7 +550,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-6"><h4>¿Está tomando medicinas por alguno de los siguientes problemas?</h4></div>
-                <div class="col-lg-6"><h4>¿Tiene alguno de los siguientes problemas óseos o musculares?</h4></div>                
+                <div class="col-lg-6"><h4>¿Tiene alguno de los siguientes problemas óseos o musculares?</h4></div>
             </div>
             <div class="row">
                 <div class="col-lg-6"><p><label for="id_prob_pulmonares">Problemas Pulmonares:</label>{{form3.prob_pulmonares}}</p></div>
@@ -559,7 +559,7 @@
             <div class="row">
                 <div class="col-lg-6"><p><label for="id_prob_circulacion">Problemas de circulacion:</label>{{form3.prob_circulacion}}</p></div>
                 <div class="col-lg-6"><p><label for="id_dolor_espalda">Dolor de espalda:</label>{{form3.dolor_espalda}}</p></div>
-            </div>   
+            </div>
             <div class="row">
                 <div class="col-lg-6"><p><label for="id_presion_alta">Presion Alta:</label>{{form3.presion_alta}}</p></div>
                 <div class="col-lg-6"><p><label for="id_dificultad_extremidades">Dificultad para mover brazos y piernas completamente:</label>{{form3.dificultad_extremidades}}</p></div>
@@ -600,7 +600,7 @@
                 <div class="col-lg-6"><p><label for="id_d_prob_audicion">¿Cual?:</label>{{form3.d_prob_audicion}}</p></div>
             </div>
             <div class="row">
-                <h4 class="page-header">Pruebas de Equilibrio Estático</h4>            
+                <h4 class="page-header">Pruebas de Equilibrio Estático</h4>
             </div>
             <div class="row">
                 <div class="col-lg-3"><p><label for="id_romberg">Romberg:</label>{{form3.romberg}}</p></div>
@@ -615,7 +615,7 @@
                 <div class="col-lg-9"><p><label for="id_ob_hallpike">Observaciones:</label>{{form3.ob_hallpike}}</p></div>
             </div>
             <div class="row">
-                <h4 class="page-header">Pruebas de Equilibrio Dinámico</h4>             
+                <h4 class="page-header">Pruebas de Equilibrio Dinámico</h4>
             </div>
             <div class="row">
                 <h5>Babinsky-Weil o Marcha a Ciegas</h5>
@@ -655,9 +655,9 @@
             <div class="row">
                 <div class="col-lg-3"><p><label for="id_post_vert_cent">Positivo Vertigo Central:</label>{{form3.post_vert_cent}}</p></div>
                 <div class="col-lg-6"><p><label for="id_ob_post_vert_cent">Observaciones:</label>{{form3.ob_post_vert_cent}}</p></div>
-            </div>                                   
-        </div>  
-    {% endif %}     
+            </div>
+        </div>
+    {% endif %}
     <div class="tab-pane fade" id="tabconcepto">
         <br>
         <div class="row">
@@ -681,12 +681,12 @@
         {% if exito %}
             <a class="btn btn-primary btn-sm" href="/imprimir/historia/{{ getorden.id }}"><i class="glyphicon glyphicon-print"></i> HC</a>
             <a class="btn btn-primary btn-sm" href="/imprimir/concepto/{{ getorden.id }}"><i class="glyphicon glyphicon-print"></i> CM</a>
-        <!--    
+        <!--
             <a class="btn btn-primary btn-sm" href="/imprimir/laboratorios/{{ getorden.id }}"><i class="glyphicon glyphicon-print"></i> LABS</a>
             <a class="btn btn-primary btn-sm" href="/imprimir/remision/{{ getorden.id }}"><i class="glyphicon glyphicon-print"></i> REMS</a>
         -->
-        {% endif %}          
-    </div>               
+        {% endif %}
+    </div>
     <div class="tab-pane fade" id="tabhistorial">
         <br>
         <h4>Historial de Consultas</h4>
@@ -703,11 +703,11 @@
                     </thead>
                     <tbody>
                     {% for p in historial %}
-                    <tr>  
+                    <tr>
                       <td>{{p.orden.fecha|date:"d/m/y"}} {{p.orden.fecha|time:"H:i"}}</td>
                       <td>Historia</td>
                       <td>{{p.orden.medico}}</td>
-                      <td><a name={{p.id}} class="btn btn-primary btn-xs muestra_historia" data-toggle="modal" data-target="#preliminar"><i class="glyphicon glyphicon-eye-open"></i></a></td>     
+                      <td><a name={{p.id}} class="btn btn-primary btn-xs muestra_historia" data-toggle="modal" data-target="#preliminar"><i class="glyphicon glyphicon-eye-open"></i></a></td>
                     </tr>
                     {% endfor %}
                     </tbody>
@@ -732,7 +732,7 @@
                     </thead>
                     <tbody>
                     {% for p in lista_proc %}
-                    <tr>  
+                    <tr>
                       <td>{{p.orden.fecha|date:"d/m/y"}} {{p.orden.fecha|time:"H:i"}}</td>
                       {% if p.orden.consulta == None %}
                         <td>{{p.orden.procedimiento}}</td>
@@ -740,7 +740,7 @@
                         <td>{{p.orden.consulta}}</td>
                       {% endif %}
                       <td>{{p.orden.medico}}</td>
-                      <td><a name={{p.id}} class="btn btn-primary btn-xs muestra_procedimiento" data-toggle="modal" data-target="#preliminar"><i class="glyphicon glyphicon-eye-open"></i></a></td>     
+                      <td><a name={{p.id}} class="btn btn-primary btn-xs muestra_procedimiento" data-toggle="modal" data-target="#preliminar"><i class="glyphicon glyphicon-eye-open"></i></a></td>
                     </tr>
                     {% endfor %}
                     </tbody>
@@ -749,10 +749,10 @@
         {% else %}
             <h5>El paciente no tiene registros de procedimientos</h5>
         {% endif %}
-    </div>      
-</div> 
+    </div>
+</div>
 </form>
-<br>                    
+<br>
 <a href="/agenda/"> << Regresar a la Agenda </a>
 <br>
 <br>
@@ -796,7 +796,7 @@
                     <label>Peso(Kg):</label>
                     <input id="c_peso" class="form-control">
                 </div>
-            </div>      
+            </div>
         </div>
         <div id="vista_procedimiento">
             <div class="row">
@@ -808,7 +808,7 @@
                     <textarea id="c_impresion" class="form-control" rows="3"></textarea>
                 </div>
             </div>
-        </div>    
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -823,7 +823,7 @@
 {% block js %}
 <script type="text/javascript">
     $("#id_f_imagen, #id_f_audiometria, #id_f_visiometria, #id_f_espirometria, #id_f_laboratorio, #id_fum, #id_fup").datepicker({
-        dateFormat: 'dd/mm/yy', 
+        dateFormat: 'dd/mm/yy',
         changeYear: true,
         changeMonth: true,
         yearRange: 'c-50:c'
@@ -840,7 +840,7 @@
               term: term, // search term
             };
           },
-          results: function (data, page) { 
+          results: function (data, page) {
             return { results: data };
           }
         },
@@ -851,9 +851,9 @@
             if(tecla.charCode == 0){
                 return true;
             }else if(tecla.charCode == 47){
-              return true;      
+              return true;
             }else if(tecla.charCode < 48 || tecla.charCode > 57){
-              return false;  
+              return false;
             }
         });
 
@@ -876,7 +876,7 @@
             }else if(valor >= 16 && valor < 17){
                 $('#texto_imc').text("El paciente presenta: Deficiencia Nutricional en 2do Grado");
             }else if(valor >= 17 && valor < 18.5){
-                $('#texto_imc').text("El paciente presenta: Deficiencia Nutricional en 1er Grado"); 
+                $('#texto_imc').text("El paciente presenta: Deficiencia Nutricional en 1er Grado");
             }else if(valor >= 18.5 && valor < 20){
                 $('#texto_imc').text("El paciente presenta: Bajo Peso");
             }else if(valor >= 20 && valor < 25){
@@ -888,10 +888,10 @@
             }else if(valor >= 35 && valor < 40){
                 $('#texto_imc').text("El paciente presenta: Obesidad en 2do Grado");
             }else if(valor > 40){
-                $('#texto_imc').text("El paciente presenta: Obesidad en 3er Grado");                                     
+                $('#texto_imc').text("El paciente presenta: Obesidad en 3er Grado");
             }else{
                 $('#texto_imc').text("");
-            } 
+            }
         }
     });
 </script>

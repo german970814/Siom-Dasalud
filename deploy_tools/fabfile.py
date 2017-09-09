@@ -5,7 +5,7 @@ from fabric.api import env, local, run, hosts
 REPO_URL = 'https://german970814@bitbucket.org/ingeniarte/ipsiom.git'
 FOLDER_ROOT = 'dasaludsiom'
 STRUCTURE_PROJECT = ('static', 'source', 'media', )
-ACTUAL_BRANCH = 'feature/laboratorios'
+ACTUAL_BRANCH = 'master'
 
 
 DATABASE_PRODUCTION = {

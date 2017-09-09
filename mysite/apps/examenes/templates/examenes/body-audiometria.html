@@ -167,7 +167,7 @@
 </table>
 <br>
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-6">
         {% if examen.audiometra.get_firma %}
             <img class="firma" src="http://{{ request.META.HTTP_HOST }}{{ examen.audiometra.get_firma.url }}" alt="" width="150px" height="80px" />
             <br>
@@ -176,7 +176,7 @@
         {% endif %}
         <p>FIRMA DEL EXAMINADOR</p>
     </div>
-    <div class="col-md-3 col-md-offset-3">
+    <div class="col-md-6">
         {% if orden.paciente.firma %}
             <img class="firma" src="http://{{ request.META.HTTP_HOST }}{{ orden.paciente.firma.url }}" alt="" width="150px" height="80px" />
             <br>
@@ -272,7 +272,6 @@
         document.getElementById('oDAvg').innerHTML = getAvg(oidoDerechoSource);
         document.getElementById('oIAvg').innerHTML = getAvg(oidoIzquierdoSource);
 
-        {% if print %}
         setTimeout(function () {
             // audiometriaChart.toBase64Image();
             let algo = audiometriaChart.toBase64Image();
@@ -284,11 +283,12 @@
             }
             i.src = algo;
             canvas.style.display = 'none';
-            // console.log(algo);
+
+            {% if print %}
             setTimeout(function () {
                 window.print();
             }, 1000)
+            {% endif %}
         }, 1000)
-        {% endif %}
     }
 </script>

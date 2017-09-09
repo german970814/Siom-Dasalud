@@ -121,6 +121,11 @@
     footer p {
         font-size: 6px !important;
     }
+
+    .firma {
+        height: 80px !important;
+        width: 120px !important;
+    }
 }
 
 .sidebar .material-icons.icon {

@@ -525,14 +525,14 @@ export default {
                 this.hz250_i, this.hz500_i, this.hz1000_i, this.hz2000_i,
                 this.hz3000_i, this.hz4000_i, this.hz6000_i, this.hz8000_i
             ]
-            return list.reduce((x, y) => x + y) / list.length
+            return list.reduce((x, y) => parseFloat(x) + parseFloat(y)) / list.length || 0;
         },
         od_avg: function () {
             let list = [
                 this.hz250_d, this.hz500_d, this.hz1000_d, this.hz2000_d,
                 this.hz3000_d, this.hz4000_d, this.hz6000_d, this.hz8000_d
             ]
-            return list.reduce((x, y) => x + y) / list.length
+            return list.reduce((x, y) => parseFloat(x) + parseFloat(y)) / list.length || 0;
         }
     },
     mounted: function() {
