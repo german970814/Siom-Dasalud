@@ -465,7 +465,7 @@
                         <td>{% if audiometria %}{{ audiometria.get_estado_display|upper }}{% else %}NO SOLICITADO{% endif %}</td>
                         <td>
                             {% if audiometria.estado == 'RE' %}
-                            <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html&examen=audiometria"><small>Ver resultado de Visiometría</small></a>|
+                            <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html&examen=audiometria"><small>Ver resultado de Audiometría</small></a>|
                             <a target="_blank" href="{% url 'examenes:ver_resultado_visiometria' getorden.id %}?format=html&examen=audiometria&print=True"><small>Descargar</small></a>
                             {% endif %}
                         </td>

@@ -3,7 +3,7 @@ from mysite.apps.datos.models import especialidades,paciente,medico,profesiones
 
 class pacienteAdmin(admin.ModelAdmin):
 	#Atributo para mostrar campos del modelo
-	list_display = ('id','documento','cedula', 'pnombre','snombre','papellido','sapellido','genero','usuario')
+	list_display = ('id','documento','cedula', 'pnombre','snombre','papellido','sapellido','genero',)
 	#Agrega un buscador
 	search_fields = ('cedula','pnombre','papellido','sapellido')
 

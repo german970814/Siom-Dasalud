@@ -140,7 +140,6 @@ class paciente(models.Model):
 	celular     = models.CharField(max_length=20, null=True, blank=True)
 	status		= models.BooleanField(default=True)
 	email		= models.EmailField(max_length=30,null=True, blank=True)
-	usuario		= models.ForeignKey(User)  
 
 	# Información Facturación
 	procede = models.ForeignKey(empresas,related_name='paciente_empresa',verbose_name=u'Procede de')

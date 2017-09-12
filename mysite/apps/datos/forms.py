@@ -22,7 +22,7 @@ class addmedicoForm(forms.ModelForm):
 class addPacienteForm(forms.ModelForm):
     class Meta:
         model   = paciente
-        exclude = {'usuario','institucion',}
+        exclude = {'institucion', }
 
     def __init__(self, *args, **kwargs):
         super(addPacienteForm, self).__init__(*args, **kwargs)

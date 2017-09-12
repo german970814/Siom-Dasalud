@@ -51,7 +51,7 @@
         </v-list-tile>
     
     {% endif %}
-    {% if perms.home.es_administrador or perms.home.es_coordinador_general or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %}
+    {% if perms.home.es_administrador or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %}
     
         <v-list-tile ripple href="/agenda/doctor/">
             <v-list-tile-title>Agenda Por Doctor</v-list-tile-title>
@@ -60,7 +60,7 @@
     {% endif %}
 </v-list-group>
 {% endif %}
-{% if perms.home.es_administrador or perms.home.es_coordinador_general or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %}
+{% if perms.home.es_administrador or perms.home.es_coordinador_plataforma or perms.home.es_coordinador_endoscopia or perms.home.es_auxiliar_plataforma or perms.home.es_auxiliar_endoscopia %}
 <v-list-group>
 
         <v-list-tile slot="item" ripple>

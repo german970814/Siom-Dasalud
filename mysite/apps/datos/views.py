@@ -59,10 +59,7 @@ def add_paciente_view(request):
 			usuario = User.objects.get(pk=request.user.id)
 			i_u = userProfile.objects.get(user=usuario)
 			add = form.save(commit=False)
-			u = User.objects.create_user(username=add.cedula,email=add.email,password='123456')
-			u.save() # Guardar el objeto
 			add.status = True
-			add.usuario = u
 			add.institucion = i_u.institucion
 			add.save() # Guardamos la informacion
 			info = "Guardado satisfactoriamente"
