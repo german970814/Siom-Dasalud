@@ -66,9 +66,14 @@ class Recepcion(models.Model):
         lab_str = ' | '.join(list(laboratorios))
         return 'Recepcion #{self.orden.id} | {laboratorios}'.format(self=self, laboratorios=lab_str)
 
-    def save(self, *args, **kwargs):
-        super(Recepcion, self).save(*args, **kwargs)
-        print("si guardo")
+    @property
+    def _laboratorios(self):
+        return Laboratorio.objects.filter(
+            servicio__in=self.orden.OrdenProducto_orden.all().values_list('servicio__nombre__id', flat=True).distinct()
+        )
+
+    def get_laboratorios(self):
+        return self._laboratorios
 
 
 @python_2_unicode_compatible

@@ -7,6 +7,8 @@ urlpatterns = [
     url(r'^imprimir/(?P<pk>\d+)/$', views.imprimir_laboratorio, name='imprimir'),
     url(r'^resultados_laboratorios/(?P<pk>\d+)/$', views.ver_resultado_laboratorio, name='ver_resultado_laboratorio'),
     url(r'^preview/(?P<pk>\d+)/$', views.preview, name='preview'),
+    url(r'^hoja_trabajo/$', views.hoja_trabajo, name='hoja_trabajo'),
+    url(r'^hoja_trabajo/preview/$', views.hoja_trabajo_preview, name='hoja_trabajo_preview'),
 ]
 
 # api

@@ -1,0 +1,77 @@
+{% load staticfiles resultados %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Laboratorios</title>
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/print_hoja_trabajo.css' %}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="card">
+                <div class="card-body card-padding">
+
+                    {% include 'laboratorios/header_hoja_trabajo.html' %}
+
+                    <div class="row resultado-content">
+                        
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Recep.(#Sd)</th>
+                                        <th>Cod. pcte</th>
+                                        <th>Nombre paciente</th>
+                                        <th>Ed/Sx</th>
+                                        <th>Procedencia</th>
+                                        <th style="width: 35%">Todos los exámenes, Todas las secciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for recepcion in recepciones %}
+                                    <tr>
+                                        <td>{{ recepcion.orden.id }}</td>
+                                        <td>{{ recepcion.orden.paciente.cedula }}</td>
+                                        <td>{{ recepcion.orden.paciente.papellido|title }} {{ recepcion.orden.paciente.sapellido|title }}, {{ recepcion.orden.paciente.pnombre|title }} {{ recepcion.orden.paciente.snombre|title }}</td>
+                                        <td>{{ recepcion.orden.paciente.edad }}{{ recepcion.orden.paciente.get_unidad_display|first }}/{{ recepcion.orden.paciente.genero }}</td>
+                                        <td>SIOM INTERNOS</td>
+                                        <td>{% for lab in recepcion.get_laboratorios %}{{ lab.codigo }}___{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <br>
+                            <hr />
+                            <small>Firma Responsable</small>
+                        </div>
+
+                        <div class="col-md-9">
+                            <dl>
+                                <dt class="dl">Controles    </dt><dd class="dd">___________________________________________________________________</dd>
+                            </dl>
+                            <dl>
+                                <dt class="dl">Calibraciones</dt><dd class="dd">___________________________________________________________________</dd>
+                            </dl>
+                            <dl>
+                                <dt class="dl">Dilusiones   </dt><dd class="dd">___________________________________________________________________</dd>
+                            </dl>
+                            <dl>
+                                <dt class="dl">Observaciones</dt><dd class="dd">___________________________________________________________________</dd>
+                            </dl>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

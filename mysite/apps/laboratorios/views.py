@@ -14,6 +14,7 @@ from django.conf import settings
 from weasyprint import HTML
 
 from .models import Laboratorio, Resultado, Recepcion, Formato
+from .forms import HojaTrabajoForm
 from .utils import get_hemogramas_from_queryset
 from mysite.apps.historias.models import orden as Orden, ordenesProducto as OrdenProducto
 
@@ -27,6 +28,44 @@ RESULTADO_ORDERING = ['laboratorio__seccion_trabajo', 'bacteriologo', ]
 @login_required
 def index(request):
     return render(request, 'laboratorios/index.html', {})
+
+
+@login_required
+def hoja_trabajo(request):
+
+    data = {}
+    if request.method == 'POST':
+        form = HojaTrabajoForm(data=request.POST)
+        if form.is_valid():
+            desde = form.cleaned_data.get('desde_fecha')
+            hasta = form.cleaned_data.get('hasta_fecha') + datetime.timedelta(days=1)
+            desde_hora = form.cleaned_data.get('desde_hora')
+            hasta_hora = form.cleaned_data.get('hasta_hora')
+
+            _desde = form.get_datetime(desde, desde_hora)
+            _hasta = form.get_datetime(hasta, hasta_hora)
+            recepciones = Recepcion.objects.filter(orden__fecha__range=(_desde, _hasta))
+
+            data = {
+                'recepciones': recepciones, 'fecha_desde': _desde, 'fecha_hasta': _hasta,
+                'fecha': datetime.datetime.now()
+            }
+
+    else:
+        form = HojaTrabajoForm()
+
+    data['form'] = form
+
+    return render(request, 'laboratorios/hoja_trabajo.html', data)
+
+
+def hoja_trabajo_preview(request):
+    desde = request.GET.get('desde', None)
+    hasta = request.GET.get('hasta', None)
+    desde_hora = request.GET.get('desde_hora', None)
+    hasta_hora = request.GET.get('hasta_hora', None)
+    recepciones = Recepcion.objects.all()
+    return render(request, 'laboratorios/hoja_trabajo_pdf.html', data)
 
 
 @login_required

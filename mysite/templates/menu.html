@@ -238,12 +238,14 @@
     {% if user.bacteriologo %}
 
         <v-list-tile ripple href="{% url 'laboratorios:index' %}#/recepciones/">
-            <v-list-tile-title>Laboratorios Atendidos</v-list-tile-title>
+            <v-list-tile-title>Pacientes Procesados</v-list-tile-title>
         </v-list-tile>
         <v-list-tile ripple href="{% url 'laboratorios:index' %}#/ordenes_laboratorios/">
-            <v-list-tile-title>Laboratorios Sin Atender</v-list-tile-title>
+            <v-list-tile-title>Pacientes Sin Procesar</v-list-tile-title>
         </v-list-tile>
-
+        <v-list-tile ripple href="{% url 'laboratorios:hoja_trabajo' %}">
+            <v-list-tile-title>Hoja de trabajo</v-list-tile-title>
+        </v-list-tile>
     {% endif %}
     {% if user.empleado %}
 

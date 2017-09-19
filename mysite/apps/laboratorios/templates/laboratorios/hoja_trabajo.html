@@ -1,0 +1,264 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Laboratorios</title>
+        <link rel="stylesheet" href="{% static 'vue/node_modules/vuetify/dist/vuetify.min.css' %}">
+        <link href="{% static 'vue/fonts.css' %}" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="{% static '/static/css/animate.css' %}">
+        <style media="screen">
+            .sidebar .material-icons.icon {
+                line-height: inherit !important;
+            }
+
+            body {
+              background-color: #f5f5f5;
+            }
+
+            .wrap__all {
+              background-color: #fff;
+              width: 100%;
+              height: 100%;
+              top: 0;
+              left: 0;
+              display: block;
+              position: fixed;
+              z-index: 100000;
+            }
+
+            .preloader {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                margin-left: -25px;
+                margin-top: -55px;
+            }
+        </style>
+    </head>
+
+    <body>
+        {% csrf_token %}
+        <div id="app" class="grey lighten-4">
+            <v-app>
+                <div>
+                    <v-navigation-drawer
+                        v-model="sidebar"
+                        temporary
+                        enable-resize-watcher
+                        class="mt-0 scroll-y hidden-print" :mobile-break-point="576">
+                        <v-list dense>
+                            {% include 'menu.html' %}
+                        </v-list>
+                    </v-navigation-drawer>
+                    <v-toolbar class="cyan darken-1 hidden-print" fixed>
+                        <v-toolbar-side-icon @click.native.stop="sidebar = !sidebar" class="white--text"></v-toolbar-side-icon>
+                        <v-toolbar-title class="white--text">Dasalud</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-menu left bottom origin="top right" transition="v-scale-transition">
+                            <v-btn dark icon slot="activator">
+                                <v-icon class="white--text">more_vert</v-icon>
+                            </v-btn>
+                            <v-list>
+                                <v-list-tile>
+                                    <v-subheader>{{ user.username|upper }}</v-subheader>
+                                </v-list-tile>
+                                <v-list-tile href="/cambiarPassword/">
+                                    <v-list-tile-title>Cambiar Contraseña</v-list-tile-title>
+                                </v-list-tile>
+                                <v-list-tile href="/logout/">
+                                    <v-list-tile-content>
+                                        <v-list-tile-title>Desconexión</v-list-tile-title>
+                                    </v-list-tile-content>
+                                </v-list-tile>
+                            </v-list>
+                        </v-menu>
+                    </v-toolbar>
+                    <main class="grey lighten-4">
+                        <div class="main">
+                            <div class="grey lighten-4 hidden-print">
+                                <br>
+                                <v-spacer></v-spacer>
+                                <v-container fluid>
+                                    <br>
+                                    <v-spacer></v-spacer>
+                                    <v-card>
+                                        <v-card-text>
+                                            <form action="" method="POST" id="formData">
+                                                {% csrf_token %}
+                                                <h3 class="title">Informe Hoja de Trabajo</h3>
+                                                <br>
+                                                <v-spacer></v-spacer>
+                                                <v-layout>
+                                                    <v-flex xs3>
+                                                        <v-menu
+                                                            lazy
+                                                            :close-on-content-click="false"
+                                                            v-model="desde_menu_date"
+                                                            transition="scale-transition"
+                                                            offset-y
+                                                            full-width
+                                                            :nudge-left="40"
+                                                            max-width="290px">
+                                                            <v-text-field
+                                                                slot="activator"
+                                                                label="Fecha desde"
+                                                                v-model="desde_date"
+                                                                prepend-icon="event"
+                                                                {% if form.desde_fecha.errors %}error{% endif %}
+                                                                :error-messages="[{% for error in form.desde_fecha.errors %}'{{ error }}', {% endfor %}]"
+                                                                readonly
+                                                            ></v-text-field>
+                                                            <v-date-picker v-model="desde_date" no-title scrollable actions locale="es-sp">
+                                                                <template scope="{ save, cancel }">
+                                                                    <v-card-actions>
+                                                                        <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
+                                                                        <v-btn flat primary @click.native="save()">Save</v-btn>
+                                                                    </v-card-actions>
+                                                                </template>
+                                                            </v-date-picker>
+                                                        </v-menu>
+                                                        <input type="hidden" name="desde_fecha" :value="desde_date" />
+                                                    </v-flex>
+                                                    <v-flex xs3>
+                                                        <v-menu
+                                                            lazy
+                                                            :close-on-content-click="false"
+                                                            v-model="desde_menu_time"
+                                                            transition="scale-transition"
+                                                            offset-y
+                                                            :nudge-left="40">
+                                                            <v-text-field
+                                                                slot="activator"
+                                                                label="Hora desde"
+                                                                v-model="desde_time"
+                                                                prepend-icon="access_time"
+                                                                {% if form.desde_hora.errors %}error{% endif %}
+                                                                :error-messages="[{% for error in form.desde_hora.errors %}'{{ error }}', {% endfor %}]"
+                                                                readonly
+                                                            ></v-text-field>
+                                                            <v-time-picker v-model="desde_time" autosave format="24hr"></v-time-picker>
+                                                          </v-menu>
+                                                          <input type="hidden" name="desde_hora" :value="desde_time" />
+                                                    </v-flex>
+                                                    <v-flex xs3>
+                                                        <v-menu
+                                                            lazy
+                                                            :close-on-content-click="false"
+                                                            v-model="hasta_menu_date"
+                                                            transition="scale-transition"
+                                                            offset-y
+                                                            full-width
+                                                            :nudge-left="40"
+                                                            max-width="290px">
+                                                            <v-text-field
+                                                                slot="activator"
+                                                                label="Fecha hasta"
+                                                                v-model="hasta_date"
+                                                                {% if form.hasta_fecha.errors %}error{% endif %}
+                                                                :error-messages="[{% for error in form.hasta_fecha.errors %}'{{ error }}', {% endfor %}]"
+                                                                prepend-icon="event"
+                                                                readonly
+                                                            ></v-text-field>
+                                                            <v-date-picker v-model="hasta_date" no-title scrollable actions locale="es-sp">
+                                                                <template scope="{ save, cancel }">
+                                                                    <v-card-actions>
+                                                                        <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
+                                                                        <v-btn flat primary @click.native="save()">Save</v-btn>
+                                                                    </v-card-actions>
+                                                                </template>
+                                                            </v-date-picker>
+                                                        </v-menu>
+                                                        <input type="hidden" name="hasta_fecha" :value="hasta_date" />
+                                                    </v-flex>
+                                                    <v-flex xs3>
+                                                        <v-menu
+                                                            lazy
+                                                            :close-on-content-click="false"
+                                                            v-model="hasta_menu_time"
+                                                            transition="scale-transition"
+                                                            offset-y
+                                                            :nudge-left="40">
+                                                            <v-text-field
+                                                                slot="activator"
+                                                                label="Hora hasta"
+                                                                v-model="hasta_time"
+                                                                prepend-icon="access_time"
+                                                                {% if form.hasta_hora.errors %}error{% endif %}
+                                                                :error-messages="[{% for error in form.hasta_hora.errors %}'{{ error }}', {% endfor %}]"
+                                                                readonly
+                                                            ></v-text-field>
+                                                            <v-time-picker v-model="hasta_time" autosave format="24hr"></v-time-picker>
+                                                          </v-menu>
+                                                          <input type="hidden" name="hasta_hora" :value="hasta_time" />
+                                                    </v-flex>
+                                                </v-layout>
+                                            </form>
+                                        </v-card-text>
+                                        <v-card-actions>
+                                            <v-spacer></v-spacer>
+                                            <v-btn flat success outline @click.native="sendForm">Aceptar</v-btn>
+                                            {% if recepciones %}
+                                            <v-btn flat info outline @click.native="window.print">Imprimir</v-btn>
+                                            {% endif %}
+                                        </v-card-actions>
+                                    </v-card>
+                                </v-container>
+                            </div>
+                            {% if recepciones %}
+                            {% include 'laboratorios/hoja_trabajo_pdf.html' %}
+                            {% endif %}
+                        </div>
+                    </main>
+                </div>
+                <v-snackbar v-model="snackbar">
+                    {[ snackbarText ]}
+                    <v-btn flat class="pink--text" @click.native="snackbar = false">Cerrar</v-btn>
+                </v-snackbar>
+                <div class="wrap__all" v-if="!contentLoaded">
+                    <div class="preloader">
+                        <v-progress-circular indeterminate class="blue--text" :size="50"></v-progress-circular>
+                    </div>
+                </div>
+            </v-app>
+        </div>
+        <script src="{% static 'vue/node_modules/vue/dist/vue.min.js' %}"></script>
+        <script src="{% static 'vue/node_modules/vuetify/dist/vuetify.min.js' %}"></script>
+        <script type="text/javascript">
+            Vue.use(Vuetify);
+            new Vue({
+                el: '#app',
+                delimiters: ['{[', ']}'],
+                data: {
+                    snackbar: false,
+                    snackbarText: '',
+                    sidebar: false,
+                    contentLoaded: false,
+                    http403: false,
+                    desde_date: '{% if form.desde_fecha.value %}{{ form.desde_fecha.value }}{% endif %}',
+                    desde_time: '{% if form.desde_hora.value %}{{ form.desde_hora.value }}{% endif %}',
+                    desde_menu_date: false,
+                    desde_menu_time: false,
+                    hasta_date: '{% if form.hasta_fecha.value %}{{ form.hasta_fecha.value }}{% endif %}',
+                    hasta_time: '{% if form.hasta_hora.value %}{{ form.hasta_hora.value }}{% endif %}',
+                    hasta_menu_date: false,
+                    hasta_menu_time: false
+                },
+                mounted () {
+                    this.contentLoaded = true;
+
+                    {% if form.is_valid and recepciones %}
+                    window.print();
+                    {% endif %}
+                },
+                methods: {
+                    sendForm(event) {
+                        let form = document.getElementById('formData');
+                        form.submit();
+                    },
+                }
+            })//.$mount('#app');
+        </script>
+    </body>
+</html>
