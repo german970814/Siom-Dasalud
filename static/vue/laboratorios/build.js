@@ -11343,6 +11343,7 @@ const plantillaLaboratorio = BASE.concat('laboratorios/plantilla_laboratorios/')
 const plantillasOrdenes = BASE.concat('laboratorios/plantilla/');
 const reactivos = BASE.concat('productos/');
 const recarga = BASE.concat('productos/recarga/');
+const controlProductos = BASE.concat('productos/control/');
 const resultados = BASE.concat('resultado/');
 const secciones_trabajo = BASE.concat('seccion_trabajo/');
 const servicios = BASE.concat('servicios/');
@@ -11374,7 +11375,8 @@ const preview = '/laboratorios/preview/';
     empleados,
     recarga,
     preview,
-    recepciones
+    recepciones,
+    controlProductos,
 });
 
 
@@ -30306,7 +30308,8 @@ exports.default = {
                     hint: '',
                     required: true,
                     items: this.productos,
-                    itemText: 'nombre'
+                    itemText: 'nombre',
+                    autocomplete: true
                 },
                 domProps: { value: this.producto },
                 on: {
@@ -31084,6 +31087,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _toConsumableArray2 = __webpack_require__(32);
+
+var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+
 var _getIterator2 = __webpack_require__(7);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
@@ -31116,6 +31123,10 @@ var _form = __webpack_require__(9);
 
 var _form2 = _interopRequireDefault(_form);
 
+var _productos = __webpack_require__(22);
+
+var _productos2 = _interopRequireDefault(_productos);
+
 var _igmixin = __webpack_require__(5);
 
 var _igmixin2 = _interopRequireDefault(_igmixin);
@@ -31127,13 +31138,13 @@ var _urls2 = _interopRequireDefault(_urls);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Vue.use(VueRouter);
-_vue2.default.use(_vueResource2.default); // <template lang="html">
+// <template lang="html">
 //     <div>
 //         <v-layout>
 //             <v-flex xs12 md12>
 //                 <v-card>
 //                     <v-card-title>
-//                         Productos
+//                         <p class="title">Productos</p>
 //                         <v-spacer></v-spacer>
 //                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
 //                     </v-card-title>
@@ -31143,6 +31154,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //                         v-bind:headers="headers"
 //                         :items="elements"
 //                         v-bind:search="buscador"
+//                         :customSort="customSortFunction"
 //                         :rows-per-page-items="[10]"
 //                         rows-per-page-text="Filas por Página"
 //                         no-results-text="No se encontraron resultados">
@@ -31170,6 +31182,10 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //                             </template>
 //                         </template>
 //                     </v-data-table>
+//                     <v-card-actions>
+//                         <v-spacer></v-spacer>
+//                         <v-btn flat outline warning @click.native.stop="controlDialog = true">Controles</v-btn>
+//                     </v-card-actions>
 //                 </v-card>
 //             </v-flex>
 //         </v-layout>
@@ -31195,6 +31211,28 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //                 </v-card-actions>
 //             </v-card>
 //         </v-dialog>
+//         <v-dialog v-model="controlDialog" width="80%" scrollable>
+//             <v-card class="lol">
+//                 <v-card-title><p class="title">Realizar Control</p></v-card-title>
+//                 <v-card-text>
+//                     <v-layout>
+//                         <v-flex md6 xs12>
+//                             <v-subheader>Insumos</v-subheader>
+//                             <ig-producto :ref="'producto_i'" :plantillas="[]" tipo="i" :urlSend="urlSend"></ig-producto>
+//                         </v-flex>
+//                         <v-flex md6 xs12>
+//                             <v-subheader>Reactivos</v-subheader>
+//                             <ig-producto :ref="'producto_r'" :plantillas="[]" tipo="r" :urlSend="urlSend"></ig-producto>
+//                         </v-flex>
+//                     </v-layout>
+//                 </v-card-text>
+//                 <v-card-actions>
+//                     <v-spacer></v-spacer>
+//                     <v-btn outline class="red--text darken-1" flat="flat" @click.native="controlDialog = false">Cancelar</v-btn>
+//                     <v-btn outline class="green--text darken-1" flat="flat" @click.native="saveControl">Aceptar</v-btn>
+//                 </v-card-actions>
+//             </v-card>
+//         </v-dialog>
 //         <br>
 //         <v-layout>
 //             <v-flex xs12 md12>
@@ -31212,7 +31250,7 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 // </template>
 //
 // <script>
-
+_vue2.default.use(_vueResource2.default);
 _vue2.default.use(_vuetify2.default);
 
 exports.default = {
@@ -31225,6 +31263,7 @@ exports.default = {
             selected: false,
             dialog: false,
             buscador: '',
+            controlDialog: false,
             headers: [{
                 text: 'Código',
                 value: 'codigo',
@@ -31365,10 +31404,16 @@ exports.default = {
             }]
         };
     },
+    computed: {
+        urlSend: function urlSend() {
+            return _urls2.default.controlProductos;
+        }
+    },
     components: {
         igMenu: _menu2.default,
         igTable: _table2.default,
-        igForm: _form2.default
+        igForm: _form2.default,
+        igProducto: _productos2.default
     },
     mounted: function mounted() {
         this.getElements(_urls2.default.reactivos);
@@ -31480,6 +31525,26 @@ exports.default = {
             for (var field in this.$refs.formRecarga.models) {
                 this.$refs.formRecarga.models[field] = '';
             }
+        },
+        saveControl: function saveControl() {
+            var _this = this;
+
+            var token = document.getElementsByName('csrfmiddlewaretoken')[0];
+
+            var productos = [].concat((0, _toConsumableArray3.default)(this.$refs.producto_i.plantillas), (0, _toConsumableArray3.default)(this.$refs.producto_r.plantillas));
+
+            if (productos) {
+                this.$http.post(_urls2.default.controlProductos, { 'productos': productos }, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
+                    _this.getElements(_urls2.default.reactivos);
+                    _this.controlDialog = false;
+                    _this.$refs.producto_i.plantillas = _this.$refs.producto_r.plantillas = [];
+                }, function (response) {
+                    _this.$emit('showsnack', 'Ocurrió un error al intentar crear un control.');
+                });
+            }
+        },
+        customSortFunction: function customSortFunction(items, index, descending) {
+            return items;
         }
     }
 };
@@ -31496,7 +31561,7 @@ exports.default = {
 /* 145 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        Productos\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :rows-per-page-items=\"[10]\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <!--:filter=\"filter\"-->\n                        <template slot=\"headers\" scope=\"props\">\n                            <!--<span style=\"text-align:before: center !important\">{{ props.item.text }}</span>-->\n                            <tr>\n                                <th v-for=\"header in props.headers\" :key=\"header\"\n                                :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                    @click=\"changeSort(header)\"\n                                >\n                                    <v-icon>arrow_upward</v-icon>\n                                    {{ header.text }}\n                                </th>\n                            </tr>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of table_fields\">\n                                <td :class=\"itemClasses(props.item)\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td :class=\"itemClasses(props.item)\" v-else>\n                                    <v-btn fab dark small router class=\"cyan darken-1\" @click.native.stop=\"openModalRecarga(props.item)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n        <v-dialog v-model=\"dialog\" width=\"80%\" scrollable>\n            <v-card class=\"lol\">\n                <v-card-title>Realizar Recarga para {{ selected.nombre }}</v-card-title>\n                <v-card-text>\n                    <v-layout>\n                        <ig-form\n                            :flat=\"true\"\n                            :fields=\"recarga_fields\"\n                            :url=\"urlRecarga.concat(selected ? selected.id.toString(): '') + '/'\"\n                            ref=\"formRecarga\"\n                            @showsnack=\"showSnackBar\"\n                            @clearselected=\"selectedRecarga = false\"\n                            @objectcreated=\"updateCantidadObjectCreated\"\n                            :selected=\"selectedRecarga\"\n                        ></ig-form>\n                    </v-layout>\n                </v-card-text>\n                <v-card-actions>\n                    <v-btn class=\"red--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                </v-card-actions>\n            </v-card>\n        </v-dialog>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
+module.exports = "\n    <div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        <p class=\"title\">Productos</p>\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :customSort=\"customSortFunction\"\n                        :rows-per-page-items=\"[10]\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <!--:filter=\"filter\"-->\n                        <template slot=\"headers\" scope=\"props\">\n                            <!--<span style=\"text-align:before: center !important\">{{ props.item.text }}</span>-->\n                            <tr>\n                                <th v-for=\"header in props.headers\" :key=\"header\"\n                                :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                    @click=\"changeSort(header)\"\n                                >\n                                    <v-icon>arrow_upward</v-icon>\n                                    {{ header.text }}\n                                </th>\n                            </tr>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of table_fields\">\n                                <td :class=\"itemClasses(props.item)\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td :class=\"itemClasses(props.item)\" v-else>\n                                    <v-btn fab dark small router class=\"cyan darken-1\" @click.native.stop=\"openModalRecarga(props.item)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn flat outline warning @click.native.stop=\"controlDialog = true\">Controles</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-flex>\n        </v-layout>\n        <v-dialog v-model=\"dialog\" width=\"80%\" scrollable>\n            <v-card class=\"lol\">\n                <v-card-title>Realizar Recarga para {{ selected.nombre }}</v-card-title>\n                <v-card-text>\n                    <v-layout>\n                        <ig-form\n                            :flat=\"true\"\n                            :fields=\"recarga_fields\"\n                            :url=\"urlRecarga.concat(selected ? selected.id.toString(): '') + '/'\"\n                            ref=\"formRecarga\"\n                            @showsnack=\"showSnackBar\"\n                            @clearselected=\"selectedRecarga = false\"\n                            @objectcreated=\"updateCantidadObjectCreated\"\n                            :selected=\"selectedRecarga\"\n                        ></ig-form>\n                    </v-layout>\n                </v-card-text>\n                <v-card-actions>\n                    <v-btn class=\"red--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                </v-card-actions>\n            </v-card>\n        </v-dialog>\n        <v-dialog v-model=\"controlDialog\" width=\"80%\" scrollable>\n            <v-card class=\"lol\">\n                <v-card-title><p class=\"title\">Realizar Control</p></v-card-title>\n                <v-card-text>\n                    <v-layout>\n                        <v-flex md6 xs12>\n                            <v-subheader>Insumos</v-subheader>\n                            <ig-producto :ref=\"'producto_i'\" :plantillas=\"[]\" tipo=\"i\" :urlSend=\"urlSend\"></ig-producto>\n                        </v-flex>\n                        <v-flex md6 xs12>\n                            <v-subheader>Reactivos</v-subheader>\n                            <ig-producto :ref=\"'producto_r'\" :plantillas=\"[]\" tipo=\"r\" :urlSend=\"urlSend\"></ig-producto>\n                        </v-flex>\n                    </v-layout>\n                </v-card-text>\n                <v-card-actions>\n                    <v-spacer></v-spacer>\n                    <v-btn outline class=\"red--text darken-1\" flat=\"flat\" @click.native=\"controlDialog = false\">Cancelar</v-btn>\n                    <v-btn outline class=\"green--text darken-1\" flat=\"flat\" @click.native=\"saveControl\">Aceptar</v-btn>\n                </v-card-actions>\n            </v-card>\n        </v-dialog>\n        <br>\n        <v-layout>\n            <v-flex xs12 md12>\n                <ig-form\n                  :fields=\"fields\"\n                  :url=\"urlForm\"\n                  @showsnack=\"showSnackBar\"\n                  @objectcreated=\"eventCreatedObject\"\n                  @clearselected=\"selected = false\"\n                  :selected=\"selected\"\n                ></ig-form>\n            </v-flex>\n        </v-layout>\n    </div>\n";
 
 /***/ }),
 /* 146 */
@@ -33730,11 +33795,11 @@ exports.default = {
 //                         <v-layout>
 //                             <v-flex md6 xs12>
 //                                 <v-subheader>Insumos</v-subheader>
-//                                 <ig-producto :plantillas="plantillas_insumos" tipo="i"></ig-producto>
+//                                 <ig-producto :plantillas="plantillas_insumos" tipo="i" urlSend=""></ig-producto>
 //                             </v-flex>
 //                             <v-flex md6 xs12>
 //                                 <v-subheader>Reactivos</v-subheader>
-//                                 <ig-producto :plantillas="plantillas_reactivos" tipo="r"></ig-producto>
+//                                 <ig-producto :plantillas="plantillas_reactivos" tipo="r" urlSend=""></ig-producto>
 //                             </v-flex>
 //                         </v-layout>
 //                     </v-card-text>
@@ -33802,7 +33867,7 @@ exports.default = {
 /* 175 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista Pacientes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <div v-if=\"orden\">\n            <h5>Orden #{{ orden.id }}</h5>\n            <v-layout>\n                <table class=\"table\">\n                    <tr>\n                        <th>Nombre del paciente</th>\n                        <td>{{ orden.paciente.nombre_completo }}</td>\n                        <th>Identificación</th>\n                        <td>{{ orden.paciente.cedula }}</td>\n                        <th>Edad del paciente</th>\n                        <td>{{ orden.paciente.edad + ' ' + orden.paciente.unidad_edad }}</td>\n                    </tr>\n                    <tr>\n                        <th>Empresa cliente</th>\n                        <td>{{ orden.empresa_cliente }}</td>\n                        <th>Contacto</th>\n                        <td>{{ orden.paciente.telefono }}</td>\n                    </tr>\n                </table>\n            </v-layout>\n            <br />\n        </div>\n        <div v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                dark>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        :id=\"'tabItem-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                        <v-icon :ref=\"'tabItem'.concat(item.id)\" class=\"green--text\" v-if=\"!item.cerrado\"></v-icon>\n                        <v-icon :ref=\"'tabItem'.concat(item.id)\" class=\"green--text\" v-if=\"item.cerrado\">lock</v-icon>\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              @empty=\"toggleClass($event, id)\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-actions v-if=\"'resultado' in item ? !item.cerrado: true\">\n                            <v-btn\n                                :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                                flat\n                                @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                                Guardar\n                            </v-btn>\n                        </v-card-actions>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\" @keyup.esc=\"preview = false\">\n                <v-card @keyup.esc=\"preview = false\">\n                    <v-toolbar class=\"cyan darken-4\" @keyup.esc=\"preview = false\" fixed>\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Previsualización</v-toolbar-title>\n                        <v-spacer></v-spacer>\n                        <!-- <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                            <span class=\"btn__content\">Imprimir</span>\n                        </a> -->\n                    </v-toolbar>\n                    <v-container @keyup.esc=\"preview = false\">\n                        <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                            <div class=\"preloader\">\n                                <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                            </div>\n                        </div>\n                        <!-- <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas> -->\n                        <object style=\"margin-top: 60px\" id=\"object-visor\" width=\"100%\" height=\"800px\" :data=\"url_impresion\" type=\"application/pdf\" @keyup.esc=\"preview = false\"></object>\n                    </v-container>\n                </v-card>\n            </v-dialog>\n        </div>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn fab dark info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon dark>check</v-icon>\n                </v-btn>\n                <v-btn fab dark warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon dark>fingerprint</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon dark>print</v-icon>\n                </v-btn>\n                <v-btn fab dark error small @click.native.stop=\"showPreview\" v-tooltip:left=\"{html: 'Previsualización'}\">\n                    <v-icon dark>panorama</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista Pacientes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <div v-if=\"orden\">\n            <h5>Orden #{{ orden.id }}</h5>\n            <v-layout>\n                <table class=\"table\">\n                    <tr>\n                        <th>Nombre del paciente</th>\n                        <td>{{ orden.paciente.nombre_completo }}</td>\n                        <th>Identificación</th>\n                        <td>{{ orden.paciente.cedula }}</td>\n                        <th>Edad del paciente</th>\n                        <td>{{ orden.paciente.edad + ' ' + orden.paciente.unidad_edad }}</td>\n                    </tr>\n                    <tr>\n                        <th>Empresa cliente</th>\n                        <td>{{ orden.empresa_cliente }}</td>\n                        <th>Contacto</th>\n                        <td>{{ orden.paciente.telefono }}</td>\n                    </tr>\n                </table>\n            </v-layout>\n            <br />\n        </div>\n        <div v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                dark>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        :id=\"'tabItem-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                        <v-icon :ref=\"'tabItem'.concat(item.id)\" class=\"green--text\" v-if=\"!item.cerrado\"></v-icon>\n                        <v-icon :ref=\"'tabItem'.concat(item.id)\" class=\"green--text\" v-if=\"item.cerrado\">lock</v-icon>\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              @empty=\"toggleClass($event, id)\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-actions v-if=\"'resultado' in item ? !item.cerrado: true\">\n                            <v-btn\n                                :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                                flat\n                                @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                                Guardar\n                            </v-btn>\n                        </v-card-actions>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\" urlSend=\"\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\" urlSend=\"\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\" @keyup.esc=\"preview = false\">\n                <v-card @keyup.esc=\"preview = false\">\n                    <v-toolbar class=\"cyan darken-4\" @keyup.esc=\"preview = false\" fixed>\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Previsualización</v-toolbar-title>\n                        <v-spacer></v-spacer>\n                        <!-- <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                            <span class=\"btn__content\">Imprimir</span>\n                        </a> -->\n                    </v-toolbar>\n                    <v-container @keyup.esc=\"preview = false\">\n                        <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                            <div class=\"preloader\">\n                                <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                            </div>\n                        </div>\n                        <!-- <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas> -->\n                        <object style=\"margin-top: 60px\" id=\"object-visor\" width=\"100%\" height=\"800px\" :data=\"url_impresion\" type=\"application/pdf\" @keyup.esc=\"preview = false\"></object>\n                    </v-container>\n                </v-card>\n            </v-dialog>\n        </div>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn fab dark info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon dark>check</v-icon>\n                </v-btn>\n                <v-btn fab dark warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon dark>fingerprint</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon dark>print</v-icon>\n                </v-btn>\n                <v-btn fab dark error small @click.native.stop=\"showPreview\" v-tooltip:left=\"{html: 'Previsualización'}\">\n                    <v-icon dark>panorama</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
 
 /***/ }),
 /* 176 */

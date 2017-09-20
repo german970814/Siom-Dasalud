@@ -184,7 +184,8 @@ export default {
                                 hint: '',
                                 required: true,
                                 items: this.productos,
-                                itemText: 'nombre'
+                                itemText: 'nombre',
+                                autocomplete: true
                             },
                             domProps: {value: this.producto},
                             on: {

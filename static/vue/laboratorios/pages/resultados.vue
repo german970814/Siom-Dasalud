@@ -86,11 +86,11 @@
                         <v-layout>
                             <v-flex md6 xs12>
                                 <v-subheader>Insumos</v-subheader>
-                                <ig-producto :plantillas="plantillas_insumos" tipo="i"></ig-producto>
+                                <ig-producto :plantillas="plantillas_insumos" tipo="i" urlSend=""></ig-producto>
                             </v-flex>
                             <v-flex md6 xs12>
                                 <v-subheader>Reactivos</v-subheader>
-                                <ig-producto :plantillas="plantillas_reactivos" tipo="r"></ig-producto>
+                                <ig-producto :plantillas="plantillas_reactivos" tipo="r" urlSend=""></ig-producto>
                             </v-flex>
                         </v-layout>
                     </v-card-text>

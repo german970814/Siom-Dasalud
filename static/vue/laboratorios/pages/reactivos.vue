@@ -4,7 +4,7 @@
             <v-flex xs12 md12>
                 <v-card>
                     <v-card-title>
-                        Productos
+                        <p class="title">Productos</p>
                         <v-spacer></v-spacer>
                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
                     </v-card-title>
@@ -14,6 +14,7 @@
                         v-bind:headers="headers"
                         :items="elements"
                         v-bind:search="buscador"
+                        :customSort="customSortFunction"
                         :rows-per-page-items="[10]"
                         rows-per-page-text="Filas por Página"
                         no-results-text="No se encontraron resultados">
@@ -41,6 +42,10 @@
                             </template>
                         </template>
                     </v-data-table>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn flat outline warning @click.native.stop="controlDialog = true">Controles</v-btn>
+                    </v-card-actions>
                 </v-card>
             </v-flex>
         </v-layout>
@@ -63,6 +68,28 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-btn class="red--text darken-1" flat="flat" @click.native="dialog = false">Cancelar</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="controlDialog" width="80%" scrollable>
+            <v-card class="lol">
+                <v-card-title><p class="title">Realizar Control</p></v-card-title>
+                <v-card-text>
+                    <v-layout>
+                        <v-flex md6 xs12>
+                            <v-subheader>Insumos</v-subheader>
+                            <ig-producto :ref="'producto_i'" :plantillas="[]" tipo="i" :urlSend="urlSend"></ig-producto>
+                        </v-flex>
+                        <v-flex md6 xs12>
+                            <v-subheader>Reactivos</v-subheader>
+                            <ig-producto :ref="'producto_r'" :plantillas="[]" tipo="r" :urlSend="urlSend"></ig-producto>
+                        </v-flex>
+                    </v-layout>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn outline class="red--text darken-1" flat="flat" @click.native="controlDialog = false">Cancelar</v-btn>
+                    <v-btn outline class="green--text darken-1" flat="flat" @click.native="saveControl">Aceptar</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -92,6 +119,7 @@ import VueResource from 'vue-resource';
 import MenuComponent from './../components/menu.vue';
 import TableComponent from './../components/table.vue';
 import FormComponent from './../components/form.vue';
+import ProductoComponent from './../components/productos.vue';
 
 import IgMixin from './../mixins/igmixin.js';
 
@@ -106,100 +134,101 @@ export default {
     mixins: [IgMixin],
     data: function () {
         return {
-              urlForm: URL.reactivos,
-              urlRecarga: URL.recarga,
-              selectedRecarga: false,
-              selected: false,
-              dialog: false,
-              buscador: '',
-              headers: [
+            urlForm: URL.reactivos,
+            urlRecarga: URL.recarga,
+            selectedRecarga: false,
+            selected: false,
+            dialog: false,
+            buscador: '',
+            controlDialog: false,
+            headers: [
                 {
-                  text: 'Código',
-                  value: 'codigo',
-                  left: true,
+                    text: 'Código',
+                    value: 'codigo',
+                    left: true,
                 },
                 {
-                  text: 'Nombre',
-                  value: 'nombre',
-                  left: true,
+                    text: 'Nombre',
+                    value: 'nombre',
+                    left: true,
                 },
                 {
-                  text: 'Tipo',
-                  value: 'tipo',
-                  left: true,
+                    text: 'Tipo',
+                    value: 'tipo',
+                    left: true,
                 },
                 {
-                  text: 'Cantidad',
-                  value: 'cantidad',
-                  left: true,
+                    text: 'Cantidad',
+                    value: 'cantidad',
+                    left: true,
                 },
                 {
                     text: 'Recargar',
                     left: true,
                     sortable: false
                 }
-              ],
-              fields: [
+            ],
+            fields: [
                 {
-                  name: 'codigo',
-                  verbose_name: 'Código',
-                  type: String,
-                  hint: 'Este es el código que identifica al producto.'
+                    name: 'codigo',
+                    verbose_name: 'Código',
+                    type: String,
+                    hint: 'Este es el código que identifica al producto.'
                 },
                 {
-                  name: 'nombre',
-                  verbose_name: 'Nombre',
-                  type: String,
-                  hint: 'Este es el nombre del producto.'
+                    name: 'nombre',
+                    verbose_name: 'Nombre',
+                    type: String,
+                    hint: 'Este es el nombre del producto.'
                 },
                 {
-                  name: 'alarma_media',
-                  verbose_name: 'Alarma Media',
-                  type: Number,
-                  kwargs: {
-                    type: 'number'
-                  },
-                  hint: 'Este es el código que identifica a cada equipo.'
+                    name: 'alarma_media',
+                    verbose_name: 'Alarma Media',
+                    type: Number,
+                    kwargs: {
+                        type: 'number'
+                    },
+                    hint: 'Este es el código que identifica a cada equipo.'
                 },
                 {
-                  name: 'alarma_inferior',
-                  verbose_name: 'Alarma Inferior',
-                  type: Number,
-                  kwargs: {
-                    type: 'number'
-                  },
-                  hint: 'Este es el código que identifica a cada equipo.'
+                    name: 'alarma_inferior',
+                    verbose_name: 'Alarma Inferior',
+                    type: Number,
+                    kwargs: {
+                        type: 'number'
+                    },
+                    hint: 'Este es el código que identifica a cada equipo.'
                 },
                 {
-                  name: 'cantidad',
-                  verbose_name: 'Cantidad',
-                  type: Number,
-                  kwargs: {
-                      type: 'number'
-                  },
-                  hint: 'Este es cantidad de unidades que se tienen para este producto.'
+                    name: 'cantidad',
+                    verbose_name: 'Cantidad',
+                    type: Number,
+                    kwargs: {
+                        type: 'number'
+                    },
+                    hint: 'Este es cantidad de unidades que se tienen para este producto.'
                 },
                 {
-                  name: 'tipo',
-                  verbose_name: 'Tipo',
-                  type: Array,
-                  hint: 'Este es el tipo de el producto.',
-                  choices: [
-                      {text: 'INSUMO', value: 'I'},
-                      {text: 'REACTIVO', value: 'R'}
-                  ]
+                    name: 'tipo',
+                    verbose_name: 'Tipo',
+                    type: Array,
+                    hint: 'Este es el tipo de el producto.',
+                    choices: [
+                        {text: 'INSUMO', value: 'I'},
+                        {text: 'REACTIVO', value: 'R'}
+                    ]
                 },
-              ],
-              table_fields: [
-                  'producto.codigo', 'producto.nombre', 'produto.tipo_display',
-                  'producto.cantidad', {}
-              ],
-              pagination: {
-                  page: 1,
-                  rowsPerPage: 10,
-                  descending: false,
-                  totalItems: 0
-              },
+            ],
+            table_fields: [
+                'producto.codigo', 'producto.nombre', 'produto.tipo_display',
+                'producto.cantidad', {}
+            ],
+            pagination: {
+                page: 1,
+                rowsPerPage: 10,
+                descending: false,
+                totalItems: 0
+            },
             recarga_fields: [
                 {
                     name: 'cantidad',
@@ -259,33 +288,39 @@ export default {
                     hint: 'Fecha de vencimiento del producto'
                 },
                 {
-                  name: 'presentacion',
-                  verbose_name: 'Presentación',
-                  required: false,
-                  type: String,
-                  hint: 'Esta es la presentacion en la que viene el producto'
+                    name: 'presentacion',
+                    verbose_name: 'Presentación',
+                    required: false,
+                    type: String,
+                    hint: 'Esta es la presentacion en la que viene el producto'
                 },
                 {
-                  name: 'invima',
-                  verbose_name: 'Invima',
-                  required: false,
-                  type: String,
-                  hint: 'Este es el invima del producto.'
+                    name: 'invima',
+                    verbose_name: 'Invima',
+                    required: false,
+                    type: String,
+                    hint: 'Este es el invima del producto.'
                 },
                 {
-                  name: 'casa_comercial',
-                  verbose_name: 'Casa comercial',
-                  required: false,
-                  type: String,
-                  hint: 'Esta es la casa comercial del producto.'
+                    name: 'casa_comercial',
+                    verbose_name: 'Casa comercial',
+                    required: false,
+                    type: String,
+                    hint: 'Esta es la casa comercial del producto.'
                 },
             ]
+        }
+    },
+    computed: {
+        urlSend: function () {
+            return URL.controlProductos;
         }
     },
     components: {
         igMenu: MenuComponent,
         igTable: TableComponent,
         igForm: FormComponent,
+        igProducto: ProductoComponent,
     },
     mounted: function () {
         this.getElements(URL.reactivos);
@@ -350,7 +385,26 @@ export default {
             for (let field in this.$refs.formRecarga.models) {
                 this.$refs.formRecarga.models[field] = '';
             }
-        }
+        },
+        saveControl() {
+            let token = document.getElementsByName('csrfmiddlewaretoken')[0];
+
+            let productos = [...this.$refs.producto_i.plantillas, ...this.$refs.producto_r.plantillas];
+
+            if (productos) {
+                this.$http.post(URL.controlProductos, {'productos': productos}, {headers: {'X-CSRFToken': token.value}})
+                    .then(response => {
+                        this.getElements(URL.reactivos);
+                        this.controlDialog = false;
+                        this.$refs.producto_i.plantillas = this.$refs.producto_r.plantillas = [];
+                    }, response => {
+                        this.$emit('showsnack', 'Ocurrió un error al intentar crear un control.')
+                    })
+            }
+        },
+        customSortFunction (items, index, descending) {
+            return items;
+        },
     }
 }
 </script>

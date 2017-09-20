@@ -110,6 +110,7 @@ class CaracteristicaSerializer(IGModelSerializer, serializers.ModelSerializer):
 
 class EspecificacionCaracteristicaSerializer(IGModelSerializer, serializers.ModelSerializer):
     caracteristica = CaracteristicaSerializer(fields=('codigo', 'descripcion', ))
+
     class Meta:
         model = EspecificacionCaracteristica
         fields = ('id', 'nombre', 'caracteristica', )
@@ -228,6 +229,22 @@ class HojaGastoSerializer(IGSerializer):
     class Meta:
         model = HojaGasto
         fields = ('id', 'cantidad', 'producto', 'orden', )
+
+
+class HojaGastoSerializerCrear(serializers.ModelSerializer):
+    """
+    Serializer de hoja de gastos.
+    """
+
+    producto = ProductoSerializer(fields=('codigo', 'nombre', 'tipo', 'tipo_display'))
+
+    class Meta:
+        model = HojaGasto
+        fields = ('id', 'cantidad', 'producto', )
+
+    def create(self, data):
+        producto = Producto.objects.get(id=data.pop('producto')['id'])
+        return HojaGasto.objects.create(cantidad=data['cantidad'], producto=producto)
 
 
 class RecargaSerializer(IGSerializer):

@@ -25,7 +25,7 @@ from .serializers import (
     EspecificacionCaracteristicaSerializer, FormatoSerializer, BacteriologoSerializer,
     ResultadoSerializer, PlantillaAreaSerializer, PlantillaSerializer,
     RecepcionSerializer, HojaGastoSerializer, PlantillaLaboratorioSerializer,
-    EmpleadoSerializer, RecargaSerializer
+    EmpleadoSerializer, RecargaSerializer, HojaGastoSerializerCrear
 )
 from .utils import ListViewAPIMixin, Pagination
 from .permissions import (
@@ -547,3 +547,16 @@ def cambiar_firma_bacteriologo(request, pk):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors)
+
+
+@api_view(['POST'])
+def control_producto(request):
+    serializer = HojaGastoSerializerCrear(data=request.data['productos'], many=True)
+    if serializer.is_valid():
+        serializer.save()
+        args = (serializer.data, )
+    else:
+        print(request.data)
+        print(serializer.errors)
+        args = (serializer.errors, )
+    return Response(*args)

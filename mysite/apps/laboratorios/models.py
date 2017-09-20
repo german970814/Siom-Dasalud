@@ -346,7 +346,7 @@ class HojaGasto(models.Model):
     """
 
     producto = models.ForeignKey(Producto, verbose_name=_('Producto'))
-    orden = models.ForeignKey(Orden, verbose_name=_('Orden'), related_name='hojas_gasto')
+    orden = models.ForeignKey(Orden, verbose_name=_('Orden'), related_name='hojas_gasto', blank=True, null=True)
     cantidad = models.IntegerField(default=1, verbose_name=_('Cantidad'))
 
     def __str__(self):
