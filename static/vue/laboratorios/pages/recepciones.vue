@@ -4,7 +4,7 @@
             <v-flex xs12 md12>
                 <v-card>
                     <v-card-title>
-                        Recepciones
+                        <p class="title">Pacientes Procesados</p>
                         <v-spacer></v-spacer>
                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
                     </v-card-title>
@@ -15,6 +15,7 @@
                         v-bind:headers="headers"
                         :items="elements"
                         v-bind:search="buscador"
+                        :customSort="customSortFunction"
                         :rows-per-page-items="[10]"
                         :filter="filter"
                         rows-per-page-text="Filas por Página"
@@ -233,7 +234,10 @@ export default {
                 this.pagination.sortBy = column;
                 this.pagination.descending = false;
             }
-        }
+        },
+        customSortFunction (items, index, descending) {
+            return items;
+        },
     }
 }
 </script>

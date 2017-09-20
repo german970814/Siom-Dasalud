@@ -5,7 +5,7 @@
                 <v-flex xs12 md12>
                     <v-card>
                         <v-card-title>
-                            Ordenes en Recepción
+                            <p class="title">Ordenes en Recepción</p>
                             <v-spacer></v-spacer>
                             <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
                         </v-card-title>
@@ -13,8 +13,10 @@
                           :pagination.sync="pagination"
                           :headers="headers"
                           :items="elements"
+                          :loading="loading"
                           :rows-per-page-items="[10]"
                           :rowsPerPage="10"
+                          :customSort="customSortFunction"
                           rows-per-page-text="Filas por Página"
                           no-results-text="No se encontraron resultados"
                           >
@@ -33,6 +35,7 @@
                                 <td>{{ props.item.id }}</td>
                                 <td>{{ props.item.paciente.nombre_completo }}</td>
                                 <td>{{ joinBy(props.item.laboratorios, x => x.codigo.toUpperCase(), ' | ') }}</td>
+                                <td>{{ props.item.fecha }}</td>
                                 <td>
                                     <v-btn fab dark small class="cyan darken-1" @click.native.stop="selectRecepcion(props.item)">
                                         <v-icon dark>content_paste</v-icon>
@@ -121,7 +124,6 @@ import ProductoComponent from './../components/productos.vue';
 
 import URL from './../urls.js';
 
-// Vue.use(VueRouter);
 Vue.use(VueResource);
 Vue.use(Vuetify);
 
@@ -133,34 +135,38 @@ export default {
       igProducto: ProductoComponent
     },
     data: function () {
-          return {
-              pagination: {
-                  page: 1,
-                  rowsPerPage: 10,
-                  descending: false,
-                  totalItems: 0
-              },
-              modalTomaMuestra: false,
-              recepcion: {},
-              plantillas: [],
-              selected: false,
-              buscador: '',
-              fotoPaciente: '/static/profile-none.jpg',
-              headers: [
-                  {
-                      text: 'Orden', left: true, value: 'codigo'
-                  },
-                  {
-                      text: 'Paciente', value: 'nombre', left: true,
-                  },
-                  {
-                      text: 'Laboratorios', value: 'codigo_internacional', left: true,
-                  },
-                  {
-                      text: 'Accion', sortable: false, left: true,
-                  },
-              ],
-          }
+        return {
+            pagination: {
+                page: 1,
+                rowsPerPage: 10,
+                descending: false,
+                totalItems: 0
+            },
+            modalTomaMuestra: false,
+            recepcion: {},
+            plantillas: [],
+            selected: false,
+            buscador: '',
+            totalItems: 0,
+            fotoPaciente: '/static/profile-none.jpg',
+            headers: [
+                {
+                    text: 'Orden', left: true, value: 'codigo'
+                },
+                {
+                    text: 'Paciente', value: 'nombre', left: true,
+                },
+                {
+                    text: 'Laboratorios', value: 'codigo_internacional', left: true,
+                },
+                {
+                    text: 'Fecha', value: 'fecha', left: true,
+                },
+                {
+                    text: 'Accion', sortable: false, left: true,
+                },
+            ],
+        }
     },
     computed: {
         hasRecepcion: function () {
@@ -169,7 +175,23 @@ export default {
     },
     watch: {
         recepcion: function () {
-            this.reloadFoto()
+            this.reloadFoto();
+        },
+        pagination: {
+            handler () {
+                if (this.buscador !== '') {
+                    this._getElements(URL.laboratoriosTomaMuestra.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
+                } else {
+                    this._getElements(URL.laboratoriosTomaMuestra.concat(`?page=${this.pagination.page}`));
+                }
+            },
+            deep: true
+        },
+        buscador: {
+            handler () {
+                this._getElements(URL.laboratoriosTomaMuestra.concat(`?param=${this.buscador}&page=1`));
+            },
+            depp: true
         }
     },
     methods: {
@@ -202,15 +224,14 @@ export default {
             }
             this.$http.post(URL.laboratoriosTomaMuestra, {orden: orden, hoja_gasto: plantillas}, {headers: {'X-CSRFToken': token.value}})
               .then(response => {
-                  // console.log(response);
                   let item = this.elements.find(x => {return x.id == this.recepcion.id});
                   if (item) {
                       this.elements.splice(this.elements.indexOf(item), 1);
                   }
                   this.modalTomaMuestra = false;
                   this.$emit('mostrarsnackbar', 'Se ha guardado la toma de muestra.');
+                  this._getElements(URL.laboratoriosTomaMuestra.concat('?page=1'));
               }, response => {
-                  // console.log(response)
                   this.$emit('mostrarsnackbar', 'Ocurrió un error al guardar la toma, contacta a administración.');
               })
         },
@@ -234,10 +255,35 @@ export default {
               }, response => {
 
               })
-        }
+        },
+        _getElements () {
+            if ('loading' in this) {
+                if (!this.loading) {
+                    this.toggleLoading()
+                }
+            }
+            let url = this.url || arguments[0];
+            if (!url) {
+                throw new Error('URL not provided');
+            }
+
+            this.$http.get(url)
+                .then(response => {
+                    this.elements = response.body.results;
+                    this.totalItems = response.body.count;
+                    this.toggleLoading();
+                }, response => {
+                    this.showSnackBar(response.body.detail || 'Ha ocurrido un error inesperado');
+                    this.toggleLoading();
+                });
+        },
+        customSortFunction (items, index, descending) {
+            return items;
+        },
     },
     mounted: function () {
-        this.getElements(URL.laboratoriosTomaMuestra);
+        // this.getElements(URL.laboratoriosTomaMuestra);
+        this._getElements(URL.laboratoriosTomaMuestra.concat('?page=1'))
     }
 }
 </script>

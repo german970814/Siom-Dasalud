@@ -3,7 +3,7 @@
         <v-layout>
             <v-breadcrumbs icons divider="forward">
                 <v-breadcrumbs-item :disabled="false" href="/laboratorios/#/ordenes_laboratorios/">
-                    Lista ordenes
+                    Lista Pacientes
                 </v-breadcrumbs-item>
                 <v-breadcrumbs-item :disabled="true">
                     Resultado
@@ -46,6 +46,8 @@
                         :id="'tabItem-' + id"
                         ripple>
                         {{ item.laboratorio.nombre }}
+                        <v-icon :ref="'tabItem'.concat(item.id)" class="green--text" v-if="!item.cerrado"></v-icon>
+                        <v-icon :ref="'tabItem'.concat(item.id)" class="green--text" v-if="item.cerrado">lock</v-icon>
                     </v-tabs-item>
                     <v-tabs-slider class="cyan accent-4"></v-tabs-slider>
                 </v-tabs-bar>
@@ -64,7 +66,7 @@
                               >
                             </formulario-resultado>
                         </v-card-text>
-                        <v-card-actions v-if="'resultado' in item ? !item.resultado.cerrado: true">
+                        <v-card-actions v-if="'resultado' in item ? !item.cerrado: true">
                             <v-btn
                                 :class="{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}"
                                 flat
@@ -398,6 +400,13 @@ export default {
                             // Vue.set(this.items, 'resultado', item.formato);
                             delete item['formato'];
                         }
+                        this.$nextTick(function () {
+                            if (item.cerrado) {
+                                this.$refs['tabItem'.concat(item.id)][0].innerHTML = 'lock';
+                            } else {
+                                this.$refs['tabItem'.concat(item.id)][0].innerHTML = 'done';
+                            }
+                        })
                         item.id = response.body.id;
                     }, response => {
                         if (showsnack) {

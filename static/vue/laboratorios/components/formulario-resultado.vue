@@ -250,7 +250,7 @@ export default {
                                 }
                             }
                         },
-                        props: {large: true, cancelText: 'Cancelar', saveText: 'Guardar'},
+                        props: {large: false},
                         ref
                     },
                     [

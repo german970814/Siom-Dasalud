@@ -232,19 +232,40 @@ def ordenes_toma_muestra(request):
     empleado = request.user.empleado
 
     if request.method == 'GET':
+        param = request.GET.get('param', '')
         hoy = timezone.now().date()
         servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
         recepciones = Recepcion.objects.all().values_list('orden__id', flat=True)
 
-        ordenes = Orden.objects.filter(  # actualmente solo se traen los ultimos 32 días.
-            id__in=OrdenProducto.objects.filter(
-                servicio__nombre__id__in=servicios
-            ).values_list('orden_id', flat=True).distinct(),
-            fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
-        ).order_by('-fecha').exclude(id__in=recepciones)  # .select_related('paciente')
+        querys = (
+            Q(paciente__pnombre__icontains=param) | Q(paciente__papellido__icontains=param) |
+            Q(paciente__cedula__icontains=param) | Q(id__icontains=param)
+        )
 
-        serializer = OrdenSerializer(ordenes, many=True)
-        args = (serializer.data, )
+        if param:
+            ordenes = Orden.objects.filter(  # actualmente solo se traen los ultimos 32 días.
+                id__in=OrdenProducto.objects.filter(
+                    servicio__nombre__id__in=servicios
+                ).values_list('orden_id', flat=True).distinct(),
+            ).exclude(id__in=recepciones).filter(querys).order_by('-fecha')  # .select_related('paciente')
+        else:
+            ordenes = Orden.objects.filter(  # actualmente solo se traen los ultimos 32 días.
+                id__in=OrdenProducto.objects.filter(
+                    servicio__nombre__id__in=servicios
+                ).values_list('orden_id', flat=True).distinct(),
+                fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
+            ).exclude(id__in=recepciones).order_by('-fecha')  # .select_related('paciente')
+
+        # serializer = OrdenSerializer(ordenes, many=True)
+        # args = (serializer.data, )
+    
+        pagination = PageNumberPagination()
+        pagination.page_size = 10
+
+        result_pagination = pagination.paginate_queryset(ordenes, request)
+        # serializer = OrdenSerializer(result_pagination, many=True)
+        serializer = OrdenSerializer(result_pagination, many=True)
+        return pagination.get_paginated_response(serializer.data)
 
     else:
         serializer = RecepcionSerializer(data=request.data)

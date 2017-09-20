@@ -4,7 +4,7 @@
             <v-flex xs12 md12>
                 <v-card>
                     <v-card-title>
-                        Ordenes con laboratorios
+                        <p class="title">Pacientes sin procesar</p>
                         <v-spacer></v-spacer>
                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
                     </v-card-title>
