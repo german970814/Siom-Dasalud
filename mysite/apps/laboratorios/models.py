@@ -236,6 +236,11 @@ class Bacteriologo(models.Model):
 
     __str__ = lambda self: '{self.nombre} ({self.registro})'.format(self=self)
 
+    class Meta:
+        permissions = (
+            ("es_administrador", "Administrador"),
+        )
+
     def get_firma(self):
         if self.firma:
             return self.firma

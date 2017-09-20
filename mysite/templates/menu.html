@@ -233,7 +233,7 @@
 
 {% endif %}
 
-{% if user.bacteriologo or user.empleado or perms.home.es_administrador %}
+{% if user.bacteriologo or user.empleado or perms.laboratorios.es_administrador %}
     <v-subheader light>Laboratorio</v-subheader>
     {% if user.bacteriologo %}
 
@@ -247,14 +247,12 @@
             <v-list-tile-title>Hoja de trabajo</v-list-tile-title>
         </v-list-tile>
     {% endif %}
-    {% if user.empleado %}
 
         <v-list-tile ripple href="{% url 'laboratorios:index' %}#/toma_muestra/">
             <v-list-tile-title>Ordenes Toma Muestra</v-list-tile-title>
         </v-list-tile>
 
-    {% endif %}
-    {% if perms.home.es_administrador %}
+    {% if perms.laboratorios.es_administrador %}
     <v-list-group>
 
             <v-list-tile slot="item" ripple>
