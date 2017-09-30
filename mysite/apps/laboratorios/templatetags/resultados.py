@@ -28,4 +28,6 @@ def get_resultado(instance, genero):
             result = instance.model_text.text.upper()
         else:
             result = ''
+    else:
+        result = ''
     return result

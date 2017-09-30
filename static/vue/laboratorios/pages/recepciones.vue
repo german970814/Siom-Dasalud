@@ -140,9 +140,9 @@ export default {
         pagination: {
             handler () {
                 if (this.buscador !== '') {
-                    this._getElements(URL.ordenes_busqueda.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
+                    this._getElements(URL.ordenes_busqueda.concat(`?param=${this.buscador}&page=${this.pagination.page}&terminadas=true`));
                 } else {
-                    this._getElements(URL.ordenes_laboratorios.concat(`?page=${this.pagination.page}`));
+                    this._getElements(URL.recepciones.concat(`?page=1&estado=RE`));
                 }
             },
             deep: true
@@ -150,9 +150,9 @@ export default {
         buscador: function () {
             if (this.buscador !== '') {
                 this.pagination.page = 1;
-                this._getElements(URL.ordenes_busqueda.concat(`?param=${this.buscador}&page=${this.pagination.page}`));
+                this._getElements(URL.ordenes_busqueda.concat(`?param=${this.buscador}&page=${this.pagination.page}&terminadas=true`));
             } else {
-                this._getElements(URL.ordenes_laboratorios.concat(`?page=${this.pagination.page}`));
+                this._getElements(URL.recepciones.concat(`?page=1&estado=RE`));
             }
         }
     },

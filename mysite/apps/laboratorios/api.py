@@ -218,6 +218,10 @@ class RecepcionesTerminadas(generics.ListAPIView):
     filter_fields = ['estado']
     pagination_class = Pagination
 
+    def get_queryset(self, *args, **kwargs):
+        return super(RecepcionesTerminadas, self).get_queryset(*args, **kwargs).filter(
+            orden__fecha=datetime.date.today())
+
 
 @api_view(['GET', 'POST'])
 @permission_classes((EmpleadoPermission, ))
@@ -324,6 +328,7 @@ def search_resultado_api_view(request):
     """
 
     param = request.GET.get('param', '')
+    terminadas = request.GET.get('terminadas', '')
     pagination = PageNumberPagination()
     pagination.page_size = 10
     querys = (
@@ -334,8 +339,10 @@ def search_resultado_api_view(request):
     )
 
     # servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
-
     ordenes = Recepcion.objects.filter(querys).select_related('orden').order_by('-orden__fecha')
+
+    if terminadas:
+        ordenes = ordenes.filter(estado=Recepcion.RESULTADO_EMITIDO)
 
     result_pagination = pagination.paginate_queryset(ordenes, request)
     serializer = RecepcionSerializer(result_pagination, many=True)

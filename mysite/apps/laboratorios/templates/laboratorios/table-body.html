@@ -6,24 +6,26 @@
 
 {% with resultados_laboratorio=resultado.format_resultado %}
     {% for resultado_fin in resultados_laboratorio %}
-        {% if resultado_fin.tipo.name == 'title' %}
-        <tr>
-            <th colspan="4">{{ resultado_fin.nombre|upper }}</th>
-        </tr>
-        {% else %}
-        <tr>
-            <td><i>{{ resultado_fin.nombre|upper }}</i>{% if resultado_fin.observaciones %}<br /><b><i>NOTA: </i></b>{{ resultado_fin.observaciones }}{% endif %}</td>
-            <td>{{ resultado_fin|get_resultado:orden.paciente.genero }}</td>
-            <td>{{ resultado_fin.unidades }}</td>
-            <td>
-                {% if resultado_fin.tipo.name == 'number' %}
-                De {% if orden.paciente.genero == 'M' %}{{ resultado_fin.referencias.M.minima }}{% else %}{{ resultado_fin.referencias.F.minima }}{% endif %} - 
-                {% if orden.paciente.genero == 'F' %}{{ resultado_fin.referencias.F.maxima }}{% else %}{{ resultado_fin.referencias.M.maxima }}{% endif %}
-                {% else %}
-                {{ resultado_fin.referencia|safe }}
-                {% endif %}
-            </td>
-        </tr>
+        {% if resultado_fin|get_resultado:orden.paciente.genero %}
+            {% if resultado_fin.tipo.name == 'title' %}
+            <tr>
+                <th colspan="4">{{ resultado_fin.nombre|upper }}</th>
+            </tr>
+            {% else %}
+            <tr>
+                <td><i>{{ resultado_fin.nombre|upper }}</i>{% if resultado_fin.observaciones %}<br /><b><i>NOTA: </i></b>{{ resultado_fin.observaciones }}{% endif %}</td>
+                <td>{{ resultado_fin|get_resultado:orden.paciente.genero }}</td>
+                <td>{{ resultado_fin.unidades }}</td>
+                <td>
+                    {% if resultado_fin.tipo.name == 'number' %}
+                    De {% if orden.paciente.genero == 'M' %}{{ resultado_fin.referencias.M.minima }}{% else %}{{ resultado_fin.referencias.F.minima }}{% endif %} - 
+                    {% if orden.paciente.genero == 'F' %}{{ resultado_fin.referencias.F.maxima }}{% else %}{{ resultado_fin.referencias.M.maxima }}{% endif %}
+                    {% else %}
+                    {{ resultado_fin.referencia|safe }}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
         {% endif %}
     {% endfor %}
 {% endwith %}

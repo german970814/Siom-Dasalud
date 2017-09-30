@@ -183,6 +183,12 @@ def edit_historias_view(request,id_prod):
 	if request.method == "POST":
 		if 'btntabhistoria' in request.POST:
 			getorden = orden.objects.get(pk=id_prod)	 #Se obtiene informacion de la orden
+			visiometria = getattr(getorden, 'visiometria', None)
+			audiometria = getattr(getorden, 'audiometria', None)
+			servicios = orden.objects.filter(id=getorden.id).servicios().values_list('id', flat=True)
+			laboratorios = Laboratorio.objects.filter(servicio__id__in=servicios)
+
+			resultados = getorden.resultados_laboratorio.all()
 			gethistoria = historia_clinica.objects.get(orden=getorden)
 			form1 = addhistoria_clinicaForm(request.POST,instance=gethistoria)
 			if form1.is_valid():
@@ -211,10 +217,16 @@ def edit_historias_view(request,id_prod):
 				altura = False
 				form3= addtest_alturaForm()
 
-			ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'altura':altura}
+			ctx = {'visiometria': visiometria, 'audiometria': audiometria, 'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'altura':altura}
 			return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 	getorden = orden.objects.get(pk=id_prod)	 #Se obtiene informacion de la orden
+	visiometria = getattr(getorden, 'visiometria', None)
+	audiometria = getattr(getorden, 'audiometria', None)
+	servicios = orden.objects.filter(id=getorden.id).servicios().values_list('id', flat=True)
+	laboratorios = Laboratorio.objects.filter(servicio__id__in=servicios)
+
+	resultados = getorden.resultados_laboratorio.all()
 	gethistoria = historia_clinica.objects.get(orden=getorden)
 	historial = historia_clinica.objects.filter(paciente=getorden.paciente) #Se obtiene informacion de la orden
 	lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
@@ -230,7 +242,7 @@ def edit_historias_view(request,id_prod):
 		altura = False
 		form3= addtest_alturaForm()
 
-	ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'altura':altura}
+	ctx = {'visiometria': visiometria, 'audiometria': audiometria, 'laboratorios': laboratorios, 'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'form2':form2,'form3':form3,'exito':exito,'altura':altura}
 	return render_to_response('home/addHistorias.html',ctx,context_instance=RequestContext(request))
 
 @login_required(login_url=URL_LOGIN)
