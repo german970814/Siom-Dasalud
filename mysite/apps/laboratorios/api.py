@@ -257,7 +257,7 @@ def ordenes_toma_muestra(request):
                 id__in=OrdenProducto.objects.filter(
                     servicio__nombre__id__in=servicios
                 ).values_list('orden_id', flat=True).distinct(),
-                fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
+                fecha__range=(hoy, hoy + datetime.timedelta(days=1))
             ).exclude(id__in=recepciones).order_by('-fecha')  # .select_related('paciente')
 
         # serializer = OrdenSerializer(ordenes, many=True)
