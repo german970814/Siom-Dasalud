@@ -301,16 +301,21 @@ def ordenes_laboratorios(request):
     """
     Lista las ordenes que tengan laboratorios.
     """
-
     bacteriologo = request.user.bacteriologo
 
     pagination = PageNumberPagination()
     pagination.page_size = 10
+    fecha = request.GET.get('fecha')
 
     ordenes = Recepcion.objects.filter(
         estado=Recepcion.EN_CURSO,
         orden__OrdenProducto_orden__servicio__nombre__laboratorio__seccion_trabajo__id__in=bacteriologo.areas.values_list('id', flat=True)
-    ).select_related('orden').order_by('-orden__fecha').distinct()
+    ).select_related('orden').order_by('orden__fecha').distinct()
+
+    if fecha:
+        year, month, day = fecha.split('-')
+        fecha_filter = datetime.date(year=int(year), month=int(month), day=int(day))
+        ordenes = ordenes.filter(orden__fecha__range=(fecha_filter, fecha_filter + datetime.timedelta(days=1)))
 
     result_pagination = pagination.paginate_queryset(ordenes, request)
     # serializer = OrdenSerializer(result_pagination, many=True)
