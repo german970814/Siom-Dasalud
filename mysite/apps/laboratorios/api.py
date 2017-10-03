@@ -219,8 +219,20 @@ class RecepcionesTerminadas(generics.ListAPIView):
     pagination_class = Pagination
 
     def get_queryset(self, *args, **kwargs):
-        return super(RecepcionesTerminadas, self).get_queryset(*args, **kwargs).filter(
-            orden__fecha=datetime.date.today())
+        hoy = datetime.date.today()
+        bacteriologo = self.request.user.bacteriologo
+        fecha = self.request.GET.get('date')
+
+        if fecha:
+            year, month, day = fecha.split('-')
+            fecha_filter = datetime.date(year=int(year), month=int(month), day=int(day))
+            resultados = bacteriologo.resultados.filter(orden__fecha__range=(fecha_filter, fecha_filter + datetime.timedelta(days=1)))
+        else:
+            hoy = datetime.date.today()
+            resultados = bacteriologo.resultados.filter(orden__fecha__range=(hoy, hoy + datetime.timedelta(days=1)))
+
+        recepciones = Recepcion.objects.filter(orden_id__in=resultados.values_list('orden_id', flat=True)).order_by('orden__fecha')
+        return recepciones.filter(*args, **kwargs)
 
 
 @api_view(['GET', 'POST'])
@@ -307,15 +319,28 @@ def ordenes_laboratorios(request):
     pagination.page_size = 10
     fecha = request.GET.get('fecha')
 
-    ordenes = Recepcion.objects.filter(
+    recepciones = Recepcion.objects.filter(
         estado=Recepcion.EN_CURSO,
         orden__OrdenProducto_orden__servicio__nombre__laboratorio__seccion_trabajo__id__in=bacteriologo.areas.values_list('id', flat=True)
-    ).select_related('orden').order_by('orden__fecha').distinct()
+    ).distinct()
+
+    laboratorios = Laboratorio.objects.filter(seccion_trabajo__in=bacteriologo.areas.all())
 
     if fecha:
         year, month, day = fecha.split('-')
         fecha_filter = datetime.date(year=int(year), month=int(month), day=int(day))
-        ordenes = ordenes.filter(orden__fecha__range=(fecha_filter, fecha_filter + datetime.timedelta(days=1)))
+        recepciones = recepciones.filter(orden__fecha__range=(fecha_filter, fecha_filter + datetime.timedelta(days=1)))
+    else:
+        hoy = datetime.date.today()
+        recepciones = recepciones.filter(orden__fecha__range=(hoy, hoy + datetime.timedelta(days=1)))
+
+    _recepciones = []
+    for recepcion in recepciones.iterator():
+        _laboratorios = laboratorios.filter(servicio__in=Orden.objects.filter(id=recepcion.orden.id).servicios())
+        if recepcion.orden.resultados_laboratorio.filter(laboratorio__in=_laboratorios, cerrado=True).count() != _laboratorios.count():
+            _recepciones.append(recepcion.id)
+
+    ordenes = Recepcion.objects.filter(id__in=_recepciones).select_related('orden').order_by('orden__fecha').distinct()
 
     result_pagination = pagination.paginate_queryset(ordenes, request)
     # serializer = OrdenSerializer(result_pagination, many=True)

@@ -106,7 +106,7 @@ export default {
             loading: false,
             fields: [
               'orden.id', 'orden.paciente.cedula', 'orden.paciente.nombre_completo',
-              'orden.laboratorios.nombre', 'orden.institucion.razon', 'orden.empresa.razon',
+              'laboratorios_pendientes.nombre', 'orden.institucion.razon', 'orden.empresa.razon',
               'orden.empresa_cliente', 'orden.fecha',
               {href: '/resultados/:id/', patrons: [{identifier: 'id', replace: item => item.orden.id}]}
             ],

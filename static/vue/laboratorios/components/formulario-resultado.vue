@@ -55,15 +55,18 @@ export default {
         _hasEmptyValues () {
             const MODEL_TEXT = ['select', 'text', 'number', 'textarea'];
             const MODEL_OBJ = [];
-            for (let item of this.value.items) {
-                if (MODEL_TEXT.indexOf(item.tipo.name.toLowerCase()) !== -1) {
-                    let result = typeof item.model_text === "string"? item.model_text.trim(): !_.isEmpty(item.model_text);
-                    if (!Boolean(result)) {
-                        return true;
-                    }
-                } else if (MODEL_OBJ.indexOf(item.tipo.name.toLowerCase()) !== -1) {
-                    if (_.isEmpty(item.model_check)) {
-                        return true;
+
+            if (!this.value.item.cerrado) {
+                for (let item of this.value.items) {
+                    if (MODEL_TEXT.indexOf(item.tipo.name.toLowerCase()) !== -1) {
+                        let result = typeof item.model_text === "string"? item.model_text.trim(): !_.isEmpty(item.model_text);
+                        if (!Boolean(result)) {
+                            return true;
+                        }
+                    } else if (MODEL_OBJ.indexOf(item.tipo.name.toLowerCase()) !== -1) {
+                        if (_.isEmpty(item.model_check)) {
+                            return true;
+                        }
                     }
                 }
             }

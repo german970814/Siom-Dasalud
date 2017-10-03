@@ -8,6 +8,36 @@
                         <v-spacer></v-spacer>
                         <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
                     </v-card-title>
+                    <v-container>
+                        <v-layout wrap>
+                            <v-flex xs3>
+                                <v-menu
+                                    lazy
+                                    :close-on-content-click="false"
+                                    v-model="fecha_menu"
+                                    offset-y
+                                    full-width
+                                    :nudge-left="40"
+                                    max-width="290px">
+                                    <v-text-field
+                                        slot="activator"
+                                        label="Fecha"
+                                        v-model="fecha"
+                                        prepend-icon="event"
+                                        readonly
+                                    ></v-text-field>
+                                    <v-date-picker v-model="fecha" no-title scrollable actions locale="es-sp">
+                                        <template scope="{ save, cancel }">
+                                            <v-card-actions>
+                                                <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
+                                                <v-btn flat primary @click.native="save()">Save</v-btn>
+                                            </v-card-actions>
+                                        </template>
+                                    </v-date-picker>
+                                </v-menu>
+                            </v-flex>
+                        </v-layout>
+                    </v-container>
                     <v-data-table
                         :pagination.sync="pagination"
                         :total-items="totalItems"
@@ -76,7 +106,7 @@ export default {
             loading: false,
             fields: [
                 'orden.id', 'orden.paciente.cedula', 'orden.paciente.nombre_completo',
-                'orden.laboratorios.nombre', 'orden.institucion.razon', 'orden.empresa.razon',
+                'laboratorios_terminados.nombre', 'orden.institucion.razon', 'orden.empresa.razon',
                 'orden.empresa_cliente', 'orden.fecha',
                 {href: '/resultados/:id/', patrons: [{identifier: 'id', replace: item => item.orden.id}]}
             ],
@@ -134,6 +164,8 @@ export default {
                   text: 'Accion', left: true, sortable: false
                 },
             ],
+            fecha: '',
+            fecha_menu: false,
         }
     },
     watch: {
@@ -153,6 +185,13 @@ export default {
                 this._getElements(URL.ordenes_busqueda.concat(`?param=${this.buscador}&page=${this.pagination.page}&terminadas=true`));
             } else {
                 this._getElements(URL.recepciones.concat(`?page=1&estado=RE`));
+            }
+        },
+        fecha: function (val) {
+            if (val) {
+                this._getElements(URL.recepciones.concat(`?page=1&date=${val}`));
+            } else {
+                this._getElements(URL.recepciones.concat('?page=1'));
             }
         }
     },

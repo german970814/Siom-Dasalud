@@ -14,6 +14,7 @@ from .models import (
 from .mixins import IGModelSerializer, IGSerializer
 from mysite.apps.parametros.serializers import ServicioSerializer
 from mysite.apps.datos.serializers import UsuarioSerializer
+from mysite.apps.historias.models import orden as Orden
 from mysite.apps.historias.serializers import OrdenSerializer
 
 
@@ -24,14 +25,38 @@ class RecepcionSerializer(IGSerializer):
 
     orden = OrdenSerializer(fields=('paciente', 'fecha', 'empresa', 'institucion', 'empresa_cliente', 'laboratorios', ), read_only_fields=['paciente', 'fecha'])
     estado_display = serializers.SerializerMethodField()
+    laboratorios_pendientes = serializers.SerializerMethodField()
+    laboratorios_terminados = serializers.SerializerMethodField()
 
     class Meta:
         model = Recepcion
-        fields = ('id', 'estado', 'orden', 'estado_display', )
+        fields = ('id', 'estado', 'orden', 'estado_display', 'laboratorios_pendientes', 'laboratorios_terminados')
         extra_kwargs = {'estado_display': {'read_only': True}, 'estado': {'read_only': True}}
 
     def get_estado_display(self, obj):
         return obj.get_estado_display()
+
+    def get_laboratorios_terminados(self, obj):
+        orden = obj.orden
+        laboratorios = orden.resultados_laboratorio.filter(cerrado=True).values_list('laboratorio_id', flat=True)
+        return [{
+            'id': laboratorio.id,
+            'nombre': laboratorio.nombre,
+            'codigo': laboratorio.codigo,
+            'area': laboratorio.seccion_trabajo.id
+        } for laboratorio in Laboratorio.objects.filter(id__in=laboratorios).iterator()]
+
+    def get_laboratorios_pendientes(self, obj):
+        servicios = Orden.objects.filter(id=obj.orden.id).servicios()
+        exclude = map(lambda x: x['id'], self.get_laboratorios_terminados(obj))
+        laboratorios = Laboratorio.objects.filter(
+            servicio__in=servicios).exclude(id__in=exclude).distinct()
+        return [{
+            'id': laboratorio.id,
+            'nombre': laboratorio.nombre,
+            'codigo': laboratorio.codigo,
+            'area': laboratorio.seccion_trabajo.id
+        } for laboratorio in laboratorios.iterator()]
 
 
 class TecnicaSerializer(IGModelSerializer, serializers.ModelSerializer):
