@@ -418,7 +418,7 @@ export default {
                 laboratorio: item.laboratorio,
                 orden: {id: this.$route.params.id},
                 resultado: JSON.stringify('formato' in item ? item.formato: item.resultado),
-                cerrado: 'cerrado' in item ? item.cerrado : false
+                cerrado: 'cerrado' in item ? item.cerrado : false, comentario: 'comentario' in item ? item.comentario: ''
             };
             let productos = [];
             if ('resultado' in item) {

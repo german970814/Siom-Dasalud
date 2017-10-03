@@ -259,17 +259,19 @@ def ordenes_toma_muestra(request):
         )
 
         if param:
-            ordenes = Orden.objects.filter(  # actualmente solo se traen los ultimos 32 días.
+            ordenes = Orden.objects.filter(
                 id__in=OrdenProducto.objects.filter(
                     servicio__nombre__id__in=servicios
                 ).values_list('orden_id', flat=True).distinct(),
+                institucion__id=1
             ).exclude(id__in=recepciones).filter(querys).order_by('-fecha')  # .select_related('paciente')
         else:
-            ordenes = Orden.objects.filter(  # actualmente solo se traen los ultimos 32 días.
+            ordenes = Orden.objects.filter(
                 id__in=OrdenProducto.objects.filter(
                     servicio__nombre__id__in=servicios
                 ).values_list('orden_id', flat=True).distinct(),
-                fecha__range=(hoy, hoy + datetime.timedelta(days=1))
+                fecha__range=(hoy, hoy + datetime.timedelta(days=1)),
+                institucion__id=1
             ).exclude(id__in=recepciones).order_by('-fecha')  # .select_related('paciente')
 
         # serializer = OrdenSerializer(ordenes, many=True)

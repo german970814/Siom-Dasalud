@@ -45209,6 +45209,31 @@ exports.default = {
             }, []);
             return childs;
         },
+        _genFooter: function _genFooter() {
+            var _this3 = this;
+
+            if (this.value.item.cerrado) {
+                return this.$createElement('v-layout', [this.$createElement('p', [this.$createElement('strong', ['Comentarios:'])]), this.$createElement('p', [this.value.item.comentario])]);
+            }
+            return this.$createElement('v-layout', [this.$createElement('v-text-field', {
+                props: {
+                    label: 'Comentarios',
+                    multiLine: true
+                },
+                domProps: {
+                    value: this.value.item.comentario
+                },
+                on: {
+                    input: function input(event) {
+                        _this3.value.item.comentario = event;
+                        _this3.$emit('input', event);
+                    },
+                    blur: function blur(event) {
+                        // this.value.item.comentario = event;
+                    }
+                }
+            }, [])]);
+        },
         calculaReferencias: function calculaReferencias(item) {
             /*
              * Calcula las referencias del modo
@@ -45245,7 +45270,7 @@ exports.default = {
             return childs;
         },
         createTdWithProp: function createTdWithProp(item) {
-            var _this3 = this;
+            var _this4 = this;
 
             var ref = this.getRefByItem(item);
             var found = this.tabs.find(function (x) {
@@ -45284,10 +45309,10 @@ exports.default = {
                             item.model_text = item._model_text || item.model_text;
                         },
                         save: function save() {
-                            var next = _this3.tabs.indexOf(ref);
+                            var next = _this4.tabs.indexOf(ref);
                             next++;
-                            next = _this3.tabs[next];
-                            var element = _this3.$refs[next];
+                            next = _this4.tabs[next];
+                            var element = _this4.$refs[next];
                             if (element) {
                                 window.scrollTo(window.scrollX, window.scrollY + 50);
                                 element.isActive = true;
@@ -45306,11 +45331,11 @@ exports.default = {
                     on: {
                         input: function input(event) {
                             item.model_text = event;
-                            _this3.$emit('input', event);
+                            _this4.$emit('input', event);
                         },
                         blur: function blur(event) {
                             item.model_text = item.model_text;
-                            _this3.$emit('blur', event);
+                            _this4.$emit('blur', event);
                         }
                     }
                 }, [])]);
@@ -45338,11 +45363,11 @@ exports.default = {
                     on: {
                         input: function input(event) {
                             item.model_text = event;
-                            _this3.$emit('input', event);
+                            _this4.$emit('input', event);
                         },
                         blur: function blur(event) {
                             item.model_text = item.model_text;
-                            _this3.$emit('blur', event);
+                            _this4.$emit('blur', event);
                         }
                     }
                 }, [])]);
@@ -45355,7 +45380,7 @@ exports.default = {
         }
     },
     render: function render() {
-        return this.$createElement('div', [this._genHeader(), this._genBody()]);
+        return this.$createElement('div', [this._genHeader(), this._genBody(), this._genFooter()]);
     }
 };
 // </script>
@@ -49527,7 +49552,7 @@ exports.default = {
                 laboratorio: item.laboratorio,
                 orden: { id: this.$route.params.id },
                 resultado: (0, _stringify2.default)('formato' in item ? item.formato : item.resultado),
-                cerrado: 'cerrado' in item ? item.cerrado : false
+                cerrado: 'cerrado' in item ? item.cerrado : false, comentario: 'comentario' in item ? item.comentario : ''
             };
             var productos = [];
             if ('resultado' in item) {

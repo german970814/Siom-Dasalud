@@ -6,7 +6,7 @@
 
 {% with resultados_laboratorio=resultado.format_resultado %}
     {% for resultado_fin in resultados_laboratorio %}
-    {% if resultado_fin.tipo.name == 'title' %}
+        {% if resultado_fin.tipo.name == 'title' %}
         <tr>
             <th colspan="4">{{ resultado_fin.nombre|upper }}</th>
         </tr>
@@ -29,3 +29,8 @@
         {% endif %}
     {% endfor %}
 {% endwith %}
+{% if resultado.comentario %}
+<tr>
+    <td colspan="4"><strong>Observaciones: </strong>{{ resultado.comentario }}</td>
+</tr>
+{% endif %}

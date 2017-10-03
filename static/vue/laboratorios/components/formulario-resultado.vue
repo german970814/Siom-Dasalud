@@ -167,6 +167,36 @@ export default {
             }, []);
             return childs;
         },
+        _genFooter () {
+            if (this.value.item.cerrado) {
+                return this.$createElement('v-layout', [
+                    this.$createElement('p', [
+                        this.$createElement('strong', ['Comentarios:'])
+                    ]),
+                    this.$createElement('p', [this.value.item.comentario])
+                ])
+            }
+            return this.$createElement('v-layout', [
+                this.$createElement('v-text-field', {
+                    props: {
+                        label: 'Comentarios',
+                        multiLine: true,
+                    },
+                    domProps: {
+                        value: this.value.item.comentario
+                    },
+                    on: {
+                        input: (event) => {
+                            this.value.item.comentario = event;
+                            this.$emit('input', event);
+                        },
+                        blur: (event) => {
+                            // this.value.item.comentario = event;
+                        }
+                    },
+                }, [])
+            ])
+        },
         calculaReferencias (item) {
             /*
              * Calcula las referencias del modo
@@ -331,6 +361,7 @@ export default {
         return this.$createElement('div', [
             this._genHeader(),
             this._genBody(),
+            this._genFooter(),
         ])
     }
 }

@@ -276,6 +276,7 @@ class Resultado(models.Model):
     cerrado = models.NullBooleanField(default=False, verbose_name=_('Cerrado'))
     resultado = models.TextField(blank=True, null=True)
     archivo = models.FileField(verbose_name=_('Archivo'), upload_to=ruta_archivo_resultado, blank=True, null=True)
+    comentario = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return 'Orden #{self.orden.id} ({self.laboratorio})'.format(self=self)

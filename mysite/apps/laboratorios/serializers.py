@@ -191,7 +191,7 @@ class ResultadoSerializer(IGSerializer):
 
     class Meta:
         model = Resultado
-        fields = ('id', 'laboratorio', 'bacteriologo', 'fecha', 'resultado', 'orden', 'cerrado')
+        fields = ('id', 'laboratorio', 'bacteriologo', 'fecha', 'resultado', 'orden', 'cerrado', 'comentario')
         extra_kwargs = {'fecha': {'read_only': True}, 'bacteriologo': {'read_only': True}}
 
     def to_representation(self, instance):

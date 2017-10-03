@@ -24,7 +24,7 @@
                                     <th style="width: 5%;">Edad</th>
                                     <td style="width: 10%;">{{ paciente.edad }} {{ paciente.get_unidad_display|upper }}</td>
                                     <th style="width: 5%;">Sexo</th>
-                                    <td style="width: 15%;">{% if paciente.genero == 'M' %}MASCULINO{% else %}FEMENINO{% endif %}</td>
+                                    <td style="width: 10%;">{% if paciente.genero == 'M' %}MASCULINO{% else %}FEMENINO{% endif %}</td>
                                     <th style="width: 10%;">Identificación</th>
                                     <td style="width: 15%;">{{ paciente.cedula }}</td>
                                     <th style="width: 12%;">Fecha RPC</th>
