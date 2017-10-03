@@ -8,7 +8,14 @@
                 <v-breadcrumbs-item :disabled="true">
                     Resultado
                 </v-breadcrumbs-item>
+                <v-breadcrumbs-item v-if="!Boolean(url_next)" :disabled="true">
+                    No hay más ordenes en este día
+                </v-breadcrumbs-item>
             </v-breadcrumbs>
+            <br>
+            <v-btn flat outline router success v-if="Boolean(url_next)" :href="url_next">
+                Siguiente 
+            </v-btn>
         </v-layout>
         <div v-if="orden">
             <h5>Orden #{{ orden.id }}</h5>
@@ -199,7 +206,8 @@ export default {
           contentLoaded: true,
           url_impresion: '',
           plantillas_insumos: [],
-          plantillas_reactivos: []
+          plantillas_reactivos: [],
+          url_next: '',
         }
     },
     watch: {
@@ -212,11 +220,47 @@ export default {
             if (this.dialog) {
                 let laboratorio = this.items[parseInt(this.selected_tab)];
                 this.$http.get(URL.plantillasOrdenes.concat(this.$route.params.id.toString() + `/${laboratorio.laboratorio.id.toString()}/?tipo=R`))
-                  .then(response => {
-                      this.plantillas_reactivos = response.body;
-                  }, response => {
-                    console.error(response);
-                  })
+                    .then(response => {
+                        this.plantillas_reactivos = response.body;
+                    }, response => {
+                        console.error(response);
+                    })
+            }
+        },
+        orden: function (value) {
+            if (value) {
+                function getNext(next) {
+                    if (next) {
+                        return `/resultados/${next.orden.id}/`;
+                    }
+                    return '';
+                }
+                this.$http.get(URL.ordenes_laboratorios.concat(`?page=1&fecha=${value.fecha}`))
+                    .then(response => {
+                        let results = response.body.results;
+                        let result = results.find(element => element.orden.id == this.orden.id);
+                        let index = results.indexOf(result);
+                        index++;
+                        let next = results[index];
+                        if (!next) {
+                            if (response.body.next) {
+                                this.$http.get(response.body.next)
+                                    .then(response => {
+                                        let results = response.body.results;
+                                        let result = results.find(element => element.orden.id == this.orden.id);
+                                        let index = results.indexOf(result);
+                                        index++;
+                                        let next = results[index];
+                                    })
+                            }
+                            if (!next) {
+                                next = ''
+                            }
+                        }
+                        this.url_next = getNext(next);
+                    }, response => {
+
+                    })
             }
         }
     },
@@ -388,7 +432,6 @@ export default {
             }
 
             if (!this.someError(item)) {
-                // console.log(item)
                 this.$http.post(URL.resultados.concat(this.$route.params.id.toString() + '/'), {resultado: data, productos: productos}, {headers: {'X-CSRFToken': token.value}})
                     .then(response => {
                         if (showsnack) {

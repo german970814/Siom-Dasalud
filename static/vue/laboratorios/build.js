@@ -49200,7 +49200,8 @@ exports.default = {
             contentLoaded: true,
             url_impresion: '',
             plantillas_insumos: [],
-            plantillas_reactivos: []
+            plantillas_reactivos: [],
+            url_next: ''
         };
     },
     watch: {
@@ -49217,6 +49218,45 @@ exports.default = {
                 }, function (response) {
                     console.error(response);
                 });
+            }
+        },
+        orden: function orden(value) {
+            var _this3 = this;
+
+            if (value) {
+                var getNext = function getNext(next) {
+                    if (next) {
+                        return '/resultados/' + next.orden.id + '/';
+                    }
+                    return '';
+                };
+
+                this.$http.get(_urls2.default.ordenes_laboratorios.concat('?page=1&fecha=' + value.fecha)).then(function (response) {
+                    var results = response.body.results;
+                    var result = results.find(function (element) {
+                        return element.orden.id == _this3.orden.id;
+                    });
+                    var index = results.indexOf(result);
+                    index++;
+                    var next = results[index];
+                    if (!next) {
+                        if (response.body.next) {
+                            _this3.$http.get(response.body.next).then(function (response) {
+                                var results = response.body.results;
+                                var result = results.find(function (element) {
+                                    return element.orden.id == _this3.orden.id;
+                                });
+                                var index = results.indexOf(result);
+                                index++;
+                                var next = results[index];
+                            });
+                        }
+                        if (!next) {
+                            next = '';
+                        }
+                    }
+                    _this3.url_next = getNext(next);
+                }, function (response) {});
             }
         }
     },
@@ -49411,12 +49451,12 @@ exports.default = {
             }
         },
         _fetchData: function _fetchData() {
-            var _this3 = this;
+            var _this4 = this;
 
             this.$http.get(_urls2.default.resultados.concat(this.$route.params.id.toString() + '/')).then(function (response) {
-                _this3.items = [];
+                _this4.items = [];
                 if ('resultados' in response.body && response.body.resultados) {
-                    _this3.items.push.apply(_this3.items, response.body.resultados);
+                    _this4.items.push.apply(_this4.items, response.body.resultados);
                     var _iteratorNormalCompletion4 = true;
                     var _didIteratorError4 = false;
                     var _iteratorError4 = undefined;
@@ -49426,7 +49466,7 @@ exports.default = {
                             var items = _step4.value;
 
                             // this.items(items)
-                            _this3.genValidationsForItem(items);
+                            _this4.genValidationsForItem(items);
                         }
                     } catch (err) {
                         _didIteratorError4 = true;
@@ -49444,7 +49484,7 @@ exports.default = {
                     }
                 }
                 if ('formatos' in response.body && response.body.formatos) {
-                    _this3.items.push.apply(_this3.items, response.body.formatos);
+                    _this4.items.push.apply(_this4.items, response.body.formatos);
                     var _iteratorNormalCompletion5 = true;
                     var _didIteratorError5 = false;
                     var _iteratorError5 = undefined;
@@ -49454,7 +49494,7 @@ exports.default = {
                             var _items = _step5.value;
 
                             // this.items(items)
-                            _this3.genValidationsForItem(_items);
+                            _this4.genValidationsForItem(_items);
                         }
                     } catch (err) {
                         _didIteratorError5 = true;
@@ -49471,14 +49511,14 @@ exports.default = {
                         }
                     }
                 }
-                _this3.orden = response.body.orden;
-                _this3.bacteriologo = response.body.bacteriologo;
+                _this4.orden = response.body.orden;
+                _this4.bacteriologo = response.body.bacteriologo;
             }, function (response) {
                 console.error(response);
             });
         },
         saveItem: function saveItem(item) {
-            var _this4 = this;
+            var _this5 = this;
 
             var showsnack = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
@@ -49501,10 +49541,9 @@ exports.default = {
             }
 
             if (!this.someError(item)) {
-                // console.log(item)
                 this.$http.post(_urls2.default.resultados.concat(this.$route.params.id.toString() + '/'), { resultado: data, productos: productos }, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
                     if (showsnack) {
-                        _this4.$emit('mostrarsnackbar', 'Se ha guardado el resultado de el laboratorio '.concat(item.laboratorio.nombre.toString()));
+                        _this5.$emit('mostrarsnackbar', 'Se ha guardado el resultado de el laboratorio '.concat(item.laboratorio.nombre.toString()));
                         error = false;
                     }
                     if (!('resultado' in item)) {
@@ -49512,7 +49551,7 @@ exports.default = {
                         // Vue.set(this.items, 'resultado', item.formato);
                         delete item['formato'];
                     }
-                    _this4.$nextTick(function () {
+                    _this5.$nextTick(function () {
                         if (item.cerrado) {
                             this.$refs['tabItem'.concat(item.id)][0].innerHTML = 'lock';
                         } else {
@@ -49522,7 +49561,7 @@ exports.default = {
                     item.id = response.body.id;
                 }, function (response) {
                     if (showsnack) {
-                        _this4.$emit('mostrarsnackbar', 'Ha ocurrido un error al guardar el resultado');
+                        _this5.$emit('mostrarsnackbar', 'Ha ocurrido un error al guardar el resultado');
                         error = true;
                     }
                 });
@@ -49592,7 +49631,14 @@ exports.default = {
 //                 <v-breadcrumbs-item :disabled="true">
 //                     Resultado
 //                 </v-breadcrumbs-item>
+//                 <v-breadcrumbs-item v-if="!Boolean(url_next)" :disabled="true">
+//                     No hay más ordenes en este día
+//                 </v-breadcrumbs-item>
 //             </v-breadcrumbs>
+//             <br>
+//             <v-btn flat outline router success v-if="Boolean(url_next)" :href="url_next">
+//                 Siguiente 
+//             </v-btn>
 //         </v-layout>
 //         <div v-if="orden">
 //             <h5>Orden #{{ orden.id }}</h5>
@@ -49742,7 +49788,7 @@ exports.default = {
 /* 293 */
 /***/ (function(module, exports) {
 
-module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista Pacientes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n        </v-layout>\n        <div v-if=\"orden\">\n            <h5>Orden #{{ orden.id }}</h5>\n            <v-layout>\n                <table class=\"table\">\n                    <tr>\n                        <th>Nombre del paciente</th>\n                        <td>{{ orden.paciente.nombre_completo }}</td>\n                        <th>Identificación</th>\n                        <td>{{ orden.paciente.cedula }}</td>\n                        <th>Edad del paciente</th>\n                        <td>{{ orden.paciente.edad + ' ' + orden.paciente.unidad_edad }}</td>\n                    </tr>\n                    <tr>\n                        <th>Empresa cliente</th>\n                        <td>{{ orden.empresa_cliente }}</td>\n                        <th>Contacto</th>\n                        <td>{{ orden.paciente.telefono }}</td>\n                    </tr>\n                </table>\n            </v-layout>\n            <br />\n        </div>\n        <div v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                dark>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        :id=\"'tabItem-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                        <v-icon :ref=\"'tabItem'.concat(item.id)\" class=\"green--text\" v-if=\"!item.cerrado\"></v-icon>\n                        <v-icon :ref=\"'tabItem'.concat(item.id)\" class=\"green--text\" v-if=\"item.cerrado\">lock</v-icon>\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              @empty=\"toggleClass($event, id)\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-actions v-if=\"'resultado' in item ? !item.cerrado: true\">\n                            <v-btn\n                                :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                                flat\n                                @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                                Guardar\n                            </v-btn>\n                        </v-card-actions>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\" urlSend=\"\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\" urlSend=\"\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\" @keyup.esc=\"preview = false\">\n                <v-card @keyup.esc=\"preview = false\">\n                    <v-toolbar class=\"cyan darken-4\" @keyup.esc=\"preview = false\" fixed>\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Previsualización</v-toolbar-title>\n                        <v-spacer></v-spacer>\n                        <!-- <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                            <span class=\"btn__content\">Imprimir</span>\n                        </a> -->\n                    </v-toolbar>\n                    <v-container @keyup.esc=\"preview = false\">\n                        <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                            <div class=\"preloader\">\n                                <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                            </div>\n                        </div>\n                        <!-- <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas> -->\n                        <object style=\"margin-top: 60px\" id=\"object-visor\" width=\"100%\" height=\"800px\" :data=\"url_impresion\" type=\"application/pdf\" @keyup.esc=\"preview = false\"></object>\n                    </v-container>\n                </v-card>\n            </v-dialog>\n        </div>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn fab dark info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon dark>check</v-icon>\n                </v-btn>\n                <v-btn fab dark warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon dark>fingerprint</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon dark>print</v-icon>\n                </v-btn>\n                <v-btn fab dark error small @click.native.stop=\"showPreview\" v-tooltip:left=\"{html: 'Previsualización'}\">\n                    <v-icon dark>panorama</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
+module.exports = "\n    <div class=\"\">\n        <v-layout>\n            <v-breadcrumbs icons divider=\"forward\">\n                <v-breadcrumbs-item :disabled=\"false\" href=\"/laboratorios/#/ordenes_laboratorios/\">\n                    Lista Pacientes\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item :disabled=\"true\">\n                    Resultado\n                </v-breadcrumbs-item>\n                <v-breadcrumbs-item v-if=\"!Boolean(url_next)\" :disabled=\"true\">\n                    No hay más ordenes en este día\n                </v-breadcrumbs-item>\n            </v-breadcrumbs>\n            <br>\n            <v-btn flat outline router success v-if=\"Boolean(url_next)\" :href=\"url_next\">\n                Siguiente \n            </v-btn>\n        </v-layout>\n        <div v-if=\"orden\">\n            <h5>Orden #{{ orden.id }}</h5>\n            <v-layout>\n                <table class=\"table\">\n                    <tr>\n                        <th>Nombre del paciente</th>\n                        <td>{{ orden.paciente.nombre_completo }}</td>\n                        <th>Identificación</th>\n                        <td>{{ orden.paciente.cedula }}</td>\n                        <th>Edad del paciente</th>\n                        <td>{{ orden.paciente.edad + ' ' + orden.paciente.unidad_edad }}</td>\n                    </tr>\n                    <tr>\n                        <th>Empresa cliente</th>\n                        <td>{{ orden.empresa_cliente }}</td>\n                        <th>Contacto</th>\n                        <td>{{ orden.paciente.telefono }}</td>\n                    </tr>\n                </table>\n            </v-layout>\n            <br />\n        </div>\n        <div v-if=\"items.length\">\n            <v-tabs\n                id=\"tabs\"\n                grow scroll-bars\n                v-model=\"tab\"\n                dark>\n                <v-tabs-bar slot=\"activators\">\n                    <v-tabs-item\n                        class=\"cyan darken-2\"\n                        v-for=\"(item, id) of items\" :key=\"id\"\n                        :href=\"'#tabs-' + id\"\n                        :id=\"'tabItem-' + id\"\n                        ripple>\n                        {{ item.laboratorio.nombre }}\n                        <v-icon :ref=\"'tabItem'.concat(item.id)\" class=\"green--text\" v-if=\"!item.cerrado\"></v-icon>\n                        <v-icon :ref=\"'tabItem'.concat(item.id)\" class=\"green--text\" v-if=\"item.cerrado\">lock</v-icon>\n                    </v-tabs-item>\n                    <v-tabs-slider class=\"cyan accent-4\"></v-tabs-slider>\n                </v-tabs-bar>\n                <v-tabs-content\n                    v-for=\"(item, id) of items\" :key=\"id\" :id=\"'tabs-' + id\">\n                    <v-card flat>\n                        <v-card-title>\n                        </v-card-title>\n                        <v-card-text class=\"grey lighten-5\">\n                            <formulario-resultado\n                              @input=\"error = hasError()\"\n                              @empty=\"toggleClass($event, id)\"\n                              :gender=\"orden.paciente.genero\"\n                              :value=\"{item, items: 'formato' in item ? item.formato: item.resultado}\"\n                              :disabled=\"formDisabled(item)\"\n                              >\n                            </formulario-resultado>\n                        </v-card-text>\n                        <v-card-actions v-if=\"'resultado' in item ? !item.cerrado: true\">\n                            <v-btn\n                                :class=\"{'green--text': !someError(item), 'red--text': someError(item), 'darken-1': true}\"\n                                flat\n                                @click.native=\"someError(item) ? () => undefined: saveItem(item)\">\n                                Guardar\n                            </v-btn>\n                        </v-card-actions>\n                    </v-card>\n                </v-tabs-content>\n            </v-tabs>\n            <v-layout></v-layout>\n            <v-dialog v-model=\"dialog\" width=\"80%\">\n                <v-card>\n                    <v-card-title>Seguro que quiere finalizar esta prueba de laboratorio?</v-card-title>\n                    <v-card-text>Al finalizar la prueba, se mostrará adecuadamente la firma de el bacteriologo en el resultado de la prueba.</v-card-text>\n                    <v-card-text>\n                        <v-layout>\n                            <v-flex md6 xs12>\n                                <v-subheader>Insumos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_insumos\" tipo=\"i\" urlSend=\"\"></ig-producto>\n                            </v-flex>\n                            <v-flex md6 xs12>\n                                <v-subheader>Reactivos</v-subheader>\n                                <ig-producto :plantillas=\"plantillas_reactivos\" tipo=\"r\" urlSend=\"\"></ig-producto>\n                            </v-flex>\n                        </v-layout>\n                    </v-card-text>\n                    <v-card-actions>\n                        <v-spacer></v-spacer>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"cerrarPrueba\">Aceptar</v-btn>\n                        <v-btn class=\"green--text darken-1\" flat=\"flat\" @click.native=\"dialog = false\">Cancelar</v-btn>\n                    </v-card-actions>\n                </v-card>\n            </v-dialog>\n            <v-dialog v-model=\"preview\" fullscreen transition=\"v-dialog-bottom-transition\" :overlay=\"false\" @keyup.esc=\"preview = false\">\n                <v-card @keyup.esc=\"preview = false\">\n                    <v-toolbar class=\"cyan darken-4\" @keyup.esc=\"preview = false\" fixed>\n                        <v-btn icon=\"icon\" @click.native=\"preview = false\">\n                            <v-icon class=\"white--text\">close</v-icon>\n                        </v-btn>\n                        <v-toolbar-title class=\"white--text\">Previsualización</v-toolbar-title>\n                        <v-spacer></v-spacer>\n                        <!-- <a class=\"white--text btn btn--dark btn--flat\" :href=\"url_impresion\">\n                            <span class=\"btn__content\">Imprimir</span>\n                        </a> -->\n                    </v-toolbar>\n                    <v-container @keyup.esc=\"preview = false\">\n                        <div class=\"wrap__all\" v-if=\"!contentLoaded\">\n                            <div class=\"preloader\">\n                                <v-progress-circular indeterminate class=\"blue--text\" :size=\"50\"></v-progress-circular>\n                            </div>\n                        </div>\n                        <!-- <canvas id=\"the-canvas\" style=\"border: 1px solid black\"></canvas> -->\n                        <object style=\"margin-top: 60px\" id=\"object-visor\" width=\"100%\" height=\"800px\" :data=\"url_impresion\" type=\"application/pdf\" @keyup.esc=\"preview = false\"></object>\n                    </v-container>\n                </v-card>\n            </v-dialog>\n        </div>\n        <v-container v-else>\n           <!-- <h5>403 Forbidden</h5>\n           <br> -->\n           <p>Es posible que si no logras visualizar nada, no tengas permisos necesarios para acceder aquí.</p>\n        </v-container>\n        <floating-button v-if=\"items.length\">\n            <template slot=\"child\">\n                <v-btn fab dark info small @click.native.stop=\"showModalCerrarPrueba\" v-tooltip:left=\"{html: 'Cerrar Prueba'}\">\n                    <v-icon dark>check</v-icon>\n                </v-btn>\n                <v-btn fab dark warning small @click.native.stop=\"showSingleResult\" v-tooltip:left=\"{html: 'Imprimir individual'}\">\n                    <v-icon dark>fingerprint</v-icon>\n                </v-btn>\n                <v-btn fab dark success small @click.native.stop=\"showAllResults\" v-tooltip:left=\"{html: 'Imprimir terminados'}\">\n                    <v-icon dark>print</v-icon>\n                </v-btn>\n                <v-btn fab dark error small @click.native.stop=\"showPreview\" v-tooltip:left=\"{html: 'Previsualización'}\">\n                    <v-icon dark>panorama</v-icon>\n                </v-btn>\n            </template>\n            <v-btn fab dark error v-tooltip:left=\"{html: Boolean(error) ? 'Aun hay errores': 'Opciones'}\">\n                <v-icon dark>settings</v-icon>\n            </v-btn>\n        </floating-button>\n    </div>\n";
 
 /***/ }),
 /* 294 */
