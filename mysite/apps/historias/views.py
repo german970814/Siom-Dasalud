@@ -187,13 +187,13 @@ def edit_historias_view(request,id_prod):
             audiometria = getattr(getorden, 'audiometria', None)
             servicios = orden.objects.filter(id=getorden.id).servicios().values_list('id', flat=True)
             laboratorios = Laboratorio.objects.filter(servicio__id__in=servicios)
+            resultados = getorden.resultados_laboratorio.all()
 
             for laboratorio in laboratorios:
                 param = resultados.filter(laboratorio__id=laboratorio.id)
                 if param.exists():
                     laboratorio.resultado = param.get()
 
-            resultados = getorden.resultados_laboratorio.all()
             gethistoria = historia_clinica.objects.get(orden=getorden)
             form1 = addhistoria_clinicaForm(request.POST,instance=gethistoria)
             if form1.is_valid():
@@ -230,13 +230,13 @@ def edit_historias_view(request,id_prod):
     audiometria = getattr(getorden, 'audiometria', None)
     servicios = orden.objects.filter(id=getorden.id).servicios().values_list('id', flat=True)
     laboratorios = Laboratorio.objects.filter(servicio__id__in=servicios)
+    resultados = getorden.resultados_laboratorio.all()
 
     for laboratorio in laboratorios:
         param = resultados.filter(laboratorio__id=laboratorio.id)
         if param.exists():
             laboratorio.resultado = param.get()
 
-    resultados = getorden.resultados_laboratorio.all()
     gethistoria = historia_clinica.objects.get(orden=getorden)
     historial = historia_clinica.objects.filter(paciente=getorden.paciente) #Se obtiene informacion de la orden
     lista_proc = historia_procedimientos.objects.filter(paciente=getorden.paciente)
