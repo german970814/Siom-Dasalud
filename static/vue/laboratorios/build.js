@@ -45321,12 +45321,15 @@ exports.default = {
                     },
                     props: { large: false },
                     ref: ref
-                }, [Boolean(item.model_text) ? item.model_text + unidades : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Resultado']), this.$createElement(MATCH[item.tipo.name], {
+                }, [Boolean(item.model_text.trim()) ? item.model_text + unidades : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Resultado']), this.$createElement(MATCH[item.tipo.name], {
                     slot: 'input',
                     props: {
                         label: 'Resultado', 'multi-line': item.tipo.name == 'textarea',
                         type: item.tipo.name == 'number' ? 'number' : 'text',
                         hint: item.help, 'persistent-hint': true, autofocus: true
+                    },
+                    domProps: {
+                        value: item.model_text.trim()
                     },
                     on: {
                         input: function input(event) {
@@ -45351,7 +45354,7 @@ exports.default = {
                         }
                     },
                     ref: ref
-                }, [!_underscore2.default.isEmpty(item.model_text) ? item.model_text.text : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Resultado']), this.$createElement(MATCH[item.tipo.name], {
+                }, [!_underscore2.default.isEmpty(item.model_text) && item.model_text.text.trim() ? item.model_text.text : this.$createElement('div', { 'class': 'teal--text' }, ['Agregar Resultado']), this.$createElement(MATCH[item.tipo.name], {
                     slot: 'input',
                     ref: 'select',
                     props: {
@@ -45359,6 +45362,9 @@ exports.default = {
                         hint: item.help, 'persistent-hint': true,
                         items: item.choices, 'return-object': true,
                         autofocus: true
+                    },
+                    domProps: {
+                        value: item.model_text
                     },
                     on: {
                         input: function input(event) {

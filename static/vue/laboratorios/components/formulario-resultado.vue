@@ -287,13 +287,16 @@ export default {
                         ref
                     },
                     [
-                        Boolean(item.model_text) ? item.model_text + unidades: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Resultado']),
+                        Boolean(item.model_text.trim()) ? item.model_text + unidades: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Resultado']),
                         this.$createElement(MATCH[item.tipo.name], {
                             slot: 'input',
                             props: {
                                 label: 'Resultado', 'multi-line': item.tipo.name == 'textarea',
                                 type: item.tipo.name == 'number' ? 'number': 'text',
                                 hint: item.help, 'persistent-hint': true, autofocus: true
+                            },
+                            domProps: {
+                                value: item.model_text.trim()
                             },
                             on: {
                                 input: (event) => {
@@ -323,7 +326,7 @@ export default {
                         ref
                     },
                     [
-                        !_.isEmpty(item.model_text) ? item.model_text.text: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Resultado']),
+                        !_.isEmpty(item.model_text) && item.model_text.text.trim() ? item.model_text.text: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Resultado']),
                         this.$createElement(
                             MATCH[item.tipo.name],
                             {
@@ -334,6 +337,9 @@ export default {
                                     hint: item.help, 'persistent-hint': true,
                                     items: item.choices, 'return-object': true,
                                     autofocus: true
+                                },
+                                domProps: {
+                                    value: item.model_text
                                 },
                                 on: {
                                     input: (event) => {

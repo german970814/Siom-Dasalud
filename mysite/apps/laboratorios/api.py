@@ -371,10 +371,13 @@ def search_resultado_api_view(request):
     )
 
     # servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
-    ordenes = Recepcion.objects.filter(querys).select_related('orden').order_by('-orden__fecha')
+    ordenes = Recepcion.objects.filter(querys).select_related('orden').order_by(
+        'orden__paciente__pnombre', 'orden__paciente__papellido')
 
     if terminadas:
         ordenes = ordenes.filter(estado=Recepcion.RESULTADO_EMITIDO)
+    else:
+        ordenes = ordenes.filter(estado=Recepcion.EN_CURSO)
 
     result_pagination = pagination.paginate_queryset(ordenes, request)
     serializer = RecepcionSerializer(result_pagination, many=True)
