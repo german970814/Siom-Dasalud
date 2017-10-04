@@ -41,7 +41,7 @@
                     <td>{{ orden.get_examen_display|upper }}</td>
                 </tr>
             </table>
-            <table class="table table-responsive table-bordered table-body">
+            <table class="table table-responsive table-bordered join table-body">
                 <thead>
                     <tr>
                         <th colspan="6" style="text-align: center">INFORMACION DEL TRABAJOR</th>
@@ -57,16 +57,22 @@
                         <th>NOMBRES</th>
                         <td>{{ paciente.pnombre|upper }} {{ paciente.snombre|upper }}</td>
                     </tr>
-                    <tr>
-                        <th>SEXO</th>
-                        <td>{{ paciente.get_genero_display|upper }}</td>
-                        <th>TIPO DE DOCUMENTO</th>
-                        <td>{{ paciente.get_documento_display|upper }}</td>
-                        <th>FECHA DE NACIMIENTO</th>
-                        <td>{{ paciente.fecha_nacimiento|upper }}</td>
-                    </tr>
                     {% endwith %}
                 </tbody>
+            </table>
+            <table class="table table-responsive table-bordered table-body">
+                {% with orden.paciente as paciente %}
+                <tr>
+                    <th>SEXO</th>
+                    <td>{{ paciente.get_genero_display|upper }}</td>
+                    <th>TIPO DE DOCUMENTO</th>
+                    <td>{{ paciente.get_documento_display|upper }}</td>
+                    <th>NUMERO</th>
+                    <td>{{ paciente.cedula }}</td>
+                    <th>FECHA DE NACIMIENTO</th>
+                    <td>{{ paciente.fecha_nacimiento|upper }}</td>
+                </tr>
+                {% endwith %}
             </table>
         </div>
     </div>
