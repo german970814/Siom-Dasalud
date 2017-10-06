@@ -218,8 +218,12 @@ class RecepcionesTerminadas(generics.ListAPIView):
     filter_fields = ['estado']
     pagination_class = Pagination
 
+    def __init__(self, *args, **kwargs):
+        super(RecepcionesTerminadas, self).__init__(*args, **kwargs)
+        self.pagination_class.page_size = 50
+
     def get_queryset(self, *args, **kwargs):
-        hoy = datetime.date.today()
+        hoy = timezone.now().date()
         bacteriologo = self.request.user.bacteriologo
         fecha = self.request.GET.get('date')
 
@@ -228,10 +232,10 @@ class RecepcionesTerminadas(generics.ListAPIView):
             fecha_filter = datetime.date(year=int(year), month=int(month), day=int(day))
             resultados = bacteriologo.resultados.filter(orden__fecha__range=(fecha_filter, fecha_filter + datetime.timedelta(days=1)))
         else:
-            hoy = datetime.date.today()
             resultados = bacteriologo.resultados.filter(orden__fecha__range=(hoy, hoy + datetime.timedelta(days=1)))
 
-        recepciones = Recepcion.objects.filter(orden_id__in=resultados.values_list('orden_id', flat=True)).order_by('orden__fecha')
+        lista_ordenes = resultados.values_list('orden_id', flat=True)
+        recepciones = Recepcion.objects.filter(orden_id__in=lista_ordenes).order_by('orden__fecha')
         return recepciones.filter(*args, **kwargs)
 
 
@@ -318,7 +322,7 @@ def ordenes_laboratorios(request):
     bacteriologo = request.user.bacteriologo
 
     pagination = PageNumberPagination()
-    pagination.page_size = 10
+    pagination.page_size = 50
     fecha = request.GET.get('fecha')
 
     recepciones = Recepcion.objects.filter(

@@ -45,7 +45,7 @@
                         v-bind:headers="headers"
                         :items="elements"
                         v-bind:search="buscador"
-                        :rows-per-page-items="[10]"
+                        :rows-per-page-items="[50]"
                         :filter="filter"
                         rows-per-page-text="Filas por Página"
                         no-results-text="No se encontraron resultados">
@@ -113,7 +113,7 @@ export default {
             totalItems: 0,
             pagination: {
                 page: 1,
-                rowsPerPage: 10,
+                rowsPerPage: 50,
                 descending: false,
                 totalItems: 0
             },

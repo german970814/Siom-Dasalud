@@ -38,13 +38,28 @@ def hoja_trabajo(request):
         form = HojaTrabajoForm(data=request.POST)
         if form.is_valid():
             desde = form.cleaned_data.get('desde_fecha')
-            hasta = form.cleaned_data.get('hasta_fecha') + datetime.timedelta(days=1)
+            hasta = form.cleaned_data.get('hasta_fecha')
+
             desde_hora = form.cleaned_data.get('desde_hora')
             hasta_hora = form.cleaned_data.get('hasta_hora')
 
             _desde = form.get_datetime(desde, desde_hora)
-            _hasta = form.get_datetime(hasta, hasta_hora)
-            recepciones = Recepcion.objects.filter(orden__fecha__range=(_desde, _hasta))
+            if hasta_hora:
+                if hasta:
+                    _hasta = form.get_datetime(hasta, hasta_hora)
+                else:
+                    _hasta = form.get_datetime(desde, hasta_hora)
+            else:
+                if hasta:
+                    _hasta = form.get_datetime(hasta, hasta_hora)
+                else:
+                    time = datetime.time(hour=0, minute=0, second=0)
+                    _hasta = datetime.datetime.combine(
+                        _desde + datetime.timedelta(days=1), time) - datetime.timedelta(minutes=1)
+
+            recepciones = Recepcion.objects.filter(
+                orden__fecha__range=(_desde, _hasta)
+            )
 
             data = {
                 'recepciones': recepciones, 'fecha_desde': _desde, 'fecha_hasta': _hasta,

@@ -40,7 +40,7 @@ class OrdenSerializer(IGModelSerializer, serializers.ModelSerializer):
 
     def to_representation(self, obj):
         representation = super(OrdenSerializer, self).to_representation(obj)
-        representation['fecha'] = obj.fecha.strftime('%Y-%m-%d')
+        representation['fecha'] = obj.fecha.strftime('%Y-%m-%d %H:%M')
         return representation
 
 

@@ -10,7 +10,7 @@ class HojaTrabajoForm(forms.Form):
     """
 
     desde_fecha = forms.DateField()
-    hasta_fecha = forms.DateField()
+    hasta_fecha = forms.DateField(required=False)
     desde_hora = forms.TimeField(required=False)
     hasta_hora = forms.TimeField(required=False)
 
@@ -33,7 +33,6 @@ class HojaTrabajoForm(forms.Form):
 
         if desde is not None and hasta is not None:
             if desde >= hasta:
-                self.add_error('desde_fecha', _('La fecha "Desde" no puede ser mayor a la fecha "Hasta"'))
                 self.add_error('hasta_fecha', _('La fecha "Hasta" no puede ser menor a la fecha "Desde"'))
             elif desde == hasta:
                 if desde_hora is not None and hasta_hora is not None:
@@ -42,6 +41,8 @@ class HojaTrabajoForm(forms.Form):
                             _('La hora "Desde" no puede ser mayor a la hora "Hasta"'))
                         self.add_error('hasta_hora',
                             _('La hora "Hasta" no puede ser menor a la hora "Desde"'))
+                else:
+                    self.add_error('hasta_fecha', _('La fecha "Hasta" no puede ser igual a la fecha "Desde"'))
                         
         return cleaned_data
 

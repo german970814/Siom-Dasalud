@@ -46,7 +46,7 @@
                         :items="elements"
                         v-bind:search="buscador"
                         :customSort="customSortFunction"
-                        :rows-per-page-items="[10]"
+                        :rows-per-page-items="[50]"
                         :filter="filter"
                         rows-per-page-text="Filas por Página"
                         no-results-text="No se encontraron resultados">
@@ -113,7 +113,7 @@ export default {
             totalItems: 0,
             pagination: {
                 page: 1,
-                rowsPerPage: 10,
+                rowsPerPage: 50,
                 descending: false,
                 totalItems: 0
             },
@@ -174,7 +174,7 @@ export default {
                 if (this.buscador !== '') {
                     this._getElements(URL.ordenes_busqueda.concat(`?param=${this.buscador}&page=${this.pagination.page}&terminadas=true`));
                 } else {
-                    this._getElements(URL.recepciones.concat(`?page=1&estado=RE`));
+                    this._getElements(URL.recepciones.concat(`?page=1`));
                 }
             },
             deep: true
@@ -184,7 +184,7 @@ export default {
                 this.pagination.page = 1;
                 this._getElements(URL.ordenes_busqueda.concat(`?param=${this.buscador}&page=${this.pagination.page}&terminadas=true`));
             } else {
-                this._getElements(URL.recepciones.concat(`?page=1&estado=RE`));
+                this._getElements(URL.recepciones.concat(`?page=1`));
             }
         },
         fecha: function (val) {
@@ -200,7 +200,7 @@ export default {
         igTable: TableComponent,
     },
     mounted: function () {
-        this._getElements(URL.recepciones.concat('?page=1&estado=RE'));
+        this._getElements(URL.recepciones.concat('?page=1'));
     },
     methods: {
         _getElements () {
