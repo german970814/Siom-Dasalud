@@ -235,15 +235,18 @@ export default {
                     }
                     return '';
                 }
-                this.$http.get(URL.ordenes_laboratorios.concat(`?page=1&fecha=${value.fecha}`))
+                let [fecha, ] = value.fecha.split(' ');
+
+                this.$http.get(URL.ordenes_laboratorios.concat(`?page=1&fecha=${fecha}`))
                     .then(response => {
                         let results = response.body.results;
                         let result = results.find(element => element.orden.id == this.orden.id);
                         let index = results.indexOf(result);
-                        index++;
-                        let next = results[index];
-                        if (!next) {
-                            if (response.body.next) {
+                        let next = '';
+
+                        if (index != -1) {
+                            next = results[++index];
+                            if (!next && response.body.next) {
                                 this.$http.get(response.body.next)
                                     .then(response => {
                                         let results = response.body.results;
@@ -252,9 +255,6 @@ export default {
                                         index++;
                                         let next = results[index];
                                     })
-                            }
-                            if (!next) {
-                                next = ''
                             }
                         }
                         this.url_next = getNext(next);

@@ -56050,6 +56050,10 @@ var _getIterator2 = __webpack_require__(14);
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
+var _slicedToArray2 = __webpack_require__(440);
+
+var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
+
 var _underscore = __webpack_require__(3);
 
 var _underscore2 = _interopRequireDefault(_underscore);
@@ -56148,16 +56152,21 @@ exports.default = {
                     return '';
                 };
 
-                this.$http.get(_urls2.default.ordenes_laboratorios.concat('?page=1&fecha=' + value.fecha)).then(function (response) {
+                var _value$fecha$split = value.fecha.split(' '),
+                    _value$fecha$split2 = (0, _slicedToArray3.default)(_value$fecha$split, 1),
+                    fecha = _value$fecha$split2[0];
+
+                this.$http.get(_urls2.default.ordenes_laboratorios.concat('?page=1&fecha=' + fecha)).then(function (response) {
                     var results = response.body.results;
                     var result = results.find(function (element) {
                         return element.orden.id == _this3.orden.id;
                     });
                     var index = results.indexOf(result);
-                    index++;
-                    var next = results[index];
-                    if (!next) {
-                        if (response.body.next) {
+                    var next = '';
+
+                    if (index != -1) {
+                        next = results[++index];
+                        if (!next && response.body.next) {
                             _this3.$http.get(response.body.next).then(function (response) {
                                 var results = response.body.results;
                                 var result = results.find(function (element) {
@@ -56167,9 +56176,6 @@ exports.default = {
                                 index++;
                                 var next = results[index];
                             });
-                        }
-                        if (!next) {
-                            next = '';
                         }
                     }
                     _this3.url_next = getNext(next);
@@ -57802,6 +57808,91 @@ exports.default = {
 /***/ (function(module, exports) {
 
 module.exports = "<div>\n        <v-layout>\n            <v-flex xs12 md12>\n                <v-card>\n                    <v-card-title>\n                        <p class=\"title\">Pacientes Procesados</p>\n                        <v-spacer></v-spacer>\n                        <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                    </v-card-title>\n                    <v-container>\n                        <v-layout wrap>\n                            <v-flex xs3>\n                                <v-menu\n                                    lazy\n                                    :close-on-content-click=\"false\"\n                                    v-model=\"fecha_menu\"\n                                    offset-y\n                                    full-width\n                                    :nudge-left=\"40\"\n                                    max-width=\"290px\">\n                                    <v-text-field\n                                        slot=\"activator\"\n                                        label=\"Fecha\"\n                                        v-model=\"fecha\"\n                                        prepend-icon=\"event\"\n                                        readonly\n                                    ></v-text-field>\n                                    <v-date-picker v-model=\"fecha\" no-title scrollable actions locale=\"es-sp\">\n                                        <template scope=\"{ save, cancel }\">\n                                            <v-card-actions>\n                                                <v-btn flat primary @click.native=\"cancel()\">Cancel</v-btn>\n                                                <v-btn flat primary @click.native=\"save()\">Save</v-btn>\n                                            </v-card-actions>\n                                        </template>\n                                    </v-date-picker>\n                                </v-menu>\n                            </v-flex>\n                        </v-layout>\n                    </v-container>\n                    <v-data-table\n                        :pagination.sync=\"pagination\"\n                        :total-items=\"totalItems\"\n                        :loading=\"loading\"\n                        v-bind:headers=\"headers\"\n                        :items=\"elements\"\n                        v-bind:search=\"buscador\"\n                        :customSort=\"customSortFunction\"\n                        :rows-per-page-items=\"[50]\"\n                        :filter=\"filter\"\n                        rows-per-page-text=\"Filas por Página\"\n                        no-results-text=\"No se encontraron resultados\">\n                        <template slot=\"headers\" scope=\"props\">\n                            <tr>\n                                <th v-for=\"header in props.headers\" :key=\"header\"\n                                :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                    @click=\"changeSort(header)\"\n                                >\n                                    <v-icon>arrow_upward</v-icon>\n                                    {{ header.text }}\n                                </th>\n                            </tr>\n                        </template>\n                        <template slot=\"items\" scope=\"props\">\n                            <template v-for=\"field of fields\">\n                                <td class=\"text-xs-center\" @click=\"updateForm(props.item)\" v-if=\"typeof field != 'object'\">{{ getattr(props.item, field) }}</td>\n                                <td class=\"text-xs-center\" v-else>\n                                    <v-btn fab dark small router class=\"cyan darken-1\" :href=\"field.href.replace(':id', props.item.orden.id)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </template>\n                    </v-data-table>\n                </v-card>\n            </v-flex>\n        </v-layout>\n    </div>";
+
+/***/ }),
+/* 440 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _isIterable2 = __webpack_require__(441);
+
+var _isIterable3 = _interopRequireDefault(_isIterable2);
+
+var _getIterator2 = __webpack_require__(14);
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function () {
+  function sliceIterator(arr, i) {
+    var _arr = [];
+    var _n = true;
+    var _d = false;
+    var _e = undefined;
+
+    try {
+      for (var _i = (0, _getIterator3.default)(arr), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);
+
+        if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;
+      _e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"]) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }
+
+    return _arr;
+  }
+
+  return function (arr, i) {
+    if (Array.isArray(arr)) {
+      return arr;
+    } else if ((0, _isIterable3.default)(Object(arr))) {
+      return sliceIterator(arr, i);
+    } else {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+    }
+  };
+}();
+
+/***/ }),
+/* 441 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = { "default": __webpack_require__(442), __esModule: true };
+
+/***/ }),
+/* 442 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(284);
+__webpack_require__(109);
+module.exports = __webpack_require__(443);
+
+/***/ }),
+/* 443 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var classof   = __webpack_require__(291)
+  , ITERATOR  = __webpack_require__(29)('iterator')
+  , Iterators = __webpack_require__(41);
+module.exports = __webpack_require__(24).isIterable = function(it){
+  var O = Object(it);
+  return O[ITERATOR] !== undefined
+    || '@@iterator' in O
+    || Iterators.hasOwnProperty(classof(O));
+};
 
 /***/ })
 /******/ ]);
