@@ -17,3 +17,4 @@ sqlparse==0.2.3
 django-reversion==2.0.8
 WeasyPrint==0.39
 Werkzeug==0.12.2
+django-autofixture==0.12.1

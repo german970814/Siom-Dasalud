@@ -1,6 +1,8 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from . import models
+
 import datetime
 
 
@@ -13,6 +15,8 @@ class HojaTrabajoForm(forms.Form):
     hasta_fecha = forms.DateField(required=False)
     desde_hora = forms.TimeField(required=False)
     hasta_hora = forms.TimeField(required=False)
+    laboratorios = forms.ModelMultipleChoiceField(
+        queryset=models.Laboratorio.objects.all(), required=False)
 
     def __init__(self, *args, **kwargs):
         super(HojaTrabajoForm, self).__init__(*args, **kwargs)

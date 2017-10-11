@@ -90,7 +90,7 @@
                                                 <h3 class="title">Informe Hoja de Trabajo</h3>
                                                 <br>
                                                 <v-spacer></v-spacer>
-                                                <v-layout>
+                                                <v-layout wrap>
                                                     <v-flex xs3>
                                                         <v-menu
                                                             lazy
@@ -193,6 +193,14 @@
                                                           </v-menu>
                                                           <input type="hidden" name="hasta_hora" :value="hasta_time" />
                                                     </v-flex>
+                                                    <v-flex xs3>
+                                                        <v-select label="Laboratorios" :items="laboratorios" v-model="laboratorios_model" multiple autocomplete></v-select>
+                                                        <select name="laboratorios" style="display: none" multiple>
+                                                            <template v-for="laboratorio of laboratorios_model" :key="laboratorio">
+                                                                <option :value="laboratorio" selected></option>
+                                                            </template>
+                                                        </select>
+                                                    </v-flex>
                                                 </v-layout>
                                             </form>
                                         </v-card-text>
@@ -225,8 +233,10 @@
         </div>
         <script src="{% static 'vue/node_modules/vue/dist/vue.min.js' %}"></script>
         <script src="{% static 'vue/node_modules/vuetify/dist/vuetify.min.js' %}"></script>
+        <script src="{% static 'vue/node_modules/vue-resource/dist/vue-resource.min.js' %}"></script>
         <script type="text/javascript">
             Vue.use(Vuetify);
+            Vue.use(VueResource);
             new Vue({
                 el: '#app',
                 delimiters: ['{[', ']}'],
@@ -243,10 +253,20 @@
                     hasta_date: '{% if form.hasta_fecha.value %}{{ form.hasta_fecha.value }}{% endif %}',
                     hasta_time: '{% if form.hasta_hora.value %}{{ form.hasta_hora.value }}{% endif %}',
                     hasta_menu_date: false,
-                    hasta_menu_time: false
+                    hasta_menu_time: false,
+                    laboratorios: [], laboratorios_model: []
                 },
                 mounted () {
                     this.contentLoaded = true;
+
+                    this.$http.get('/laboratorios/api/laboratorios/')
+                        .then(response => {
+                            response.body.forEach((el) => {
+                                this.laboratorios.push({value: el.id, text: el.nombre})
+                            });
+                        }, response => {
+                            console.error(response)
+                        })
 
                     {% if form.is_valid and recepciones %}
                     window.print();

@@ -43,6 +43,7 @@ def hoja_trabajo(request):
             desde_hora = form.cleaned_data.get('desde_hora')
             hasta_hora = form.cleaned_data.get('hasta_hora')
 
+            # areas = form.cleaned_data.get('areas')
             _desde = form.get_datetime(desde, desde_hora)
             if hasta_hora:
                 if hasta:
@@ -58,8 +59,7 @@ def hoja_trabajo(request):
                         _desde + datetime.timedelta(days=1), time) - datetime.timedelta(minutes=1)
 
             recepciones = Recepcion.objects.filter(
-                orden__fecha__range=(_desde, _hasta)
-            )
+                orden__fecha__range=(_desde, _hasta)).order_by('orden__fecha')
 
             data = {
                 'recepciones': recepciones, 'fecha_desde': _desde, 'fecha_hasta': _hasta,
