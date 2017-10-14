@@ -59,7 +59,7 @@ export default {
             if (!this.value.item.cerrado) {
                 for (let item of this.value.items) {
                     if (MODEL_TEXT.indexOf(item.tipo.name.toLowerCase()) !== -1) {
-                        let result = typeof item.model_text === "string"? item.model_text.trim(): !_.isEmpty(item.model_text);
+                        let result = typeof item.model_text === "string" ? item.model_text.trim(): !_.isEmpty(item.model_text);
                         if (!Boolean(result)) {
                             return true;
                         }
@@ -326,7 +326,7 @@ export default {
                         ref
                     },
                     [
-                        !_.isEmpty(item.model_text) && item.model_text.text.trim() ? item.model_text.text: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Resultado']),
+                        !_.isEmpty(item.model_text) && (Boolean(item.model_text.text) ? item.model_text.text.trim(): false) ? item.model_text.text: this.$createElement('div', {'class': 'teal--text'}, ['Agregar Resultado']),
                         this.$createElement(
                             MATCH[item.tipo.name],
                             {
@@ -335,7 +335,7 @@ export default {
                                 props: {
                                     label: 'Resultado', 'item-value': 'text',
                                     hint: item.help, 'persistent-hint': true,
-                                    items: item.choices, 'return-object': true,
+                                    items: this.regulateChoices(item.choices), 'return-object': true,
                                     autofocus: true
                                 },
                                 domProps: {
@@ -361,6 +361,22 @@ export default {
         getRefByItem(item) {
             let type = item.tipo.name.toUpperCase();
             return item.nombre.toUpperCase().replace(/\s*/g, '').concat('_' + type);
+        },
+        regulateChoices(choices) {
+            let emptyChoice = choices.find(function (item) {
+                if (_.isObject(item)) {
+                    if ('text' in item) {
+                        return item.text.trim() == '';
+                    } else {
+                        return item.name.trim() == ''
+                    }
+                }    
+                return false
+            });
+            if (!emptyChoice) {
+                choices = [...choices, { edit: false, text: ' ', id: 999 }];
+            }
+            return choices;
         }
     },
     render () {

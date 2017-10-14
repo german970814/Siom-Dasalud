@@ -338,7 +338,7 @@ export default {
             let item = {
                 nombre: 'Campo ' + length,
                 help: '',
-                choices: [{edit: false, name: 'Option 1', id: 0}],
+                choices: [{edit: false, text: 'Option 1', id: 0}],
                 choices_select: [],
                 choices_count: 0,
                 model_text: '',
