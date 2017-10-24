@@ -21,7 +21,7 @@ from datetime import date, timedelta
 from django.db.models import Max,Q
 from reportlab.pdfgen import canvas
 
-from mysite.apps.laboratorios.models import Laboratorio
+from mysite.apps.laboratorios.models import Laboratorio, Recepcion
 from mysite.apps.examenes.models import Visiometria, Audiometria
 from django.core.urlresolvers import reverse
 
@@ -544,20 +544,32 @@ def add_orden_view(request,id_prod):
 
 @login_required(login_url=URL_LOGIN)
 def add_servicios_view(request, id_prod, id_orden):
-    temp = paciente.objects.get(pk=id_prod)
-    getorden = orden.objects.get(pk=id_orden)
+    _paciente = get_object_or_404(paciente, pk=id_prod)
+    _orden = get_object_or_404(orden, pk=id_orden)
+
     if request.method == "POST":
-        form = addOrdenProductoForm(request.POST)
+        form = addOrdenProductoForm(data=request.POST)
         if form.is_valid():
             add = form.save(commit=False)
-            add.orden = getorden
-            add.save() # Guardamos la informacion
+            add.orden = _orden
+            _servicio = form.cleaned_data.get('servicio')
+            add.save()
+            recepcion = getattr(_orden, 'recepcion', None)
+            servicio_exists = orden.objects.filter(
+                id=_orden.id).servicios().filter(id=_servicio.nombre.id).exists()
+            if recepcion is not None and servicio_exists and recepcion.estado == Recepcion.RESULTADO_EMITIDO:
+                recepcion.estado = Recepcion.EN_CURSO
+                recepcion.save()
 
     form = addOrdenProductoForm()
-    form.fields["servicio"].queryset = serviciosEmpresa.objects.filter(empresa=getorden.empresa)
-    lista = ordenesProducto.objects.filter(orden = getorden)
-    ctx = {'getorden':getorden,'form':form,'temp':temp,'lista':lista}
-    return render_to_response('home/addordenServicios.html',ctx,context_instance=RequestContext(request))
+    form.fields["servicio"].queryset = serviciosEmpresa.objects.filter(empresa=_orden.empresa)
+    lista = ordenesProducto.objects.filter(orden=_orden)
+
+    data = {
+        'getorden': _orden, 'form': form,
+        'temp': _paciente, 'lista': lista
+    }
+    return render_to_response('home/addordenServicios.html', data, context_instance=RequestContext(request))
 
 @login_required(login_url=URL_LOGIN)
 def borrar_servicio_view(request,id_orden,id_servicio):
