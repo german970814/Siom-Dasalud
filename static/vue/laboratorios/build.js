@@ -56932,13 +56932,43 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //                             <v-spacer></v-spacer>
 //                             <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
 //                         </v-card-title>
+//                         <v-container>
+//                             <v-layout wrap>
+//                                 <v-flex xs3>
+//                                     <v-menu
+//                                         lazy
+//                                         :close-on-content-click="true"
+//                                         v-model="fechaMenu"
+//                                         offset-y
+//                                         full-width
+//                                         :nudge-left="40"
+//                                         max-width="290px">
+//                                         <v-text-field
+//                                             slot="activator"
+//                                             label="Fecha"
+//                                             v-model="fecha"
+//                                             prepend-icon="event"
+//                                             readonly
+//                                         ></v-text-field>
+//                                         <v-date-picker v-model="fecha" no-title scrollable actions locale="es-sp">
+//                                             <template scope="{ save, cancel }">
+//                                                 <v-card-actions>
+//                                                     <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
+//                                                     <v-btn flat primary @click.native="save()">Save</v-btn>
+//                                                 </v-card-actions>
+//                                             </template>
+//                                         </v-date-picker>
+//                                     </v-menu>
+//                                 </v-flex>
+//                             </v-layout>
+//                         </v-container>
 //                         <v-data-table
 //                           :pagination.sync="pagination"
 //                           :headers="headers"
 //                           :items="elements"
 //                           :loading="loading"
-//                           :rows-per-page-items="[10]"
-//                           :rowsPerPage="10"
+//                           :rows-per-page-items="[100]"
+//                           :rowsPerPage="100"
 //                           :customSort="customSortFunction"
 //                           rows-per-page-text="Filas por Página"
 //                           no-results-text="No se encontraron resultados"
@@ -56955,12 +56985,12 @@ _vue2.default.use(_vueResource2.default); // <template lang="html">
 //                                 </tr>
 //                             </template>
 //                             <template slot="items" scope="props">
-//                                 <td>{{ props.item.id }}</td>
-//                                 <td>{{ props.item.paciente.nombre_completo }}</td>
-//                                 <td>{{ joinBy(props.item.laboratorios, x => x.codigo.toUpperCase(), ' | ') }}</td>
-//                                 <td>{{ props.item.fecha }}</td>
-//                                 <td>
-//                                     <v-btn fab dark small class="cyan darken-1" @click.native.stop="selectRecepcion(props.item)">
+//                                 <td :class="{'green lighten-4': props.item.toma_muestra}">{{ props.item.id }}</td>
+//                                 <td :class="{'green lighten-4': props.item.toma_muestra}">{{ props.item.paciente.nombre_completo }}</td>
+//                                 <td :class="{'green lighten-4': props.item.toma_muestra}">{{ joinBy(props.item.laboratorios, x => x.codigo.toUpperCase(), ' | ') }}</td>
+//                                 <td :class="{'green lighten-4': props.item.toma_muestra}">{{ props.item.fecha }}</td>
+//                                 <td :class="{'green lighten-4': props.item.toma_muestra}">
+//                                     <v-btn v-if="!props.item.toma_muestra" fab dark small class="cyan darken-1" @click.native.stop="selectRecepcion(props.item)">
 //                                         <v-icon dark>content_paste</v-icon>
 //                                     </v-btn>
 //                                 </td>
@@ -57050,7 +57080,7 @@ exports.default = {
         return {
             pagination: {
                 page: 1,
-                rowsPerPage: 10,
+                rowsPerPage: 100,
                 descending: false,
                 totalItems: 0
             },
@@ -57059,7 +57089,7 @@ exports.default = {
             plantillas: [],
             selected: false,
             buscador: '',
-            totalItems: 0,
+            totalItems: 0, fecha: '', fechaMenu: false,
             fotoPaciente: '/static/profile-none.jpg',
             headers: [{
                 text: 'Orden', left: true, value: 'codigo'
@@ -57100,6 +57130,13 @@ exports.default = {
             },
 
             depp: true
+        },
+        fecha: function fecha(val) {
+            if (val) {
+                this._getElements(_urls2.default.laboratoriosTomaMuestra.concat('?page=1&fecha=' + val));
+            } else {
+                this._getElements(_urls2.default.laboratoriosTomaMuestra.concat('?page=1'));
+            }
         }
     },
     methods: {
@@ -57156,12 +57193,6 @@ exports.default = {
             }
 
             this.$http.post(_urls2.default.laboratoriosTomaMuestra, { orden: orden, hoja_gasto: plantillas }, { headers: { 'X-CSRFToken': token.value } }).then(function (response) {
-                var item = _this2.elements.find(function (x) {
-                    return x.id == _this2.recepcion.id;
-                });
-                if (item) {
-                    _this2.elements.splice(_this2.elements.indexOf(item), 1);
-                }
                 _this2.modalTomaMuestra = false;
                 _this2.$emit('mostrarsnackbar', 'Se ha guardado la toma de muestra.');
                 _this2._getElements(_urls2.default.laboratoriosTomaMuestra.concat('?page=1'));
@@ -57238,7 +57269,6 @@ exports.default = {
         }
     },
     mounted: function mounted() {
-        // this.getElements(URL.laboratoriosTomaMuestra);
         this._getElements(_urls2.default.laboratoriosTomaMuestra.concat('?page=1'));
     }
     // </script>
@@ -57252,7 +57282,7 @@ exports.default = {
 /* 433 */
 /***/ (function(module, exports) {
 
-module.exports = "<div>\n        <v-container fluid>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            <p class=\"title\">Ordenes en Recepción</p>\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :loading=\"loading\"\n                          :rows-per-page-items=\"[10]\"\n                          :rowsPerPage=\"10\"\n                          :customSort=\"customSortFunction\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <tr>\n                                    <th v-for=\"header in props.headers\" :key=\"header\"\n                                    :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                        @click=\"changeSort(header)\"\n                                    >\n                                        <v-icon>arrow_upward</v-icon>\n                                        {{ header.text }}\n                                    </th>\n                                </tr>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td>{{ props.item.id }}</td>\n                                <td>{{ props.item.paciente.nombre_completo }}</td>\n                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo.toUpperCase(), ' | ') }}</td>\n                                <td>{{ props.item.fecha }}</td>\n                                <td>\n                                    <v-btn fab dark small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                <v-card-text v-if=\"hasRecepcion\">\n                    <v-card horizontal flat>\n                        <v-container>\n                            <v-layout>\n                                <v-flex xs4>\n                                    <v-card-media\n                                    :src=\"fotoPaciente\"\n                                    height=\"345px\"\n                                    ></v-card-media>\n                                </v-flex>\n                                <v-flex xs8>\n                                    <!--height=\"100px\"-->\n                                    <v-card-text>\n                                        <v-layout>\n                                            <v-flex md6>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Nombre del paciente</strong>\n                                                    <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                                </div>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Identificación</strong>\n                                                    <div>{{ recepcion.paciente.cedula }}</div>\n                                                </div>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Edad del paciente</strong>\n                                                    <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                                </div>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Empresa cliente</strong>\n                                                    <div>{{ recepcion.empresa_cliente }}</div>\n                                                </div>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Contacto</strong>\n                                                    <div>{{ recepcion.paciente.telefono }}</div>\n                                                </div>\n                                                <strong>Laboratorios a realizar</strong>\n                                                <div>{{ joinBy(recepcion.laboratorios, x => x.nombre.toUpperCase(), ', ') }}</div>\n                                            </v-flex>\n                                            <v-flex md6>\n                                                <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                            </v-flex>\n                                        </v-layout>\n                                    </v-card-text>\n                                    <v-card-actions class=\"cyan darken-1\">\n                                        <v-spacer></v-spacer>\n                                        <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                            <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                        </v-btn>\n                                        <v-btn flat class=\"white--text\" @click.native=\"modalTomaMuestra = false\">\n                                            Cancelar\n                                        </v-btn>\n                                    </v-card-actions>\n                                </v-flex>\n                            </v-layout>\n                        </v-container>\n                    </v-card>\n                </v-card-text>\n            </v-card>\n        </v-dialog>\n    </div>";
+module.exports = "<div>\n        <v-container fluid>\n            <v-layout>\n                <v-flex xs12 md12>\n                    <v-card>\n                        <v-card-title>\n                            <p class=\"title\">Ordenes en Recepción</p>\n                            <v-spacer></v-spacer>\n                            <v-text-field append-icon=\"search\" label=\"Buscar\" single-line hide-details v-model=\"buscador\"></v-text-field>\n                        </v-card-title>\n                        <v-container>\n                            <v-layout wrap>\n                                <v-flex xs3>\n                                    <v-menu\n                                        lazy\n                                        :close-on-content-click=\"true\"\n                                        v-model=\"fechaMenu\"\n                                        offset-y\n                                        full-width\n                                        :nudge-left=\"40\"\n                                        max-width=\"290px\">\n                                        <v-text-field\n                                            slot=\"activator\"\n                                            label=\"Fecha\"\n                                            v-model=\"fecha\"\n                                            prepend-icon=\"event\"\n                                            readonly\n                                        ></v-text-field>\n                                        <v-date-picker v-model=\"fecha\" no-title scrollable actions locale=\"es-sp\">\n                                            <template scope=\"{ save, cancel }\">\n                                                <v-card-actions>\n                                                    <v-btn flat primary @click.native=\"cancel()\">Cancel</v-btn>\n                                                    <v-btn flat primary @click.native=\"save()\">Save</v-btn>\n                                                </v-card-actions>\n                                            </template>\n                                        </v-date-picker>\n                                    </v-menu>\n                                </v-flex>\n                            </v-layout>\n                        </v-container>\n                        <v-data-table\n                          :pagination.sync=\"pagination\"\n                          :headers=\"headers\"\n                          :items=\"elements\"\n                          :loading=\"loading\"\n                          :rows-per-page-items=\"[100]\"\n                          :rowsPerPage=\"100\"\n                          :customSort=\"customSortFunction\"\n                          rows-per-page-text=\"Filas por Página\"\n                          no-results-text=\"No se encontraron resultados\"\n                          >\n                            <template slot=\"headers\" scope=\"props\">\n                                <tr>\n                                    <th v-for=\"header in props.headers\" :key=\"header\"\n                                    :class=\"['column sortable', pagination.descending ? 'desc' : 'asc', header.value === pagination.sortBy ? 'active' : '']\"\n                                        @click=\"changeSort(header)\"\n                                    >\n                                        <v-icon>arrow_upward</v-icon>\n                                        {{ header.text }}\n                                    </th>\n                                </tr>\n                            </template>\n                            <template slot=\"items\" scope=\"props\">\n                                <td :class=\"{'green lighten-4': props.item.toma_muestra}\">{{ props.item.id }}</td>\n                                <td :class=\"{'green lighten-4': props.item.toma_muestra}\">{{ props.item.paciente.nombre_completo }}</td>\n                                <td :class=\"{'green lighten-4': props.item.toma_muestra}\">{{ joinBy(props.item.laboratorios, x => x.codigo.toUpperCase(), ' | ') }}</td>\n                                <td :class=\"{'green lighten-4': props.item.toma_muestra}\">{{ props.item.fecha }}</td>\n                                <td :class=\"{'green lighten-4': props.item.toma_muestra}\">\n                                    <v-btn v-if=\"!props.item.toma_muestra\" fab dark small class=\"cyan darken-1\" @click.native.stop=\"selectRecepcion(props.item)\">\n                                        <v-icon dark>content_paste</v-icon>\n                                    </v-btn>\n                                </td>\n                            </template>\n                        </v-data-table>\n                    </v-card>\n                </v-flex>\n            </v-layout>\n        </v-container>\n        <v-dialog width=\"80%\" v-model=\"modalTomaMuestra\">\n            <v-card>\n                <v-card-title>Recepcion # {{ recepcion.id }}</v-card-title>\n                <v-card-text v-if=\"hasRecepcion\">\n                    <v-card horizontal flat>\n                        <v-container>\n                            <v-layout>\n                                <v-flex xs4>\n                                    <v-card-media\n                                    :src=\"fotoPaciente\"\n                                    height=\"345px\"\n                                    ></v-card-media>\n                                </v-flex>\n                                <v-flex xs8>\n                                    <!--height=\"100px\"-->\n                                    <v-card-text>\n                                        <v-layout>\n                                            <v-flex md6>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Nombre del paciente</strong>\n                                                    <div>{{ recepcion.paciente.nombre_completo }}</div>\n                                                </div>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Identificación</strong>\n                                                    <div>{{ recepcion.paciente.cedula }}</div>\n                                                </div>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Edad del paciente</strong>\n                                                    <div>{{ recepcion.paciente.edad + ' ' + recepcion.paciente.unidad_edad }}</div>\n                                                </div>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Empresa cliente</strong>\n                                                    <div>{{ recepcion.empresa_cliente }}</div>\n                                                </div>\n                                                <div style=\"margin-bottom: 7px\">\n                                                    <strong>Contacto</strong>\n                                                    <div>{{ recepcion.paciente.telefono }}</div>\n                                                </div>\n                                                <strong>Laboratorios a realizar</strong>\n                                                <div>{{ joinBy(recepcion.laboratorios, x => x.nombre.toUpperCase(), ', ') }}</div>\n                                            </v-flex>\n                                            <v-flex md6>\n                                                <ig-producto :plantillas=\"plantillas\" ref=\"hojaGasto\" filter></ig-producto>\n                                            </v-flex>\n                                        </v-layout>\n                                    </v-card-text>\n                                    <v-card-actions class=\"cyan darken-1\">\n                                        <v-spacer></v-spacer>\n                                        <v-btn flat class=\"white--text\" @click.native=\"saveRecepcion\">\n                                            <v-icon left light>rate_review</v-icon>Muestra Tomada\n                                        </v-btn>\n                                        <v-btn flat class=\"white--text\" @click.native=\"modalTomaMuestra = false\">\n                                            Cancelar\n                                        </v-btn>\n                                    </v-card-actions>\n                                </v-flex>\n                            </v-layout>\n                        </v-container>\n                    </v-card>\n                </v-card-text>\n            </v-card>\n        </v-dialog>\n    </div>";
 
 /***/ }),
 /* 434 */

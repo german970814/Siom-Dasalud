@@ -9,13 +9,43 @@
                             <v-spacer></v-spacer>
                             <v-text-field append-icon="search" label="Buscar" single-line hide-details v-model="buscador"></v-text-field>
                         </v-card-title>
+                        <v-container>
+                            <v-layout wrap>
+                                <v-flex xs3>
+                                    <v-menu
+                                        lazy
+                                        :close-on-content-click="true"
+                                        v-model="fechaMenu"
+                                        offset-y
+                                        full-width
+                                        :nudge-left="40"
+                                        max-width="290px">
+                                        <v-text-field
+                                            slot="activator"
+                                            label="Fecha"
+                                            v-model="fecha"
+                                            prepend-icon="event"
+                                            readonly
+                                        ></v-text-field>
+                                        <v-date-picker v-model="fecha" no-title scrollable actions locale="es-sp">
+                                            <template scope="{ save, cancel }">
+                                                <v-card-actions>
+                                                    <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
+                                                    <v-btn flat primary @click.native="save()">Save</v-btn>
+                                                </v-card-actions>
+                                            </template>
+                                        </v-date-picker>
+                                    </v-menu>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
                         <v-data-table
                           :pagination.sync="pagination"
                           :headers="headers"
                           :items="elements"
                           :loading="loading"
-                          :rows-per-page-items="[10]"
-                          :rowsPerPage="10"
+                          :rows-per-page-items="[100]"
+                          :rowsPerPage="100"
                           :customSort="customSortFunction"
                           rows-per-page-text="Filas por Página"
                           no-results-text="No se encontraron resultados"
@@ -32,12 +62,12 @@
                                 </tr>
                             </template>
                             <template slot="items" scope="props">
-                                <td>{{ props.item.id }}</td>
-                                <td>{{ props.item.paciente.nombre_completo }}</td>
-                                <td>{{ joinBy(props.item.laboratorios, x => x.codigo.toUpperCase(), ' | ') }}</td>
-                                <td>{{ props.item.fecha }}</td>
-                                <td>
-                                    <v-btn fab dark small class="cyan darken-1" @click.native.stop="selectRecepcion(props.item)">
+                                <td :class="{'green lighten-4': props.item.toma_muestra}">{{ props.item.id }}</td>
+                                <td :class="{'green lighten-4': props.item.toma_muestra}">{{ props.item.paciente.nombre_completo }}</td>
+                                <td :class="{'green lighten-4': props.item.toma_muestra}">{{ joinBy(props.item.laboratorios, x => x.codigo.toUpperCase(), ' | ') }}</td>
+                                <td :class="{'green lighten-4': props.item.toma_muestra}">{{ props.item.fecha }}</td>
+                                <td :class="{'green lighten-4': props.item.toma_muestra}">
+                                    <v-btn v-if="!props.item.toma_muestra" fab dark small class="cyan darken-1" @click.native.stop="selectRecepcion(props.item)">
                                         <v-icon dark>content_paste</v-icon>
                                     </v-btn>
                                 </td>
@@ -138,7 +168,7 @@ export default {
         return {
             pagination: {
                 page: 1,
-                rowsPerPage: 10,
+                rowsPerPage: 100,
                 descending: false,
                 totalItems: 0
             },
@@ -147,7 +177,7 @@ export default {
             plantillas: [],
             selected: false,
             buscador: '',
-            totalItems: 0,
+            totalItems: 0, fecha: '', fechaMenu: false,
             fotoPaciente: '/static/profile-none.jpg',
             headers: [
                 {
@@ -192,6 +222,13 @@ export default {
                 this._getElements(URL.laboratoriosTomaMuestra.concat(`?param=${this.buscador}&page=1`));
             },
             depp: true
+        },
+        fecha: function (val) {
+            if (val) {
+                this._getElements(URL.laboratoriosTomaMuestra.concat(`?page=1&fecha=${val}`));
+            } else {
+                this._getElements(URL.laboratoriosTomaMuestra.concat(`?page=1`));
+            }
         }
     },
     methods: {
@@ -224,10 +261,6 @@ export default {
             }
             this.$http.post(URL.laboratoriosTomaMuestra, {orden: orden, hoja_gasto: plantillas}, {headers: {'X-CSRFToken': token.value}})
               .then(response => {
-                  let item = this.elements.find(x => {return x.id == this.recepcion.id});
-                  if (item) {
-                      this.elements.splice(this.elements.indexOf(item), 1);
-                  }
                   this.modalTomaMuestra = false;
                   this.$emit('mostrarsnackbar', 'Se ha guardado la toma de muestra.');
                   this._getElements(URL.laboratoriosTomaMuestra.concat('?page=1'));
@@ -282,8 +315,7 @@ export default {
         },
     },
     mounted: function () {
-        // this.getElements(URL.laboratoriosTomaMuestra);
-        this._getElements(URL.laboratoriosTomaMuestra.concat('?page=1'))
+        this._getElements(URL.laboratoriosTomaMuestra.concat('?page=1'));
     }
 }
 </script>

@@ -251,42 +251,45 @@ def ordenes_toma_muestra(request):
     kwargs = {}
     empleado = request.user.empleado
 
+    class OrdenSerializerTomaMuestra(OrdenSerializer):
+        def to_representation(self, obj):
+            representacion = super(OrdenSerializerTomaMuestra, self).to_representation(obj)
+            representacion['toma_muestra'] = getattr(obj, 'recepcion', None) is not None
+            return representacion
+
     if request.method == 'GET':
         param = request.GET.get('param', '')
+        fecha = request.GET.get('fecha', '')
         hoy = timezone.now().date()
         servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
-        recepciones = Recepcion.objects.all().values_list('orden__id', flat=True)
 
         querys = (
             Q(paciente__pnombre__icontains=param) | Q(paciente__papellido__icontains=param) |
             Q(paciente__cedula__icontains=param) | Q(id__icontains=param)
         )
 
-        if param:
-            ordenes = Orden.objects.filter(
-                id__in=OrdenProducto.objects.filter(
-                    servicio__nombre__id__in=servicios
-                ).values_list('orden_id', flat=True).distinct(),
-                institucion__id=1
-            ).exclude(id__in=recepciones).filter(querys).order_by('-fecha')  # .select_related('paciente')
-        else:
-            ordenes = Orden.objects.filter(
-                id__in=OrdenProducto.objects.filter(
-                    servicio__nombre__id__in=servicios
-                ).values_list('orden_id', flat=True).distinct(),
-                fecha__range=(hoy, hoy + datetime.timedelta(days=1)),
-                institucion__id=1
-            ).exclude(id__in=recepciones).order_by('-fecha')  # .select_related('paciente')
+        ordenes = Orden.objects.filter(
+            id__in=OrdenProducto.objects.filter(
+                servicio__nombre__id__in=servicios
+            ).values_list('orden_id', flat=True).distinct(),
+            institucion__id=1
+        ).order_by('fecha').select_related('paciente')
 
-        # serializer = OrdenSerializer(ordenes, many=True)
-        # args = (serializer.data, )
+        if param:
+            ordenes = ordenes.filter(querys)
+        elif fecha:
+            year, month, day = fecha.split('-')
+            fecha_filter = datetime.date(year=int(year), month=int(month), day=int(day))
+            ordenes = ordenes.filter(fecha__range=(fecha_filter, fecha_filter + datetime.timedelta(days=1)))
+        else:
+            hoy = datetime.date.today()
+            ordenes = ordenes.filter(fecha__range=(hoy, hoy + datetime.timedelta(days=1)))
     
         pagination = PageNumberPagination()
-        pagination.page_size = 10
+        pagination.page_size = 100
 
         result_pagination = pagination.paginate_queryset(ordenes, request)
-        # serializer = OrdenSerializer(result_pagination, many=True)
-        serializer = OrdenSerializer(result_pagination, many=True)
+        serializer = OrdenSerializerTomaMuestra(result_pagination, many=True)
         return pagination.get_paginated_response(serializer.data)
 
     else:
