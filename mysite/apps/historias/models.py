@@ -90,7 +90,7 @@ class orden(models.Model):
                     css_class = CLASSES['success']
                 else:
                     css_class = CLASSES['danger']
-            if self.status == 'P' and css_class != CLASSES['danger']:
+            if self.status == 'P':
                 css_class = CLASSES['danger']
             else:
                 css_class = CLASSES['success']

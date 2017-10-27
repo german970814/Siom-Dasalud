@@ -11,7 +11,7 @@
                         </v-card-title>
                         <v-container>
                             <v-layout wrap>
-                                <v-flex xs3>
+                                <v-flex xs12 md3>
                                     <v-menu
                                         lazy
                                         :close-on-content-click="true"
