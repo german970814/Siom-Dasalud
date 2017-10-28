@@ -43,7 +43,7 @@ class OrdenesSinVisiometriaListAPI(generics.ListAPIView):
                 servicio__nombre=Visiometria.get_visiometria_servicio()
             ).values_list('orden_id', flat=True).distinct(),
             fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
-        ).order_by('-fecha')  # .exclude(visiometria__estado=Visiometria.RESULTADO_EMITIDO)
+        ).exclude(anulada=True).order_by('-fecha')  # .exclude(visiometria__estado=Visiometria.RESULTADO_EMITIDO)
 
         return queryset
 
@@ -59,7 +59,7 @@ class VisiometriaListAPI(generics.ListCreateAPIView):
         queryset = self.request.user.empleado_examenes.visiometrias.all()
         queryset = queryset.filter(
             orden__fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
-        ).order_by('-orden__fecha')
+        ).exclude(orden__anulada=True).order_by('-orden__fecha')
         return queryset
 
     def perform_create(self, serializer):
@@ -111,7 +111,7 @@ class OrdenesSinAudiometriaListAPI(generics.ListAPIView):
                 servicio__nombre=Audiometria.get_audiometria_servicio()
             ).values_list('orden_id', flat=True).distinct(),
             fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
-        ).order_by('-fecha')  # .exclude(visiometria__estado=Visiometria.RESULTADO_EMITIDO)
+        ).exclude(anulada=True).order_by('-fecha')  # .exclude(visiometria__estado=Visiometria.RESULTADO_EMITIDO)
 
         return queryset
 
@@ -126,13 +126,18 @@ class AudiometriaListAPI(generics.ListCreateAPIView):
         queryset = self.request.user.empleado_examenes.audiometrias.all()
         queryset = queryset.filter(
             orden__fecha__range=(hoy - datetime.timedelta(days=32), hoy + datetime.timedelta(days=1))
-        ).order_by('-orden__fecha')
+        ).exclude(orden__anulada=True).order_by('-orden__fecha')
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(audiometra=self.request.user.empleado_examenes, estado=Audiometria.PENDIENTE)
+        audiometria = serializer.save(audiometra=self.request.user.empleado_examenes, estado=Audiometria.PENDIENTE)
+        audiometria.orden._save_status_if_need()  # svorden
 
 
 class AudiometriaRetrieveUpdateAPI(generics.RetrieveUpdateDestroyAPIView):
     queryset = Audiometria.objects.all()
     serializer_class = AudiometriaSerializer
+
+    def perform_update(self, *args, **kwargs):
+        audiometria = super(AudiometriaRetrieveUpdateAPI, self).perform_update(*args, **kwargs)
+        audiometria.orden._save_status_if_need()  # svorden

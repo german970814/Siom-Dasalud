@@ -12,9 +12,13 @@ from .managers import OrdenManager
 
 
 class orden(models.Model):
+
+    PENDIENTE = 'P'
+    REALIZADA = 'R'
+
     opciones = (
-        ('P', 'Pendiente'),
-        ('R', 'Realizada'),
+        (PENDIENTE, 'Pendiente'),
+        (REALIZADA, 'Realizada'),
     )
 
     opciones2 = (
@@ -60,6 +64,33 @@ class orden(models.Model):
     def __unicode__(self):
         return "%s %s" %(self.paciente.pnombre,self.id)
 
+    def _save_status_if_need(self):
+        '''
+        Funcion para guardar el estado de la orden de acuerdo a los examenes que se hace
+        Se identifica con el comentario  # svorden.
+        '''
+        if not self.anulada:
+            visiometria = getattr(self, 'visiometria', None)
+            audiometria = getattr(self, 'audiometria', None)
+            recepcion = getattr(self, 'recepcion', None)
+            estado = self.status
+
+            if visiometria is not None and visiometria.estado == visiometria.__class__.PENDIENTE:
+                estado = self.PENDIENTE
+            else:
+                estado = self.REALIZADA
+            if audiometria is not None and audiometria.estado == audiometria.__class__.PENDIENTE:
+                estado = self.PENDIENTE
+            else:
+                estado = self.REALIZADA
+            if recepcion is not None and recepcion.estado in [recepcion.__class__.TOMA_MUESTRA, recepcion.__class__.EN_CURSO]:
+                estado = self.PENDIENTE
+            else:
+                estado = self.REALIZADA
+
+            if estado != self.status:
+                self.save(update_fields=['status'])
+
     def get_class_by_status(self):
         CLASSES = {
             'warning': 'warning',
@@ -70,30 +101,10 @@ class orden(models.Model):
         css_class = '';
         if self.anulada:
             css_class = CLASSES['warning']
-        else:
-            visiometria = getattr(self, 'visiometria', None)
-            audiometria = getattr(self, 'audiometria', None)
-            recepcion = getattr(self, 'recepcion', None)
-
-            if visiometria is not None:
-                if visiometria.estado == visiometria.__class__.PENDIENTE:
-                    css_class = CLASSES['danger']
-                else:
-                    css_class = CLASSES['success']
-            if audiometria is not None and css_class != CLASSES['danger']:
-                if audiometria.estado == audiometria.__class__.PENDIENTE:
-                    css_class = CLASSES['danger']
-                else:
-                    css_class = CLASSES['success']
-            if recepcion is not None and css_class != CLASSES['danger']:
-                if recepcion.estado == recepcion.__class__.RESULTADO_EMITIDO:
-                    css_class = CLASSES['success']
-                else:
-                    css_class = CLASSES['danger']
-            if self.status == 'P':
-                css_class = CLASSES['danger']
-            else:
-                css_class = CLASSES['success']
+        elif self.status == self.PENDIENTE:
+            css_class = CLASSES['danger']
+        elif self.status == self.REALIZADA:
+            css_class = CLASSES['success']
         return css_class
 
 class ordenesProducto(models.Model):

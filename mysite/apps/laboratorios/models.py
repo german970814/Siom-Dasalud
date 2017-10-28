@@ -39,6 +39,7 @@ class Empleado(models.Model):
         return '{self.nombres} {self.apellidos}'.format(self=self).upper()
 
 
+@reversion.register()
 @python_2_unicode_compatible
 class Recepcion(models.Model):
     """

@@ -15,6 +15,7 @@ class HojaTrabajoForm(forms.Form):
     hasta_fecha = forms.DateField(required=False)
     desde_hora = forms.TimeField(required=False)
     hasta_hora = forms.TimeField(required=False)
+    area = forms.ModelChoiceField(queryset=models.SeccionTrabajo.all(), required=)
     laboratorios = forms.ModelMultipleChoiceField(
         queryset=models.Laboratorio.objects.all(), required=False)
 

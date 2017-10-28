@@ -194,7 +194,11 @@
                                                           <input type="hidden" name="hasta_hora" :value="hasta_time" />
                                                     </v-flex>
                                                     <v-flex xs3>
-                                                        <v-select label="Laboratorios" :items="laboratorios" v-model="laboratorios_model" multiple autocomplete></v-select>
+                                                        <v-select label="Area" :items="areas" v-model="area_model" autocomplete></v-select>
+                                                        <input type="hidden" name="area" :value="area_model">
+                                                    </v-flex>
+                                                    <v-flex xs3>
+                                                        <v-select label="Laboratorios" :items="filteredLaboratorios" v-model="laboratorios_model" multiple autocomplete></v-select>
                                                         <select name="laboratorios" style="display: none" multiple>
                                                             <template v-for="laboratorio of laboratorios_model" :key="laboratorio">
                                                                 <option :value="laboratorio" selected></option>
@@ -254,7 +258,16 @@
                     hasta_time: '{% if form.hasta_hora.value %}{{ form.hasta_hora.value }}{% endif %}',
                     hasta_menu_date: false,
                     hasta_menu_time: false,
+                    areas: [], area_model: '',
                     laboratorios: [], laboratorios_model: []
+                },
+                computed: {
+                    filteredLaboratorios() {
+                        if (this.area_model) {
+                            return this.laboratorios.filter(el => el.value == this.area_model);
+                        }
+                        return [];
+                    }
                 },
                 mounted () {
                     this.contentLoaded = true;
@@ -265,8 +278,16 @@
                                 this.laboratorios.push({value: el.id, text: el.nombre})
                             });
                         }, response => {
-                            console.error(response)
-                        })
+                            console.error(response);
+                        });
+                    this.$http.get('/laboratorios/api/seccion_trabajo/')
+                        .then(response => {
+                            response.body.forEach((el) => {
+                                this.areas.push({value: el.id, text: el.codigo})
+                            });
+                        }, response => {
+                            console.error(response);
+                        });
 
                     {% if form.is_valid and recepciones %}
                     window.print();
