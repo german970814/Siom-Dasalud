@@ -15,6 +15,7 @@ class HojaTrabajoForm(forms.Form):
     hasta_fecha = forms.DateField(required=False)
     desde_hora = forms.TimeField(required=False)
     hasta_hora = forms.TimeField(required=False)
+    area = forms.ModelChoiceField(queryset=models.SeccionTrabajo.objects.all(), required=False)
     laboratorios = forms.ModelMultipleChoiceField(
         queryset=models.Laboratorio.objects.all(), required=False)
 
@@ -47,7 +48,7 @@ class HojaTrabajoForm(forms.Form):
                             _('La hora "Hasta" no puede ser menor a la hora "Desde"'))
                 else:
                     self.add_error('hasta_fecha', _('La fecha "Hasta" no puede ser igual a la fecha "Desde"'))
-                        
+
         return cleaned_data
 
     def get_datetime(self, date, time):

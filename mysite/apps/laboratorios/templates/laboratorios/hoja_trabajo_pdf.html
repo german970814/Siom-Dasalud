@@ -25,7 +25,6 @@
                                         <th>Cod. pcte</th>
                                         <th>Nombre paciente</th>
                                         <th>Ed/Sx</th>
-                                        <th>Procedencia</th>
                                         <th style="width: 35%">Todos los exámenes, Todas las secciones</th>
                                     </tr>
                                 </thead>
@@ -36,8 +35,18 @@
                                         <td>{{ recepcion.orden.paciente.cedula }}</td>
                                         <td>{{ recepcion.orden.paciente.papellido|title }} {{ recepcion.orden.paciente.sapellido|title }}, {{ recepcion.orden.paciente.pnombre|title }} {{ recepcion.orden.paciente.snombre|title }}</td>
                                         <td>{{ recepcion.orden.paciente.edad }}{{ recepcion.orden.paciente.get_unidad_display|first }}/{{ recepcion.orden.paciente.genero }}</td>
-                                        <td>SIOM INTERNOS</td>
+                                        {% if laboratorios_exists %}
+                                        <td>
+                                            {% for tupla in recepcion.get_fields_laboratorios %}
+                                                <strong>-{{ tupla.codigo }}:</strong>
+                                                {% for field in tupla.fields %}
+                                                {{ field }}______{% if not forloop.last %}, {% endif %}
+                                                {% endfor %}
+                                            {% endfor %}
+                                        </td>
+                                        {% else %}
                                         <td>{% for lab in recepcion.get_laboratorios %}{{ lab.codigo }}___{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                                        {% endif %}
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -46,6 +55,7 @@
 
                     </div>
 
+                    {% if not laboratorios_exists %}
                     <div class="row">
 
                         <div class="col-md-3">
@@ -70,6 +80,7 @@
                         </div>
 
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

@@ -10,6 +10,8 @@ from django.forms.utils import flatatt
 from mysite.apps.historias.models import orden as Orden
 from mysite.apps.parametros.models import servicios as Servicio
 
+from . import utils
+
 import reversion
 import copy
 import json
@@ -39,6 +41,7 @@ class Empleado(models.Model):
         return '{self.nombres} {self.apellidos}'.format(self=self).upper()
 
 
+@reversion.register()
 @python_2_unicode_compatible
 class Recepcion(models.Model):
     """
@@ -74,6 +77,19 @@ class Recepcion(models.Model):
 
     def get_laboratorios(self):
         return self._laboratorios
+
+    def get_fields_laboratorios(self):
+        fields = []
+        for laboratorio in self.get_laboratorios():
+            if getattr(laboratorio, 'formato', None) is not None:
+                format_fields = []
+                formato = json.loads(laboratorio.formato.formato)
+                for field in formato:
+                    field = utils.DictToObject(field)
+                    if field.tipo.name in ['number', 'text', 'textarea', 'select']:
+                        format_fields.append(utils.get_label_from_field_name(field.nombre))
+                fields.append({'codigo': laboratorio.codigo, 'fields': format_fields})
+        return fields
 
 
 @python_2_unicode_compatible

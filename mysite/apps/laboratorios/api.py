@@ -235,7 +235,7 @@ class RecepcionesTerminadas(generics.ListAPIView):
             resultados = bacteriologo.resultados.filter(orden__fecha__range=(hoy, hoy + datetime.timedelta(days=1)))
 
         lista_ordenes = resultados.values_list('orden_id', flat=True)
-        recepciones = Recepcion.objects.filter(orden_id__in=lista_ordenes).order_by('orden__fecha')
+        recepciones = Recepcion.objects.filter(orden_id__in=lista_ordenes).exclude(orden__anulada=True).order_by('orden__fecha')
         return recepciones.filter(*args, **kwargs)
 
 
@@ -273,7 +273,7 @@ def ordenes_toma_muestra(request):
                 servicio__nombre__id__in=servicios
             ).values_list('orden_id', flat=True).distinct(),
             institucion__id=1
-        ).order_by('fecha').select_related('paciente')
+        ).exclude(anulada=True).order_by('fecha').select_related('paciente')
 
         if param:
             ordenes = ordenes.filter(querys)
@@ -300,7 +300,8 @@ def ordenes_toma_muestra(request):
             valid_hoja_gasto = serializer_hoja_gasto.is_valid()
             if valid_hoja_gasto and valid_serializer:
                 serializer.save(estado=Recepcion.EN_CURSO, empleado=empleado)
-                serializer_hoja_gasto.save()
+                recepcion = serializer_hoja_gasto.save()
+                recepcion.orden._save_status_if_need()  # svorden
                 args = ([serializer.data, serializer_hoja_gasto.data], )
             else:
                 args = ([getattr(serializer, 'errors', []), getattr(serializer_hoja_gasto, 'errors', [])], )
@@ -331,7 +332,7 @@ def ordenes_laboratorios(request):
     recepciones = Recepcion.objects.filter(
         estado=Recepcion.EN_CURSO,
         orden__OrdenProducto_orden__servicio__nombre__laboratorio__seccion_trabajo__id__in=bacteriologo.areas.values_list('id', flat=True)
-    ).distinct()
+    ).exclude(anulada=True).distinct()
 
     laboratorios = Laboratorio.objects.filter(seccion_trabajo__in=bacteriologo.areas.all())
 
@@ -378,7 +379,7 @@ def search_resultado_api_view(request):
     )
 
     # servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
-    ordenes = Recepcion.objects.filter(querys).select_related('orden').order_by(
+    ordenes = Recepcion.objects.filter(querys).select_related('orden').exclude(anulada=True).order_by(
         'orden__paciente__pnombre', 'orden__paciente__papellido')
 
     if terminadas:
@@ -477,6 +478,7 @@ def resultado_api_view(request, pk):
                             recepcion = orden.recepcion
                             recepcion.estado = Recepcion.RESULTADO_EMITIDO
                             recepcion.save()
+                            orden._save_status_if_need()  # svorden
                     data_productos = request.data['productos']
                     serializer_plantilla = PlantillaSerializer(data=data_productos, many=True)
                     if serializer_plantilla.is_valid():
@@ -605,7 +607,5 @@ def control_producto(request):
         serializer.save()
         args = (serializer.data, )
     else:
-        print(request.data)
-        print(serializer.errors)
         args = (serializer.errors, )
     return Response(*args)

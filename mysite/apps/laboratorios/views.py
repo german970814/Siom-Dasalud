@@ -43,7 +43,13 @@ def hoja_trabajo(request):
             desde_hora = form.cleaned_data.get('desde_hora')
             hasta_hora = form.cleaned_data.get('hasta_hora')
 
-            # areas = form.cleaned_data.get('areas')
+            area = form.cleaned_data.get('area', None)
+            if area is not None:
+                laboratorios = form.cleaned_data.get('laboratorios') | area.laboratorios.all()
+            else:
+                laboratorios = form.cleaned_data.get('laboratorios')
+            laboratorios_exists = len(laboratorios)
+
             _desde = form.get_datetime(desde, desde_hora)
             if hasta_hora:
                 if hasta:
@@ -61,9 +67,14 @@ def hoja_trabajo(request):
             recepciones = Recepcion.objects.filter(
                 orden__fecha__range=(_desde, _hasta)).order_by('orden__fecha')
 
+            if laboratorios_exists and area is not None:
+                recepciones = recepciones.filter(
+                    orden__OrdenProducto_orden__servicio__nombre_id__in=[lab.servicio_id for lab in laboratorios]
+                )
+
             data = {
                 'recepciones': recepciones, 'fecha_desde': _desde, 'fecha_hasta': _hasta,
-                'fecha': datetime.datetime.now()
+                'fecha': datetime.datetime.now(), 'laboratorios_exists': laboratorios_exists
             }
 
     else:
