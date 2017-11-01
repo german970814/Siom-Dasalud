@@ -71,9 +71,16 @@ class Recepcion(models.Model):
 
     @property
     def _laboratorios(self):
-        return Laboratorio.objects.filter(
-            servicio__in=self.orden.OrdenProducto_orden.all().values_list('servicio__nombre__id', flat=True).distinct()
-        )
+        try:
+            return self._labs
+        except:
+            return Laboratorio.objects.filter(
+                servicio__in=self.orden.OrdenProducto_orden.all().values_list('servicio__nombre__id', flat=True).distinct()
+            )
+
+    @_laboratorios.setter
+    def _laboratorios(self, value):
+        self._labs = value
 
     def get_laboratorios(self):
         return self._laboratorios

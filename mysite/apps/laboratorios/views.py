@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.db import models
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -71,6 +72,8 @@ def hoja_trabajo(request):
                 recepciones = recepciones.filter(
                     orden__OrdenProducto_orden__servicio__nombre_id__in=[lab.servicio_id for lab in laboratorios]
                 )
+                for recepcion in recepciones:
+                    recepcion._laboratorios = laboratorios
 
             data = {
                 'recepciones': recepciones, 'fecha_desde': _desde, 'fecha_hasta': _hasta,

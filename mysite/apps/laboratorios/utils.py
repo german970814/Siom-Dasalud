@@ -45,15 +45,18 @@ def get_hemogramas_from_queryset(queryset):
 
 def get_label_from_field_name(string):
     EXCLUDED_WORDS = [
-        'A', 'DE', 'LA', 'EL', 'LO', 'O', 'LAS', 'LOS', 'DEL'
+        'A', 'DE', 'LA', 'EL', 'LO',
+        'O', 'LAS', 'LOS', 'DEL', 'EN'
     ]
     modified_string = ''
     if string:
         parentesis_regex = re.compile(r'\((.*?)\)')
-        if parentesis_regex.search(string):
-            modified_string = parentesis_regex.findall(string)[0]
-        else:
-            modified_string = ' '.join([x[:6] for x in string.split() if x.upper() not in EXCLUDED_WORDS])
+        results = parentesis_regex.findall(string)
+        for word in results:
+            string = string.replace('({})'.format(word), '')
+
+        modified_string = ' '.join(
+            [x[:4] for x in string.split() if x.upper() not in EXCLUDED_WORDS])
     return modified_string
 
 

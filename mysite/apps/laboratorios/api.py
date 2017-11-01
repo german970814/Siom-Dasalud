@@ -332,7 +332,7 @@ def ordenes_laboratorios(request):
     recepciones = Recepcion.objects.filter(
         estado=Recepcion.EN_CURSO,
         orden__OrdenProducto_orden__servicio__nombre__laboratorio__seccion_trabajo__id__in=bacteriologo.areas.values_list('id', flat=True)
-    ).exclude(anulada=True).distinct()
+    ).exclude(orden__anulada=True).distinct()
 
     laboratorios = Laboratorio.objects.filter(seccion_trabajo__in=bacteriologo.areas.all())
 
@@ -379,7 +379,7 @@ def search_resultado_api_view(request):
     )
 
     # servicios = Laboratorio.objects.all().values_list('servicio_id', flat=True)
-    ordenes = Recepcion.objects.filter(querys).select_related('orden').exclude(anulada=True).order_by(
+    ordenes = Recepcion.objects.filter(querys).select_related('orden').exclude(orden__anulada=True).order_by(
         'orden__paciente__pnombre', 'orden__paciente__papellido')
 
     if terminadas:
