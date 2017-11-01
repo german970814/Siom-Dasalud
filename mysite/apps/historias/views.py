@@ -129,6 +129,7 @@ def add_historias_view(request,id_prod):
                         add.save() # Guardamos la Historia
                         getorden.status = 'R'
                         getorden.save()
+                        getorden._save_status_if_need()
                         exito_cerrada = True
                         exito = True
                     else:
@@ -347,6 +348,7 @@ def add_evolucion_view(request,id_prod):
                         add.save() # Guardamos la informacion
                         getorden.status = 'R' #Se coloca la orden como realizada
                         getorden.save()
+                        getorden._save_status_if_need()
                         exito = True
 
             historial = historia_clinica.objects.filter(paciente=getorden.paciente) #Se obtiene informacion de la orden
@@ -434,6 +436,7 @@ def add_procedimientoOrden_view(request,id_prod):
                     add.save() # Guardamos la informacion
                     getorden.status = 'R' #Se coloca la orden como realizada
                     getorden.save()
+                    getorden._save_status_if_need()
                     exito = True
 
             ctx = {'getorden':getorden,'historial':historial,'lista_proc':lista_proc,'form1':form1,'exito':exito}
@@ -557,9 +560,11 @@ def add_servicios_view(request, id_prod, id_orden):
             recepcion = getattr(_orden, 'recepcion', None)
             servicio_exists = orden.objects.filter(
                 id=_orden.id).servicios().filter(id=_servicio.nombre.id).exists()
+            # TODO: Verificar si pasa a toma de muestra de nuevo
             if recepcion is not None and servicio_exists and recepcion.estado == Recepcion.RESULTADO_EMITIDO:
                 recepcion.estado = Recepcion.EN_CURSO
                 recepcion.save()
+            _orden._save_status_if_need()
 
     form = addOrdenProductoForm()
     form.fields["servicio"].queryset = serviciosEmpresa.objects.filter(empresa=_orden.empresa)

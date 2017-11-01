@@ -47,6 +47,7 @@ def visiometria_create(request, pk):
             visiometria.tipo = tipo
             visiometria.estado = models.Visiometria.PENDIENTE
             visiometria.save()
+            orden._save_status_if_need()
             return redirect('/pacientes/page/1/')
         else:
             messages.error(request, _('Escoja un Visiometra'))

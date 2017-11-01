@@ -93,7 +93,7 @@
 					<td><a class="btn btn-primary btn-xs" href="/imprimir/recibo/{{ p.orden.id }}"><i class="glyphicon glyphicon-print"></i></a></td>
 					<td>
 						{% if not p.orden.anulada %}
-							{% if p.orden.status != 'P' %}
+							{% if p.orden.status != 'P' and p.orden.get_historia %}
 							<a class="btn btn-primary btn-xs" href="/imprimir/concepto/{{ p.orden.id  }}"><i class="glyphicon glyphicon-list-alt"></i></a>
 							{% endif %}
 							{% if p.orden.audiometria and p.orden.audiometria.estado == 'RE' %}

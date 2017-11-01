@@ -73,22 +73,24 @@ class orden(models.Model):
             visiometria = getattr(self, 'visiometria', None)
             audiometria = getattr(self, 'audiometria', None)
             recepcion = getattr(self, 'recepcion', None)
-            estado = self.status
+            historia_clinica = self.get_historia()
+            has_historia = self._would_has_history()    
 
-            if visiometria is not None and visiometria.estado == visiometria.__class__.PENDIENTE:
-                estado = self.PENDIENTE
-            else:
-                estado = self.REALIZADA
-            if audiometria is not None and audiometria.estado == audiometria.__class__.PENDIENTE:
-                estado = self.PENDIENTE
-            else:
-                estado = self.REALIZADA
-            if recepcion is not None and recepcion.estado in [recepcion.__class__.TOMA_MUESTRA, recepcion.__class__.EN_CURSO]:
-                estado = self.PENDIENTE
-            else:
-                estado = self.REALIZADA
+            def get_estado():
+                if visiometria is not None and visiometria.estado == visiometria.__class__.PENDIENTE:
+                    return self.PENDIENTE
+                if audiometria is not None and audiometria.estado == audiometria.__class__.PENDIENTE:
+                    return self.PENDIENTE
+                if recepcion is not None and recepcion.estado in [recepcion.__class__.TOMA_MUESTRA, recepcion.__class__.EN_CURSO]:
+                    estado = self.PENDIENTE
+                if has_historia and historia_clinica is None:
+                    estado = self.PENDIENTE
+                return self.REALIZADA
+
+            estado = get_estado()
 
             if estado != self.status:
+                self.status = estado
                 self.save(update_fields=['status'])
 
     def get_class_by_status(self):
@@ -106,6 +108,33 @@ class orden(models.Model):
         elif self.status == self.REALIZADA:
             css_class = CLASSES['success']
         return css_class
+
+    def get_historia(self):
+        return self.historia_orden.first()
+
+    def _would_has_history(self):
+        visiometria = getattr(self, 'visiometria', None)
+        audiometria = getattr(self, 'audiometria', None)
+        recepcion = getattr(self, 'recepcion', None)
+
+        self_servicios = self.OrdenProducto_orden.values_list('servicio__nombre_id', flat=True)
+        servicios_compare = []
+
+        if visiometria:
+            if visiometria.tipo == visiometria.__class__.OPTOMETRIA:
+                servicios_compare.append(visiometria.__class__.get_optometria_servicio().id)
+            else:
+                servicios_compare.append(visiometria.__class__.get_visiometria_servicio().id,)
+        if audiometria:
+            servicios_compare.append(audiometria.__class__.get_audiometria_servicio().id)
+        if recepcion:
+            for laboratorio in recepcion.get_laboratorios():
+                servicios_compare.append(laboratorio.servicio_id)
+
+        if set(servicios_compare) ^ set(self_servicios):
+            return True
+        return False
+
 
 class ordenesProducto(models.Model):
     orden = models.ForeignKey(orden,related_name='OrdenProducto_orden',verbose_name=u'Orden')

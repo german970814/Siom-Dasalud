@@ -3,6 +3,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
 from django.db.models import Q
 
+import re
+
 
 def get_object_or_404_api(ModelOrQuery, **kwargs):  # deprecate
     """
@@ -39,6 +41,23 @@ def get_hemogramas_from_queryset(queryset):
     resultados = queryset.filter(~Q(id__in=hemogramas.values_list('id', flat=True)))
 
     return hemogramas, resultados
+
+
+def get_label_from_field_name(string):
+    EXCLUDED_WORDS = [
+        'A', 'DE', 'LA', 'EL', 'LO',
+        'O', 'LAS', 'LOS', 'DEL', 'EN'
+    ]
+    modified_string = ''
+    if string:
+        parentesis_regex = re.compile(r'\((.*?)\)')
+        results = parentesis_regex.findall(string)
+        for word in results:
+            string = string.replace('({})'.format(word), '')
+
+        modified_string = ' '.join(
+            [x[:4] for x in string.split() if x.upper() not in EXCLUDED_WORDS])
+    return modified_string
 
 
 class Pagination(PageNumberPagination):

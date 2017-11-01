@@ -87,14 +87,14 @@
                                         <v-card-text>
                                             <form action="" method="POST" id="formData">
                                                 {% csrf_token %}
-                                                <h3 class="title">Informe Hoja de Trabajo</h3>
+                                                <h3 class="title">Informe Hoja de Trabajo / Lista de Pacientes</h3>
                                                 <br>
                                                 <v-spacer></v-spacer>
                                                 <v-layout wrap>
                                                     <v-flex xs3>
                                                         <v-menu
                                                             lazy
-                                                            :close-on-content-click="false"
+                                                            :close-on-content-click="true"
                                                             v-model="desde_menu_date"
                                                             transition="scale-transition"
                                                             offset-y
@@ -145,7 +145,7 @@
                                                     <v-flex xs3>
                                                         <v-menu
                                                             lazy
-                                                            :close-on-content-click="false"
+                                                            :close-on-content-click="true"
                                                             v-model="hasta_menu_date"
                                                             transition="scale-transition"
                                                             offset-y
@@ -264,7 +264,7 @@
                 computed: {
                     filteredLaboratorios() {
                         if (this.area_model) {
-                            return this.laboratorios.filter(el => el.value == this.area_model);
+                            return this.laboratorios.filter(el => el.areaId == this.area_model);
                         }
                         return [];
                     }
@@ -275,16 +275,24 @@
                     this.$http.get('/laboratorios/api/laboratorios/')
                         .then(response => {
                             response.body.forEach((el) => {
-                                this.laboratorios.push({value: el.id, text: el.nombre})
+                                this.laboratorios.push({value: el.id, text: el.nombre, areaId: el.seccion_trabajo.id})
                             });
+                            // {% if form.laboratorios.value %}
+                            // let laboratorios = {{ form.laboratorios.value|safe }};
+                            // this.laboratorios_model = this.laboratorios.filter(el => laboratorios.indexOf(el.value) + 1)
+                            // {% endif %}
                         }, response => {
                             console.error(response);
                         });
                     this.$http.get('/laboratorios/api/seccion_trabajo/')
                         .then(response => {
                             response.body.forEach((el) => {
-                                this.areas.push({value: el.id, text: el.codigo})
+                                this.areas.push({value: el.id, text: el.codigo});
                             });
+                            let area = '{{ form.area.value }}' | undefined;
+                            if (area) {
+                                this.area_model = area;  // this.areas.find(el => el.value == area);
+                            }
                         }, response => {
                             console.error(response);
                         });

@@ -6,7 +6,7 @@
     <div class="col-md-8">
         <dl>
             <dt class="dl">Fecha:</dt> <dd class="dd">{{ fecha }}</dd>
-            <dt>Plantilla de trabajo abreviada</dt>
+            <dt>{% if laboratorios_exists %}Plantilla de trabajo abreviada{% else %}Lista de pacientes día{% endif %}</dt>
             <dt class="dl">Desde</dt> <dd class="dd">{{ fecha_desde }}</dd> <dt class="dl">Hasta</dt> <dd class="dd">{{ fecha_hasta }}</dd>
         </dl>
     </div>
