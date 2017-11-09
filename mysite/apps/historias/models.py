@@ -82,9 +82,9 @@ class orden(models.Model):
                 if audiometria is not None and audiometria.estado == audiometria.__class__.PENDIENTE:
                     return self.PENDIENTE
                 if recepcion is not None and recepcion.estado in [recepcion.__class__.TOMA_MUESTRA, recepcion.__class__.EN_CURSO]:
-                    estado = self.PENDIENTE
+                    return self.PENDIENTE
                 if has_historia and historia_clinica is None:
-                    estado = self.PENDIENTE
+                    return self.PENDIENTE
                 return self.REALIZADA
 
             estado = get_estado()
