@@ -81,10 +81,16 @@ class orden(models.Model):
                     return self.PENDIENTE
                 if audiometria is not None and audiometria.estado == audiometria.__class__.PENDIENTE:
                     return self.PENDIENTE
-                if recepcion is not None and recepcion.estado in [recepcion.__class__.TOMA_MUESTRA, recepcion.__class__.EN_CURSO]:
-                    return self.PENDIENTE
-                if has_historia and historia_clinica is None:
-                    return self.PENDIENTE
+                if self._is_laboratorio:
+                    if recepcion is not None and recepcion.estado in [recepcion.__class__.TOMA_MUESTRA, recepcion.__class__.EN_CURSO]:
+                        return self.PENDIENTE
+                    elif recepcion is None:
+                        return self.PENDIENTE
+                if has_historia:
+                    if historia_clinica is None:
+                        return self.PENDIENTE
+                    elif historia_clinica is not None and not historia_clinica.cerrada:
+                        return self.PENDIENTE
                 return self.REALIZADA
 
             estado = get_estado()
@@ -97,14 +103,19 @@ class orden(models.Model):
         CLASSES = {
             'warning': 'warning',
             'danger': 'danger',
-            'success': 'success'
+            'success': 'success',
+            'info': 'info'
         }
 
         css_class = '';
         if self.anulada:
             css_class = CLASSES['warning']
         elif self.status == self.PENDIENTE:
-            css_class = CLASSES['danger']
+            historia = self.get_historia()
+            if historia is not None and historia.cerrada:
+                css_class = CLASSES['info']
+            else:
+                css_class = CLASSES['danger']
         elif self.status == self.REALIZADA:
             css_class = CLASSES['success']
         return css_class
@@ -134,6 +145,13 @@ class orden(models.Model):
         if set(servicios_compare) ^ set(self_servicios):
             return True
         return False
+
+    @property
+    def _is_laboratorio(self):
+        from mysite.apps.laboratorios.models import Laboratorio
+
+        self_servicios = self.OrdenProducto_orden.values_list('servicio__nombre_id', flat=True)
+        return Laboratorio.objects.filter(servicio_id=self_servicios).exists()
 
 
 class ordenesProducto(models.Model):
