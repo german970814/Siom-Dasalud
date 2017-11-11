@@ -39,7 +39,7 @@ def add_historias_view(request,id_prod):
     existe_historia = False
     altura = False
 
-    getorden = orden.objects.get(pk=id_prod) #Se obtiene informacion de la orden
+    getorden = orden.objects.get(pk=id_prod)  # Se obtiene informacion de la orden
 
     servicios = orden.objects.filter(id=getorden.id).servicios().values_list('id', flat=True)
     laboratorios = Laboratorio.objects.filter(servicio__id__in=servicios)

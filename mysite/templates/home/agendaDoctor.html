@@ -72,7 +72,7 @@
 		        <tbody>
 		    	{% for p in lista %}
 			    	{% if p.orden.status == 'P' %}
-			     		<tr id="tr{{p.orden.id}}" class="danger">
+			     		<tr id="tr{{p.orden.id}}" class="{{ p.orden.get_class_by_status }}">
 							<td><a class="btn btn-xs" href="/redirecciona/{{p.orden.id}}/">{{ p.orden.id }}</td>
 			     			<td><a class="btn btn-xs" href="/redirecciona/{{p.orden.id}}/">{{ p.orden.paciente.cedula }}</td>
 							<td><a class="btn btn-xs" href="/redirecciona/{{p.orden.id}}/">{{ p.orden.paciente.papellido }} {{ p.orden.paciente.sapellido }} {{ p.orden.paciente.pnombre  }} {{ p.orden.paciente.snombre  }}</td>
@@ -86,7 +86,7 @@
 							{% endif %}			
 						</tr>    	
 			    	{% else %}
-			     		<tr id="tr{{p.orden.id}}" class="success">
+			     		<tr id="tr{{p.orden.id}}" class="{{ p.orden.get_class_by_status }}">
 							<td><a class="btn btn-xs" href="/show/historias/{{p.orden.id}}/">{{ p.orden.id }}</td>
 							<td><a class="btn btn-xs" href="/show/historias/{{p.orden.id}}/">{{ p.orden.paciente.cedula }}</td>
 							<td><a class="btn btn-xs" href="/show/historias/{{p.orden.id}}/">{{ p.orden.paciente.papellido }} {{ p.orden.paciente.sapellido }} {{ p.orden.paciente.pnombre  }} {{ p.orden.paciente.snombre  }}</td>
