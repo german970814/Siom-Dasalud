@@ -444,9 +444,9 @@ def resultado_api_view(request, pk):
 
         laboratorios = Laboratorio.objects.filter(
             id__in=Orden.objects.filter(id=orden.id).servicios().values_list('laboratorio__id', flat=True)
-            ).exclude(
-                id__in=resultados.values_list('laboratorio__id', flat=True)
-            )
+        ).exclude(
+            id__in=resultados.values_list('laboratorio__id', flat=True)
+        )
 
         formatos = Formato.objects.filter(id__in=laboratorios.values_list('formato__id', flat=True))
         serializer = FormatoSerializer(formatos, many=True)
