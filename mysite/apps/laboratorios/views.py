@@ -71,9 +71,9 @@ def hoja_trabajo(request):
             if laboratorios_exists and area is not None:
                 recepciones = recepciones.filter(
                     orden__OrdenProducto_orden__servicio__nombre_id__in=[lab.servicio_id for lab in laboratorios]
-                )
+                ).distinct()
                 for recepcion in recepciones:
-                    recepcion._laboratorios = laboratorios
+                    recepcion._laboratorios = recepcion._laboratorios.filter(id__in=laboratorios.values_list('id', flat=True))
 
             data = {
                 'recepciones': recepciones, 'fecha_desde': _desde, 'fecha_hasta': _hasta,
