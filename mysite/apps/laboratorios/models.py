@@ -63,9 +63,7 @@ class Recepcion(models.Model):
     empleado = models.ForeignKey(Empleado, related_name='recepciones', verbose_name=_('Empleado'))
 
     def __str__(self):
-        laboratorios = Laboratorio.objects.filter(
-            servicio__in=self.orden.OrdenProducto_orden.all().values_list('servicio__nombre__id', flat=True).distinct()
-        ).values_list('codigo', flat=True)
+        laboratorios = self._laboratorios.values_list('codigo', flat=True)
         lab_str = ' | '.join(list(laboratorios))
         return 'Recepcion #{self.orden.id} | {laboratorios}'.format(self=self, laboratorios=lab_str)
 
