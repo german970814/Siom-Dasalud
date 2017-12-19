@@ -37,7 +37,7 @@ class HojaTrabajoForm(forms.Form):
         hasta_hora = cleaned_data.get('hasta_hora')
 
         if desde is not None and hasta is not None:
-            if desde >= hasta:
+            if desde > hasta:
                 self.add_error('hasta_fecha', _('La fecha "Hasta" no puede ser menor a la fecha "Desde"'))
             elif desde == hasta:
                 if desde_hora is not None and hasta_hora is not None:
