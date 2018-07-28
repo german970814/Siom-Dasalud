@@ -5,3 +5,5 @@ npm-debug.log
 .idea/
 .DS_Store
 media/
+*lock.json
+static/vue/package-lock.json
